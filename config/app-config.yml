@@ -1,0 +1,14 @@
+# @format
+
+debug: true
+port: 3000
+cookies:
+  signed: false
+logs:
+  newLogFileFrequency: '24h'
+  maxFileSize: '50m'
+accounts:
+  supportedTypes:
+    custom: true
+    google: false
+    microsoft: false
