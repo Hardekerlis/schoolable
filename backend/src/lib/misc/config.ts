@@ -5,7 +5,6 @@ import { Yaml } from './yaml';
 // Tried to make this a global but the code turned out hideous so did it this way instead
 export let CONFIG: any;
 
-
 // Handles loading and saving config
 export class ConfigHandler {
   // Static path to the config file
@@ -14,6 +13,7 @@ export class ConfigHandler {
   // Save the updated config
   // To save the config update the global config and then run the saveConfig method
   public static saveConfig(): void {
+    console.log(CONFIG);
     Yaml.save(CONFIG, this.path);
   }
 
@@ -30,7 +30,7 @@ export class ConfigHandler {
   }
 
   // Alias for loadConfig. Aka updateConfig and loadConfig methods do the same
-  public static updateConfig = ConfigHandler.loadConfig;
+  public static updateConfig = ConfigHandler.loadConfig();
 
   /*
     @returns {object} Returns the content of the config file

@@ -2,19 +2,16 @@
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import request from 'supertest';
 
 import { ConfigHandler } from '../lib/misc/config';
 ConfigHandler.loadConfig();
 
-import logger, { winstonTestSetup } from '../lib/misc/winston';
+import { winstonTestSetup } from '../lib/misc/winston';
 winstonTestSetup();
-
-import { app } from '../app';
 
 // declare global {
 //   namespace NodeJS {
-//     interface Global {
+//     interfac  e Global {
 //       getAuthCookie(): Promise<string[]>;
 //     }
 //   }
@@ -35,19 +32,31 @@ beforeAll(async () => {
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();
 
-  await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(
+    mongoUri,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    },
+    (err) => {
+      if (err) throw console.error(err);
+    },
+  );
 });
 
 // Removes all items from the database before each test
+// mongoose.connection.db is undefined
+// TODO
+// Clear database collections beforeEach
 beforeEach(async () => {
-  const collections = await mongoose.connection.db.collections();
-
-  for (let collection of collections) {
-    await collection.deleteMany({});
-  }
+  // console.log(mongoose.connection.db.collections());
+  //
+  // const collections = await mongoose.connection.db.collections();
+  //
+  // for (let collection of collections) {
+  //   await collection.deleteMany({});
+  // }
+  // await mongoose.connection.collections.deleteMany({});
 });
 
 // Stops mongo after tests

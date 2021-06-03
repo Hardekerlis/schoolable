@@ -16,6 +16,8 @@ ConfigHandler.loadConfig();
 
 const app = express();
 
+import { setupRouter } from './setup/startSetup';
+
 app.set('trust proxy', true);
 app.use(json());
 // TODO
@@ -28,7 +30,10 @@ app.use(
 );
 
 // --- Routers ---
-
+if (CONFIG.setupComplete) {
+} else if (!CONFIG.setupComplete) {
+  app.use(setupRouter);
+}
 // ---------------
 
 app.all('*', async () => {

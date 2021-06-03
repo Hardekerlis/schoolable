@@ -1,14 +1,18 @@
 # @format
 
 debug: true
+version: 0.0.1
+setupComplete: false
 port: 3000
 cookies:
   signed: false
 logs:
-  newLogFileFrequency: '24h'
-  maxFileSize: '50m'
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
 accounts:
   supportedTypes:
     custom: true
     google: false
     microsoft: false
+database:
+  mongo_uri: 'asdasdasda'

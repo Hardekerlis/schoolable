@@ -16,6 +16,6 @@ export const errorHandler = (
 
   // If the error isn't specifically handled the error is unexpected and will be handled here
   res.status(400).send({
-    errors: [{ message: 'Unexpected error' }],
+    errors: [{ message: 'Unexpected error', error: err }],
   });
 };
