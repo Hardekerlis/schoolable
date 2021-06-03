@@ -12,6 +12,5 @@ it('returns a 201 on succesfully creating the first admin account', async () => 
         first: 'John',
         last: 'Doe',
       },
-      publicRsaKey: 'sadasdsadasd',
     });
 });

@@ -31,6 +31,7 @@ app.use(
 
 // --- Routers ---
 if (CONFIG.setupComplete) {
+  // app.use(liveRouter);
 } else if (!CONFIG.setupComplete) {
   app.use(setupRouter);
 }
