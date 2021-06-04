@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 
 import { app } from './app';
 import { ConfigHandler, CONFIG } from './lib/misc/config';
-import { setup } from './setup/startSetup';
 import logger from './lib/misc/winston';
 
 const startServer = async () => {

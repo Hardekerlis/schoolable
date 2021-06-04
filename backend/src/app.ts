@@ -16,8 +16,6 @@ ConfigHandler.loadConfig();
 
 const app = express();
 
-import { setupRouter } from './setup/startSetup';
-
 app.set('trust proxy', true);
 app.use(json());
 // TODO
@@ -33,7 +31,7 @@ app.use(
 if (CONFIG.setupComplete) {
   // app.use(liveRouter);
 } else if (!CONFIG.setupComplete) {
-  app.use(setupRouter);
+  // app.use(setupRouter);
 }
 // ---------------
 
