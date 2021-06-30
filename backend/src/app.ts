@@ -27,12 +27,17 @@ app.use(
   }),
 );
 
+import registerRouter from './routes/users/register';
+
 // --- Routers ---
-if (CONFIG.setupComplete) {
-  // app.use(liveRouter);
-} else if (!CONFIG.setupComplete) {
-  // app.use(setupRouter);
-}
+// if (CONFIG.setupComplete) {
+//   // app.use(liveRouter);
+// } else if (!CONFIG.setupComplete) {
+//   // app.use(setupRouter);
+// }
+
+app.use(registerRouter);
+
 // ---------------
 
 app.all('*', async () => {

@@ -18,7 +18,7 @@ winstonTestSetup();
 // }
 
 // The tests timesout if the default timout interval is not changed
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;
+// jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;
 
 let mongo: any;
 beforeAll(async () => {

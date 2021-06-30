@@ -30,10 +30,6 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    publicRsaKey: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
@@ -58,4 +54,4 @@ adminSchema.statics.build = (attributes: AdminAttributes) => {
 
 const Admin = mongoose.model<AdminDoc, AdminModel>('admins', adminSchema);
 
-export { Admin };
+export default Admin;
