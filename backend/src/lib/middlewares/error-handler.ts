@@ -11,7 +11,7 @@ export const errorHandler = (
 ) => {
   // Check if the error is custom, aka from errors folder in lib
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({ errors: err.serializeErrors });
+    return res.status(err.statusCode).json({ errors: err.serializeErrors() });
   }
 
   // If the error isn't specifically handled the error is unexpected and will be handled here

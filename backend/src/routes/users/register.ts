@@ -11,11 +11,11 @@ registerRouter.post(
   '/api/users/admin/register',
   [
     body('email').isEmail().withMessage('Email must be valid'),
-    // body('confirmPassword')
-    //   .exists()
-    //   .trim()
-    //   .matches('password')
-    //   .withMessage('Not correct'),
+    body('confirmPassword')
+      .exists()
+      .trim()
+      .matches('password')
+      .withMessage('Not correct'),
     // body('password')
     // .trim()
     // .isLength({ min: 5, max: 20 })
@@ -30,6 +30,8 @@ registerRouter.post(
   validateRequest,
   (req: Request, res: Response) => {
     const data = req.body;
+
+    console.log('asdsda');
 
     res.json({});
   },
