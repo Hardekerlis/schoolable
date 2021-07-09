@@ -4,12 +4,9 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import { ConfigHandler } from '../lib/misc/config';
-ConfigHandler.loadConfig();
-
 import { app } from '../app';
 
-import { winstonTestSetup } from '../lib/misc/winston';
+import { winstonTestSetup } from '@schoolable/common';
 winstonTestSetup();
 
 declare global {

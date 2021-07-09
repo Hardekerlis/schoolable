@@ -2,3 +2,5 @@ node_modules/
 logs/
 coverage/
 temp_frontend/
+build/
+.env

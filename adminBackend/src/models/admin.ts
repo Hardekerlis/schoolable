@@ -1,23 +1,29 @@
 /** @format */
 
 import mongoose from 'mongoose';
-
+import { Password } from '@schoolable/common';
 /*
   What does an admin need:
   permissions to everything - create middleware for this. Very secure login
   Name should be Administrater<Number>
 */
 
-interface AdminAttrs {
+interface AdminAttributes {
   email: string;
-  publicRsaKey: string;
   name: string;
+  password: string;
+  verified: boolean;
 }
 
-interface AdminDoc extends mongoose.Model<AdminDoc> {
+interface AdminModel extends mongoose.Model<AdminDoc> {
+  build(attributes: AdminAttributes): AdminDoc;
+}
+
+interface AdminDoc extends mongoose.Document {
   email: string;
-  publicRsaKey: string;
   name: string;
+  password: string;
+  verified: boolean;
 }
 
 const adminSchema = new mongoose.Schema(
@@ -26,12 +32,16 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    publicRsaKey: {
+    name: {
       type: String,
       required: true,
     },
-    name: {
+    password: {
       type: String,
+      required: true,
+    },
+    verified: {
+      type: Boolean,
       required: true,
     },
   },
@@ -41,12 +51,20 @@ const adminSchema = new mongoose.Schema(
         ret.id = ret._id;
 
         delete ret._id;
-        delete ret.publicRsaKey;
-        delete ret._v;
+        delete ret.__v;
       },
     },
   },
 );
+
+adminSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
+  }
+
+  done();
+});
 
 adminSchema.statics.build = (attributes: AdminAttributes) => {
   return new Admin(attributes);
@@ -54,4 +72,4 @@ adminSchema.statics.build = (attributes: AdminAttributes) => {
 
 const Admin = mongoose.model<AdminDoc, AdminModel>('admins', adminSchema);
 
-export { Admin };
+export default Admin;
