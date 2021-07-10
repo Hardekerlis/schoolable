@@ -77,6 +77,26 @@ it('Returns a 201 on succesfully registering an admin user', async () => {
   return await request(app).post(path).send(validRequestData).expect(201);
 });
 
+it('Sets a cookie on successfully registering first admin user and not on second', async () => {
+  const firstUser = await request(app)
+    .post(path)
+    .send(validRequestData)
+    .expect(201);
+  expect(firstUser.get('Set-Cookie')).toBeDefined();
+
+  const secondUser = await request(app)
+    .post(path)
+    .send({
+      email: 'test2@test.com',
+      password: 'password',
+      name: 'John Doe',
+      confirmPassword: 'password',
+    })
+    .expect(201);
+
+  expect(secondUser.get('Set-Cookie')).toBeUndefined();
+});
+
 it('Object value "verified" is set to false if another admin already exists', async () => {
   await request(app).post(path).send(validRequestData).expect(201);
 
@@ -94,5 +114,5 @@ it('Responds with json', async () => {
   return await request(app)
     .post(path)
     .send(validRequestData)
-    .expect('Content-type', /json/);
+    .expect('Content-Type', /json/);
 });

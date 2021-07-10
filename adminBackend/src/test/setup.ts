@@ -6,16 +6,24 @@ import request from 'supertest';
 
 import { app } from '../app';
 
-import { winstonTestSetup } from '@schoolable/common';
+import { winstonTestSetup, ConfigHandler } from '@schoolable/common';
+
+// Needs to happen in this specific order
+const configPath =
+  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
+ConfigHandler.loadConfig(configPath);
+
+import { logger } from '../logger/logger';
+logger.debug('Setting up test...');
 winstonTestSetup();
 
-declare global {
-  namespace NodeJS {
-    interface Global {
-      getAuthCookie(): Promise<string[]>;
-    }
-  }
-}
+// declare global {
+//   namespace NodeJS {
+//     interface Global {
+//       getAuthCookie(): Promise<string[]>;
+//     }
+//   }
+// }
 
 // The tests timesout if the default timout interval is not changed
 jest.setTimeout(600000);
@@ -53,19 +61,19 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.getAuthCookie = async () => {
-  const email = 'test@test.com';
-  const password = 'password';
-
-  const res = await request(app)
-    .post('/api/users/signin')
-    .send({ email, password })
-    .expect(201);
-
-  const cookie = res.get('Set-Cookie');
-
-  return cookie;
-};
+// global.getAuthCookie = async () => {
+//   const email = 'test@test.com';
+//   const password = 'password';
+//
+//   const res = await request(app)
+//     .post('/api/users/signin')
+//     .send({ email, password })
+//     .expect(201);
+//
+//   const cookie = res.get('Set-Cookie');
+//
+//   return cookie;
+// };
 
 // global.getAuthCookie = async () => {
 //   const email = 'test@test.com';

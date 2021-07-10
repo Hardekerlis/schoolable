@@ -28,8 +28,6 @@ try {
   Secrets.loadSecret('JWT_KEY');
 }
 
-console.log(process.env.JWT_KEY);
-
 const app = express();
 
 app.set('trust proxy', true);
@@ -55,6 +53,12 @@ import loginRouter from './routes/account/login';
 
 app.use(registerRouter);
 app.use(loginRouter);
+
+import { authenticate } from './middlewares/authenticate';
+import fetchSettingsRouter from './routes/settings/fetchSettings';
+// --- Protected routes ---
+app.use(authenticate);
+app.use(fetchSettingsRouter);
 
 // ---------------
 
