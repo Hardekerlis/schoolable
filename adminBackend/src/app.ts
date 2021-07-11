@@ -44,21 +44,21 @@ app.use(
 import registerRouter from './routes/account/register';
 import loginRouter from './routes/account/login';
 
+import fetchSettingsRouter from './routes/settings/fetchSettings';
+import saveSettingsRouter from './routes/settings/saveSettings';
+import publishSettingsRouter from './routes/settings/publishSettings';
 // --- Routers ---
 // if (CONFIG.setupComplete) {
 //   // app.use(liveRouter);
 // } else if (!CONFIG.setupComplete) {
 //   // app.use(setupRouter);
 // }
-
 app.use(registerRouter);
 app.use(loginRouter);
 
-import { authenticate } from './middlewares/authenticate';
-import fetchSettingsRouter from './routes/settings/fetchSettings';
-// --- Protected routes ---
-app.use(authenticate);
 app.use(fetchSettingsRouter);
+app.use(saveSettingsRouter);
+app.use(publishSettingsRouter);
 
 // ---------------
 
