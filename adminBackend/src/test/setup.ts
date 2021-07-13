@@ -50,7 +50,6 @@ beforeAll(async () => {
 });
 
 // Removes all items from the database before each test
-// mongoose.connection.db is undefined
 beforeEach(async () => {
   await mongoose.connection.dropDatabase();
 });
@@ -65,8 +64,8 @@ global.getAuthCookie = async () => {
   const validRequestData = {
     email: 'test@test.com',
     password: 'password',
-    name: 'John Doe',
     confirmPassword: 'password',
+    name: 'John Doe',
   };
 
   const res = await request(app)

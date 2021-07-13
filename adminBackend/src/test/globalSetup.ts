@@ -19,6 +19,7 @@ export = async function globalSetup() {
   await mongoose.connect(`${process.env.MONGO_URI}/${CONFIG.database.name}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   });
 
   await mongoose.connection.db.dropDatabase();

@@ -3,14 +3,7 @@
 import mongoose from 'mongoose';
 import { Password } from '@schoolable/common';
 
-// Put into library
-enum UserTypes {
-  Teacher = 'teacher',
-  Student = 'student',
-  LegalGuardian = 'legalGuardian',
-  TempTeacher = 'tempTeacher',
-  External = 'External',
-}
+import { UserTypes } from '../utils/userTypes.enum';
 
 // Put into library
 interface Course {
@@ -70,9 +63,9 @@ interface Name {
 interface UserAttributes {
   email: string;
   password: string;
-  name: Name;
+  name: string;
   userType: UserTypes;
-  courses: [string]; // course ids
+  courses: string[]; // course ids
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -82,9 +75,9 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
-  name: Name;
+  name: string;
   userType: UserTypes;
-  courses: [string]; // course ids
+  courses: string[]; // course ids
 }
 
 const userSchema = new mongoose.Schema(
@@ -97,19 +90,28 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    passwordChoosen: {
+      type: Boolean,
+      default: false,
+    },
     name: {
       type: String,
       required: true,
     },
     userType: {
-      type: UserTypes,
+      type: Object,
       required: true,
     },
     courses: [
       {
         type: String,
+        default: [],
       },
     ],
+    setupComplete: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: {

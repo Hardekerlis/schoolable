@@ -47,6 +47,9 @@ import loginRouter from './routes/account/login';
 import fetchSettingsRouter from './routes/settings/fetchSettings';
 import saveSettingsRouter from './routes/settings/saveSettings';
 import publishSettingsRouter from './routes/settings/publishSettings';
+import registerUserRouter from './routes/users/register';
+import deleteUserRouter from './routes/users/delete';
+import fetchUsersRouter from './routes/users/fetchUsers';
 // --- Routers ---
 // if (CONFIG.setupComplete) {
 //   // app.use(liveRouter);
@@ -59,6 +62,10 @@ app.use(loginRouter);
 app.use(fetchSettingsRouter);
 app.use(saveSettingsRouter);
 app.use(publishSettingsRouter);
+
+app.use(registerUserRouter);
+app.use(deleteUserRouter);
+app.use(fetchUsersRouter);
 
 // ---------------
 
