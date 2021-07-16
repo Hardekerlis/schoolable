@@ -54,12 +54,6 @@ interface CoursePage {
   header: string;
 }
 
-// Put into library
-interface Name {
-  first: string;
-  last: string;
-}
-
 interface UserAttributes {
   email: string;
   password: string;
@@ -99,7 +93,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     userType: {
-      type: Object,
+      type: String,
       required: true,
     },
     courses: [
@@ -114,9 +108,18 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
+    toObject: {
+      transform: (doc, ret) => {
+        ret.id = ret._id.toString();
+
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
     toJSON: {
       transform: (doc, ret) => {
-        ret.id = ret._id;
+        ret.id = ret._id.toString();
 
         delete ret._id;
         delete ret.password;
@@ -125,6 +128,14 @@ const userSchema = new mongoose.Schema(
     },
   },
 );
+
+userSchema.index({
+  email: 'text',
+  name: 'text',
+  userType: 'text',
+  setupComplete: 'text',
+  passwordChoose: 'text',
+});
 
 userSchema.pre('save', async function (done) {
   if (this.isModified('password')) {

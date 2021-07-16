@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 
 import { app } from '../app';
+import User from '../models/user';
 
 import { winstonTestSetup, ConfigHandler } from '@schoolable/common';
 
@@ -41,7 +42,7 @@ beforeAll(async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
     },
     (err) => {
       if (err) throw console.error(err);
@@ -52,6 +53,7 @@ beforeAll(async () => {
 // Removes all items from the database before each test
 beforeEach(async () => {
   await mongoose.connection.dropDatabase();
+  await User.createIndexes();
 });
 
 // Stops mongo after tests

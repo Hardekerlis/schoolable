@@ -2,7 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, CONFIG, BadRequestError } from '@schoolable/common';
+import { validateRequest, BadRequestError } from '@schoolable/common';
 import mongoose from 'mongoose';
 
 import User from '../../models/user';
