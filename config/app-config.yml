@@ -1,0 +1,30 @@
+debug: true
+dev: true
+version: 0.0.1
+isSetup: false
+port: 3000
+cookies:
+  signed: false
+logs:
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
+accounts:
+  supportedTypes:
+    custom: true
+    google: false
+    microsoft: false
+database:
+  url: localhost
+  port: '27017'
+  name: schoolable
+passwords:
+  length:
+    min: 5
+    max: 20
+language: SWE
+smtpOptions:
+  host: gmail
+  port: 587
+  secure: true
+  username: username
+  password: password
