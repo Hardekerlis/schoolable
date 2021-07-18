@@ -15,14 +15,14 @@ import {
 
 // This is neccesary because ConfigHandler is located in a package and can't get the correct path otherwise
 const configPath =
-  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
+  __dirname.substring(0, __dirname.indexOf('/adminBackend')) +
+  '/config/app-config.yml';
 
 // Load the config file into CONFIG variable
 ConfigHandler.loadConfig(configPath);
 
-try {
-  Secrets.loadSecret('JWT_KEY');
-} catch (err) {
+Secrets.loadSecret('JWT_KEY');
+if (!process.env.JWT_KEY) {
   Secrets.generateKeySecret('JWT_KEY');
   Secrets.loadSecret('JWT_KEY');
 }
@@ -33,7 +33,7 @@ app.set('trust proxy', true);
 
 app.use(
   json({
-    limit: '50mb',
+    limit: '5mb',
   }),
 );
 // TODO
@@ -41,7 +41,7 @@ app.use(
 app.use(
   cookieSession({
     signed: CONFIG.cookies.signed,
-    secure: process.env.NODE_ENV !== 'test',
+    secure: !(CONFIG.debug || process.env.NODE_ENV === 'test'),
   }),
 );
 

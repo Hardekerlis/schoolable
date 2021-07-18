@@ -2,7 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, BadRequestError } from '@schoolable/common';
+import { validateRequest, BadRequestError, CONFIG } from '@schoolable/common';
 import { v4 as uuidv4 } from 'uuid';
 
 import User from '../../models/user';
@@ -44,8 +44,10 @@ registerRouter.post(
       throw new BadRequestError('Email in use');
     }
 
+    logger.debug('Creating a temporary password for new user');
     let tempPassword = uuidv4();
 
+    logger.debug('Building new user');
     const user = User.build({
       email: email as string,
       name: name as string,
@@ -55,6 +57,7 @@ registerRouter.post(
     });
 
     try {
+      logger.debug('Saving new user');
       await user.save();
       user.password = '';
     } catch (err) {
@@ -71,6 +74,7 @@ registerRouter.post(
 
     res.status(201).json({
       msg: `Succesfully created a ${userType} account`,
+      tempPassword: CONFIG.dev ? tempPassword : undefined, // Is needed for testing in some cases. Should never be sent in prod env
       user,
     });
   },

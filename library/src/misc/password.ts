@@ -24,7 +24,7 @@ export class Password {
     @param {string} the hashed password stored in the database
     @param {string} the plain text password supplied by user
     @returns {boolean} whether or not the hashed password and the plain text
-    password match
+    password match. True for match
   */
   static async compare(storedPassword: string, suppliedPassword: string) {
     const [hash, salt] = storedPassword.split('.');

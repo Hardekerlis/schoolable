@@ -6,12 +6,14 @@ import request from 'supertest';
 
 import { app } from '../app';
 import User from '../models/user';
+import { connect } from '../utils/connect';
 
 import { winstonTestSetup, ConfigHandler } from '@schoolable/common';
 
 // Needs to happen in this specific order
 const configPath =
-  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
+  __dirname.substring(0, __dirname.indexOf('/adminBackend')) +
+  '/config/app-config.yml';
 ConfigHandler.loadConfig(configPath);
 
 import { logger } from '../logger/logger';
@@ -33,21 +35,22 @@ let mongo: any;
 beforeAll(async () => {
   process.env.JWT_KEY = 'asdfasdf';
 
-  mongo = new MongoMemoryServer();
-  const mongoUri = await mongo.getUri();
-
-  mongoose.connect(
-    mongoUri,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-    },
-    (err) => {
-      if (err) throw console.error(err);
-    },
-  );
+  // mongo = new MongoMemoryServer();
+  // const mongoUri = await mongo.getUri();
+  //
+  // mongoose.connect(
+  //   mongoUri,
+  //   {
+  //     useNewUrlParser: true,
+  //     useUnifiedTopology: true,
+  //     useCreateIndex: true,
+  //     useFindAndModify: false,
+  //   },
+  //   (err) => {
+  //     if (err) throw console.error(err);
+  //   },
+  // );
+  await connect();
 });
 
 // Removes all items from the database before each test

@@ -3,8 +3,9 @@
 import mongoose from 'mongoose';
 
 import { app } from './app';
-import { ConfigHandler, CONFIG } from '@schoolable/common';
+import { CONFIG } from '@schoolable/common';
 import { logger } from './logger/logger';
+import { connect } from './utils/connect';
 
 const startServer = async () => {
   const { env } = process;
@@ -26,6 +27,16 @@ const startServer = async () => {
   // } catch (err) {
   //   console.error(err);
   // }
+
+  // Database connection
+  if (CONFIG.dev) {
+    logger.warn(
+      'The application is in dev mode. If this is an production environment please change dev to false in the config',
+    );
+  }
+
+  logger.info('Connecting to MongoDb');
+  await connect();
 
   env.NODE_ENV = !env.NODE_ENV ? 'dev' : env.NODE_ENV;
 
