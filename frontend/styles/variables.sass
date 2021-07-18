@@ -1,0 +1,18 @@
+$black: #353A47
+$grey: #2C2F37
+$lightGrey: #555B6A
+$white: #F0EFEB
+$purple: #8789C0
+$darkPurple: #4A4EC1
+
+@mixin transition($time, $type)
+  -webkit-transition: $time $type
+  -moz-transition: $time $type
+  -o-transition: $time $type
+  transition: $time $type
+
+@mixin transitionProp($time, $type, $prop)
+  -webkit-transition: $prop $time ease-out
+  -moz-transition: $prop $time ease-out
+  -o-transition: $prop $time ease-out
+  transition: $prop $time ease-out

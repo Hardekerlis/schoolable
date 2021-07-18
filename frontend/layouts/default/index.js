@@ -4,7 +4,7 @@ import Head from 'next/head'
 import styles from './default.module.sass'
 
 
-const Layout = ({ children }) => {
+const Layout = ({ children, mainClass }) => {
 
   return (
 
@@ -16,11 +16,14 @@ const Layout = ({ children }) => {
 
         <meta name="description" content="Now this is pod-racing." />
 
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
 
       </Head>
 
-      <main>{children}</main>
+      <main className={mainClass}>{children}</main>
 
 
     </div>

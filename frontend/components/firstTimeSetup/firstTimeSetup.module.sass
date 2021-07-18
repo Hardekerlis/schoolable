@@ -1,0 +1,120 @@
+@import "styles/variables"
+
+.wrapper
+  width: 100vw
+  height: 100vh
+  background-color: rgba(0,0,0,0.45)
+  display: flex
+  justify-content: center
+  align-items: center
+
+.container
+  width: 650px
+  min-height: 250px
+  border-radius: 5px
+  background-color: $white
+  position: relative
+
+.title
+  font-size: 3rem
+  color: $black
+  text-align: center
+  margin: 0px
+  margin-top: 8px
+  margin-bottom: 8px
+  font-weight: 300
+
+.optionContainer
+  display: flex
+  flex-direction: column
+  align-items: center
+
+  .body
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-direction: column
+    min-height: 100px
+
+    form
+      display: flex
+      justify-content: center
+      align-items: center
+      flex-direction: column
+
+
+  input
+    outline: none
+    font-size: 1.5rem
+    padding: 10px
+    font-weight: 300
+    border: none
+    background: none
+    border: 1px solid $grey
+    border-radius: 5px
+    margin: 10px
+    margin-top: 0px
+
+  input::placeholder
+    color: $lightGrey
+
+.optionTitle
+  font-size: 2rem
+  color: $black
+  text-align: center
+  margin: 0px
+  margin-top: 18px
+  margin-bottom: 12px
+  font-weight: 300
+
+$buttonMargin: 12px
+
+.btnContainer
+
+  height: 65px
+
+  $buttonHoverBorderSize: 2px
+
+  button
+    outline: none
+    position: absolute
+    bottom: $buttonMargin
+    background: none
+    border: none
+    font-size: 1.6rem
+    color: $darkPurple
+    font-weight: 600
+    cursor: pointer
+    user-select: none
+    border-bottom: $buttonHoverBorderSize solid $white
+    @include transition(0.2s, ease-out)
+
+  button:first-child
+    left: $buttonMargin
+
+  button:last-child
+    right: $buttonMargin
+
+  button:hover
+    border-bottom: $buttonHoverBorderSize solid $purple
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //
