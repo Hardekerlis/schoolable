@@ -1,7 +1,7 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { CONFIG } from '@schoolable/common';
+import { CONFIG } from '../lib/misc/config';
 
 export = async function connect() {
   await mongoose.connect(
@@ -10,7 +10,7 @@ export = async function connect() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: false,
+      useFindAndModify: true,
     },
   );
 };

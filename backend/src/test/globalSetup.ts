@@ -2,12 +2,7 @@
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import { ConfigHandler, CONFIG } from '@schoolable/common';
-
-const configPath =
-  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
-
-ConfigHandler.loadConfig(configPath);
+import { CONFIG } from '../lib/misc/config';
 
 export = async function globalSetup() {
   const instance = await MongoMemoryServer.create();
@@ -19,7 +14,6 @@ export = async function globalSetup() {
   await mongoose.connect(`${process.env.MONGO_URI}/${CONFIG.database.name}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false,
   });
 
   await mongoose.connection.db.dropDatabase();

@@ -5,7 +5,6 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-const os = require('os');
 import {
   ConfigHandler,
   CONFIG,
@@ -28,12 +27,15 @@ try {
   Secrets.loadSecret('JWT_KEY');
 }
 
-console.log(process.env.JWT_KEY);
-
 const app = express();
 
 app.set('trust proxy', true);
-app.use(json());
+
+app.use(
+  json({
+    limit: '50mb',
+  }),
+);
 // TODO
 // Add maxAge calculation
 app.use(
@@ -46,15 +48,30 @@ app.use(
 import registerRouter from './routes/account/register';
 import loginRouter from './routes/account/login';
 
+import fetchSettingsRouter from './routes/settings/fetchSettings';
+import saveSettingsRouter from './routes/settings/saveSettings';
+import publishSettingsRouter from './routes/settings/publishSettings';
+import registerUserRouter from './routes/users/register';
+import deleteUserRouter from './routes/users/delete';
+import fetchUsersRouter from './routes/users/fetchUsers';
+import updateUsersRouter from './routes/users/update';
 // --- Routers ---
 // if (CONFIG.setupComplete) {
 //   // app.use(liveRouter);
 // } else if (!CONFIG.setupComplete) {
 //   // app.use(setupRouter);
 // }
-
 app.use(registerRouter);
 app.use(loginRouter);
+
+app.use(fetchSettingsRouter);
+app.use(saveSettingsRouter);
+app.use(publishSettingsRouter);
+
+app.use(registerUserRouter);
+app.use(deleteUserRouter);
+app.use(fetchUsersRouter);
+app.use(updateUsersRouter);
 
 // ---------------
 

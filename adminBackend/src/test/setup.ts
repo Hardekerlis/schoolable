@@ -5,8 +5,17 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 
 import { app } from '../app';
+import User from '../models/user';
 
-import { winstonTestSetup } from '@schoolable/common';
+import { winstonTestSetup, ConfigHandler } from '@schoolable/common';
+
+// Needs to happen in this specific order
+const configPath =
+  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
+ConfigHandler.loadConfig(configPath);
+
+import { logger } from '../logger/logger';
+logger.debug('Setting up test...');
 winstonTestSetup();
 
 declare global {
@@ -33,7 +42,7 @@ beforeAll(async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
     },
     (err) => {
       if (err) throw console.error(err);
@@ -42,9 +51,9 @@ beforeAll(async () => {
 });
 
 // Removes all items from the database before each test
-// mongoose.connection.db is undefined
 beforeEach(async () => {
   await mongoose.connection.dropDatabase();
+  await User.createIndexes();
 });
 
 // Stops mongo after tests
@@ -54,12 +63,16 @@ afterAll(async () => {
 });
 
 global.getAuthCookie = async () => {
-  const email = 'test@test.com';
-  const password = 'password';
+  const validRequestData = {
+    email: 'test@test.com',
+    password: 'password',
+    confirmPassword: 'password',
+    name: 'John Doe',
+  };
 
   const res = await request(app)
-    .post('/api/users/signin')
-    .send({ email, password })
+    .post('/api/register')
+    .send(validRequestData)
     .expect(201);
 
   const cookie = res.get('Set-Cookie');

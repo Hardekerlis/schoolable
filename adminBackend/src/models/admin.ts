@@ -2,11 +2,6 @@
 
 import mongoose from 'mongoose';
 import { Password } from '@schoolable/common';
-/*
-  What does an admin need:
-  permissions to everything - create middleware for this. Very secure login
-  Name should be Administrater<Number>
-*/
 
 interface AdminAttributes {
   email: string;

@@ -2,10 +2,11 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
+import { validateRequest, CONFIG } from '@schoolable/common';
+import jwt from 'jsonwebtoken';
+
 import Admin from '../../models/admin';
 
-import { validateRequest } from '@schoolable/common';
-import { CONFIG } from '@schoolable/common';
 import { logger } from '../../logger/logger';
 
 const registerRouter = Router();
@@ -90,12 +91,26 @@ registerRouter.post(
     if (!firstAdminCreated[0]) {
       logger.info('Registered the first admin account');
       admin.verified = true;
+
+      const token = jwt.sign(
+        {
+          email,
+          id: admin.id,
+        },
+        process.env.JWT_KEY as string,
+      );
+
+      req.session = {
+        jwt: token,
+      };
     }
 
     logger.info('Attempting to save admin user');
-    admin.save((err) => {
+    try {
+      await admin.save();
+    } catch (err) {
       logger.error(`Saving admin user failed with the error message: ${err}`);
-    });
+    }
     logger.info('Succesfully saved admin user');
 
     res.status(201).json({

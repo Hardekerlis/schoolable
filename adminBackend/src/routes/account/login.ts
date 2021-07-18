@@ -2,7 +2,12 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, CONFIG, Password } from '@schoolable/common';
+import {
+  validateRequest,
+  CONFIG,
+  Password,
+  BadRequestError,
+} from '@schoolable/common';
 import jwt from 'jsonwebtoken';
 
 import Admin from '../../models/admin';
@@ -43,17 +48,32 @@ loginRouter.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
+    logger.debug('User trying to login');
 
     const admin = await Admin.findOne({ email });
 
     if (!admin) {
+      logger.debug('No user with the supplied email was found');
       res.status(204).send();
     } else {
       if (await Password.compare(admin.password, password)) {
-        // const token = jwt.sign({ email, name: admin.name, id: admin.id}, )
-      }
+        logger.debug('Password was correct');
+        const token = jwt.sign(
+          { email, id: admin.id },
+          process.env.JWT_KEY as string,
+        );
 
-      res.send();
+        req.session = {
+          jwt: token,
+        };
+
+        res.status(200).json({
+          msg: 'Login successful',
+        });
+      } else {
+        logger.debug('Password was incorrect');
+        throw new BadRequestError('Wrong credentials');
+      }
     }
   },
 );
