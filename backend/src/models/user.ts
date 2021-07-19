@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { Password } from '@schoolable/common';
 
 import { UserTypes } from '../utils/userTypes.enum';
+import { UserSettingsDoc } from './userSettings';
 
 // // Put into library
 // interface Course {
@@ -60,6 +61,7 @@ interface UserAttributes {
   name: string;
   userType: UserTypes;
   courses: string[]; // course ids
+  settings: UserSettingsDoc;
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -72,6 +74,7 @@ interface UserDoc extends mongoose.Document {
   name: string;
   userType: UserTypes;
   courses: string[]; // course ids
+  settings: UserSettingsDoc;
 }
 
 const userSchema = new mongoose.Schema(
@@ -94,6 +97,7 @@ const userSchema = new mongoose.Schema(
     },
     userType: {
       type: String,
+      enum: Object.values(UserTypes),
       required: true,
     },
     courses: [
@@ -105,6 +109,10 @@ const userSchema = new mongoose.Schema(
     setupComplete: {
       type: Boolean,
       default: false,
+    },
+    settings: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'userSettings',
     },
   },
   {

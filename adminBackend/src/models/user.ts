@@ -94,6 +94,7 @@ const userSchema = new mongoose.Schema(
     },
     userType: {
       type: String,
+      enum: Object.values(UserTypes),
       required: true,
     },
     courses: [
@@ -105,6 +106,10 @@ const userSchema = new mongoose.Schema(
     setupComplete: {
       type: Boolean,
       default: false,
+    },
+    settings: {
+      type: String,
+      default: '',
     },
   },
   {
