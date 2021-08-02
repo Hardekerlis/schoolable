@@ -1,8 +1,5 @@
 /** @format */
 
-import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-
 import { app } from './app';
 import { CONFIG } from '@schoolable/common';
 import { logger } from './logger/logger';

@@ -60,7 +60,7 @@ loginRouter.post(
     }
 
     if (await Password.compare(user.password, password)) {
-      logger.info('Password was correct');
+      if (!user.settings) logger.info('Password was correct');
       try {
         logger.info('Creating token');
         const token = jwt.sign(

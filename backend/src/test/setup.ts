@@ -3,6 +3,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
+import { UserTypes } from '@schoolable/common';
 
 import { app } from '../app';
 import User from '../models/user';
@@ -59,8 +60,9 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
+const adminBackendUrl = `http://localhost:${CONFIG.port}`;
+
 (global as any).getAdminAuthCookie = async () => {
-  const adminBackendUrl = `http://localhost:${CONFIG.port}`;
   const validRequestData = {
     email: 'test@test.com',
     password: 'password',
@@ -81,6 +83,29 @@ afterAll(async () => {
       })
       .expect(200);
   }
+
+  const cookie = res.get('Set-Cookie');
+
+  return cookie;
+};
+
+(global as any).getAuthCookie = async () => {
+  const adminCookie = await (global as any).getAdminAuthCookie();
+
+  const newUser = await request(adminBackendUrl)
+    .post('/api/users/register')
+    .set('Cookie', adminCookie)
+    .send({
+      email: 'test@test.com',
+      name: 'John Doe',
+      userType: UserTypes.Teacher,
+    });
+
+  const res = await request(app).post('/api/login').send({
+    email: 'test@test.com',
+    password: newUser.body.tempPassword,
+    userType: UserTypes.Teacher,
+  });
 
   const cookie = res.get('Set-Cookie');
 

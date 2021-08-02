@@ -6,6 +6,7 @@ import { validateRequest, BadRequestError, CONFIG } from '@schoolable/common';
 import { v4 as uuidv4 } from 'uuid';
 
 import User from '../../models/user';
+import UserSettings, { UserSettingsDoc } from '../../models/userSettings';
 import { UserTypes } from '../../utils/userTypes.enum';
 
 import { logger } from '../../logger/logger';
@@ -47,6 +48,18 @@ registerRouter.post(
     logger.debug('Creating a temporary password for new user');
     let tempPassword = uuidv4();
 
+    const settings = UserSettings.build({
+      notifications: [''],
+      theme: 'dark',
+      language: 'SWE',
+    });
+
+    try {
+      await settings.save();
+    } catch (err) {
+      console.log(err);
+    }
+
     logger.debug('Building new user');
     const user = User.build({
       email: email as string,
@@ -54,6 +67,7 @@ registerRouter.post(
       userType: userType as UserTypes,
       password: tempPassword as string,
       courses: [] as Array<string>,
+      settings: settings as UserSettingsDoc,
     });
 
     try {

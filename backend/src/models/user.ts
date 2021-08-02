@@ -58,6 +58,8 @@ import { UserSettingsDoc } from './userSettings';
 interface UserAttributes {
   email: string;
   password: string;
+  passwordChoosen?: boolean;
+  setupComplete?: boolean;
   name: string;
   userType: UserTypes;
   courses: string[]; // course ids
@@ -71,6 +73,8 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
+  passwordChoosen?: boolean;
+  setupComplete?: boolean;
   name: string;
   userType: UserTypes;
   courses: string[]; // course ids
@@ -118,7 +122,7 @@ const userSchema = new mongoose.Schema(
   {
     toObject: {
       transform: (doc, ret) => {
-        ret.id = ret._id.toString();
+        ret.id = ret._id; //.toString();
 
         delete ret._id;
         delete ret.password;
@@ -127,7 +131,7 @@ const userSchema = new mongoose.Schema(
     },
     toJSON: {
       transform: (doc, ret) => {
-        ret.id = ret._id.toString();
+        ret.id = ret._id; //.toString();
 
         delete ret._id;
         delete ret.password;

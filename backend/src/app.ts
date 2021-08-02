@@ -1,6 +1,7 @@
 /** @format */
 
 // --- Libraries ---
+import mongoose from 'mongoose';
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
@@ -34,7 +35,7 @@ app.set('trust proxy', true);
 
 app.use(
   json({
-    limit: '50mb',
+    limit: '5mb',
   }),
 );
 // TODO
@@ -46,7 +47,10 @@ app.use(
   }),
 );
 
+import UserSettings from './models/userSettings';
+
 import loginRouter from './routes/account/login';
+import stagesRouter from './routes/setup/stages';
 // --- Routers ---
 // if (CONFIG.setupComplete) {
 //   // app.use(liveRouter);
@@ -55,6 +59,7 @@ import loginRouter from './routes/account/login';
 // }
 
 app.use(loginRouter);
+app.use(stagesRouter);
 
 // ---------------
 

@@ -65,10 +65,6 @@ const registerAdminData = {
 it('Returns a 400 if the user supplied wrong password', async () => {
   const adminCookie = await (global as any).getAdminAuthCookie();
 
-  /*
-  This user is not added to mongodb memory server
-  */
-
   const res = await request(adminBackendUrl)
     .post(`/api/users/register`)
     .set('Cookie', adminCookie)
