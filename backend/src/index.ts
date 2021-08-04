@@ -1,10 +1,9 @@
 /** @format */
 
-import mongoose from 'mongoose';
-
 import { app } from './app';
-import { ConfigHandler, CONFIG } from './lib/misc/config';
-import logger from './lib/misc/winston';
+import { CONFIG } from '@schoolable/common';
+import { logger } from './logger/logger';
+import { connect } from './database/connect';
 
 const startServer = async () => {
   const { env } = process;
@@ -27,10 +26,19 @@ const startServer = async () => {
   //   console.error(err);
   // }
 
+  if (CONFIG.dev) {
+    logger.warn(
+      'The application is in dev mode. If this is an production environment please change dev to false in the config',
+    );
+  }
+
+  logger.info('Connecting to MongoDb');
+  await connect();
+
   env.NODE_ENV = !env.NODE_ENV ? 'dev' : env.NODE_ENV;
 
-  app.listen(CONFIG.port, () => {
-    logger.info(`Listening on port *:${CONFIG.port}`);
+  app.listen(CONFIG.port + 1, () => {
+    logger.info(`Listening on port *:${CONFIG.port + 1}`);
   });
 };
 

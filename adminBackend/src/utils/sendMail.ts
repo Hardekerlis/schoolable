@@ -18,14 +18,14 @@ async function sendMail(email: string, subject: string, html: string) {
     }
 
     const transporter = nodemailer.createTransport({
-      host: isDev ? 'smtp.ehereal.email' : CONFIG.emailService.host,
-      port: isDev ? 587 : CONFIG.emailService.port,
-      secure: isDev ? false : CONFIG.emailService.secure,
+      host: isDev ? 'smtp.ethereal.email' : CONFIG.smtpOptions.host,
+      port: isDev ? 587 : CONFIG.smtpOptions.port,
+      secure: isDev ? false : CONFIG.smtpOptions.secure,
       auth: {
         // @ts-ignore
-        user: isDev ? testAccount.user : CONFIG.emailService.username,
+        user: isDev ? testAccount.user : CONFIG.smtpOptions.username,
         // @ts-ignore
-        pass: isDev ? testAccount.pass : CONFIG.emailService.password,
+        pass: isDev ? testAccount.pass : CONFIG.smtpOptions.password,
       },
     });
 

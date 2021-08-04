@@ -34,6 +34,15 @@ export class ConfigHandler {
   // Alias for loadConfig. Aka updateConfig and loadConfig methods do the same
   public static updateConfig = ConfigHandler.loadConfig;
 
+  public static async loadConfigFromDatabase(settingsModel: any) {
+    const settings = await settingsModel.find({});
+    console.log(settings);
+
+    CONFIG = settings[0];
+
+    return new Object(settings[0]);
+  }
+
   /*
     @returns {object} Returns the content of the config file
   */

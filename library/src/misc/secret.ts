@@ -31,7 +31,7 @@ export class Secrets {
     Load secret into process.env
     @param {string} name of file to load
   */
-  static async loadSecret(name: string) {
+  static loadSecret(name: string) {
     name = name.toUpperCase();
     dotenv.config({ path: `${this.path}/${name}.env` });
   }

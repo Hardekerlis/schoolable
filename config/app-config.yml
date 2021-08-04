@@ -1,4 +1,5 @@
 debug: true
+dev: true
 version: 0.0.1
 isSetup: false
 port: 3000
@@ -21,7 +22,7 @@ passwords:
     min: 5
     max: 20
 language: SWE
-emailService:
+smtpOptions:
   host: gmail
   port: 587
   secure: true

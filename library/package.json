@@ -1,6 +1,6 @@
 {
   "name": "@schoolable/common",
-  "version": "0.4.0",
+  "version": "0.7.8",
   "description": "Helper library for the Schoolable platform",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -26,6 +26,7 @@
     "express-validator": "^6.12.0",
     "js-yaml": "^4.1.0",
     "mkdirp": "^1.0.4",
+    "mongoose": "^5.13.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   }

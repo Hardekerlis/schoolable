@@ -5,5 +5,5 @@ export enum UserTypes {
   Student = 'student',
   LegalGuardian = 'legalGuardian',
   TempTeacher = 'tempTeacher',
-  External = 'external',
+  External = 'External',
 }
