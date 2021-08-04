@@ -4,13 +4,15 @@ import { useRouter } from 'next/router';
 
 import '../styles/global.sass';
 
+import { PromptRender } from '/helpers/prompt/'
+
+
 
 function App({ Component, pageProps }) {
 
   const router = useRouter();
 
   const [count, setCount] = useState(0);
-
 
   useEffect(() => {
 
@@ -22,7 +24,12 @@ function App({ Component, pageProps }) {
 
   });
 
-  return <Component {...pageProps} doFirstTimeSetup={true} />
+  return (
+    <>
+      <PromptRender />
+      <Component {...pageProps} doFirstTimeSetup={true} />
+    </>
+  )
 
 }
 
