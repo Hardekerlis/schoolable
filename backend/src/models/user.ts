@@ -1,9 +1,8 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { Password } from '@schoolable/common';
+import { Password, UserTypes } from '@schoolable/common';
 
-import { UserTypes } from '../utils/userTypes.enum';
 import { UserSettingsDoc } from './userSettings';
 
 // Put into library
@@ -71,7 +70,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
   build(attributes: UserAttributes): UserDoc;
 }
 
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
   passwordChoosen?: boolean;

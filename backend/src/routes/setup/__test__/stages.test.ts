@@ -1,8 +1,6 @@
 /** @format */
 
 import request from 'supertest';
-import { CONFIG, UserTypes } from '@schoolable/common';
-import faker from 'faker';
 import { app } from '../../../app';
 
 const path = '/api/setup/stage/';
