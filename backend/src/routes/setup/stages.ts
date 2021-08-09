@@ -2,18 +2,12 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import {
-  validateRequest,
-  CONFIG,
-  Password,
-  BadRequestError,
-  UserTypes,
-} from '@schoolable/common';
-import jwt from 'jsonwebtoken';
+import { validateRequest, BadRequestError } from '@schoolable/common';
 
 import User from '../../models/user';
 import UserSettings from '../../models/userSettings';
 import { authenticate, UserPayload } from '../../middlewares/authenticate';
+import { checkUserType } from '../../middlewares/checkUserType';
 import { logger } from '../../logger/logger';
 
 const stagesRouter = Router();
@@ -25,6 +19,7 @@ const stagesRouter = Router();
 stagesRouter.post(
   '/api/setup/stage/1',
   authenticate,
+  checkUserType(['student', 'teacher', 'external']),
   [
     body('password')
       .exists()
@@ -94,7 +89,7 @@ stagesRouter.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const currentUser = req.currentUser as UserPayload;
-    await UserSettings.findOne({}); // Doesn't register model w/o
+    // await UserSettings.findOne({}); // Doesn't register model w/o
     const user = await User.findById(currentUser.id).populate('settings');
     if (!user) {
       throw new BadRequestError(
@@ -135,6 +130,7 @@ stagesRouter.post(
       .exists()
       .isString()
       .custom((value) => {
+        value = value.toLowerCase();
         if (value !== 'swe' && value !== 'eng') {
           throw new BadRequestError("The selected language doesn't exist");
         } else return value;
@@ -143,41 +139,40 @@ stagesRouter.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const currentUser = req.currentUser as UserPayload;
+    const user = await User.findById(currentUser.id).populate('settings');
+
+    if (!user) {
+      throw new BadRequestError(
+        'No user found from the id contained in the cookie',
+      );
+    }
+
+    if (!user.passwordChoosen) {
+      throw new BadRequestError('User has not choosen a password yet');
+    }
+
+    user.settings.language = req.body.language;
+    user.setupComplete = true;
+
     try {
-      const user = await User.findById(currentUser.id).populate('settings');
-      if (!user) {
-        throw new BadRequestError(
-          'No user found from the id contained in the cookie',
-        );
-      }
-
-      if (!user.passwordChoosen) {
-        throw new BadRequestError('User has not choosen a password yet');
-      }
-
-      user.settings.language = req.body.language;
-
-      try {
-        console.log('err');
-        await user.settings.save();
-        res.status(200).json({
-          error: false,
-          msg: 'Succesfully selected language',
-          continue: true,
-        });
-      } catch (err) {
-        logger.error(`Unexpected error. Error message: ${err}`);
-        res.status(400).json({
-          error: true,
-          msg: err,
-          continue: false,
-        });
-      }
+      await user.settings.save();
+      await user.save();
+      logger.info('Saving user ');
+      res.status(200).json({
+        error: false,
+        msg: 'Succesfully selected language',
+        continue: true,
+        finished: true,
+      });
     } catch (err) {
-      console.error(err);
-      res.send();
+      logger.error(`Unexpected error. Error message: ${err}`);
+      res.status(400).json({
+        error: true,
+        msg: err,
+        continue: false,
+      });
     }
   },
 );
-// Ace test
+
 export default stagesRouter;

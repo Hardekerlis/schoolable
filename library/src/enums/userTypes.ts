@@ -1,9 +1,10 @@
 /** @format */
 
 export enum UserTypes {
-  Teacher = 'teacher',
-  Student = 'student',
   LegalGuardian = 'legalGuardian',
+  Student = 'student',
   TempTeacher = 'tempTeacher',
   External = 'external',
+  Teacher = 'teacher',
+  Admin = 'admin',
 }

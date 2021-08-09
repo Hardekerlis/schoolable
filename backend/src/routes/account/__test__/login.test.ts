@@ -5,7 +5,6 @@ import { CONFIG, UserTypes } from '@schoolable/common';
 import faker from 'faker';
 import { app } from '../../../app';
 
-const adminBackendUrl = `http://localhost:${CONFIG.port}`;
 const path = '/api/login';
 
 it('Returns a 400 with missing login data', async () => {
@@ -65,8 +64,8 @@ const registerAdminData = {
 it('Returns a 400 if the user supplied wrong password', async () => {
   const adminCookie = await (global as any).getAdminAuthCookie();
 
-  const res = await request(adminBackendUrl)
-    .post(`/api/users/register`)
+  const res = await request(app)
+    .post(`/api/admin/users/register`)
     .set('Cookie', adminCookie)
     .send({
       email: faker.internet.email(),
@@ -89,8 +88,8 @@ it('Returns a 400 if the user supplied wrong password', async () => {
 it('Returns a 200 if the login attempt is successful', async () => {
   const adminCookie = await (global as any).getAdminAuthCookie();
 
-  const res = await request(adminBackendUrl)
-    .post(`/api/users/register`)
+  const res = await request(app)
+    .post(`/api/admin/users/register`)
     .set('Cookie', adminCookie)
     .send({
       email: faker.internet.email(),
@@ -114,8 +113,8 @@ it('Returns a 200 if the login attempt is successful', async () => {
 it('Returns a cookie if login is successful', async () => {
   const adminCookie = await (global as any).getAdminAuthCookie();
 
-  const res = await request(adminBackendUrl)
-    .post(`/api/users/register`)
+  const res = await request(app)
+    .post(`/api/admin/users/register`)
     .set('Cookie', adminCookie)
     .send({
       email: faker.internet.email(),

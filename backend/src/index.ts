@@ -37,8 +37,8 @@ const startServer = async () => {
 
   env.NODE_ENV = !env.NODE_ENV ? 'dev' : env.NODE_ENV;
 
-  app.listen(CONFIG.port + 1, () => {
-    logger.info(`Listening on port *:${CONFIG.port + 1}`);
+  app.listen(CONFIG.port, () => {
+    logger.info(`Listening on port *:${CONFIG.port}`);
   });
 };
 

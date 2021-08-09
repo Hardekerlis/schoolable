@@ -5,11 +5,7 @@ import { CONFIG, UserTypes } from '@schoolable/common';
 import faker from 'faker';
 import { app } from '../../../app';
 
-const adminBackendUrl = `http://localhost:${CONFIG.port}`;
 const path = '/api/setup/stage/';
-
-// How many stages to test for?
-// Should they return 201 or 200?
 
 async function runStages(
   cookie: string | undefined,
@@ -50,17 +46,16 @@ it('Returns a 401 if user is not authenticated', async () => {
 });
 
 it("Returns a 400 if password and confirmPassword don't match", async () => {
-  const cookie = await (global as any).getAuthCookie();
+  const [cookie] = await global.getAuthCookie();
   const res = await runStages(cookie, 'password', 'notsamepassword');
 
   expect(res[0].statusCode).toEqual(400);
 });
 
 it('Returns a 200 from all stages if they where successful', async () => {
-  const cookie = await (global as any).getAuthCookie();
+  const [cookie] = await global.getAuthCookie();
   const res = await runStages(cookie, 'password', 'password');
   for (const i in res) {
-    console.log(i);
     expect(res[i].statusCode).toEqual(200);
   }
 });

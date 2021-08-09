@@ -17,8 +17,7 @@ import {
 
 // Load the config file into CONFIG variable
 const configPath =
-  __dirname.substring(0, __dirname.indexOf('/backend')) +
-  '/config/app-config.yml';
+  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
 
 ConfigHandler.loadConfig(configPath);
 
@@ -47,8 +46,6 @@ app.use(
   }),
 );
 
-import UserSettings from './models/userSettings';
-
 import loginRouter from './routes/account/login';
 import stagesRouter from './routes/setup/stages';
 // --- Routers ---
@@ -58,9 +55,13 @@ import stagesRouter from './routes/setup/stages';
 //   // app.use(setupRouter);
 // }
 
+// console.log(adminRouter);
+
 app.use(loginRouter);
 app.use(stagesRouter);
 
+import adminRouter from './routes/admin/adminRouter';
+app.use(adminRouter);
 // ---------------
 
 app.all('*', async () => {

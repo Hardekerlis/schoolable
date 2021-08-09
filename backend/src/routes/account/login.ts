@@ -80,6 +80,7 @@ loginRouter.post(
         logger.info('User is authenticated');
         res.status(200).json({
           msg: 'Login was successful',
+          firstTime: !user.setupComplete,
           err: false,
         });
       } catch (err) {

@@ -1,13 +1,13 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { ConfigHandler, CONFIG } from '@schoolable/common';
 
 import { connect } from '../database/connect';
 
+import { ConfigHandler } from '@schoolable/common';
+
 const configPath =
-  __dirname.substring(0, __dirname.indexOf('/backend')) +
-  '/config/app-config.yml';
+  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
 
 ConfigHandler.loadConfig(configPath);
 

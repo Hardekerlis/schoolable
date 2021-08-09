@@ -3,5 +3,5 @@
 import mongoose from 'mongoose';
 
 export = async function globalTeardown() {
-  await mongoose.disconnect();
+  await mongoose.connection.close();
 };

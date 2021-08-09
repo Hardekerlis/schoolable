@@ -1,7 +1,7 @@
 /** @format */
 
 import { Request, Response, NextFunction } from 'express';
-import { NotAuthorizedError } from '@schoolable/common';
+import { NotAuthorizedError, UserTypes } from '@schoolable/common';
 import jwt from 'jsonwebtoken';
 
 import { logger } from '../logger/logger';
@@ -9,6 +9,7 @@ import { logger } from '../logger/logger';
 export interface UserPayload {
   email: string;
   id: string;
+  userType: UserTypes;
 }
 
 declare global {
