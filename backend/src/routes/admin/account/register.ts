@@ -85,7 +85,7 @@ registerAdminRouter.post(
       verified: false,
     });
 
-    // It is only set to true for the first admin account
+    // Verified is only set to true for the first admin account
     // The other admins will recieve and email with a verification link
     // They then verify their account with FrejaEID
     if (!firstAdminCreated[0]) {

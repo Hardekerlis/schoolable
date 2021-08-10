@@ -2,21 +2,39 @@
 
 import mongoose from 'mongoose';
 import { PhaseDoc } from './phase';
-import { CourseMenuDoc } from './courseMenu';
+import { CourseMenuItemDoc } from './courseMenuItem';
 
 interface CoursePageAttributes {
   phases: PhaseDoc[];
-  menu: CourseMenuDoc;
+  menu: CourseMenuItemDoc[];
+  courseDescription: string;
 }
 
 interface CoursePageModel extends mongoose.Model<CoursePageDoc> {
   build(attributes: CoursePageAttributes): CoursePageDoc;
 }
 
-export interface CoursePageDoc extends mongoose.Document {}
+export interface CoursePageDoc extends mongoose.Document {
+  phases: PhaseDoc[];
+  menu: CourseMenuItemDoc[];
+  courseDescription: string;
+}
 
 const coursePageSchema = new mongoose.Schema(
-  {},
+  {
+    phases: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'phases',
+    },
+    menu: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'courseMenuItems',
+    },
+    corseDescription: {
+      type: String,
+      default: '',
+    },
+  },
   {
     toObject: {
       transform: (doc, ret) => {

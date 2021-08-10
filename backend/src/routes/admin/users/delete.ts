@@ -20,6 +20,7 @@ deleteRouter.delete(
     body('id')
       .exists()
       .custom((value) => {
+        // Check if the supplied id is a MongoDb ObjectId
         if (!mongoose.isValidObjectId(value)) {
           throw new BadRequestError('The id supplied is not a valid ObjectId');
         } else {
@@ -31,6 +32,7 @@ deleteRouter.delete(
   async (req: Request, res: Response) => {
     const { id } = req.body;
 
+    // Find user by id and delete the document
     const user = await User.findByIdAndDelete(id);
 
     logger.info(`Deleting account with id ${id}`);

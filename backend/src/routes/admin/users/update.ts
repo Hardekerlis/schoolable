@@ -33,6 +33,7 @@ updateRouter.put(
     body('id')
       .exists()
       .custom((value) => {
+        // Check if id is a valid MongoDb ObjectId
         if (!mongoose.isValidObjectId(value)) {
           throw new BadRequestError('The id supplied is not a valid ObjectId');
         } else {
@@ -45,10 +46,11 @@ updateRouter.put(
   async (req: Request, res: Response) => {
     const { id, email, userType, name } = req.body;
 
+    // Find user document by id and update it
     const user = await User.findByIdAndUpdate(
       id,
       { email, userType, name },
-      { new: true }, // To make it return the updated user;
+      { new: true }, // To make it return the updated user, otherwise it returns the old not updated document
     );
 
     if (!user) {

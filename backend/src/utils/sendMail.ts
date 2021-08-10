@@ -13,19 +13,20 @@ async function createTestAccount() {
 async function sendMail(email: string, subject: string, html: string) {
   try {
     const isDev = process.env.NODE_ENV === 'dev';
+    let testAccount;
     if (isDev) {
-      const testAccount = createTestAccount();
+      testAccount = createTestAccount();
     }
 
     const transporter = nodemailer.createTransport({
-      host: isDev ? 'smtp.ethereal.email' : CONFIG.smtpOptions.host,
-      port: isDev ? 587 : CONFIG.smtpOptions.port,
-      secure: isDev ? false : CONFIG.smtpOptions.secure,
+      host: testAccount ? 'smtp.ethereal.email' : CONFIG.smtpOptions.host,
+      port: testAccount ? 587 : CONFIG.smtpOptions.port,
+      secure: testAccount ? false : CONFIG.smtpOptions.secure,
       auth: {
         // @ts-ignore
-        user: isDev ? testAccount.user : CONFIG.smtpOptions.username,
+        user: testAccount ? testAccount.user : CONFIG.smtpOptions.username,
         // @ts-ignore
-        pass: isDev ? testAccount.pass : CONFIG.smtpOptions.password,
+        pass: testAccount ? testAccount.pass : CONFIG.smtpOptions.password,
       },
     });
 

@@ -8,24 +8,6 @@ import { connect } from './database/connect';
 const startServer = async () => {
   const { env } = process;
 
-  // TODO
-  // Add connection to mongo db
-
-  // if (!process.env.MONGO_URI) {
-  //   throw new Error('MONGO_URI must be defined');
-  // }
-  //
-  // try {
-  //   await mongoose.connect(process.env.MONGO_URI!, {
-  //     useNewUrlParser: true,
-  //     useUnifiedTopology: true,
-  //     useCreateIndex: true,
-  //   });
-  //   console.log('Connected to MongoDB');
-  // } catch (err) {
-  //   console.error(err);
-  // }
-
   if (CONFIG.dev) {
     logger.warn(
       'The application is in dev mode. If this is an production environment please change dev to false in the config',

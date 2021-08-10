@@ -51,19 +51,22 @@ adminLoginRouter.post(
     const { email, password } = req.body;
     logger.debug('User trying to login');
 
+    // Using admin model becuase admin login is seperated from regural user login
     const admin = await Admin.findOne({ email });
-
     if (!admin) {
       logger.debug('No user with the supplied email was found');
       res.status(204).send();
     } else {
+      // Check if password matches the password stored in database
       if (await Password.compare(admin.password, password)) {
         logger.debug('Password was correct');
+        // Create token for cookie
         const token = jwt.sign(
           { email, id: admin.id, userType: UserTypes.Admin },
           process.env.JWT_KEY as string,
         );
 
+        // Assign a cookie called jwt to user
         req.session = {
           jwt: token,
         };

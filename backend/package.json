@@ -13,7 +13,7 @@
     "test:ci": "jest --no-cache"
   },
   "dependencies": {
-    "@schoolable/common": "^0.7.11",
+    "@schoolable/common": "^0.7.15",
     "cookie-session": "^1.4.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",

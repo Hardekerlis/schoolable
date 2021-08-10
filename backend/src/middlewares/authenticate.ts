@@ -25,20 +25,23 @@ export const authenticate = (
   res: Response,
   next: NextFunction,
 ) => {
+  // Get cookie from session
   const token = req.session?.jwt;
 
   logger.info('Authenticating user');
-
+  // Check if token is defined
   if (!token) {
     throw new NotAuthorizedError('Please login before you do that');
   }
 
   try {
+    // Decode jwt key and verify it is valid
     const payload = jwt.verify(
       token as string,
       process.env.JWT_KEY as string,
     ) as UserPayload;
 
+    // Assign payload to req
     req.currentUser = payload;
   } catch (err) {
     console.log(err);

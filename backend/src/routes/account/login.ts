@@ -51,28 +51,33 @@ loginRouter.post(
   async (req: Request, res: Response) => {
     const { email, password, userType } = req.body;
 
+    // Try to find user trying to login
     logger.debug('Looking up user');
     const user = await User.findOne({ email, userType });
 
+    // No user found
     if (!user) {
       logger.debug('No user found');
       throw new BadRequestError('No user found');
     }
 
+    // Check if password supplied by user matches the password stored in the DB
     if (await Password.compare(user.password, password)) {
       if (!user.settings) logger.info('Password was correct');
       try {
+        // Create token
         logger.info('Creating token');
         const token = jwt.sign(
           {
             email: user.email,
             id: user.id,
-            userType: user.userType,
+            userType: user.userType, // Needed to see difference between account types
             name: user.name,
           },
           process.env.JWT_KEY as string,
         );
 
+        // Assign token to jwt cookie and attach the cookie to the users session
         req.session = {
           jwt: token,
         };
@@ -80,7 +85,7 @@ loginRouter.post(
         logger.info('User is authenticated');
         res.status(200).json({
           msg: 'Login was successful',
-          firstTime: !user.setupComplete,
+          firstTime: !user.setupComplete, // This is to tell the frontend if a setup prompt should be showed
           err: false,
         });
       } catch (err) {

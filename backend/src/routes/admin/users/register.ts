@@ -37,15 +37,19 @@ registerRouter.post(
   async (req: Request, res: Response) => {
     const { email, name, userType, classes } = req.body;
 
+    // Check if user witht the supplied email already exists
     const existingUser = await User.findOne({ email });
-
     if (existingUser) {
       throw new BadRequestError('Email in use');
     }
 
+    // Temp password is mailed to user email as plaintext.
+    // After first login the user is prompted to choose a password
     logger.debug('Creating a temporary password for new user');
     let tempPassword = uuidv4();
 
+    // Settings for users
+    // Subdocument of users
     const settings = UserSettings.build({
       notifications: [''],
       theme: 'dark',
@@ -55,7 +59,9 @@ registerRouter.post(
     try {
       await settings.save();
     } catch (err) {
-      console.log(err);
+      logger.error(
+        `Unexpected error. Please send the following error to the devs: ${err}`,
+      );
     }
 
     logger.debug('Building new user');
@@ -73,7 +79,7 @@ registerRouter.post(
     try {
       logger.debug('Saving new user');
       await user.save();
-      user.password = '';
+      user.password = ''; // Just a safe guard to stop password from being sent to frontend
     } catch (err) {
       logger.error(
         `Unexpected error. Please send the following error to the devs: ${err}`,

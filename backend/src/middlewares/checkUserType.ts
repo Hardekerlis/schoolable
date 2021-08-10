@@ -15,7 +15,7 @@ export const checkUserType = (allowedUserType: string[]) => {
       throw new NotAuthorizedError('Please login before you do that');
     }
 
-    let isAllowed = false;
+    let isAllowed = false; // is true if users usertype is in allowedUserType array
     for (const i of allowedUserType) {
       if (i === userType) {
         isAllowed = true;
