@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 
 import Layout from 'layouts/default/';
 
-import { FirstTimeSetup } from 'components'
+import { Grid, FirstTimeSetup } from 'components'
 
 //css imports
 
@@ -33,6 +33,8 @@ const Home = ({ doFirstTimeSetup }) => {
       <div className={styles.wrapper}>
 
         { doFirstTimeSetup && <FirstTimeSetup /> }
+
+        <Grid />
 
       </div>
 

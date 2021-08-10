@@ -16,11 +16,12 @@ $containerMargin: 10px
   bottom: -$containerHeight
   left: $containerMargin
   width: calc(100% - #{$containerMargin}*2)
-  background-color: $red
-  background-color: $green
-  background-color: $darkPurple
-  background-color: $purple
+  // background-color: $red
+  // background-color: $green
+  // background-color: $darkPurple
+  // background-color: $purple
 
+  text-align: left
 
 
   color: $white
@@ -34,10 +35,12 @@ $containerMargin: 10px
   justify-content: center
   align-items: center
 
-  @include transition(0.2s, ease-out)
+  @include transitionProp(0.2s, ease-out, bottom)
+
 
   p
     margin: 0px
+    width: 100%
 
 .open
   bottom: $containerMargin !important
