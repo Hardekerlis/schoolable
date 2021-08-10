@@ -1,0 +1,30 @@
+$gridPadding: 25px
+
+$gridColumnAmt: 6
+$gridColumnGap: 25px
+$gridColumnSingle: calc((100% / #{$gridColumnAmt}) - #{$gridColumnGap})
+
+$gridRowAmt: 5
+$gridRowGap: 25px
+$gridRowSingle: calc((100% / #{$gridRowAmt}) - #{$gridRowGap})
+
+
+.wrapper
+  width: 100vw
+  height: 100vh
+
+  padding: $gridPadding
+  padding-right: 0px
+  padding-bottom: 0px
+
+  display: grid
+  grid-template-columns: $gridColumnSingle $gridColumnSingle $gridColumnSingle $gridColumnSingle $gridColumnSingle $gridColumnSingle
+  grid-column-gap: $gridColumnGap
+
+  grid-template-rows: $gridRowSingle $gridRowSingle $gridRowSingle $gridRowSingle $gridRowSingle
+  grid-row-gap: $gridRowGap
+
+
+.module
+  grid-column: 1 / span 2
+  grid-row: 1 / span 1

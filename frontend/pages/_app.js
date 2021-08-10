@@ -27,7 +27,7 @@ function App({ Component, pageProps }) {
   return (
     <>
       <PromptRender />
-      <Component {...pageProps} doFirstTimeSetup={true} />
+      <Component {...pageProps} doFirstTimeSetup={false} />
     </>
   )
 

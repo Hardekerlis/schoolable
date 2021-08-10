@@ -29,7 +29,7 @@ const FirstTimeSetup = () => {
 
         }
 
-        console.log(opt);
+        // console.log(opt);
 
         return opt;
       }))
@@ -87,7 +87,7 @@ const FirstTimeSetup = () => {
     // if(newIndex >= options.length || newIndex < 0) return;
 
     if(!current.completed && current.required) {
-      Prompt.show("Please complete option.");
+      Prompt.error("Please complete option.");
     }
 
     optionRef.style.opacity = "0";

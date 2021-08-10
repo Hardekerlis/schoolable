@@ -23,13 +23,6 @@ const PromptRender = () => {
 
   promptRef = React.useRef();
 
-  const closeClick = () => {
-
-    //must be same as $containerHeight
-    promptRef.children[0].classList.remove(`${styles.open}`)
-
-  }
-
   return (
     <div ref={setPromptRef} className={styles.wrapper}>
       <div className={styles.container}>
@@ -44,26 +37,119 @@ const PromptRender = () => {
 
 }
 
+const waitFor = async(ms) => {
+
+  await new Promise((resolve, reject) => {
+
+    setTimeout(() => {
+
+      resolve();
+
+    }, ms * 1000)
+
+  })
+
+}
+
+const closeClick = () => {
+
+  promptRef.children[0].classList.remove(`${styles.open}`);
+
+}
+
 class Prompt_ {
 
   constructor() {
 
     this.elem = promptRef;
 
+    this.opened = false;
+
+    this.animating = false;
+
+    this.timeCounter = 0;
+
+  }
+
+  handleBoxClosing() {
+
+    this.timeCounter++;
+
+    setTimeout(() => {
+
+      this.timeCounter--;
+
+      if(this.timeCounter === 0) {
+        closeClick();
+      }
+
+    }, 8000)
+
+  }
+
+  async openBox(msg, type) {
+
+    if(this.animating) {
+      return;
+    }
+
+    this.animating = true;
+
+    if(this.opened) {
+
+      closeClick();
+
+      await waitFor(0.2);
+
+    }
+
+    this.box.classList.remove(`${styles.error}`);
+    this.box.classList.remove(`${styles.success}`);
+    this.box.classList.remove(`${styles.show}`);
+
+
+    this.box.classList.add(`${styles[type]}`);
+
+    this.box.children[1].textContent = msg;
+
+    this.opened = true;
+
+    this.animating = false;
+
+    this.box.classList.add(`${styles.open}`);
+
+    this.handleBoxClosing();
+
   }
 
   async show(msg) {
     await this.handleRef();
 
-    this.box.classList.add(`${styles.open}`);
+    this.openBox(msg, 'show');
 
   }
+
+  async error(msg) {
+    await this.handleRef();
+
+    this.openBox(msg, 'error');
+
+  }
+
+  async success(msg) {
+    await this.handleRef();
+
+    this.openBox(msg, 'success');
+
+  }
+
+
 
   async handleRef() {
 
     if(!promptRef) {
 
-      console.log("awaiting")
+      console.log("awaiting prompt ref")
 
       await new Promise((resolve, reject) => {
         promptRefCallbacks.push(() => {
