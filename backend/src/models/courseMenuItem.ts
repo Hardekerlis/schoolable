@@ -7,7 +7,7 @@ import { Action } from '@schoolable/common';
 interface CourseMenuItemAttributes {
   icon: string; // Url to image
   access: string[]; // What user(s) can see this MenuItem
-  action: Action[]; // What actions are possible for this MenuItem
+  actions: Action[]; // What actions are possible for this MenuItem
   dropdown: CourseMenuItemAttributes[];
 }
 
@@ -18,7 +18,7 @@ interface CourseMenuItemModel extends mongoose.Model<CourseMenuItemDoc> {
 export interface CourseMenuItemDoc extends mongoose.Document {
   icon: string; // Url to image
   access: string[]; // What user(s) can see this MenuItem
-  action: Action[]; // What actions are possible for this MenuItem
+  actions: Action[]; // What actions are possible for this MenuItem
   dropdown: CourseMenuItemAttributes[];
 }
 
@@ -29,10 +29,12 @@ const courseMenuItemSchema = new mongoose.Schema(
       required: true,
     },
     access: [{ type: String, default: [] }],
-    action: {
-      type: Object as unknown as Action,
-      required: true,
-    },
+    actions: [
+      {
+        type: Object as unknown as Action,
+        required: true,
+      },
+    ],
     dropdown: [
       {
         type: mongoose.Schema.Types.ObjectId,

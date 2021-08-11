@@ -60,7 +60,7 @@ const courseSchema = new mongoose.Schema(
     },
     unlockedOn: {
       type: Date,
-      required: true,
+      default: +new Date(),
     },
     hidden: {
       type: Boolean,
@@ -68,9 +68,9 @@ const courseSchema = new mongoose.Schema(
     },
     visibleOn: {
       type: Date,
-      required: true,
+      default: +new Date(),
     },
-    lockOn: Boolean,
+    lockOn: Date,
   },
   {
     toObject: {
