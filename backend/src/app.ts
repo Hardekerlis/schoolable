@@ -61,7 +61,7 @@ app.use(loginRouter);
 app.use(stagesRouter);
 
 import adminRouter from './routes/admin/adminRouter';
-app.use(adminRouter);
+app.use('/api/admin/', adminRouter);
 // ---------------
 
 app.all('*', async () => {
