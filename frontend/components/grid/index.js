@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+import Head from 'next/head'
+
+
 import styles from './grid.module.sass';
 
 import allModules from './modules';
@@ -25,9 +28,25 @@ const Grid = () => {
 
   let [modules, setModules] = useState();
 
+  let [grid, setGrid] = useState({});
+
   useEffect(() => {
 
-    setModules(arr.map((obj, index) => {
+    console.log("initialzing muuri")
+
+    if(!grid?._id) {
+      setGrid(new Muuri(".muuri_grid", {dragEnabled: true}));
+    }
+
+  }, []);
+
+  useEffect(() => {
+
+    console.log("building module array")
+
+
+
+    let modArray = arr.map((obj, index) => {
 
       let type = obj.type.charAt(0).toUpperCase() + obj.type.slice(1);
 
@@ -38,17 +57,47 @@ const Grid = () => {
           {elem}
         </div>
       )
-    }))
+    })
+
+    let count = (6 * 5) - modArray.length;
+
+    for(let i in count) {
+
+      let elem = (
+        <div>
+          <div>
+
+          </div>
+        </div>
+      )
+
+
+    }
+
+    setModules(modArray)
 
   }, [])
 
 
   return (
-    <div className={styles.wrapper}>
+    <>
 
-      {modules}
+      <Head>
 
-    </div>
+        <script src="/muuri.js"></script>
+
+      </Head>
+
+
+      <div className={`${styles.wrapper} muuri_grid`}>
+
+        {modules}
+
+      </div>
+
+
+    </>
+
   )
 
 }
