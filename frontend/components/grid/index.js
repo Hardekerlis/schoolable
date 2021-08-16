@@ -32,19 +32,7 @@ const Grid = () => {
 
   useEffect(() => {
 
-    console.log("initialzing muuri")
-
-    if(!grid?._id) {
-      setGrid(new Muuri(".muuri_grid", {dragEnabled: true}));
-    }
-
-  }, []);
-
-  useEffect(() => {
-
     console.log("building module array")
-
-
 
     let modArray = arr.map((obj, index) => {
 
@@ -59,24 +47,54 @@ const Grid = () => {
       )
     })
 
-    let count = (6 * 5) - modArray.length;
+    const modLen = modArray.length;
+    let count = (6 * 5) - modLen;
 
-    for(let i in count) {
+    count += 4;
+
+    // console.log(count)
+
+    for(let i = 0; i < count; i++) {
+
+      // console.log(i)
 
       let elem = (
-        <div>
-          <div>
+        <div className={styles.module} key={i + modLen}>
+          <div className={styles.viewer_module}>
 
           </div>
         </div>
       )
 
+      // elem = React.createElement(elem)
+
+      modArray.push(elem);
 
     }
 
     setModules(modArray)
 
   }, [])
+
+
+  useEffect(() => {
+
+    if(!grid?._id && modules) {
+
+      initializeMuuri();
+
+    }
+
+  }, [modules]);
+
+  const initializeMuuri = () => {
+
+    console.log("initialzing muuri")
+
+    setGrid(new Muuri(".muuri_grid", {dragEnabled: true}));
+
+
+  }
 
 
   return (

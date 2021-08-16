@@ -7,7 +7,6 @@ import '../styles/global.sass';
 import { PromptRender } from '/helpers/prompt/'
 
 
-
 function App({ Component, pageProps }) {
 
   const router = useRouter();

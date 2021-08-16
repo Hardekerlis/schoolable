@@ -1,0 +1,86 @@
+@import "styles/variables"
+
+.wrapper
+
+  position: relative
+
+  width: 100px
+  height: 100vh
+  background-color: $darkPurple2
+
+  display: flex
+  align-items: center
+  flex-direction: column
+
+  z-index: 999
+
+.option
+  width: 100%
+  height: 100px
+  background-color: rgba($purple, 0)
+  display: flex
+  justify-content: center
+  align-items: center
+  cursor: pointer
+  color: $white
+
+
+
+  position: relative
+
+  z-index: 999
+
+  @include transition(0.2s, ease-out)
+
+.option:hover
+  background-color: rgba($purple, 1)
+
+.select
+  width: auto
+  height: 50px
+  background-color: $purple
+  position: absolute
+  left: calc(100% + 20px)
+  padding-left: 10px
+  padding-right: 10px
+
+  border-radius: 5px
+
+  font-size: 1.2rem
+
+  display: flex
+  justify-content: center
+  align-items: center
+
+  opacity: 0
+
+  pointer-events: none
+
+  user-select: none
+
+  @include transition(0.2s, ease-out)
+
+
+  .arrow
+    position: absolute
+    width: 50px
+    height: 100%
+    left: -30px
+    color: $purple
+
+
+
+.option:hover .select
+  opacity: 1
+
+
+.icon
+
+
+
+
+
+
+
+
+//
