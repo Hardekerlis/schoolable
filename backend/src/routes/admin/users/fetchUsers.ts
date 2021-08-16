@@ -8,6 +8,9 @@ import User from '../../../models/user';
 
 import { logger } from '../../../logger/logger';
 
+import { authenticate } from '../../../middlewares/authenticate';
+import { checkUserType } from '../../../middlewares/checkUserType';
+
 const fetchUsersRouter = Router();
 
 // TODO
@@ -15,6 +18,8 @@ const fetchUsersRouter = Router();
 
 fetchUsersRouter.post(
   '/api/admin/users',
+  authenticate,
+  checkUserType(['admin']),
   async (req: Request, res: Response) => {
     let { query, sortAfter, skipNumber } = req.body;
 

@@ -17,7 +17,7 @@ winstonTestSetup();
 declare global {
   namespace NodeJS {
     interface Global {
-      getAuthCookie(): Promise<string[]>;
+      getAuthCookie(type?: UserTypes): Promise<string[]>;
       getAdminAuthCookie(): Promise<string[]>;
     }
   }
@@ -72,23 +72,32 @@ global.getAdminAuthCookie = async () => {
   return cookie;
 };
 
-global.getAuthCookie = async () => {
-  const [adminCookie] = await global.getAdminAuthCookie();
+let adminCookie: string;
+
+global.getAuthCookie = async (type?: UserTypes) => {
+  if (!type) type = UserTypes.Teacher;
+  if (!adminCookie) {
+    [adminCookie] = await global.getAdminAuthCookie();
+  }
+
+  const random = Math.random();
 
   const newUser = await request(app)
     .post('/api/admin/users/register')
     .set('Cookie', adminCookie)
     .send({
-      email: 'test@test.com',
+      email: random + 'test@test.com',
       name: 'John Doe',
-      userType: UserTypes.Teacher,
+      userType: type,
     });
 
-  const res = await request(app).post('/api/login').send({
-    email: 'test@test.com',
-    password: newUser.body.tempPassword,
-    userType: UserTypes.Teacher,
-  });
+  const res = await request(app)
+    .post('/api/login')
+    .send({
+      email: random + 'test@test.com',
+      password: newUser.body.tempPassword,
+      userType: type,
+    });
 
   const cookie = res.get('Set-Cookie');
 

@@ -11,11 +11,11 @@ import adminRegisterRouter from './account/register';
 adminRouter.use(adminLoginRouter);
 adminRouter.use(adminRegisterRouter);
 
-import { authenticate } from '../../middlewares/authenticate';
-import { checkUserType } from '../../middlewares/checkUserType';
+// import { authenticate } from '../../middlewares/authenticate';
+// import { checkUserType } from '../../middlewares/checkUserType';
 // Protected routes below this line
-adminRouter.use(authenticate);
-adminRouter.use(checkUserType(['admin']));
+// adminRouter.use(authenticate);
+// adminRouter.use(checkUserType(['admin']));
 
 import adminUsersRouter from './users/adminUsersRouter';
 adminRouter.use(adminUsersRouter);

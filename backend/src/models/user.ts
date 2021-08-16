@@ -107,7 +107,8 @@ const userSchema = new mongoose.Schema(
     },
     courses: [
       {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'courses',
         default: [],
       },
     ],

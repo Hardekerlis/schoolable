@@ -6,14 +6,14 @@ import { CoursePageDoc } from './coursePage';
 
 interface CourseAttributes {
   name: string; // Name of the course
-  students: UserDoc[]; // user ids - subdocuments?
-  owner: string; // Teacher whom owns the course
+  owner: UserDoc; // Teacher whom owns the course
   coursePage: CoursePageDoc; // The course page. Fetched when course is entered
-  locked: boolean; // Is the course locked but visible to students
-  unlockOn: Date; // What date should the course be unlocked
-  hidden: boolean; // Is the course visible to students
-  visibleOn: Date; // What date shoukd the course be visible
-  lockOn: Date; // When should the course be locked
+  students?: UserDoc[]; // user ids - subdocuments?
+  locked?: boolean; // Is the course locked but visible to students
+  unlockOn?: Date; // What date should the course be unlocked
+  hidden?: boolean; // Is the course visible to students
+  visibleOn?: Date; // What date shoukd the course be visible
+  lockOn?: Date; // When should the course be locked
 }
 
 interface CourseModel extends mongoose.Model<CourseDoc> {
@@ -22,14 +22,14 @@ interface CourseModel extends mongoose.Model<CourseDoc> {
 
 interface CourseDoc extends mongoose.Document {
   name: string; // Name of the course
-  students: UserDoc[]; // user ids - subdocuments?
-  owner: string; // Teacher whom owns the course
+  owner: UserDoc; // Teacher whom owns the course
   coursePage: CoursePageDoc; // The course page. Fetched when course is entered
-  locked: boolean; // Is the course locked but visible to students
-  unlockOn: Date; // What date should the course be unlocked
-  hidden: boolean; // Is the course visible to students
-  visibleOn: Date; // What date shoukd the course be visible
-  lockOn: Date; // When should the course be locked
+  students?: UserDoc[]; // user ids - subdocuments?
+  locked?: boolean; // Is the course locked but visible to students
+  unlockOn?: Date; // What date should the course be unlocked
+  hidden?: boolean; // Is the course visible to students
+  visibleOn?: Date; // What date shoukd the course be visible
+  lockOn?: Date; // When should the course be locked
 }
 
 const courseSchema = new mongoose.Schema(
@@ -48,12 +48,10 @@ const courseSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
     },
-    coursePage: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'coursePages',
-      },
-    ],
+    coursePage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'coursePages',
+    },
     locked: {
       type: Boolean,
       default: true,

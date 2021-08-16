@@ -1,7 +1,6 @@
 /** @format */
 
 import request from 'supertest';
-import { CONFIG } from '@schoolable/common';
 
 import { app } from '../../../../app';
 import { UserTypes } from '../../../../utils/userTypes.enum';
@@ -22,37 +21,13 @@ it('Returns a 400 if user id and email is undefined', async () => {
     .expect(400);
 });
 
-it('Returns a 400 if users email is undefined', async () => {
-  const [cookie] = await global.getAdminAuthCookie();
-
-  const res = await request(app)
-    .post('/api/admin/users/register')
-    .set('Cookie', cookie)
-    .send({
-      email: 'test@test.com',
-      userType: UserTypes.Teacher,
-      name: 'John Doe',
-    })
-    .expect(201);
-
-  return await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      id: res.body.user.id,
-    })
-    .expect(400);
-});
-
 it('Returns a 400 if user id is undefined', async () => {
   const [cookie] = await global.getAdminAuthCookie();
 
   return await request(app)
     .delete(path)
     .set('Cookie', cookie)
-    .send({
-      email: 'test@test.com',
-    })
+    .send({})
     .expect(400);
 });
 
@@ -63,7 +38,6 @@ it('Returns a 400 if user id is not an ObjectId', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      email: 'test@test.com',
       id: 'thisisid',
     })
     .expect(400);
@@ -76,7 +50,6 @@ it('Returns a 400 if no user was found to delete', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      email: 'test@test.com',
       id: '60ed5f8a9e30d102ee95a84b',
     })
     .expect(400);
@@ -95,13 +68,12 @@ it('Returns a 204 if user was successfully deleted', async () => {
     })
     .expect(201);
 
-  const { email, id } = res.body.user;
+  const { id } = res.body.user;
 
   return await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      email,
       id,
     })
     .expect(200);

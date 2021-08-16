@@ -1,13 +1,20 @@
 /** @format */
 
 import mongoose from 'mongoose';
+import { Action } from '@schoolable/common';
 import { PhaseDoc } from './phase';
-import { CourseMenuItemDoc } from './courseMenuItem';
+
+export interface CourseMenuItem {
+  icon: string; // Url to image
+  access: string[]; // What user(s) can see this MenuItem
+  actions: Action[]; // What actions are possible for this MenuItem
+  dropdown: CourseMenuItem[];
+}
 
 interface CoursePageAttributes {
-  phases: PhaseDoc[];
-  menu: CourseMenuItemDoc[];
-  courseDescription: string;
+  phases?: PhaseDoc[];
+  menu?: CourseMenuItem[];
+  description?: string;
 }
 
 interface CoursePageModel extends mongoose.Model<CoursePageDoc> {
@@ -15,9 +22,9 @@ interface CoursePageModel extends mongoose.Model<CoursePageDoc> {
 }
 
 export interface CoursePageDoc extends mongoose.Document {
-  phases: PhaseDoc[];
-  menu: CourseMenuItemDoc[];
-  courseDescription: string;
+  phases?: PhaseDoc[];
+  menu?: CourseMenuItem[];
+  description?: string;
 }
 
 const coursePageSchema = new mongoose.Schema(
@@ -30,7 +37,7 @@ const coursePageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'courseMenuItems',
     },
-    corseDescription: {
+    description: {
       type: String,
       default: '',
     },

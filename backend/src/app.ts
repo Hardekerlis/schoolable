@@ -48,6 +48,7 @@ app.use(
 
 import loginRouter from './routes/account/login';
 import stagesRouter from './routes/setup/stages';
+import courseRouter from './routes/courses/courseRouter';
 // --- Routers ---
 // if (CONFIG.setupComplete) {
 //   // app.use(liveRouter);
@@ -59,9 +60,10 @@ import stagesRouter from './routes/setup/stages';
 
 app.use(loginRouter);
 app.use(stagesRouter);
+app.use(courseRouter);
 
 import adminRouter from './routes/admin/adminRouter';
-app.use('/api/admin/', adminRouter);
+app.use(adminRouter);
 // ---------------
 
 app.all('*', async () => {

@@ -12,6 +12,9 @@ import { UserTypes } from '../../../utils/userTypes.enum';
 import { logger } from '../../../logger/logger';
 import sendMail from '../../../utils/sendMail';
 
+import { authenticate } from '../../../middlewares/authenticate';
+import { checkUserType } from '../../../middlewares/checkUserType';
+
 const registerRouter = Router();
 
 // TODO
@@ -19,6 +22,8 @@ const registerRouter = Router();
 
 registerRouter.post(
   '/api/admin/users/register',
+  authenticate,
+  checkUserType(['admin']),
   [
     body('email').exists().isEmail().withMessage('Please supply a valid email'),
     body('userType').custom(async (value) => {

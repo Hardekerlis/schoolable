@@ -4,14 +4,7 @@ import mongoose from 'mongoose';
 
 import { Action } from '@schoolable/common';
 
-interface CourseMenuItemAttributes {
-  icon: string; // Url to image
-  access: string[]; // What user(s) can see this MenuItem
-  actions: Action[]; // What actions are possible for this MenuItem
-  dropdown: CourseMenuItemAttributes[];
-}
-
-interface CourseMenuItemModel extends mongoose.Model<CourseMenuItemDoc> {
+interface CourseMenuItemAttributes extends mongoose.Model<CourseMenuItemDoc> {
   build(attributes: CourseMenuItemAttributes): CourseMenuItemDoc;
 }
 
@@ -66,9 +59,9 @@ courseMenuItemSchema.statics.build = (attributes: CourseMenuItemAttributes) => {
   return new CourseMenuItem(attributes);
 };
 
-const CourseMenuItem = mongoose.model<CourseMenuItemDoc, CourseMenuItemModel>(
-  'courseMenuItems',
-  courseMenuItemSchema,
-);
+const CourseMenuItem = mongoose.model<
+  CourseMenuItemDoc,
+  CourseMenuItemAttributes
+>('courseMenuItems', courseMenuItemSchema);
 
 export default CourseMenuItem;

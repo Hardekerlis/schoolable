@@ -11,6 +11,9 @@ import { UserTypes } from '../../../utils/userTypes.enum';
 import { logger } from '../../../logger/logger';
 import sendMail from '../../../utils/sendMail';
 
+import { authenticate } from '../../../middlewares/authenticate';
+import { checkUserType } from '../../../middlewares/checkUserType';
+
 const updateRouter = Router();
 
 // TODO
@@ -18,6 +21,8 @@ const updateRouter = Router();
 
 updateRouter.put(
   '/api/admin/users',
+  authenticate,
+  checkUserType(['admin']),
   [
     body('email').exists().isEmail().withMessage('Please supply a valid email'),
     body('userType').custom((value) => {

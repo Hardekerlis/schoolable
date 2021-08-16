@@ -6,8 +6,10 @@ import { validateRequest, BadRequestError } from '@schoolable/common';
 import mongoose from 'mongoose';
 
 import User from '../../../models/user';
-
 import { logger } from '../../../logger/logger';
+
+import { authenticate } from '../../../middlewares/authenticate';
+import { checkUserType } from '../../../middlewares/checkUserType';
 
 const deleteRouter = Router();
 
@@ -16,6 +18,8 @@ const deleteRouter = Router();
 
 deleteRouter.delete(
   '/api/admin/users',
+  authenticate,
+  checkUserType(['admin']),
   [
     body('id')
       .exists()
