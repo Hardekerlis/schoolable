@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import express from 'express';
 import cors from 'cors';
 import 'express-async-errors';
-import { json } from 'body-parser';
+import { json, urlencoded } from 'body-parser';
 import cookieSession from 'cookie-session';
 
 import {
@@ -34,6 +34,8 @@ const app = express();
 app.use(cors());
 
 app.set('trust proxy', true);
+
+app.use(urlencoded({ extended: true }));
 
 app.use(
   json({
