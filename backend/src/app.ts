@@ -25,6 +25,7 @@ ConfigHandler.loadConfig(configPath);
 try {
   Secrets.generateKeySecret('JWT_KEY');
   Secrets.loadSecret('JWT_KEY');
+  console.log(process.env.JWT_KEY);
 } catch (err) {
   Secrets.generateKeySecret('JWT_KEY');
   Secrets.loadSecret('JWT_KEY');
@@ -48,7 +49,7 @@ app.use(
 app.use(
   cookieSession({
     signed: CONFIG.cookies.signed,
-    secure: process.env.NODE_ENV !== 'test',
+    secure: CONFIG.cookies.secure,
   }),
 );
 
