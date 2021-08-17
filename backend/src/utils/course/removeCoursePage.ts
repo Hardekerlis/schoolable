@@ -1,4 +1,5 @@
 /** @format */
+
 import { CourseDoc } from '../../models/course';
 import CoursePage from '../../models/coursePage';
 
@@ -9,7 +10,10 @@ const removeCoursePage = async (course: CourseDoc) => {
   const coursePage = await CoursePage.findById(course.coursePage);
 
   if (!coursePage) {
-    throw new Error('Ran into an unexpecter error');
+    return {
+      error: true,
+      msg: "Couldn't find a coursePage connected to the course",
+    };
   }
 
   await removePhases(coursePage);
