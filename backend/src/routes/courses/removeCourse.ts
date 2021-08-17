@@ -1,6 +1,8 @@
 /** @format */
 
 import { Router, Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { body } from 'express-validator';
 const removeCourseRouter = Router();
 import {
   BadRequestError,
@@ -27,32 +29,35 @@ removeCourseRouter.delete(
   '/api/course',
   authenticate,
   checkUserType([UserTypes.Teacher, UserTypes.Admin]),
+  [
+    body('id')
+      .exists()
+      .custom((value) => {
+        // Check if id is a valid MongoDb ObjectId
+        if (!mongoose.isValidObjectId(value)) {
+          throw new BadRequestError('The id supplied is not a valid ObjectId');
+        } else {
+          return value;
+        }
+      }),
+  ],
   async (req: Request, res: Response) => {
-    // const { currentUser } = req;
-    //
-    // if (!currentUser) {
-    //   throw new NotAuthorizedError('Please login before you do that');
-    // }
-    //
-    // const owner = await User.findById(currentUser.id);
-    //
-    // if (!owner) {
-    //   throw new BadRequestError('No user with that user id exists');
-    // }
-
     const { id } = req.body;
     const currentUser = req.currentUser;
 
     if (!currentUser) {
+      // If user isn't logged in
       throw new BadRequestError('Please login before you do that');
     }
 
     const owner = await User.findById(currentUser.id);
 
     if (!owner) {
+      // Check if user exists
       throw new BadRequestError('Please login before you do that');
     }
 
+    // If user doesn't own any courses
     if (owner.courses.length === 0) {
       throw new BadRequestError("You don't have any courses");
     }
@@ -68,6 +73,8 @@ removeCourseRouter.delete(
       throw new NotAuthorizedError("You don't own this course");
     }
 
+    // Call 4th tier in removal call chain
+    // Removes all subdocs of course
     const removalRes = await removeCourse(courseToRemove);
 
     if (removalRes.error === true) {

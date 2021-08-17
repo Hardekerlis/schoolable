@@ -18,12 +18,11 @@ export class Secrets {
     const secret = randomBytes(32).toString('base64');
 
     name = name.toUpperCase();
-
     try {
       await mkdirp(getDirname(`${this.path}/${name}.env`));
       fs.writeFileSync(`${this.path}/${name}.env`, `${name}=${secret}`);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

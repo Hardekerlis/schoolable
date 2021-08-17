@@ -1,6 +1,6 @@
 {
   "name": "@schoolable/common",
-  "version": "0.7.15",
+  "version": "0.7.19",
   "description": "Helper library for the Schoolable platform",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

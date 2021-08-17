@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import express from 'express';
 import cors from 'cors';
 import 'express-async-errors';
-import { json, urlencoded } from 'body-parser';
+import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
 import {
@@ -23,6 +23,7 @@ const configPath =
 ConfigHandler.loadConfig(configPath);
 
 try {
+  Secrets.generateKeySecret('JWT_KEY');
   Secrets.loadSecret('JWT_KEY');
 } catch (err) {
   Secrets.generateKeySecret('JWT_KEY');
@@ -35,7 +36,7 @@ app.use(cors());
 
 app.set('trust proxy', true);
 
-app.use(urlencoded({ extended: true }));
+// app.use(urlencoded({ extended: true }));
 
 app.use(
   json({

@@ -13,4 +13,7 @@ courseRouter.use(fetchCourseRouter);
 import removeCourseRouter from './removeCourse';
 courseRouter.use(removeCourseRouter);
 
+import updateCourseRouter from './updateCourse';
+courseRouter.use(updateCourseRouter);
+
 export default courseRouter;
