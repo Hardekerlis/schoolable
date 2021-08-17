@@ -82,7 +82,7 @@ removeCourseRouter.delete(
     }
 
     res.status(200).json({
-      error: false,
+      errors: false,
       msg: 'Succesfully removed course and all of its children',
       upForDeletion: removalRes.upForDeletion,
     });

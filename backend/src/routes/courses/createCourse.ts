@@ -63,7 +63,7 @@ createCourseRouter.post(
       await owner.save();
 
       res.status(201).json({
-        error: false,
+        errors: false,
         msg: 'created a new course',
         course, // Return the course to the user so it can be "loaded" on frontend
       });

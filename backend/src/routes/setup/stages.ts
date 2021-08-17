@@ -59,14 +59,14 @@ stagesRouter.post(
     try {
       await user.save();
       res.status(200).json({
-        error: false,
+        errors: false,
         msg: 'Succesfully updated password',
         continue: true,
       });
     } catch (err) {
       logger.error(`Unexpected error. Error message: ${err}`);
       res.status(400).json({
-        error: true,
+        errors: true,
         msg: err,
         continue: false,
       });
@@ -112,14 +112,14 @@ stagesRouter.post(
     try {
       await user.settings.save();
       res.status(200).json({
-        error: false,
+        errors: false,
         msg: 'Succesfully selected theme',
         continue: true,
       });
     } catch (err) {
       logger.error(`Unexpected error. Error message: ${err}`);
       res.status(400).json({
-        error: true,
+        errors: true,
         msg: err,
         continue: false,
       });
@@ -169,14 +169,14 @@ stagesRouter.post(
       await user.save();
       logger.info('Saving user ');
       res.status(200).json({
-        error: false,
+        errors: false,
         msg: 'Succesfully selected language',
         finished: true, // To indicate to frontend that setup steps are completed
       });
     } catch (err) {
       logger.error(`Unexpected error. Error message: ${err}`);
       res.status(400).json({
-        error: true,
+        errors: true,
         msg: err,
         continue: false,
       });

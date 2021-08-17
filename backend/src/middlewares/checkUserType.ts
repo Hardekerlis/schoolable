@@ -27,7 +27,7 @@ export const checkUserType = (allowedUserType: string[]) => {
       next();
     } else {
       res.status(401).json({
-        error: true,
+        errors: true,
         msg: "You don't have access to that",
       });
     }

@@ -39,7 +39,7 @@ fetchCourseRouter.get(
     if (user.courses.length === 0) {
       logger.debug('No courses found for user');
       res.status(404).json({
-        error: false,
+        errors: false,
         msg: 'No courses found',
         courses: [],
       });
@@ -47,7 +47,7 @@ fetchCourseRouter.get(
 
     logger.info('Returning courses to user');
     res.status(200).json({
-      error: false,
+      errors: false,
       msg: 'Found courses',
       courses: user.courses,
     });

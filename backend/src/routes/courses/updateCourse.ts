@@ -69,12 +69,13 @@ removeCourseRouter.patch(
       new: true,
     });
 
+    // Check if course was found and updated
     if (!updatedCourse) {
       throw new BadRequestError('No course with that id found');
     }
 
     res.status(200).json({
-      error: false,
+      errors: false,
       msg: 'Successfully updated course',
       course: updatedCourse,
     });
