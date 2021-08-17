@@ -33,7 +33,14 @@ try {
 
 const app = express();
 
-app.use(cors());
+// const whitelist = ["http://localhost:3500"]
+
+app.use(
+  cors({
+    credentials: true,
+    origin: true,
+  }),
+);
 
 app.set('trust proxy', true);
 
