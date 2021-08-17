@@ -59,20 +59,7 @@ it("Returns a 400 if id isn't an ObjectId", async () => {
       id: 'notvalidid',
       name: 'Science',
     })
-    .expect(200);
-});
-
-it("Returns a 404 if a course to edit isn't found", async () => {
-  const [cookie] = await global.getAuthCookie();
-
-  await request(app)
-    .patch(path)
-    .set('Cookie', cookie)
-    .send({
-      id: mongoose.Types.ObjectId(),
-      name: 'Science',
-    })
-    .expect(404);
+    .expect(400);
 });
 
 it('Returns a 200 on succesful update', async () => {

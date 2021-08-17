@@ -8,6 +8,7 @@ const removeCourseRouter = Router();
 import {
   BadRequestError,
   NotAuthorizedError,
+  NotFoundError,
   UserTypes,
   validateRequest,
 } from '@schoolable/common';
@@ -40,27 +41,42 @@ removeCourseRouter.patch(
   async (req: Request, res: Response) => {
     const currentUser = req.currentUser;
 
+    // Check if token is valid
     if (!currentUser) {
       throw new NotAuthorizedError('Please login before you do that');
     }
 
     const owner = await User.findById(currentUser.id);
 
-    console.log(owner);
+    if (!owner) {
+      // Just in case token check above fails
+      throw new BadRequestError('No user with that id found');
+    }
 
     const data = req.body;
-    const id = data.id;
+    const courseId = data.id;
     delete data.id;
 
-    // const updatedCourse = await Course.findByIdAndUpdate(id, data, {
-    //   new: true,
-    // });
-    //
-    // if (!updatedCourse) {
-    //   throw new BadRequestError('No course with that id found');
-    // }
+    // Check if user owns the course it is trying to edit
+    if (!owner.courses.includes(courseId.toString())) {
+      throw new NotAuthorizedError(
+        "You don't own the course you are trying to edit",
+      );
+    }
 
-    res.send();
+    const updatedCourse = await Course.findByIdAndUpdate(courseId, data, {
+      new: true,
+    });
+
+    if (!updatedCourse) {
+      throw new BadRequestError('No course with that id found');
+    }
+
+    res.status(200).json({
+      error: false,
+      msg: 'Successfully updated course',
+      course: updatedCourse,
+    });
   },
 );
 

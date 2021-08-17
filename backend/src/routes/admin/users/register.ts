@@ -50,8 +50,12 @@ registerRouter.post(
 
     // Temp password is mailed to user email as plaintext.
     // After first login the user is prompted to choose a password
-    logger.debug('Creating a temporary password for new user');
     let tempPassword = uuidv4();
+    logger.debug(
+      `Creating a temporary password for new user${
+        CONFIG.dev ? tempPassword : ''
+      }`,
+    );
 
     // Settings for users
     // Subdocument of users
