@@ -1,7 +1,6 @@
 /** @format */
 
 import { BadRequestError } from '@schoolable/common';
-import moment from 'moment';
 
 import { CoursePageDoc } from '../../models/coursePage';
 import Phase from '../../models/phase';

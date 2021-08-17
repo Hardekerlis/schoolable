@@ -28,6 +28,7 @@ registerAdminRouter.post(
   [
     body('email')
       .custom(async (value, { req }) => {
+        console.log(req.body);
         // Check if supplied email is already taken
         const existingUser = await Admin.findOne({ email: req.body.email });
 
