@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 //custom imports
 
-import Post from 'helpers/post.js'
+import Request from 'helpers/request.js'
 
 import Layout from 'layouts/default/';
 
@@ -19,7 +19,7 @@ import styles from './courses.module.sass';
 
 export const getServerSideProps = async(ctx) => {
 
-  // let request = new Post('/api/course', credentials).json();
+  // let request = new Request('/api/course', credentials).post().json();
   // let res = await request.send();
 
   return {

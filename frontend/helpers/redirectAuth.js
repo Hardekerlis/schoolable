@@ -1,15 +1,23 @@
 import cookies from 'next-cookies';
 
-import Post from 'helpers/post.js';
+import Request from 'helpers/request.js';
 
 export default async function redirectAuth(ctx) {
 
-  const { token } = cookies(ctx);
+  const cookies_ = cookies(ctx);
 
-  let request = new Post('/api/check', {token}).json();
+  console.log("redirectAuth()")
+  console.log(process.env.JWT_KEY)
+
+
+  let request = new Request('/api/check').get();
   let response = await request.send();
 
-  if(!response.success) {
+  console.log(response)
+  console.log(request)
+  console.log("token", cookies_)
+
+  if(response.status !== 200) {
     return {
       redirect: {
         destination: '/login',

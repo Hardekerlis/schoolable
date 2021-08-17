@@ -12,7 +12,6 @@ utilsRouter.get(
   '/api/check',
   authenticate,
   async (req: Request, res: Response) => {
-    console.log(req.currentUser);
     if (!req.currentUser) {
       req.session = { jwt: null };
       throw new NotAuthorizedError('Not logged in');

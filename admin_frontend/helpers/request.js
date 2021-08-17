@@ -25,7 +25,11 @@ class Post {
     const res = await fetch(this.url, {
       method: 'POST',
       body: this.body,
-      'Content-Type': this.contentType,
+      headers: {
+        'Content-type': this.contentType,
+      },
+      credentials: "include"
+
     })
 
     response = res;

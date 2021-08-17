@@ -24,7 +24,7 @@ export default function handler(req, res) {
 
   if(!reqBody.token || reqBody.token !== getToken()) {
     response.success = false;
-    response.success = true;
+    // response.success = true;
   }
 
   res.status(200).json(response)

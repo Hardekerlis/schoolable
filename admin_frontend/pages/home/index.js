@@ -9,10 +9,10 @@ import styles from './home.module.sass'
 const Home = () => {
 
   let [adminAccount, setAdminAccount] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirm_password: ''
+    name: 'Ole Sund',
+    email: 'elo12881288@gmail.com',
+    password: 'hejhej',
+    confirmPassword: 'hejhej'
   });
 
 
@@ -23,7 +23,15 @@ const Home = () => {
     let request = new Post('/api/admin/register', adminAccount).json();
     let res = await request.send();
 
-    console.log(res);
+    if(res.errors) {
+      console.log(res.errors)
+      alert("error occurred.")
+      return;
+    }
+
+    console.log(res)
+
+    alert(res.msg);
 
   }
 
@@ -31,6 +39,73 @@ const Home = () => {
 
     setAdminAccount({
       ...adminAccount,
+      [prop]: evt.target.value
+    })
+
+  }
+
+  let [adminCredentials, setAdminCredentials] = useState({
+    email: 'elo12881288@gmail.com',
+    password: 'hejhej'
+  });
+
+
+  const adminCredentialsLogin = async (evt) => {
+
+    evt.preventDefault();
+
+    let request = new Post('/api/admin/login', adminCredentials).json();
+    let res = await request.send();
+
+    if(res.errors) {
+      console.log(res.errors)
+      alert("error occurred.")
+      return;
+    }
+
+    alert(res.msg);
+
+  }
+
+  const adminCredentialsChange = (evt, prop) => {
+
+    setAdminCredentials({
+      ...adminCredentials,
+      [prop]: evt.target.value
+    })
+
+  }
+
+
+
+  let [newTeacher, setNewTeacher] = useState({
+    name: 'Mr Teacher',
+    email: 'teacherEmail@myTeacherEmail.teach',
+    userType: 'teacher'
+  });
+
+
+  const teacherCreate = async (evt) => {
+
+    evt.preventDefault();
+
+    let request = new Post('/api/admin/users/register', newTeacher).json();
+    let res = await request.send();
+
+    if(res.errors) {
+      console.log(res.errors)
+      alert("error occurred.")
+      return;
+    }
+
+    alert(res.msg);
+
+  }
+
+  const newTeacherChange = (evt, prop) => {
+
+    setNewTeacher({
+      ...newTeacher,
       [prop]: evt.target.value
     })
 
@@ -55,12 +130,30 @@ const Home = () => {
 
 
       <form onSubmit={adminCreate}>
-        <input onChange={(event) => adminChange(event, "name")} placeholder="Name" type="name" />
-        <input onChange={(event) => adminChange(event, "email")} placeholder="Email" type="email" />
-        <input onChange={(event) => adminChange(event, "password")} placeholder="Password" type="password" />
-        <input onChange={(event) => adminChange(event, "confirm_password")} placeholder="Confirm password" type="password" />
+        <p>Create admin account</p>
+        <input value={adminAccount.name} onChange={(event) => adminChange(event, "name")} placeholder="Name" type="name" />
+        <input value={adminAccount.email} onChange={(event) => adminChange(event, "email")} placeholder="Email" type="email" />
+        <input value={adminAccount.password} onChange={(event) => adminChange(event, "password")} placeholder="Password" type="password" />
+        <input value={adminAccount.confirmPassword} onChange={(event) => adminChange(event, "confirmPassword")} placeholder="Confirm password" type="password" />
         <button type="submit">Submit</button>
       </form>
+
+      <form onSubmit={adminCredentialsLogin}>
+        <p>Login to admin account</p>
+        <input value={adminCredentials.email} onChange={(event) => adminCredentialsChange(event, "email")} placeholder="Email" type="email" />
+        <input value={adminCredentials.password} onChange={(event) => adminCredentialsChange(event, "password")} placeholder="Password" type="password" />
+        <button type="submit">Submit</button>
+      </form>
+
+
+      <form onSubmit={teacherCreate}>
+        <p>Create new teacher account</p>
+        <input value={newTeacher.name} onChange={(event) => newTeacherChange(event, "name")} placeholder="Name" type="name" />
+        <input value={newTeacher.email} onChange={(event) => newTeacherChange(event, "email")} placeholder="Email" type="email" />
+        <button type="submit">Submit</button>
+      </form>
+
+
     </div>
   )
 }

@@ -1,11 +1,11 @@
-import Post from 'helpers/post.js'
+import Request from 'helpers/request.js'
 
 // const password = {
 //   name: "Choose a secure password",
 //   method: async(evt, current) => {
 //     console.log(evt.target.children[0].value)
 //
-//     let request = new Post('/api/auth', {}).json();
+//     let request = new Request('/api/auth', {}).post().json();
 //     let res = await request.send();
 //
 //     console.log("res", res);

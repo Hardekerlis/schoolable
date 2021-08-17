@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useRouter } from 'next/router';
 
 import Layout from 'layouts/default/';
@@ -5,7 +7,7 @@ import Layout from 'layouts/default/';
 import styles from './login.module.sass';
 
 
-import Post from 'helpers/post.js'
+import Request from 'helpers/request.js'
 
 
 import redirectAuth from 'helpers/redirectAuth.js';
@@ -33,19 +35,19 @@ const Login = () => {
 
   const router = useRouter();
 
+  let [credentials, setCredentials] = useState({
+    email: 'teacherEmail@myTeacherEmail.teach',
+    password: '979fc8d0-46f0-4278-b84c-22c161928085',
+    userType: 'teacher'
+  })
+
   const submit = async(evt) => {
     evt.preventDefault();
 
-    const credentials = {
-      username: evt.target.children[0].value,
-      password: evt.target.children[1].value,
-      type: evt.target.children[2].value
-    }
-
-    let request = new Post('/api/auth', credentials).json();
+    let request = new Request('/api/login', credentials).post().json();
     let res = await request.send();
 
-    if(res.error) return showError(res.message);
+    if(res.errors) return showError(res.errors);
 
     router.push('/');
 
@@ -57,19 +59,28 @@ const Login = () => {
 
   }
 
+  const credentialsChange = (evt, prop) => {
+
+    setCredentials({
+      ...credentials,
+      [prop]: evt.target.value
+    })
+
+  }
+
   return (
 
     <Layout mainClass={styles.positioning}>
 
       <form onSubmit={submit} className={styles.form}>
 
-        <input type="username" placeholder="username" />
-        <input type="password" placeholder="password" />
+        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="email" placeholder="Email" />
+        <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder="Password" />
 
-        <select>
+        <select value={credentials.userType} onChange={(event) => credentialsChange(event, "userType")}>
           <option value="teacher">Teacher</option>
           <option value="student">Student</option>
-          <option value="guardian">Guardian</option>
+          <option value="legalGuardian">Legal guardian</option>
         </select>
 
         <button type="submit">Login</button>

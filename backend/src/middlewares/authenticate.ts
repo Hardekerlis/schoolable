@@ -27,7 +27,6 @@ export const authenticate = (
 ) => {
   // Get cookie from session
   const token = req.session?.jwt;
-
   logger.info('Authenticating user');
   // Check if token is defined
   if (!token) {
