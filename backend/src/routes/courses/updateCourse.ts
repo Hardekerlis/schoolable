@@ -64,6 +64,7 @@ removeCourseRouter.patch(
       );
     }
 
+    // find course and update
     const updatedCourse = await Course.findByIdAndUpdate(courseId, data, {
       new: true,
     });

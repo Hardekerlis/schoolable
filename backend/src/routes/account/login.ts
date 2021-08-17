@@ -84,9 +84,9 @@ loginRouter.post(
 
         logger.info('User is authenticated');
         res.status(200).json({
+          errors: false,
           msg: 'Login was successful',
           firstTime: !user.setupComplete, // This is to tell the frontend if a setup prompt should be showed
-          err: false,
         });
       } catch (err) {
         logger.error(
