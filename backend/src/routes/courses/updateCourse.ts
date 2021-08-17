@@ -38,11 +38,16 @@ removeCourseRouter.patch(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    // How to do input validation
     const data = req.body;
+    const id = data.id;
+    delete data.id;
+    const updatedCourse = await Course.findByIdAndUpdate(id, data, {
+      new: true,
+    });
 
-    console.log(data);
-    res.status(500).send();
+    if (!updatedCourse) {
+      throw new BadRequestError('No course with that id found');
+    }
   },
 );
 

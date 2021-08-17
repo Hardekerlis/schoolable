@@ -78,7 +78,7 @@ it("Returns a 404 if a course to edit isn't found", async () => {
 it('Returns a 200 on succesful update', async () => {
   const [cookie] = await global.getAuthCookie();
 
-  await request(app)
+  const res = await request(app)
     .post('/api/course/create')
     .set('Cookie', cookie)
     .send({
@@ -90,8 +90,8 @@ it('Returns a 200 on succesful update', async () => {
     .patch(path)
     .set('Cookie', cookie)
     .send({
-      id: mongoose.Types.ObjectId(),
-      name: 'Science',
+      id: res.body.course.id,
+      name: 'Physics',
       locked: false,
     })
     .expect(200);
