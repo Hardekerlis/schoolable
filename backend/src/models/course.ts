@@ -14,13 +14,14 @@ interface CourseAttributes {
   hidden?: boolean; // Is the course visible to students
   visibleOn?: Date; // What date shoukd the course be visible
   lockOn?: Date; // When should the course be locked
+  upForDeletion?: Date; // Date to remove course
 }
 
 interface CourseModel extends mongoose.Model<CourseDoc> {
   build(attributes: CourseAttributes): CourseDoc;
 }
 
-interface CourseDoc extends mongoose.Document {
+export interface CourseDoc extends mongoose.Document {
   name: string; // Name of the course
   owner: UserDoc; // Teacher whom owns the course
   coursePage: CoursePageDoc; // The course page. Fetched when course is entered
@@ -30,6 +31,7 @@ interface CourseDoc extends mongoose.Document {
   hidden?: boolean; // Is the course visible to students
   visibleOn?: Date; // What date shoukd the course be visible
   lockOn?: Date; // When should the course be locked
+  upForDeletion?: Date; // Date to remove course
 }
 
 const courseSchema = new mongoose.Schema(
@@ -69,6 +71,7 @@ const courseSchema = new mongoose.Schema(
       default: +new Date(),
     },
     lockOn: Date,
+    upForDeletion: Date,
   },
   {
     toObject: {

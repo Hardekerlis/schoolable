@@ -1,7 +1,7 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { Action } from '@schoolable/common';
+import { Action, ActionTypes } from '@schoolable/common';
 import { PhaseDoc } from './phase';
 
 export interface CourseMenuItem {
@@ -9,12 +9,14 @@ export interface CourseMenuItem {
   access: string[]; // What user(s) can see this MenuItem
   actions: Action[]; // What actions are possible for this MenuItem
   dropdown: CourseMenuItem[];
+  upForDeletion?: Date;
 }
 
 interface CoursePageAttributes {
   phases?: PhaseDoc[];
   menu?: CourseMenuItem[];
   description?: string;
+  upForDeletion?: Date;
 }
 
 interface CoursePageModel extends mongoose.Model<CoursePageDoc> {
@@ -25,6 +27,7 @@ export interface CoursePageDoc extends mongoose.Document {
   phases?: PhaseDoc[];
   menu?: CourseMenuItem[];
   description?: string;
+  upForDeletion?: Date;
 }
 
 const coursePageSchema = new mongoose.Schema(
@@ -34,13 +37,24 @@ const coursePageSchema = new mongoose.Schema(
       ref: 'phases',
     },
     menu: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'courseMenuItems',
+      icon: String,
+      access: [String],
+      actions: {
+        actionType: {
+          type: String,
+          enum: Object.values(ActionTypes),
+        },
+        download: String,
+        gotTo: String,
+        openMenu: String,
+      },
+      dropdown: {}, // Needs work - how to allow for dropdowns
     },
     description: {
       type: String,
       default: '',
     },
+    upForDeletion: Date,
   },
   {
     toObject: {

@@ -13,6 +13,7 @@ interface PhaseAttributes {
   hidden: boolean; // Is the phase visible to students
   visibleOn: Date; // What date shoukd the phase be visible
   lockOn: Date; // When should the phase be locked
+  upForDeletion?: Date;
 }
 
 interface PhaseModel extends mongoose.Model<PhaseDoc> {
@@ -28,6 +29,7 @@ export interface PhaseDoc extends mongoose.Document {
   hidden: boolean; // Is the phase visible to students
   visibleOn: Date; // What date shoukd the phase be visible
   lockOn: Date; // When should the phase be locked
+  upForDeletion?: Date;
 }
 
 const phaseSchema = new mongoose.Schema(
@@ -63,6 +65,7 @@ const phaseSchema = new mongoose.Schema(
       default: +new Date(),
     },
     lockOn: Date,
+    upForDeletion: Date,
   },
   {
     toObject: {

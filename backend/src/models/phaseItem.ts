@@ -6,16 +6,22 @@ interface Paragraph {}
 
 interface PhaseItemAttributes {
   paragraphs: string[];
+  upForDeletion?: Date;
 }
 
 interface PhaseItemModel extends mongoose.Model<PhaseItemDoc> {
   build(attributes: PhaseItemAttributes): PhaseItemDoc;
 }
 
-export interface PhaseItemDoc extends mongoose.Document {}
+export interface PhaseItemDoc extends mongoose.Document {
+  paragraphs: string[];
+  upForDeletion?: Date;
+}
 
 const phaseItemSchema = new mongoose.Schema(
-  {},
+  {
+    upForDeletion: Date,
+  },
   {
     toObject: {
       transform: (doc, ret) => {
