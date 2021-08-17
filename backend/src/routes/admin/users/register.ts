@@ -52,7 +52,7 @@ registerRouter.post(
     // After first login the user is prompted to choose a password
     let tempPassword = uuidv4();
     logger.debug(
-      `Creating a temporary password for new user${
+      `Creating a temporary password for new user ${
         CONFIG.dev ? tempPassword : ''
       }`,
     );
