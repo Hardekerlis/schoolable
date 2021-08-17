@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 //custom imports
 
+import Post from 'helpers/post.js'
+
 import Layout from 'layouts/default/';
 
 import { Sidebar } from 'components'
@@ -15,6 +17,19 @@ import styles from './courses.module.sass';
 
 //!imports
 
+export const getServerSideProps = async(ctx) => {
+
+  // let request = new Post('/api/course', credentials).json();
+  // let res = await request.send();
+
+  return {
+    props: {
+
+    }
+  }
+
+}
+
 
 const Courses = () => {
 
@@ -25,7 +40,7 @@ const Courses = () => {
 
         <Sidebar />
 
-        
+
 
       </div>
 
