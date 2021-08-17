@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import Head from 'next/head'
+import dynamic from 'next/dynamic'
 
 
 import styles from './grid.module.sass';
@@ -66,8 +66,6 @@ const Grid = () => {
         </div>
       )
 
-      // elem = React.createElement(elem)
-
       modArray.push(elem);
 
     }
@@ -87,9 +85,12 @@ const Grid = () => {
 
   }, [modules]);
 
-  const initializeMuuri = () => {
+  const initializeMuuri = async() => {
 
     console.log("initialzing muuri")
+
+    //WebWorker?
+    const Muuri = (await import('public/muuri.js')).default;
 
     setGrid(new Muuri(".muuri_grid", {dragEnabled: true}));
 
@@ -99,13 +100,6 @@ const Grid = () => {
 
   return (
     <>
-
-      <Head>
-
-        <script src="/muuri.js"></script>
-
-      </Head>
-
 
       <div className={`${styles.wrapper} muuri_grid`}>
 

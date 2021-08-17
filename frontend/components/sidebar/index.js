@@ -8,12 +8,15 @@ import styles from './sidebar.module.sass';
 import { faHome, faLandmark, faBook, faCalendar, faCaretLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const SidebarOption = ({name, icon, onClick, iconSize}) => {
+const SidebarOption = ({name, path, icon, onClick, iconSize, current}) => {
 
   if(!iconSize) iconSize = "50%";
+  if(!path) path = '/' + name.toLowerCase();
+
+  const myClassName = (path === current) ? `${styles.option} ${styles.current}` : styles.option
 
   return (
-    <div onClick={onClick} className={styles.option}>
+    <div onClick={onClick} className={myClassName}>
       <FontAwesomeIcon style={{width: iconSize, height: iconSize}} className={styles.icon} icon={icon} />
       <div className={styles.select}>
         <FontAwesomeIcon className={styles.arrow} icon={faCaretLeft} />
@@ -28,20 +31,27 @@ const Sidebar = () => {
 
   const router = useRouter();
 
-  const homeClick = () => {
-    router.push('/');
-  }
+  //think this one through
+  let [current, setCurrent] = useState(router.pathname)
 
-  const coursesClick = () => {
-    router.push('/courses');
+  const navTo = (href) => {
+
+    if(current === href) return;
+
+    //is this necessary? !!
+    setCurrent(href);
+    //!!
+
+    router.push(href);
+
   }
 
   return (
     <div className={styles.wrapper}>
-      <SidebarOption onClick={homeClick} name={"Home"} icon={faHome} />
-      <SidebarOption onClick={coursesClick} name={"Courses"} icon={faLandmark} />
-      <SidebarOption iconSize={"40%"} name={"Assignments"} icon={faBook} />
-      <SidebarOption iconSize={"40%"} name={"Schedule"} icon={faCalendar} />
+      <SidebarOption path={"/"} onClick={() => navTo('/home')} current={current} name={"Home"} icon={faHome} />
+      <SidebarOption onClick={() => navTo('/courses')} current={current} name={"Courses"} icon={faLandmark} />
+      <SidebarOption current={current} iconSize={"40%"} name={"Assignments"} icon={faBook} />
+      <SidebarOption current={current} iconSize={"40%"} name={"Schedule"} icon={faCalendar} />
 
     </div>
   )

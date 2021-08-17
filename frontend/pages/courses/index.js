@@ -25,6 +25,8 @@ const Courses = () => {
 
         <Sidebar />
 
+        
+
       </div>
 
     </Layout>

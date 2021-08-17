@@ -5,6 +5,7 @@
   position: relative
 
   width: 100px
+  min-width: 100px
   height: 100vh
   background-color: $darkPurple2
 
@@ -33,7 +34,11 @@
   @include transition(0.2s, ease-out)
 
 .option:hover
-  background-color: rgba($purple, 1)
+  background-color: rgba($purple, 1) !important
+
+.option.current
+  background-color: rgba($purple, 0.70)
+
 
 .select
   width: auto
@@ -73,8 +78,6 @@
 .option:hover .select
   opacity: 1
 
-
-.icon
 
 
 
