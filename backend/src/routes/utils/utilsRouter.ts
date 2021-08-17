@@ -8,7 +8,7 @@ import { authenticate } from '../../middlewares/authenticate';
 const utilsRouter = Router();
 
 // Util api check for verifying if user is signed in
-utilsRouter.get(
+utilsRouter.post(
   '/api/check',
   authenticate,
   async (req: Request, res: Response) => {
