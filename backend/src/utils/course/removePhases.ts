@@ -1,5 +1,6 @@
 /** @format */
-import CoursePage, { CoursePageDoc } from '../../models/coursePage';
+import { CoursePageDoc } from '../../models/coursePage';
+import Phase from '../../models/phase';
 
 import removePhaseItem from './removePhaseItem';
 
