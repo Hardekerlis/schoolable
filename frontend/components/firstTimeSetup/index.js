@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './firstTimeSetup.module.sass';
 
-import setupOptions from './setupOptions.js'
+import setupOptionsFn from './setupOptions.js'
 
 import { Prompt } from '/helpers/prompt/'
+
+
+const setupOptions = setupOptionsFn();
 
 const FirstTimeSetup = () => {
 

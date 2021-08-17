@@ -13,8 +13,11 @@ $gridRowSingle: calc((100% / #{$gridRowAmt}) - #{$gridRowGap})
 
 .wrapper
   position: relative
+  width: 100%
+  padding-left: 25px
+  padding-top: 25px
 
-.default
+.viewer_module
   width: 150px
   height: 150px
   background-color: rgba($white, 0.2)
@@ -24,7 +27,7 @@ $gridRowSingle: calc((100% / #{$gridRowAmt}) - #{$gridRowGap})
 .module
   position: absolute
   z-index: 1
-  margin: 25px
+  margin: 25px 0px 0px 25px
 
   .muuri-item-dragging
     z-index: 3
