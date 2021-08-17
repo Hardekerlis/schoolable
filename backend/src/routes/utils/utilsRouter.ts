@@ -20,3 +20,5 @@ utilsRouter.get(
     res.send();
   },
 );
+
+export default utilsRouter;

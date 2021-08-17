@@ -62,6 +62,7 @@ app.use(
 import loginRouter from './routes/account/login';
 import stagesRouter from './routes/setup/stages';
 import courseRouter from './routes/courses/courseRouter';
+import utilsRouter from './routes/utils/utilsRouter';
 // --- Routers ---
 // if (CONFIG.setupComplete) {
 //   // app.use(liveRouter);
@@ -74,6 +75,7 @@ import courseRouter from './routes/courses/courseRouter';
 app.use(loginRouter);
 app.use(stagesRouter);
 app.use(courseRouter);
+app.use(utilsRouter);
 
 import adminRouter from './routes/admin/adminRouter';
 app.use(adminRouter);

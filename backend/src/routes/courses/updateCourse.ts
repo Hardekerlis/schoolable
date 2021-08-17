@@ -38,16 +38,29 @@ removeCourseRouter.patch(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
+    const currentUser = req.currentUser;
+
+    if (!currentUser) {
+      throw new NotAuthorizedError('Please login before you do that');
+    }
+
+    const owner = await User.findById(currentUser.id);
+
+    console.log(owner);
+
     const data = req.body;
     const id = data.id;
     delete data.id;
-    const updatedCourse = await Course.findByIdAndUpdate(id, data, {
-      new: true,
-    });
 
-    if (!updatedCourse) {
-      throw new BadRequestError('No course with that id found');
-    }
+    // const updatedCourse = await Course.findByIdAndUpdate(id, data, {
+    //   new: true,
+    // });
+    //
+    // if (!updatedCourse) {
+    //   throw new BadRequestError('No course with that id found');
+    // }
+
+    res.send();
   },
 );
 
