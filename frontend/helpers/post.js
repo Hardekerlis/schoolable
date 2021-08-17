@@ -2,7 +2,7 @@ class Post {
 
   constructor(url, body) {
 
-    this.url = 'http://localhost:3000' + url;
+    this.url = 'http://localhost:3001' + url;
     this.body = body;
 
     this._json = false;
