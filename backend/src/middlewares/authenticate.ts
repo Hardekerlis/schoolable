@@ -44,7 +44,7 @@ export const authenticate = (
     // Assign payload to req
     req.currentUser = payload;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     logger.warn(
       `Encountered an error while trying to verfiy a json webtoken. Error message: ${err}`,
     );
