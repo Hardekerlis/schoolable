@@ -5,12 +5,12 @@ import Request from 'helpers/request.js';
 export default async function redirectAuth(ctx) {
 
   const cookies_ = cookies(ctx);
+  const token = cookies_["express:sess"];
 
   console.log("redirectAuth()")
-  console.log(process.env.JWT_KEY)
 
 
-  let request = new Request('/api/check').get();
+  let request = new Request('/api/check', {token}).post().json();
   let response = await request.send();
 
   console.log(response)
