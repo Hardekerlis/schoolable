@@ -26,8 +26,9 @@ export const authenticate = (
   next: NextFunction,
 ) => {
   // Get cookie from session
+  // @ts-ignore
+  console.log(req.session, req.body.token);
   const token = req.session?.jwt || req.body.token.toString();
-  console.log(token);
   logger.info('Authenticating user');
   // Check if token is defined
   if (!token) {

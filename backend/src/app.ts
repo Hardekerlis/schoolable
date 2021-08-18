@@ -54,6 +54,7 @@ app.use(
 // Add maxAge calculation
 app.use(
   cookieSession({
+    name: 'session',
     signed: CONFIG.cookies.signed,
     secure: CONFIG.cookies.secure,
   }),

@@ -13,7 +13,7 @@ utilsRouter.post(
   authenticate,
   async (req: Request, res: Response) => {
     if (!req.currentUser) {
-      req.session = { jwt: null };
+      req.session = null;
       throw new NotAuthorizedError('Not logged in');
     }
 
