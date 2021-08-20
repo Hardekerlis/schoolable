@@ -65,7 +65,10 @@ export const authenticate = async (
     // Check if sessionId is defiend and if it is a signed cookie
     if (sessionId && !mongoose.isValidObjectId(sessionId)) {
       // Parse cookie to readable format
-      sessionId = signedCookie(sessionId, process.env.JWT_KEY as string);
+      sessionId = cookieParser.signedCookie(
+        sessionId,
+        process.env.JWT_KEY as string,
+      );
     }
   }
 
