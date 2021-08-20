@@ -2,7 +2,6 @@
 
 // --- Libraries ---
 import mongoose from 'mongoose';
-import 'module-alias';
 import express from 'express';
 import cors from 'cors';
 import 'express-async-errors';
