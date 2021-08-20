@@ -1,7 +1,7 @@
 /** @format */
 
 import { app } from './app';
-import { CONFIG } from '@schoolable/common';
+import { CONFIG } from './library';
 import { logger } from './logger/logger';
 import { connect } from './database/connect';
 

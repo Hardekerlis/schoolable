@@ -2,7 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 const fetchCourseRouter = Router();
-import { BadRequestError, NotAuthorizedError } from '@schoolable/common';
+import { BadRequestError, NotAuthorizedError } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
 

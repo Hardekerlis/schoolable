@@ -2,13 +2,11 @@
 
 import mongoose from 'mongoose';
 import request from 'supertest';
-import { UserTypes } from '@schoolable/common';
+import { UserTypes, winstonTestSetup } from '../library';
 
 import { app } from '../app';
 import User from '../models/user';
 import { connect } from '../database/connect';
-
-import { winstonTestSetup } from '@schoolable/common';
 
 import { logger } from '../logger/logger';
 logger.debug('Setting up test...');

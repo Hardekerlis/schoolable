@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 import { connect } from '../database/connect';
 
-import { ConfigHandler } from '@schoolable/common';
+import { ConfigHandler } from '../library';
 
 const configPath =
   __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';

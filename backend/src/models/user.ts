@@ -1,7 +1,7 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { Password, UserTypes } from '@schoolable/common';
+import { Password, UserTypes } from '../library';
 
 import { UserSettingsDoc } from './userSettings';
 

@@ -1,7 +1,7 @@
 /** @format */
 
 import nodemailer from 'nodemailer';
-import { CONFIG } from '@schoolable/common';
+import { CONFIG } from '../library';
 
 import { logger } from '../logger/logger';
 

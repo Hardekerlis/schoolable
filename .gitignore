@@ -4,3 +4,4 @@ coverage/
 temp_frontend/
 build/
 .env
+secrets/

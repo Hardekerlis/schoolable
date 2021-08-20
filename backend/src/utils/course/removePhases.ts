@@ -1,6 +1,6 @@
 /** @format */
 
-import { BadRequestError } from '@schoolable/common';
+import { BadRequestError } from '../../library';
 
 import { CoursePageDoc } from '../../models/coursePage';
 import Phase from '../../models/phase';

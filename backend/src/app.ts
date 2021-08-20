@@ -6,15 +6,9 @@ import express from 'express';
 import cors from 'cors';
 import 'express-async-errors';
 import { json } from 'body-parser';
-import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
 
-import {
-  ConfigHandler,
-  CONFIG,
-  NotFoundError,
-  errorHandler,
-  Secrets,
-} from '@schoolable/common';
+import { ConfigHandler, NotFoundError, errorHandler, Secrets } from './library';
 
 // Load the config file into CONFIG variable
 const configPath =
@@ -52,31 +46,19 @@ app.use(
 );
 // TODO
 // Add maxAge calculation
-app.use(
-  cookieSession({
-    signed: CONFIG.cookies.signed,
-    secure: CONFIG.cookies.secure,
-  }),
-);
+app.use(cookieParser(process.env.JWT_KEY));
 
 import loginRouter from './routes/account/login';
 import stagesRouter from './routes/setup/stages';
 import courseRouter from './routes/courses/courseRouter';
 import utilsRouter from './routes/utils/utilsRouter';
 // --- Routers ---
-// if (CONFIG.setupComplete) {
-//   // app.use(liveRouter);
-// } else if (!CONFIG.setupComplete) {
-//   // app.use(setupRouter);
-// }
-
-// console.log(adminRouter);
-
 app.use(loginRouter);
 app.use(stagesRouter);
 app.use(courseRouter);
 app.use(utilsRouter);
 
+// --- Admin router ---
 import adminRouter from './routes/admin/adminRouter';
 app.use(adminRouter);
 // ---------------
