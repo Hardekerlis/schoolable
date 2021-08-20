@@ -50,7 +50,7 @@ app.use(
 );
 // TODO
 // Add maxAge calculation
-app.use(cookieParser(process.env.JWT_KEY));
+app.use(cookieParser(process.env.JWT_KEY as string));
 
 import loginRouter from './routes/account/login';
 import stagesRouter from './routes/setup/stages';
