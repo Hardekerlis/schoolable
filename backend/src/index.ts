@@ -4,6 +4,7 @@ import { app } from './app';
 import { CONFIG } from './library';
 import { logger } from './logger/logger';
 import { connect } from './database/connect';
+import childProcess from 'child_process';
 
 const startServer = async () => {
   const { env } = process;
