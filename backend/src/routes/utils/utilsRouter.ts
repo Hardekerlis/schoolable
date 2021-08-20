@@ -4,6 +4,7 @@ import { Router, Request, Response } from 'express';
 import { NotAuthorizedError } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
+import { logger } from '../../logger/logger';
 
 const utilsRouter = Router();
 
@@ -15,13 +16,19 @@ utilsRouter.post(
   authenticate,
   async (req: Request, res: Response) => {
     if (!req.currentUser) {
+      logger.debug('User is not logged in');
+
       res.clearCookie('session');
+
       throw new NotAuthorizedError('Not logged in');
     }
 
-    console.log(req.currentUser);
+    logger.debug('User is logged in');
 
-    res.send();
+    res.status(200).json({
+      error: false,
+      msg: 'User is logged in',
+    });
   },
 );
 
