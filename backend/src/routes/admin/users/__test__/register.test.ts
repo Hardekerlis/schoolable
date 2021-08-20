@@ -1,7 +1,7 @@
 /** @format */
 
 import request from 'supertest';
-import { CONFIG } from '@schoolable/common';
+import { CONFIG } from '../../../../library';
 
 import { app } from '../../../../app';
 import { UserTypes } from '../../../../utils/userTypes.enum';

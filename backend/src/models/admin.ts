@@ -1,7 +1,7 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { Password } from '@schoolable/common';
+import { Password } from '../library';
 
 interface AdminAttributes {
   email: string;

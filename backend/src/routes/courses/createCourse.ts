@@ -3,7 +3,7 @@
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
 const createCourseRouter = Router();
-import { validateRequest, BadRequestError } from '@schoolable/common';
+import { validateRequest, BadRequestError } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
 import { checkUserType } from '../../middlewares/checkUserType';

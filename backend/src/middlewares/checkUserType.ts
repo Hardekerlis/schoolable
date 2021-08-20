@@ -1,7 +1,7 @@
 /** @format */
 
 import { Request, Response, NextFunction } from 'express';
-import { NotAuthorizedError, UserTypes } from '@schoolable/common';
+import { NotAuthorizedError, UserTypes } from '../library';
 
 import { logger } from '../logger/logger';
 

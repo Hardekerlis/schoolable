@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose';
 
-import { Action } from '@schoolable/common';
+import { Action } from '../library';
 
 interface CourseMenuItemAttributes extends mongoose.Model<CourseMenuItemDoc> {
   build(attributes: CourseMenuItemAttributes): CourseMenuItemDoc;

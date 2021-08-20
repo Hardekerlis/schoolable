@@ -1,7 +1,7 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { Action, ActionTypes } from '@schoolable/common';
+import { Action, ActionTypes } from '../library';
 import { PhaseDoc } from './phase';
 
 export interface CourseMenuItem {

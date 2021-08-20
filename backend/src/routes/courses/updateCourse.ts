@@ -11,7 +11,7 @@ import {
   NotFoundError,
   UserTypes,
   validateRequest,
-} from '@schoolable/common';
+} from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
 import { checkUserType } from '../../middlewares/checkUserType';

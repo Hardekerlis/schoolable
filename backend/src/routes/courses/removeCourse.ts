@@ -4,11 +4,7 @@ import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { body } from 'express-validator';
 const removeCourseRouter = Router();
-import {
-  BadRequestError,
-  NotAuthorizedError,
-  UserTypes,
-} from '@schoolable/common';
+import { BadRequestError, NotAuthorizedError, UserTypes } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
 import { checkUserType } from '../../middlewares/checkUserType';

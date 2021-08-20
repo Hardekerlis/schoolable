@@ -24,17 +24,17 @@ export const authenticate = (
   res: Response,
   next: NextFunction,
 ) => {
-  const token = req.session?.jwt;
+  const cookies = req.cookies || req.signedCookies;
 
   logger.info('Authenticating user');
 
-  if (!token) {
+  if (!cookies) {
     throw new NotAuthorizedError('Please login before you do that');
   }
 
   try {
     const payload = jwt.verify(
-      token as string,
+      cookies as string,
       process.env.JWT_KEY as string,
     ) as UserPayload;
 

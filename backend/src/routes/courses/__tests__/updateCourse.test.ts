@@ -1,7 +1,7 @@
 /** @format */
 
 import request from 'supertest';
-import { CONFIG, UserTypes } from '@schoolable/common';
+import { CONFIG, UserTypes } from '../../../library';
 import faker from 'faker';
 import mongoose from 'mongoose';
 import { app } from '../../../app';

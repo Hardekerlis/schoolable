@@ -101,9 +101,9 @@ registerRouter.post(
           process.env.JWT_KEY as string,
         );
 
-        req.session = {
-          jwt: token,
-        };
+        // req.session = {
+        //   jwt: token,
+        // };
       } catch (err) {
         logger.error(
           `Ran into error when creating auth token. Error message: ${err}`,

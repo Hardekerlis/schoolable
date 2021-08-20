@@ -1,7 +1,7 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import { CONFIG } from '@schoolable/common';
+import { CONFIG } from '../library';
 
 export async function connect() {
   await mongoose.connect(

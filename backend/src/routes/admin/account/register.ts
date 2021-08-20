@@ -2,7 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, CONFIG, UserTypes } from '@schoolable/common';
+import { validateRequest, CONFIG, UserTypes } from '../../../library';
 import jwt from 'jsonwebtoken';
 
 import Admin from '../../../models/admin';
@@ -102,9 +102,9 @@ registerAdminRouter.post(
           process.env.JWT_KEY as string,
         );
 
-        req.session = {
-          jwt: token,
-        };
+        // req.session = {
+        //   jwt: token,
+        // };
       } catch (err) {
         logger.error(
           `Ran into error when creating auth token. Error message: ${err}`,

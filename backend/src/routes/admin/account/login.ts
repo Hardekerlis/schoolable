@@ -8,7 +8,7 @@ import {
   Password,
   BadRequestError,
   UserTypes,
-} from '@schoolable/common';
+} from '../../../library';
 import jwt from 'jsonwebtoken';
 
 import Admin from '../../../models/admin';
@@ -67,9 +67,9 @@ adminLoginRouter.post(
         );
 
         // Assign a cookie called jwt to user
-        req.session = {
-          jwt: token,
-        };
+        // req.session = {
+        //   jwt: token,
+        // };
 
         res.status(200).json({
           msg: 'Login successful',

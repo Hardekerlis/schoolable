@@ -2,7 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, BadRequestError, CONFIG } from '@schoolable/common';
+import { validateRequest, BadRequestError, CONFIG } from '../../../library';
 import { v4 as uuidv4 } from 'uuid';
 
 import User from '../../../models/user';

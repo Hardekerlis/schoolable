@@ -63,9 +63,9 @@ loginRouter.post(
           process.env.JWT_KEY as string,
         );
 
-        req.session = {
-          jwt: token,
-        };
+        // req.session = {
+        //   jwt: token,
+        // };
 
         res.status(200).json({
           msg: 'Login successful',
