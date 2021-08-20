@@ -6,7 +6,7 @@ version: 0.0.1
 isSetup: false
 port: 3001
 cookies:
-  signed: false
+  signed: true
   httpOnly: false
   maxAge: -1
 logs:

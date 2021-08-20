@@ -8,8 +8,6 @@ import { logger } from '../../logger/logger';
 
 const utilsRouter = Router();
 
-import createSession from '../../utils/session/createSession';
-
 // Util api check for verifying if user is signed in
 utilsRouter.post(
   '/api/check',
