@@ -2,6 +2,9 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router';
 
+import Select from 'react-select'
+
+
 import Layout from 'layouts/default/';
 
 import styles from './login.module.sass';
@@ -61,12 +64,35 @@ const Login = () => {
 
   const credentialsChange = (evt, prop) => {
 
+    let val = evt.target.value;
+
+    if(!evt.target) {
+      val = evt;
+    }
+
+    console.log("value", val);
+
     setCredentials({
       ...credentials,
-      [prop]: evt.target.value
+      [prop]: val
     })
 
   }
+
+  const selectOptions = [
+    {
+      value: 'teacher',
+      label: 'Teacher'
+    },
+    {
+      value: 'student',
+      label: 'Student'
+    },
+    {
+      value: 'legalGuardian',
+      label: 'Legal guardian'
+    }
+  ]
 
   return (
 
@@ -74,14 +100,16 @@ const Login = () => {
 
       <form onSubmit={submit} className={styles.form}>
 
+        <p className={styles.title}>Login</p>
+
         <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="email" placeholder="Email" />
         <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder="Password" />
 
-        <select value={credentials.userType} onChange={(event) => credentialsChange(event, "userType")}>
-          <option value="teacher">Teacher</option>
-          <option value="student">Student</option>
-          <option value="legalGuardian">Legal guardian</option>
-        </select>
+        <Select
+          className={styles.select}
+          options={selectOptions}
+          onChange={(value) => credentialsChange(value, "userType")}
+        />
 
         <button type="submit">Login</button>
 
@@ -93,5 +121,11 @@ const Login = () => {
 
 
 }
+
+// <select value={credentials.userType} onChange={(event) => credentialsChange(event, "userType")}>
+//   <option value="teacher">Teacher</option>
+//   <option value="student">Student</option>
+//   <option value="legalGuardian">Legal guardian</option>
+// </select>
 
 export default Login;
