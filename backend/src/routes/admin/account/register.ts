@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import Admin from '../../../models/admin';
 
 import { logger } from '../../../logger/logger';
+import createAndSetCookie from '../../../utils/session/createAndSetCookie';
 
 const registerAdminRouter = Router();
 
@@ -102,9 +103,8 @@ registerAdminRouter.post(
           process.env.JWT_KEY as string,
         );
 
-        // req.session = {
-        //   jwt: token,
-        // };
+        // Create cookie and attatch it to the response object
+        await createAndSetCookie(req, res, admin.id, token);
       } catch (err) {
         logger.error(
           `Ran into error when creating auth token. Error message: ${err}`,

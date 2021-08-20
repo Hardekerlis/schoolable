@@ -14,12 +14,12 @@ utilsRouter.post(
   '/api/check',
   authenticate,
   async (req: Request, res: Response) => {
-    const sess = await createSession(req, 'userid', 'jwt');
-    console.log(sess);
     if (!req.currentUser) {
-      // req.session = null;
+      res.clearCookie('session');
       throw new NotAuthorizedError('Not logged in');
     }
+
+    console.log(req.currentUser);
 
     res.send();
   },

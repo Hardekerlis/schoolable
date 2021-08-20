@@ -14,8 +14,13 @@ const startServer = async () => {
     );
   }
 
-  logger.info('Connecting to MongoDb');
-  await connect();
+  try {
+    logger.info('Connecting to MongoDB');
+    await connect();
+    logger.info('Successfully connected to MongoDB');
+  } catch (err) {
+    logger.warn(`Failed to connect to MongoDB. Error message: ${err}`);
+  }
 
   env.NODE_ENV = !env.NODE_ENV ? 'dev' : env.NODE_ENV;
 

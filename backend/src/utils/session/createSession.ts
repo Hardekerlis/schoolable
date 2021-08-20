@@ -16,7 +16,7 @@ const createSession = async (
   req: Request,
   userId: string,
   value: string,
-): Promise<SessionDoc> => {
+): Promise<string> => {
   const ip = CONFIG.dev ? '78.73.146.89' : req.socket.remoteAddress || req.ip;
   const geo = geoip.lookup(ip);
 
@@ -43,7 +43,7 @@ const createSession = async (
 
   await session.save();
 
-  return session;
+  return session.id.toString();
 };
 
 export default createSession;

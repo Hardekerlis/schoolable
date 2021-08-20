@@ -17,16 +17,16 @@ const configPath =
 ConfigHandler.loadConfig(configPath);
 
 try {
+  // Try to load secret
   Secrets.loadSecret('JWT_KEY');
 
+  // If no secret was found generete a key and load it
   if (!process.env.JWT_KEY) {
     Secrets.generateKeySecret('JWT_KEY');
   }
 } catch (err) {
   Secrets.generateKeySecret('JWT_KEY');
 }
-
-console.log(process.env.JWT_KEY);
 
 const app = express();
 

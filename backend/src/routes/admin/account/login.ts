@@ -13,6 +13,7 @@ import jwt from 'jsonwebtoken';
 
 import Admin from '../../../models/admin';
 import { logger } from '../../../logger/logger';
+import createAndSetCookie from '../../../utils/session/createAndSetCookie';
 
 const adminLoginRouter = Router();
 
@@ -66,10 +67,8 @@ adminLoginRouter.post(
           process.env.JWT_KEY as string,
         );
 
-        // Assign a cookie called jwt to user
-        // req.session = {
-        //   jwt: token,
-        // };
+        // Create cookie and attatch it to the response object
+        await createAndSetCookie(req, res, admin.id, token);
 
         res.status(200).json({
           msg: 'Login successful',
