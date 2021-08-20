@@ -7,20 +7,24 @@ import dotenv from 'dotenv';
 import { dirname as getDirname } from 'path';
 
 export class Secrets {
-  static path = `${__dirname}/secrets`;
+  static path = `${__dirname.substring(0, __dirname.indexOf('/src'))}/secrets`;
 
   /*
     Generate secret key
     Example use case could be a secret for jsonwebtoken
     @param {string} name of file and name of key to to be saved into process.env
   */
-  static async generateKeySecret(name: string) {
+  static generateKeySecret(name: string) {
     const secret = randomBytes(32).toString('base64');
-
+    const directory = getDirname(`${this.path}/${name}.env`);
     name = name.toUpperCase();
     try {
-      await mkdirp(getDirname(`${this.path}/${name}.env`));
+      if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory);
+      }
+
       fs.writeFileSync(`${this.path}/${name}.env`, `${name}=${secret}`);
+      Secrets.loadSecret('JWT_KEY');
     } catch (err) {
       console.error(err);
     }
