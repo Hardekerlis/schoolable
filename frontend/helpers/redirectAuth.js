@@ -4,20 +4,16 @@ import Request from 'helpers/request.js';
 
 export default async function redirectAuth(ctx) {
 
-  const cookies_ = cookies(ctx);
-  const token = cookies_["express:sess"];
+  const { sessionId } = cookies(ctx);
 
-  console.log("redirectAuth()")
+  // console.log("sessionId", sessionId)
 
-
-  let request = new Request('/api/check', {token}).post().json();
+  let request = new Request('/api/check', {sessionId}).post().json();
   let response = await request.send();
 
   console.log(response)
-  console.log(request)
-  console.log("token", cookies_)
 
-  if(response.status !== 200) {
+  if(response._response.status !== 200) {
     return {
       redirect: {
         destination: '/login',

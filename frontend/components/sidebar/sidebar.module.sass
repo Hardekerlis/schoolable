@@ -1,11 +1,13 @@
 @import "styles/variables"
 
+$sidebarWidth: 100px
+
 .wrapper
 
   position: relative
 
-  width: 100px
-  min-width: 100px
+  width: $sidebarWidth
+  min-width: $sidebarWidth
   height: 100vh
   background-color: $darkPurple2
 
@@ -38,8 +40,7 @@
 
 .option.current
   background-color: rgba($purple, 0.70)
-
-
+  
 .select
   width: auto
   height: 50px
