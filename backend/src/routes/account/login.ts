@@ -86,6 +86,7 @@ loginRouter.post(
           errors: false,
           msg: 'Login was successful',
           firstTime: !user.setupComplete, // This is to tell the frontend if a setup prompt should be showed
+          user,
         });
       } catch (err) {
         logger.error(

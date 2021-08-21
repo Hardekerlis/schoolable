@@ -16,10 +16,7 @@ import { logger } from '../../logger/logger';
 */
 
 import Course from '../../models/course';
-import CoursePage, {
-  CourseMenuItem,
-  CoursePageDoc,
-} from '../../models/coursePage';
+import CoursePage, { CoursePageDoc } from '../../models/coursePage';
 import User, { UserDoc } from '../../models/user';
 
 createCourseRouter.post(
