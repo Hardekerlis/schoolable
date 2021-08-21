@@ -23,20 +23,18 @@ const loginRouter = Router();
 loginRouter.post(
   '/api/login',
   [
-    body('email')
-      .isEmail()
-      .trim()
-      .withMessage('Please supply a valid email adress'), // Check if supplied email is valid
+    body('email').isEmail().trim(),
+    // .withMessage('Please supply a valid email adress'), // Check if supplied email is valid
     body('password') // Check if password is valid
       .exists()
       .trim()
       .isLength({
         min: CONFIG.passwords.length.min,
         max: CONFIG.dev ? 40 : CONFIG.passwords.length.max, // Because temp password is passed when in dev mode and it's 36 chars
-      })
-      .withMessage(
-        `Passwords must be between ${CONFIG.passwords.length.min} and ${CONFIG.passwords.length.max} characters`,
-      ),
+      }),
+    // .withMessage(
+    //   `Passwords must be between ${CONFIG.passwords.length.min} and ${CONFIG.passwords.length.max} characters`,
+    // ),
     body('userType').custom(async (value) => {
       // Check if the desired userType exists in the enum
       const enumUserTypes = Object.values(UserTypes);
