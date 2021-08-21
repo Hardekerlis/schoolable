@@ -54,7 +54,7 @@ loginRouter.post(
 
     // Try to find user trying to login
     logger.debug('Looking up user');
-    const user = await User.findOne({ email, userType });
+    const user = await User.findOne({ email, userType }).populate('settings');
 
     // No user found
     if (!user) {
