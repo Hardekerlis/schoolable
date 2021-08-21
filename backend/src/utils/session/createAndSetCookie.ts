@@ -31,6 +31,8 @@ const createAndSetCookie = async (
 
   // Create a cookie with the session id
   res.cookie('sessionId', sessionId, cookieOptions);
+
+  return true;
 };
 
 export default createAndSetCookie;

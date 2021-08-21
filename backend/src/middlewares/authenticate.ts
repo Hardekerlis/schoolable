@@ -10,11 +10,14 @@ var signature = require('cookie-signature');
 
 import { logger } from '../logger/logger';
 import Session from '../models/session';
+import User from '../models/user';
+import Admin from '../models/admin';
 
 export interface UserPayload {
   email: string;
   id: string;
   userType: UserTypes;
+  sessionId: string;
 }
 
 declare global {
@@ -23,30 +26,6 @@ declare global {
       currentUser?: UserPayload;
     }
   }
-}
-
-// This function is from cookie-parser library
-function signedCookie(str: string, secret: string) {
-  if (typeof str !== 'string') {
-    return undefined;
-  }
-
-  // This was s: instead of s% causing the function not to parse the cookie
-  if (str.substr(0, 2) !== 's%') {
-    return str;
-  }
-
-  var secrets = !secret || Array.isArray(secret) ? secret || [] : [secret];
-
-  for (var i = 0; i < secrets.length; i++) {
-    var val = signature.unsign(str.slice(2), secrets[i]);
-
-    if (val !== false) {
-      return val;
-    }
-  }
-
-  return false;
 }
 
 export const authenticate = async (
@@ -65,6 +44,7 @@ export const authenticate = async (
     // Check if sessionId is defiend and if it is a signed cookie
     if (sessionId && !mongoose.isValidObjectId(sessionId)) {
       // Parse cookie to readable format
+      if (sessionId.includes('%3A')) sessionId = decodeURIComponent(sessionId);
       sessionId = cookieParser.signedCookie(
         sessionId,
         process.env.JWT_KEY as string,
@@ -100,6 +80,8 @@ export const authenticate = async (
       token as string,
       process.env.JWT_KEY as string,
     ) as UserPayload;
+
+    payload.sessionId = sessionId;
 
     // Assign payload to req
     req.currentUser = payload;

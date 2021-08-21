@@ -1,14 +1,20 @@
 /** @format */
 
+// --- Global variables ---
 import mongoose from 'mongoose';
 import request from 'supertest';
+import cookieParser from 'cookie-parser';
 import { UserTypes, winstonTestSetup } from '../library';
+import Session from '../models/session';
 
 import { app } from '../app';
 import User from '../models/user';
 import { connect } from '../database/connect';
 
 import { logger } from '../logger/logger';
+let adminCookie: any;
+// -------------------------
+
 logger.debug('Setting up test...');
 winstonTestSetup();
 
@@ -26,13 +32,12 @@ jest.setTimeout(600000);
 
 // let mongo: any;
 beforeAll(async () => {
-  process.env.JWT_KEY = 'asdfasdf';
-
   await connect();
 });
 
 // Removes all items from the database before each test
 beforeEach(async () => {
+  adminCookie = undefined;
   await mongoose.connection.dropDatabase();
   await User.createIndexes();
 });
@@ -65,12 +70,10 @@ global.getAdminAuthCookie = async () => {
       .expect(200);
   }
 
-  const cookie = res.get('Set-Cookie');
+  let cookie = res.get('Set-Cookie');
 
   return cookie;
 };
-
-let adminCookie: string;
 
 global.getAuthCookie = async (type?: UserTypes) => {
   if (!type) type = UserTypes.Teacher;
@@ -98,6 +101,5 @@ global.getAuthCookie = async (type?: UserTypes) => {
     });
 
   const cookie = res.get('Set-Cookie');
-
   return cookie;
 };

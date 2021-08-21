@@ -52,12 +52,12 @@ app.use(
 // Add maxAge calculation
 app.use(cookieParser(process.env.JWT_KEY as string));
 
-import loginRouter from './routes/account/login';
+import userRouter from './routes/account/userRouter';
 import stagesRouter from './routes/setup/stages';
 import courseRouter from './routes/courses/courseRouter';
 import utilsRouter from './routes/utils/utilsRouter';
 // --- Routers ---
-app.use(loginRouter);
+app.use(userRouter);
 app.use(stagesRouter);
 app.use(courseRouter);
 app.use(utilsRouter);

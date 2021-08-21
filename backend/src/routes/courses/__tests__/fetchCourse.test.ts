@@ -1,8 +1,6 @@
 /** @format */
 
 import request from 'supertest';
-import { CONFIG, UserTypes } from '../../../library';
-import faker from 'faker';
 import { app } from '../../../app';
 
 const path = '/api/course';
@@ -12,15 +10,13 @@ it("Returns a 401 if user isn't signed in", async () => {
 });
 
 it('Returns a 404 if no courses belongs to user', async () => {
-  const [cookie] = await global.getAuthCookie();
-
   await request(app)
     .post('/api/course/create')
-    .set('Cookie', cookie)
+    .set('Cookie', await global.getAuthCookie())
     .send({ name: 'Math' })
     .expect(201);
 
-  const res = await request(app)
+  await request(app)
     .get(path)
     .set('Cookie', await global.getAuthCookie())
     .send()
@@ -30,7 +26,7 @@ it('Returns a 404 if no courses belongs to user', async () => {
 it('Returns a 200 if user has courses registered to it', async () => {
   const [cookie] = await global.getAuthCookie();
 
-  const res = await request(app)
+  await request(app)
     .post('/api/course/create')
     .set('Cookie', cookie)
     .send({ name: 'Math' })

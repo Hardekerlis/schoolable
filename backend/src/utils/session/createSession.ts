@@ -4,7 +4,7 @@ import { Request } from 'express';
 import geoip from 'geoip-lite';
 import { CONFIG } from '../../library';
 
-import Session, { SessionDoc } from '../../models/session';
+import Session from '../../models/session';
 
 /*
   Create and save session in database
@@ -41,7 +41,11 @@ const createSession = async (
     location: location,
   });
 
-  await session.save();
+  try {
+    await session.save();
+  } catch (err) {
+    console.error(err);
+  }
 
   return session.id.toString();
 };
