@@ -2,7 +2,9 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router';
 
-import Select from 'react-select'
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+
 
 
 import Layout from 'layouts/default/';
@@ -40,7 +42,7 @@ const Login = () => {
 
   let [credentials, setCredentials] = useState({
     email: 'teacherEmail@myTeacherEmail.teach',
-    password: '979fc8d0-46f0-4278-b84c-22c161928085',
+    password: '95891bb6-23f1-482d-a91c-79fac8566dc6',
     userType: 'teacher'
   })
 
@@ -64,10 +66,10 @@ const Login = () => {
 
   const credentialsChange = (evt, prop) => {
 
-    let val = evt.target.value;
+    let val = evt?.target?.value;
 
     if(!evt.target) {
-      val = evt;
+      val = evt.value;
     }
 
     console.log("value", val);
@@ -105,13 +107,20 @@ const Login = () => {
         <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="email" placeholder="Email" />
         <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder="Password" />
 
-        <Select
+        <Dropdown
           className={styles.select}
+          controlClassName={styles.selectControl}
+
+          menuClassName={styles.selectMenu}
+
+          arrowClassName={styles.selectArrow}
+
           options={selectOptions}
+          value={credentials.userType}
           onChange={(value) => credentialsChange(value, "userType")}
         />
 
-        <button type="submit">Login</button>
+        <button className={styles.submitButton} type="submit">Login</button>
 
       </form>
 
