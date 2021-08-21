@@ -8,21 +8,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import UserMenu from './userMenu'
 
-const SidebarOption = ({name, path, icon, onClick, iconSize, current, addClassName}) => {
+const SidebarOption = ({name, path, icon, onClick, iconSize, current, arrowEnabled}) => {
 
   if(!iconSize) iconSize = "50%";
   if(!path) path = '/' + name.toLowerCase();
 
   let myClassName = (path === current) ? `${styles.option} ${styles.current}` : `${styles.option}`;
-  if(addClassName) myClassName += ` ${addClassName}`;
+  // if(addClassName) myClassName += ` ${addClassName}`;
+
+  if(arrowEnabled === undefined) arrowEnabled = true
 
   return (
     <div onClick={onClick} className={myClassName}>
       <FontAwesomeIcon style={{width: iconSize, height: iconSize}} className={styles.icon} icon={icon} />
-      <div className={styles.select}>
-        <FontAwesomeIcon className={styles.arrow} icon={faCaretLeft} />
-        {name}
-      </div>
+
+        {arrowEnabled &&
+          <div className={styles.select}>
+            <FontAwesomeIcon className={styles.arrow} icon={faCaretLeft} />
+            {name}
+          </div>
+        }
+
     </div>
   )
 
@@ -55,17 +61,20 @@ const Sidebar = () => {
 
   }
 
+  const setUserMenu = (boolean) => {
+    setUserMenuOpen(boolean);
+  }
+
   return (
     <>
       <div className={styles.wrapper}>
-        <SidebarOption onClick={toggleUserMenu} iconSize={"40%"} name={"User"} icon={faUser} />
+        <SidebarOption arrowEnabled={!userMenuOpen} onClick={toggleUserMenu} iconSize={"40%"} name={"User"} icon={faUser} />
         <SidebarOption path={"/"} onClick={() => navTo('/home')} current={current} name={"Home"} icon={faHome} />
         <SidebarOption onClick={() => navTo('/courses')} current={current} name={"Courses"} icon={faLandmark} />
         <SidebarOption current={current} iconSize={"40%"} name={"Assignments"} icon={faBook} />
         <SidebarOption current={current} iconSize={"40%"} name={"Schedule"} icon={faCalendar} />
-
       </div>
-      <UserMenu open={(userMenuOpen)} />
+      <UserMenu setUserMenu={setUserMenu} open={(userMenuOpen)} />
     </>
   )
 

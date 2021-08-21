@@ -110,7 +110,34 @@ class Prompt_ {
 
     this.box.classList.add(`${styles[type]}`);
 
-    this.box.children[1].textContent = msg;
+    console.log(msg)
+
+    if(typeof msg === "object") {
+
+      if(Object.keys(msg).length === 1) {
+
+        msg = msg[0].message;
+
+      }else {
+
+        let last = msg.pop()
+        let text = "";
+
+        for(let i in msg) {
+          let msgText = msg[i].message;
+          console.log(msgText)
+          text += msgText + "<br>"
+        }
+
+        text += last.message;
+
+        msg = text;
+
+      }
+
+    }
+
+    this.box.children[1].innerHTML = msg;
 
     this.opened = true;
 
@@ -160,7 +187,7 @@ class Prompt_ {
     }
 
     this.elem = promptRef;
-    this.box = this.elem.children[0];
+    this.box = this.elem?.children[0];
 
   }
 
