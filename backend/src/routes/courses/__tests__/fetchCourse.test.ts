@@ -38,17 +38,12 @@ it('Returns a 401 if user doesnt have access to course', async () => {
 
 it('Returns a 404 if no course with the supplied id is found', async () => {
   const [cookie] = await global.getAuthCookie();
-  const res = await request(app)
-    .post('/api/course/create')
-    .set('Cookie', cookie)
-    .send({ name: 'Math' })
-    .expect(201);
 
   await request(app)
     .get(`${path}/${mongoose.Types.ObjectId()}`)
     .set('Cookie', cookie)
     .send()
-    .expect(401);
+    .expect(404);
 });
 
 it('Returns a 404 if id is not a valid ObjectId', async () => {
@@ -76,7 +71,7 @@ it('Returns a 200 if a course was found', async () => {
     .expect(201);
 
   await request(app)
-    .get(`${path}/${mongoose.Types.ObjectId()}`)
+    .get(`${path}/${res.body.course.id}`)
     .set('Cookie', cookie)
     .send()
     .expect(200);
@@ -92,10 +87,12 @@ it('CoursePage is populated', async () => {
     .expect(201);
 
   const courseRes = await request(app)
-    .get(`${path}/${mongoose.Types.ObjectId()}`)
+    .get(`${path}/${res.body.course.id}`)
     .set('Cookie', cookie)
     .send()
     .expect(200);
+
+  console.log(courseRes.body.course.coursePage);
 
   expect(courseRes.body.course.coursePage).toHaveProperty('description');
 });

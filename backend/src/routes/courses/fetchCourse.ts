@@ -48,7 +48,7 @@ fetchCourseRouter.get(
     }
 
     logger.info('Returning courses to user');
-    await res.status(200).json({
+    res.status(200).json({
       errors: false,
       msg: 'Found courses',
       courses: user.courses,
@@ -61,6 +61,10 @@ fetchCourseRouter.get(
   authenticate,
   async (req: Request, res: Response) => {
     const { courseId } = req.params;
+    const currentUser = req.currentUser;
+    if (!currentUser) {
+      throw new NotAuthorizedError('Please login before you do that');
+    }
 
     if (!mongoose.isValidObjectId(courseId)) {
       throw new NotFoundError();
@@ -72,7 +76,20 @@ fetchCourseRouter.get(
       throw new NotFoundError();
     }
 
-    res.send();
+    if (
+      // @ts-ignore
+      !course.students?.includes(currentUser.id) &&
+      // @ts-ignore
+      course.owner.toString() !== currentUser.id.toString()
+    ) {
+      throw new NotAuthorizedError("You don't have access to this course");
+    }
+
+    res.status(200).json({
+      errors: false,
+      msg: 'Found course',
+      course,
+    });
   },
 );
 
