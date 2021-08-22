@@ -2,7 +2,7 @@
 
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { createLogger, format, transports, Logger } from 'winston';
-const { combine, timestamp, label, printf } = format;
+const { combine, timestamp, label, printf, colorize } = format;
 
 /*
   Translates Winston timestamp into understandable timeformat
@@ -29,7 +29,7 @@ let logger: Logger;
 // Quiet Winston when running tests
 export const winstonTestSetup = () => {
   // @ts-ignore
-  logger.transports.forEach(transport => (transport.silent = true));
+  logger.transports.forEach((transport) => (transport.silent = true));
 };
 
 const Logger = (
@@ -45,7 +45,12 @@ const Logger = (
 
   logger = createLogger({
     // Custom format for log messages
-    format: combine(label({ label: 'Schoolable' }), timestamp(), customFormat),
+    format: combine(
+      colorize({ all: true }),
+      label({ label: 'Schoolable' }),
+      timestamp(),
+      customFormat,
+    ),
     transports: [
       new transports.Console({
         /* The log level, if debug is true in config debug messages will be logged  to the console */

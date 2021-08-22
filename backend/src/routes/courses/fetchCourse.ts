@@ -62,29 +62,39 @@ fetchCourseRouter.get(
   async (req: Request, res: Response) => {
     const { courseId } = req.params;
     const currentUser = req.currentUser;
+
+    logger.info('Trying to fetch course');
     if (!currentUser) {
+      logger.debug('User is not authenticated');
       throw new NotAuthorizedError('Please login before you do that');
     }
 
+    logger.debug('Checking if id is a valid ObjectId');
     if (!mongoose.isValidObjectId(courseId)) {
+      logger.debug('Id is not a valid ObjectId');
       throw new NotFoundError();
     }
 
+    logger.debug('Fetching course');
     const course = await Course.findById(courseId).populate('coursePage');
 
     if (!course) {
+      logger.debug('No course found');
       throw new NotFoundError();
     }
 
+    logger.debug('Checking if user has access to course');
     if (
       // @ts-ignore
       !course.students?.includes(currentUser.id) &&
       // @ts-ignore
       course.owner.toString() !== currentUser.id.toString()
     ) {
+      logger.debug("User doesn't have access to course");
       throw new NotAuthorizedError("You don't have access to this course");
     }
 
+    logger.info('Successfully fetched course. Returning to user');
     res.status(200).json({
       errors: false,
       msg: 'Found course',

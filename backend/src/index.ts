@@ -7,6 +7,8 @@ import { connect } from './database/connect';
 
 const startServer = async () => {
   const { env } = process;
+  console.clear();
+  logger.info('Starting server...');
 
   if (CONFIG.dev) {
     logger.warn(

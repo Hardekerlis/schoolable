@@ -92,7 +92,5 @@ it('CoursePage is populated', async () => {
     .send()
     .expect(200);
 
-  console.log(courseRes.body.course.coursePage);
-
   expect(courseRes.body.course.coursePage).toHaveProperty('description');
 });
