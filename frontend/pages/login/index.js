@@ -5,14 +5,16 @@ import { useRouter } from 'next/router';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
-
+import Cookies from 'js-cookie';
 
 import Layout from 'layouts/default/';
 
 import styles from './login.module.sass';
 
 
-import Request from 'helpers/request.js'
+import Request from 'helpers/request.js';
+
+import { Prompt } from 'helpers/prompt';
 
 
 import redirectAuth from 'helpers/redirectAuth.js';
@@ -52,15 +54,19 @@ const Login = () => {
     let request = new Request('/api/login', credentials).post().json();
     let res = await request.send();
 
-    if(res.errors) return showError(res.errors);
+
+    let user;
+
+    try {
+      user = JSON.stringify(res.user);
+      Cookies.set('user', user);
+    }catch(e) {
+      return Prompt.error("Unexpected error. Please login again.");
+    }
+
+    if(res.errors) return Prompt.error(res.errors);
 
     router.push('/');
-
-  }
-
-  const showError = (msg) => {
-
-    console.log('ERROR:', msg);
 
   }
 
@@ -71,8 +77,6 @@ const Login = () => {
     if(!evt.target) {
       val = evt.value;
     }
-
-    console.log("value", val);
 
     setCredentials({
       ...credentials,
@@ -104,7 +108,7 @@ const Login = () => {
 
         <p className={styles.title}>Login</p>
 
-        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="email" placeholder="Email" />
+        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder="Email" />
         <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder="Password" />
 
         <Dropdown

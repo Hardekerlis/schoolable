@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 //custom imports
 
+import Request from 'helpers/request.js'
+
 import Layout from 'layouts/default/';
 
 import { Sidebar, Grid, FirstTimeSetup } from 'components'
