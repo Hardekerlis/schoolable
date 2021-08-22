@@ -1,60 +1,101 @@
 /** @format */
 
 import request from 'supertest';
+import mongoose from 'mongoose';
+import { UserTypes } from '../../../library';
 import { app } from '../../../app';
 
 const path = '/api/course';
 
 it("Returns a 401 if user isn't signed in", async () => {
-  await request(app).get(path).send({}).expect(401);
+  const [cookie] = await global.getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: 'Math' })
+    .expect(201);
+
+  await request(app).get(`${path}/${res.body.course.id}`).send({}).expect(401);
 });
 
-it('Returns a 404 if no courses belongs to user', async () => {
-  await request(app)
+it('Returns a 401 if user doesnt have access to course', async () => {
+  const [cookie] = await global.getAuthCookie();
+  const [studentCookie] = await global.getAuthCookie(UserTypes.Student);
+
+  const res = await request(app)
     .post('/api/course/create')
-    .set('Cookie', await global.getAuthCookie())
+    .set('Cookie', cookie)
     .send({ name: 'Math' })
     .expect(201);
 
   await request(app)
-    .get(path)
+    .get(`${path}/${res.body.course.id}`)
     .set('Cookie', await global.getAuthCookie())
+    .send()
+    .expect(401);
+});
+
+it('Returns a 404 if no course with the supplied id is found', async () => {
+  const [cookie] = await global.getAuthCookie();
+  const res = await request(app)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: 'Math' })
+    .expect(201);
+
+  await request(app)
+    .get(`${path}/${mongoose.Types.ObjectId()}`)
+    .set('Cookie', cookie)
+    .send()
+    .expect(401);
+});
+
+it('Returns a 404 if id is not a valid ObjectId', async () => {
+  const [cookie] = await global.getAuthCookie();
+  const res = await request(app)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: 'Math' })
+    .expect(201);
+
+  await request(app)
+    .get(`${path}/notvalidid`)
+    .set('Cookie', cookie)
     .send()
     .expect(404);
 });
 
-it('Returns a 200 if user has courses registered to it', async () => {
+it('Returns a 200 if a course was found', async () => {
   const [cookie] = await global.getAuthCookie();
-
-  await request(app)
-    .post('/api/course/create')
-    .set('Cookie', cookie)
-    .send({ name: 'Math' })
-    .expect(201);
-
-  await request(app).get(path).set('Cookie', cookie).send().expect(200);
-});
-
-it('Returns 2 course if user has 2 registered courses to it', async () => {
-  const [cookie] = await global.getAuthCookie();
-
-  await request(app)
-    .post('/api/course/create')
-    .set('Cookie', cookie)
-    .send({ name: 'Math' })
-    .expect(201);
-
-  await request(app)
-    .post('/api/course/create')
-    .set('Cookie', cookie)
-    .send({ name: 'English' })
-    .expect(201);
 
   const res = await request(app)
-    .get(path)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: 'Math' })
+    .expect(201);
+
+  await request(app)
+    .get(`${path}/${mongoose.Types.ObjectId()}`)
+    .set('Cookie', cookie)
+    .send()
+    .expect(200);
+});
+
+it('CoursePage is populated', async () => {
+  const [cookie] = await global.getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: 'Math' })
+    .expect(201);
+
+  const courseRes = await request(app)
+    .get(`${path}/${mongoose.Types.ObjectId()}`)
     .set('Cookie', cookie)
     .send()
     .expect(200);
 
-  expect(res.body.courses).toHaveLength(2);
+  expect(courseRes.body.course.coursePage).toHaveProperty('description');
 });

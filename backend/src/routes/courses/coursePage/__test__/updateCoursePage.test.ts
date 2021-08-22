@@ -1,6 +1,7 @@
 /** @format */
 
 import request from 'supertest';
+import mongoose from 'mongoose';
 import { app } from '../../../../app';
 
 const path = '/api/coursePage';
@@ -17,7 +18,7 @@ it("Returns a 401 if user trying to edit coursePage isn't signed in", async () =
   await request(app)
     .put(path)
     .send({
-      id: res.body.course.coursePage,
+      id: res.body.course.id,
     })
     .expect(401);
 });
@@ -45,7 +46,7 @@ it('Returns 401 if user is trying to update a course it doesnt own', async () =>
     .put(path)
     .set('Cookie', cookie)
     .send({
-      id: res.body.course.coursePage,
+      id: res.body.course.id,
       description: 'This is new description',
     })
     .expect(401);
@@ -72,6 +73,19 @@ it("Returns a 400 if id isn't an ObjectId", async () => {
     .expect(400);
 });
 
+it('Returns a 400 if no coursePage can be found with the specified id', async () => {
+  const [cookie] = await global.getAuthCookie();
+
+  await request(app)
+    .put(path)
+    .set('Cookie', cookie)
+    .send({
+      id: mongoose.Types.ObjectId(),
+      description: 'This is new description',
+    })
+    .expect(400);
+});
+
 it('Returns a 200 on succesful update', async () => {
   const [cookie] = await global.getAuthCookie();
 
@@ -87,7 +101,7 @@ it('Returns a 200 on succesful update', async () => {
     .put(path)
     .set('Cookie', cookie)
     .send({
-      id: res.body.course.coursePage,
+      id: res.body.course.id,
       description: 'This is new description',
     })
     .expect(200);
