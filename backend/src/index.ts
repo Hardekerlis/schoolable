@@ -40,7 +40,7 @@ const drawSchoolableLogo = async () => {
   //   console.log(i[0]);
   // }
   // console.log(centerRowNum);
-  return textSync('Schoolable platform');
+  return textSync('Schoolable');
 };
 
 const startServer = async () => {
