@@ -2,6 +2,7 @@
 
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { createLogger, format, transports, Logger } from 'winston';
+import { CONFIG } from '../../library';
 const { combine, timestamp, label, printf, colorize } = format;
 
 /*
@@ -43,14 +44,24 @@ const Logger = (
   if (newLogFileFrequency) newLogFileFrequency = newLogFileFrequency;
   if (debug) debug = debug;
 
-  logger = createLogger({
-    // Custom format for log messages
-    format: combine(
+  let format = combine(
+    label({ label: 'Schoolable' }),
+    timestamp(),
+    customFormat,
+  );
+
+  if (CONFIG.debug) {
+    format = combine(
       colorize({ all: true }),
       label({ label: 'Schoolable' }),
       timestamp(),
       customFormat,
-    ),
+    );
+  }
+
+  logger = createLogger({
+    // Custom format for log messages
+    format: format,
     transports: [
       new transports.Console({
         /* The log level, if debug is true in config debug messages will be logged  to the console */
