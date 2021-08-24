@@ -101,7 +101,7 @@ it("Returns a 404 if user is trying to edit a phase that doesn't exist", async (
     .put(
       path
         .replace('%courseId%', res.body.course.id)
-        .replace('%phaseId%', newPhaseRes.body.phase.id),
+        .replace('%phaseId%', mongoose.Types.ObjectId() as unknown as string),
     )
     .set('Cookie', cookie)
     .send({ description: 'This is a updated description' })
@@ -147,7 +147,7 @@ it('Returns the updated phase', async () => {
     .send({ name: 'First Phase' })
     .expect(201);
 
-  expect(newPhaseRes.body.phase).not.toHaveProperty('description');
+  expect(newPhaseRes.body.phase.description).toEqual('');
 
   const updateRes = await request(app)
     .put(
@@ -159,5 +159,7 @@ it('Returns the updated phase', async () => {
     .send({ description: 'This is a updated description' })
     .expect(200);
 
-  expect(updateRes.body.phase).toHaveProperty('description');
+  expect(updateRes.body.phase.description).toEqual(
+    'This is a updated description',
+  );
 });

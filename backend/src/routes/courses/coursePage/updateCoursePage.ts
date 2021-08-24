@@ -52,7 +52,9 @@ updateCoursePageRouter.put(
     }
 
     if (currentUser.id !== course.owner.id) {
-      throw new NotAuthorizedError("You can't edit this resource");
+      throw new NotAuthorizedError(
+        'You are no authorized to make any changes to this resource',
+      );
     }
 
     const updatedCoursePage = await CoursePage.findByIdAndUpdate(
