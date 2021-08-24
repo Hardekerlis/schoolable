@@ -11,7 +11,7 @@ export default async function redirectAuth(ctx) {
   let request = new Request('/api/check', {sessionId}).post().json();
   let response = await request.send();
 
-  console.log(response)
+  // console.log(response)
 
   if(response._response.status !== 200) {
     return {

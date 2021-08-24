@@ -27,7 +27,7 @@ const UserMenuOption = ({ title, clickable, onClick }) => {
 
 }
 
-const UserMenu = ({ open, setUserMenu }) => {
+const UserMenu = ({ open, setUserMenuOpen }) => {
 
   const router = useRouter();
 
@@ -35,50 +35,34 @@ const UserMenu = ({ open, setUserMenu }) => {
 
   let menuElem = React.useRef();
 
-  let [closeMenu, setCloseMenu] = useState();
-
   useEffect(() => {
 
-    if(!closeMenu) {
+    if(open) {
       menuElem.current.classList?.add(`${styles.open}`);
     }else {
       menuElem.current.classList?.remove(`${styles.open}`);
     }
 
-    setUserMenu(!closeMenu);
-
-  }, [closeMenu])
-
-  useEffect(() => {
-
-    console.log("open changed", open)
-
-    if(closeMenu !== open) {
-      setCloseMenu(!open)
-    }
-
-
-
   }, [open])
 
   const bodyClickListener = (evt) => {
 
-    let isOpen = menuElem.current.classList.contains(`${styles.open}`);
+    let isOpen = menuElem.current?.classList.contains(`${styles.open}`);
 
     if(!isOpen) return;
 
+    //probably more cross browser compatibility
     let evtPath = evt.path || evt.composedPath();
 
     let match = false;
 
     //check if the user click on something that has nothing to do with the userMenu
     for(let target of evtPath) {
-      // console.log(target.classList)
       if(target.classList?.contains(`${styles.userMenu}`)) match = true;
     }
 
     if(!match) {
-      setCloseMenu(false)
+      setUserMenuOpen(false)
     }
 
   }
