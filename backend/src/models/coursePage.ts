@@ -9,6 +9,7 @@ export interface CourseMenuItem {
   access: string[]; // What user(s) can see this MenuItem
   actions: Action[]; // What actions are possible for this MenuItem
   title: string;
+  value: string;
   removeable: boolean;
 }
 
@@ -44,6 +45,7 @@ const coursePageSchema = new mongoose.Schema(
         icon: String,
         access: [String],
         title: String,
+        value: String,
         removeable: Boolean,
         actions: [
           {

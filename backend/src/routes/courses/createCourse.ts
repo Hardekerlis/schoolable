@@ -52,6 +52,7 @@ createCourseRouter.post(
       menu: [
         {
           title: 'Overview',
+          value: 'overview',
           access: ['all'],
           actions: [
             {
@@ -63,6 +64,7 @@ createCourseRouter.post(
         },
         {
           title: 'asffffffffffffffffffffffff',
+          value: 'asffffffffffffffffffffffff',
           access: ['all'],
           actions: [
             {
@@ -74,6 +76,7 @@ createCourseRouter.post(
         },
         {
           title: 'asdasdasda',
+          value: 'asdasdasda',
           access: ['all'],
           actions: [
             {
@@ -84,7 +87,8 @@ createCourseRouter.post(
           removeable: false,
         },
         {
-          title: 'as',
+          title: 'Åle 123',
+          value: 'ale_123',
           access: ['all'],
           actions: [
             {
