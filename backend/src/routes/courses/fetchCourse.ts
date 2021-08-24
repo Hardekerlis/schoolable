@@ -10,7 +10,6 @@ import {
 } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
-import Course from '../../models/course';
 
 import { logger } from '../../logger/logger';
 
@@ -20,6 +19,7 @@ import { logger } from '../../logger/logger';
 */
 
 import User from '../../models/user';
+import Course from '../../models/course';
 
 fetchCourseRouter.get(
   '/api/course',
@@ -35,7 +35,14 @@ fetchCourseRouter.get(
     }
 
     logger.info('Fetching user whom is trying to fetch courses');
-    const user = await User.findById(currentUser.id).populate('courses');
+    const user = await User.findById(currentUser.id).populate({
+      path: 'courses',
+      populate: {
+        path: 'owner',
+        model: 'users',
+        select: 'name',
+      },
+    });
 
     if (!user) {
       logger.debug('No user found with the id supplied in cookie');
