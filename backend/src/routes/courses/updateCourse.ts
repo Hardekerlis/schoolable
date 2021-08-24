@@ -6,9 +6,9 @@ import { body } from 'express-validator';
 
 const removeCourseRouter = Router();
 import {
+  NotFoundError,
   BadRequestError,
   NotAuthorizedError,
-  NotFoundError,
   UserTypes,
   validateRequest,
 } from '../../library';
