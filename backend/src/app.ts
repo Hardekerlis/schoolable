@@ -8,7 +8,7 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 
-import { ConfigHandler, NotFoundError, errorHandler, Secrets } from './library';
+import { NotFoundError, ConfigHandler, errorHandler, Secrets } from './library';
 
 // Load the config file into CONFIG variable
 const configPath =

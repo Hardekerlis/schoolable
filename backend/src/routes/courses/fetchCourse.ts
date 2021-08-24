@@ -4,9 +4,9 @@ import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
 const fetchCourseRouter = Router();
 import {
+  NotFoundError,
   BadRequestError,
   NotAuthorizedError,
-  NotFoundError,
 } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
