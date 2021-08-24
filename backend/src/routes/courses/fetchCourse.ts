@@ -51,7 +51,7 @@ fetchCourseRouter.get(
 
     if (user.courses.length === 0) {
       logger.debug('No courses found for user');
-      throw new BadRequestError('No courses found');
+      // throw new BadRequestError('No courses found');
     }
 
     logger.info('Returning courses to user');
