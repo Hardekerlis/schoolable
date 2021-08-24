@@ -45,12 +45,14 @@ const coursePageSchema = new mongoose.Schema(
         access: [String],
         title: String,
         removeable: Boolean,
-        actions: {
-          actionType: {
-            type: String,
-            enum: Object.values(ActionTypes),
+        actions: [
+          {
+            actionType: {
+              type: String,
+              enum: Object.values(ActionTypes),
+            },
           },
-        },
+        ],
       },
     ],
     description: {
