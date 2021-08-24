@@ -10,6 +10,8 @@ import { checkUserType } from '../../middlewares/checkUserType';
 
 import { logger } from '../../logger/logger';
 
+import { Action, ActionTypes } from '../../library';
+
 /*
   TODO
   Add course menu items
@@ -40,8 +42,21 @@ createCourseRouter.post(
       throw new BadRequestError('No user with the supplied id was found');
     }
 
+    const overviewAction: Action = {
+      type: ActionTypes.LeftClick,
+      goTo: 'this.overview',
+    };
+
     const coursePage = CoursePage.build({
       description: '',
+      menu: [
+        {
+          title: 'Overview',
+          access: ['all'],
+          actions: [overviewAction],
+          removeable: false,
+        },
+      ],
     });
 
     try {
@@ -63,6 +78,7 @@ createCourseRouter.post(
         errors: false,
         msg: 'created a new course',
         course, // Return the course to the user so it can be "loaded" on frontend
+        owner: owner.name,
       });
     } catch (err) {
       logger.error(

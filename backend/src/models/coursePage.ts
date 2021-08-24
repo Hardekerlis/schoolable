@@ -5,11 +5,11 @@ import { Action, ActionTypes } from '../library';
 import { PhaseDoc } from './phase';
 
 export interface CourseMenuItem {
-  icon: string; // Url to image
+  icon?: string; // Url to image
   access: string[]; // What user(s) can see this MenuItem
   actions: Action[]; // What actions are possible for this MenuItem
-  dropdown: CourseMenuItem[];
-  upForDeletion?: Date;
+  title: string;
+  removeable: boolean;
 }
 
 interface CoursePageAttributes {
@@ -39,14 +39,12 @@ const coursePageSchema = new mongoose.Schema(
     menu: {
       icon: String,
       access: [String],
+      title: String,
       actions: {
         actionType: {
           type: String,
           enum: Object.values(ActionTypes),
         },
-        download: String,
-        gotTo: String,
-        openMenu: String,
       },
       dropdown: {}, // Needs work - how to allow for dropdowns
     },

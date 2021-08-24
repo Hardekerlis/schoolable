@@ -6,5 +6,5 @@ export interface Action {
   type: ActionTypes;
   download?: string; // URL
   goTo?: string; // URL
-  openMenu: string;
+  openMenu?: string;
 }

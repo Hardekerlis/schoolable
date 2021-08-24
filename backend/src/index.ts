@@ -5,6 +5,7 @@ import { CONFIG } from './library';
 import { logger } from './logger/logger';
 import { connect } from './database/connect';
 import { textSync } from 'figlet';
+import 'colors';
 
 const drawSchoolableLogo = async () => {
   // let rows = [''];
@@ -40,7 +41,7 @@ const drawSchoolableLogo = async () => {
   //   console.log(i[0]);
   // }
   // console.log(centerRowNum);
-  return textSync('Schoolable');
+  return textSync(' Schoolable  ');
 };
 
 const startServer = async () => {
