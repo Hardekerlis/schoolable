@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import { app } from '../../../../../app';
 import { UserTypes } from '../../../../../library';
 
-const path = '/api/course/%courseId%/phase';
+const path = '/api/course/%courseId%/createPhase';
 
 it('Returns a 401 if user is not authenticated', async () => {
   const [cookie] = await global.getAuthCookie();

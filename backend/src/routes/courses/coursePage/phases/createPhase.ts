@@ -22,7 +22,7 @@ import Phase from '../../../../models/phase';
 import { logger } from '../../../../logger/logger';
 
 createPhaseRouter.post(
-  '/api/course/:courseId/phase',
+  '/api/course/:courseId/createPhase',
   authenticate,
   checkUserType([UserTypes.Teacher, UserTypes.Admin]),
   [body('name').isString().withMessage('Please supply a name for this phase')],
