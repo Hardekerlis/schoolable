@@ -48,9 +48,12 @@ const coursePageSchema = new mongoose.Schema(
         actions: [
           {
             actionType: {
-              type: String,
+              type: ActionTypes,
               enum: Object.values(ActionTypes),
             },
+            download: String,
+            goTo: String,
+            openMenu: String,
           },
         ],
       },

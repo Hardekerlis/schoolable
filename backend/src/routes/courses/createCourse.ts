@@ -43,7 +43,7 @@ createCourseRouter.post(
     }
 
     const overviewAction: Action = {
-      type: ActionTypes.LeftClick,
+      actionType: ActionTypes.LeftClick,
       goTo: 'this.overview',
     };
 
@@ -55,7 +55,7 @@ createCourseRouter.post(
           access: ['all'],
           actions: [
             {
-              type: ActionTypes.LeftClick,
+              actionType: ActionTypes.LeftClick,
               goTo: 'this.overview',
             },
           ],
@@ -66,7 +66,7 @@ createCourseRouter.post(
           access: ['all'],
           actions: [
             {
-              type: ActionTypes.LeftClick,
+              actionType: ActionTypes.LeftClick,
               goTo: 'this.overview',
             },
           ],
@@ -77,7 +77,7 @@ createCourseRouter.post(
           access: ['all'],
           actions: [
             {
-              type: ActionTypes.LeftClick,
+              actionType: ActionTypes.LeftClick,
               goTo: 'this.overview',
             },
           ],
@@ -88,7 +88,7 @@ createCourseRouter.post(
           access: ['all'],
           actions: [
             {
-              type: ActionTypes.LeftClick,
+              actionType: ActionTypes.LeftClick,
               goTo: 'this.overview',
             },
           ],
@@ -98,8 +98,6 @@ createCourseRouter.post(
     });
 
     try {
-      // @ts-ignore
-      console.log(coursePage.menu[0].actions);
       await coursePage.save(); // Create a course page
 
       const course = Course.build({

@@ -3,7 +3,7 @@
 import { ActionTypes } from '../enums/actionTypes';
 
 export interface Action {
-  type: ActionTypes;
+  actionType: ActionTypes;
   download?: string; // URL
   goTo?: string; // URL
   openMenu?: string;
