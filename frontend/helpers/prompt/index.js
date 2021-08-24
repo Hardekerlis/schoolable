@@ -174,11 +174,16 @@ class Prompt_ {
 
   async handleRef() {
 
-    if(!promptRef) {
+    console.log(promptRef, "ref")
+
+    if(!promptRef || !promptRef.current) {
 
       console.log("awaiting prompt ref")
 
       await new Promise((resolve, reject) => {
+
+
+
         promptRefCallbacks.push(() => {
           resolve();
         })
@@ -187,6 +192,7 @@ class Prompt_ {
     }
 
     this.elem = promptRef;
+    console.log(this.elem)
     this.box = this.elem?.children[0];
 
   }

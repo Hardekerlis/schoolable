@@ -13,7 +13,17 @@ const SidebarOption = ({name, path, icon, onClick, iconSize, current, arrowEnabl
   if(!iconSize) iconSize = "50%";
   if(!path) path = '/' + name.toLowerCase();
 
+  if(typeof path === 'object') {
+    for(let p of path) {
+      if(p === current) {
+        path = p;
+        break;
+      }
+    }
+  }
+
   let myClassName = (path === current) ? `${styles.option} ${styles.current}` : `${styles.option}`;
+
 
   if(arrowEnabled === undefined) arrowEnabled = true
 
@@ -61,7 +71,7 @@ const Sidebar = () => {
     <>
       <div className={styles.wrapper}>
         <SidebarOption arrowEnabled={!userMenuOpen} onClick={() => setUserMenuOpen(!userMenuOpen)} iconSize={"40%"} name={"User"} icon={faUser} />
-        <SidebarOption path={"/"} onClick={() => navTo('/home')} current={current} name={"Home"} icon={faHome} />
+        <SidebarOption path={["/", "/home"]} onClick={() => navTo('/')} current={current} name={"Home"} icon={faHome} />
         <SidebarOption onClick={() => navTo('/courses')} current={current} name={"Courses"} icon={faLandmark} />
         <SidebarOption current={current} iconSize={"40%"} name={"Assignments"} icon={faBook} />
         <SidebarOption current={current} iconSize={"40%"} name={"Schedule"} icon={faCalendar} />

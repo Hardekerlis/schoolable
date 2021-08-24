@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 
-import cookies from 'next-cookies';
+
+import { useRouter } from 'next/router';
 
 //custom imports
 
@@ -15,7 +16,8 @@ import Layout from 'layouts/default/';
 import { Sidebar, CourseCreation, Dropdown } from 'components'
 
 import getUserData from 'helpers/getUserData.js'
-
+import getCookies from 'helpers/getCookiesServer.js'
+import handleErrors from 'helpers/handleErrorsServer.js'
 
 //css imports
 
@@ -26,33 +28,40 @@ import styles from './courses.module.sass';
 
 export const getServerSideProps = async(ctx) => {
 
-  const { sessionId } = cookies(ctx);
+  const { sessionId } = getCookies(ctx);
 
   let request = new Request('/api/course').get().json().cookie({sessionId});
   let res = await request.send();
 
   let courses = [];
 
-  //do error handling!!! for eg. unexpected error
+  const serverErrors = handleErrors(200, res);
+  if(serverErrors.isProps) return serverErrors.propsContainer;
 
-  if(res._response.status !== 200) {
-    courses = [];
-  }else {
+
+  if(serverErrors === false) {
     courses = res.courses;
   }
 
   return {
     props: {
-      courses
+      courses,
+      serverErrors
     }
   }
 
 }
 
 
-const Courses = ({ courses }) => {
+const Courses = ({ courses, serverErrors }) => {
 
   const userData = getUserData();
+
+  const router = useRouter();
+
+  if(serverErrors !== false) {
+    Prompt.error(serverErrors);
+  }
 
   let [currentCourses, setCurrentCourses] = useState(courses);
   let [coursesForRender, setCoursesForRender] = useState([]);
@@ -85,8 +94,10 @@ const Courses = ({ courses }) => {
 
       let courseName = firstLetterToUpperCase(course.name);
 
+      const courseClick = () => router.push(`/courses/page?id=${course.id}`);
+
       return (
-        <div className={styles.course} key={index}>
+        <div onClick={courseClick} className={styles.course} key={index}>
           <div className={styles.image}>
             <p className={styles.hoverText}>{courseName}</p>
           </div>

@@ -5,6 +5,10 @@
     opacity: 1
     pointer-events: inherit
 
+  .arrow
+    @include rotate(180)
+    top: 7px
+
 .wrapper
   position: relative
 
@@ -31,6 +35,9 @@
     right: -22px
     top: 2.5px
     color: rgba($white, 0.75)
+
+    @include rotate(0)
+    @include transition(0.2s, ease-out)
 
     .icon
       width: 20px

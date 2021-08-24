@@ -81,6 +81,9 @@ class Request {
     if(this._json) {
       response = await res.json();
       response._response = res;
+      response._isJSON = true;
+    }else {
+      response._isJSON = false;
     }
 
     return response;
