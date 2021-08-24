@@ -53,13 +53,53 @@ createCourseRouter.post(
         {
           title: 'Overview',
           access: ['all'],
-          actions: [overviewAction],
+          actions: [
+            {
+              type: ActionTypes.LeftClick,
+              goTo: 'this.overview',
+            },
+          ],
+          removeable: false,
+        },
+        {
+          title: 'asffffffffffffffffffffffff',
+          access: ['all'],
+          actions: [
+            {
+              type: ActionTypes.LeftClick,
+              goTo: 'this.overview',
+            },
+          ],
+          removeable: false,
+        },
+        {
+          title: 'asdasdasda',
+          access: ['all'],
+          actions: [
+            {
+              type: ActionTypes.LeftClick,
+              goTo: 'this.overview',
+            },
+          ],
+          removeable: false,
+        },
+        {
+          title: 'as',
+          access: ['all'],
+          actions: [
+            {
+              type: ActionTypes.LeftClick,
+              goTo: 'this.overview',
+            },
+          ],
           removeable: false,
         },
       ],
     });
 
     try {
+      // @ts-ignore
+      console.log(coursePage.menu[0].actions);
       await coursePage.save(); // Create a course page
 
       const course = Course.build({
