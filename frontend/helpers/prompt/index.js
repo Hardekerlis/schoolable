@@ -11,6 +11,8 @@ let promptRefCallbacks = [];
 
 const setPromptRef = elem => {
 
+  console.log("setting prompt ref", elem)
+
   promptRef = elem;
 
   for(let fn of promptRefCallbacks) {
@@ -53,7 +55,7 @@ const waitFor = async(ms) => {
 
 const closeClick = () => {
 
-  promptRef.children[0].classList.remove(`${styles.open}`);
+  Prompt.elem.children[0].classList.remove(`${styles.open}`);
 
 }
 
@@ -174,11 +176,11 @@ class Prompt_ {
 
   async handleRef() {
 
-    console.log(promptRef, "ref")
+    // console.log(promptRef, "ref")
 
     if(!promptRef || !promptRef.current) {
 
-      console.log("awaiting prompt ref")
+      // console.log("awaiting prompt ref")
 
       await new Promise((resolve, reject) => {
 

@@ -5,6 +5,10 @@ import Request from 'helpers/request.js';
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
 
+import getUserData from 'helpers/getUserData.js'
+
+import { firstLetterToUpperCase } from 'helpers/misc.js'
+
 import Layout from 'layouts/default';
 
 import { Prompt } from 'helpers/prompt';
@@ -45,7 +49,33 @@ const CoursePage = ({ serverErrors, course }) => {
     Prompt.error(serverErrors);
   }
 
+  const userData = getUserData();
+
+  const parsedCourseName = firstLetterToUpperCase(course.name);
+
   console.log(course)
+
+  course.coursePage.description = "a desc"
+
+  let [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+
+    setMenuItems(course.coursePage.menu.map((obj, index) => {
+
+      console.log(obj)
+
+      return(
+
+        <div className={styles.menuOption}>
+          <p>{obj.title}</p>
+        </div>
+
+      )
+
+    }))
+
+  }, [])
 
   return (
     <Layout>
@@ -53,6 +83,41 @@ const CoursePage = ({ serverErrors, course }) => {
       <div className={styles.wrapper}>
 
         <Sidebar />
+
+        <div className={styles.container}>
+
+          <div className={styles.header}>
+            <p className={styles.headline}>{parsedCourseName}</p>
+            <p className={styles.authorText}>{course.owner.name}</p>
+          </div>
+
+          <div className={`hoz_line ${styles.hoz_line}`}></div>
+
+          { course.coursePage.description &&
+            <div className={styles.descDivider}>
+              <div className={styles.descContainer}>
+                <p>{course.coursePage.description}</p>
+              </div>
+            </div>
+          }
+
+          <div className={styles.mainContainer}>
+
+            <div className={styles.content}>
+
+
+
+            </div>
+
+            <div className={styles.mainDivider}></div>
+
+            <div className={styles.courseMenu}>
+
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
 

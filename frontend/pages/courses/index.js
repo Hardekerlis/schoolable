@@ -19,6 +19,8 @@ import getUserData from 'helpers/getUserData.js'
 import getCookies from 'helpers/getCookiesServer.js'
 import handleErrors from 'helpers/handleErrorsServer.js'
 
+import { firstLetterToUpperCase } from 'helpers/misc.js'
+
 //css imports
 
 import styles from './courses.module.sass';
@@ -57,6 +59,8 @@ const Courses = ({ courses, serverErrors }) => {
 
   const userData = getUserData();
 
+  // userData.userType = "student"
+
   const router = useRouter();
 
   if(serverErrors !== false) {
@@ -82,11 +86,6 @@ const Courses = ({ courses, serverErrors }) => {
     }
 
   }
-
-  const firstLetterToUpperCase = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
 
   useEffect(() => {
 
@@ -139,32 +138,49 @@ const Courses = ({ courses, serverErrors }) => {
 
         <Sidebar />
 
-        <div className={styles.sortBy}>
-          <p className={styles.text}>Sort by:</p>
+        { coursesForRender.length !== 0 &&
 
-          <Dropdown
-            options={sortOptions}
-            className={styles.dropdown}
-            optionClassName={styles.dropdownOption}
-            menuClassName={styles.dropdownMenu}
-            defaultValue={sortOptions[2].value}
-            onChange={onSortMethodChange}
-            height={"35px"}
-          />
+          <>
 
-        </div>
+            <div className={styles.sortBy}>
+              <p className={styles.text}>Sort by:</p>
 
+              <Dropdown
+                options={sortOptions}
+                className={styles.dropdown}
+                optionClassName={styles.dropdownOption}
+                menuClassName={styles.dropdownMenu}
+                defaultValue={sortOptions[2].value}
+                onChange={onSortMethodChange}
+                height={"35px"}
+              />
 
+            </div>
 
-        <div className={styles.courses}>
+            <div className={styles.courses}>
 
-          {coursesForRender}
+              {coursesForRender}
 
-        </div>
+            </div>
+
+          </>
+
+        }
 
         { userData.userType === "teacher" &&
 
           <CourseCreation fetchCourses={fetchCourses} currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />
+
+        }
+
+        { (userData.userType === "student" && coursesForRender.length === 0) &&
+
+          <div className={styles.noCoursesStudent}>
+
+            <p>No courses found.</p>
+            <p>All of your courses will appear here once they have been created!</p>
+
+          </div>
 
         }
 
