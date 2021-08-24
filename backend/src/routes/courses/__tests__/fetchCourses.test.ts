@@ -9,7 +9,7 @@ it("Returns a 401 if user isn't signed in", async () => {
   await request(app).get(path).send({}).expect(401);
 });
 
-it('Returns a 404 if no courses belongs to user', async () => {
+it('Returns a 400 if no courses belongs to user', async () => {
   await request(app)
     .post('/api/course/create')
     .set('Cookie', await global.getAuthCookie())
@@ -20,7 +20,7 @@ it('Returns a 404 if no courses belongs to user', async () => {
     .get(path)
     .set('Cookie', await global.getAuthCookie())
     .send()
-    .expect(404);
+    .expect(400);
 });
 
 it('Returns a 200 if user has courses registered to it', async () => {

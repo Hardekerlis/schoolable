@@ -83,7 +83,9 @@ fetchCourseRouter.get(
     }
 
     logger.debug('Fetching course');
-    const course = await Course.findById(courseId).populate('coursePage');
+    const course = await Course.findById(courseId)
+      .populate('coursePage')
+      .populate({ path: 'owner', select: 'name' });
 
     if (!course) {
       logger.debug('No course found');
@@ -95,7 +97,7 @@ fetchCourseRouter.get(
       // @ts-ignore
       !course.students?.includes(currentUser.id) &&
       // @ts-ignore
-      course.owner.toString() !== currentUser.id.toString()
+      course.owner.id.toString() !== currentUser.id.toString()
     ) {
       logger.debug("User doesn't have access to course");
       throw new NotAuthorizedError("You don't have access to this course");
