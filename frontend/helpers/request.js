@@ -10,6 +10,8 @@ class Request {
     this.contentType = 'text/html';
     this.method = 'POST';
 
+    this.cookies = '';
+
   }
 
   post() {
@@ -44,6 +46,22 @@ class Request {
     return this;
   }
 
+  cookie(obj) {
+
+    let text = "";
+
+    for(let key in obj) {
+
+      text += key + "=" + obj[key] + ';';
+
+    }
+
+    this.cookies = text;
+
+    return this;
+
+  }
+
   async send() {
 
     let response;
@@ -53,6 +71,7 @@ class Request {
       body: this.body,
       headers: {
         'Content-Type': this.contentType,
+        'Cookie': this.cookies
       },
       credentials: "include"
     })

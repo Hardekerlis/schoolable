@@ -14,7 +14,6 @@ const SidebarOption = ({name, path, icon, onClick, iconSize, current, arrowEnabl
   if(!path) path = '/' + name.toLowerCase();
 
   let myClassName = (path === current) ? `${styles.option} ${styles.current}` : `${styles.option}`;
-  // if(addClassName) myClassName += ` ${addClassName}`;
 
   if(arrowEnabled === undefined) arrowEnabled = true
 
@@ -41,6 +40,7 @@ const Sidebar = () => {
   //think this one through
   let [current, setCurrent] = useState(router.pathname);
   //!!
+
   let [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const navTo = (href) => {
@@ -55,26 +55,18 @@ const Sidebar = () => {
 
   }
 
-  const toggleUserMenu = () => {
-
-    setUserMenuOpen(!userMenuOpen);
-
-  }
-
-  const setUserMenu = (boolean) => {
-    setUserMenuOpen(boolean);
-  }
-
+  //arrowEnabled on userMenu must be dependent on UserMenu
+  //component
   return (
     <>
       <div className={styles.wrapper}>
-        <SidebarOption arrowEnabled={!userMenuOpen} onClick={toggleUserMenu} iconSize={"40%"} name={"User"} icon={faUser} />
+        <SidebarOption arrowEnabled={!userMenuOpen} onClick={() => setUserMenuOpen(!userMenuOpen)} iconSize={"40%"} name={"User"} icon={faUser} />
         <SidebarOption path={"/"} onClick={() => navTo('/home')} current={current} name={"Home"} icon={faHome} />
         <SidebarOption onClick={() => navTo('/courses')} current={current} name={"Courses"} icon={faLandmark} />
         <SidebarOption current={current} iconSize={"40%"} name={"Assignments"} icon={faBook} />
         <SidebarOption current={current} iconSize={"40%"} name={"Schedule"} icon={faCalendar} />
       </div>
-      <UserMenu setUserMenu={setUserMenu} open={(userMenuOpen)} />
+      <UserMenu setUserMenuOpen={setUserMenuOpen} open={userMenuOpen} />
     </>
   )
 

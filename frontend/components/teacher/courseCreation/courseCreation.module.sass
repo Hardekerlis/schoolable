@@ -1,0 +1,164 @@
+@import "styles/variables"
+
+.createFirstCourseWrapper
+  width: 100%
+  height: 100vh
+  display: flex
+  justify-content: center
+  align-items: center
+  flex-direction: column
+
+  .helperText
+    color: $white
+    text-align: center
+    font-size: 1.5rem
+    font-weight: 300
+
+  .createFirstCourse
+    user-select: none
+
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    color: $white
+
+    background-color: $purple
+    width: 250px
+    height: 220px
+
+    font-size: 1rem
+
+    border-radius: 5px
+    cursor: pointer
+
+    @include transition(0.2s, ease-out)
+
+    p
+      font-size: 2rem
+      margin: 0px
+      margin-top: 20px
+
+    .plus
+      width: 100px
+      height: 100px
+
+  .createFirstCourse:hover
+    background-color: $darkPurple2
+
+.createCourse
+  position: absolute
+  bottom: 10px
+  right: 10px
+
+  user-select: none
+
+  display: flex
+  flex-direction: row
+  align-items: center
+
+  color: $white
+  font-size: 1.5rem
+
+  font-weight: 400
+
+  cursor: pointer
+
+  border-radius: 5px
+  background-color: $purple
+
+  padding: 0px 20px
+
+  @include transition(0.2s, ease-out)
+
+  .plus
+    width: 50px
+    height: 50px
+    margin-right: 20px
+
+    color: rgba($white, 0.8)
+
+.createCourse:hover
+  background-color: $darkPurple2
+
+.newCourseCreation.creationOpen
+  opacity: 1 !important
+  pointer-events: inherit !important
+
+.newCourseCreation
+  position: absolute
+  top: 0px
+  left: 0px
+  width: 100vw
+  height: 100vh
+
+  z-index: 1000
+  background-color: rgba($grey, 0.6)
+
+  display: flex
+  justify-content: center
+  align-items: center
+
+  opacity: 0
+  pointer-events: none
+
+  @include transition(0.2s, ease-out)
+
+  form
+    display: flex
+    flex-direction: column
+    align-items: center
+
+  input
+    font-size: 2rem
+    padding: 20px
+    background: none
+    border: 2px solid $purple
+    border-radius: 5px
+    outline: none
+    color: $white
+    width: 100%
+
+    @include transition(0.2s, ease-out)
+
+  input::placeholder
+    color: rgba($white, 0.75)
+
+  input:hover, input:focus
+    background-color: rgba($white, 0.15)
+
+  .buttonContainer
+    width: 100%
+    position: relative
+
+  button
+    position: absolute
+    width: auto
+    margin-top: 20px
+    font-size: 2rem
+    padding: 10px 20px
+
+    background: none
+    border: none
+    outline: none
+
+    color: $white
+    background-color: rgba($green, 0.7)
+    cursor: pointer
+
+    border-radius: 5px
+    @include transition(0.2s, ease-out)
+
+  button:hover
+    background-color: rgba($green, 1)
+
+  //exit button
+  button:first-of-type
+     left: 0px
+     background-color: rgba($red, 0.7)
+
+  button:first-of-type:hover
+    background-color: rgba($red, 1)
+
+  button:last-of-type
+    right: 0px
