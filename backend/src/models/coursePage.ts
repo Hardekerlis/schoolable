@@ -32,22 +32,27 @@ export interface CoursePageDoc extends mongoose.Document {
 
 const coursePageSchema = new mongoose.Schema(
   {
-    phases: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'phases',
-    },
-    menu: {
-      icon: String,
-      access: [String],
-      title: String,
-      actions: {
-        actionType: {
-          type: String,
-          enum: Object.values(ActionTypes),
+    phases: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'phases',
+        default: '',
+      },
+    ],
+    menu: [
+      {
+        icon: String,
+        access: [String],
+        title: String,
+        removeable: Boolean,
+        actions: {
+          actionType: {
+            type: String,
+            enum: Object.values(ActionTypes),
+          },
         },
       },
-      dropdown: {}, // Needs work - how to allow for dropdowns
-    },
+    ],
     description: {
       type: String,
       default: '',

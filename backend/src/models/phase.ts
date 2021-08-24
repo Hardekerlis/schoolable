@@ -6,13 +6,13 @@ import { PhaseItemDoc } from './phaseItem';
 
 interface PhaseAttributes {
   name: string;
-  phaseItems: PhaseItemDoc[];
-  description: string;
-  locked: boolean; // Is the phase locked but visible to students
-  unlockOn: Date; // What date should the phase be unlocked
-  hidden: boolean; // Is the phase visible to students
-  visibleOn: Date; // What date shoukd the phase be visible
-  lockOn: Date; // When should the phase be locked
+  phaseItems?: PhaseItemDoc[];
+  descriptiond?: string;
+  locked?: boolean; // Is the phase locked but visible to students
+  unlockOn?: Date; // What date should the phase be unlocked
+  hidden?: boolean; // Is the phase visible to students
+  visibleOn?: Date; // What date shoukd the phase be visible
+  lockOn?: Date; // When should the phase be locked
   upForDeletion?: Date;
 }
 
@@ -22,13 +22,13 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 
 export interface PhaseDoc extends mongoose.Document {
   name: string;
-  phaseItems: PhaseItemDoc[];
-  description: string;
-  locked: boolean; // Is the phase locked but visible to students
-  unlockOn: Date; // What date should the phase be unlocked
-  hidden: boolean; // Is the phase visible to students
-  visibleOn: Date; // What date shoukd the phase be visible
-  lockOn: Date; // When should the phase be locked
+  phaseItems?: PhaseItemDoc[];
+  descriptiond?: string;
+  locked?: boolean; // Is the phase locked but visible to students
+  unlockOn?: Date; // What date should the phase be unlocked
+  hidden?: boolean; // Is the phase visible to students
+  visibleOn?: Date; // What date shoukd the phase be visible
+  lockOn?: Date; // When should the phase be locked
   upForDeletion?: Date;
 }
 

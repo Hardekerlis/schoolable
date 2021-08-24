@@ -81,6 +81,7 @@ createCourseRouter.post(
         owner: owner.name,
       });
     } catch (err) {
+      console.error(err);
       logger.error(
         `Ran into an error while trying to save coursePage. Error message: ${err}`,
       );
