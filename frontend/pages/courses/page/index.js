@@ -82,20 +82,38 @@ const CoursePage = ({ serverErrors, course }) => {
       //handle actions
       for(let action of obj.actions) {
 
-        if(action.actionType === 'rightClick') {
+        console.log(action);
 
-          actionsToAdd.push({
-            id: id,
-            type: 'contextmenu',
-            fn: (evt) => {
-              evt.preventDefault();
-              console.log("gjeapgjae")
-            }
-          })
+        let internalType = ''
 
-          isRightClickable = true;
-
+        switch(action.actionType) {
+          case 'rightClick':
+            internalType = 'contextmenu';
+            isRightClickable = true;
+            break;
+          case 'leftClick':
+            internalType = 'click';
+            break;
+          default:
+            console.warn("invalid or unhandled actionType: " + action.actionType);
+            internalType = 'click';
+            break;
         }
+
+        actionsToAdd.push({
+          id: id,
+          type: internalType,
+          fn: (evt) => {
+            evt.preventDefault();
+
+            if(action.hasOwnProperty("goTo")) {
+
+              parseActionGoTo(action.goTo);
+
+            }
+
+          }
+        })
 
       }
 
@@ -116,6 +134,21 @@ const CoursePage = ({ serverErrors, course }) => {
 
 
   }, [])
+
+  const parseActionGoTo = (path) => {
+
+    if(path.includes('this.')) {
+      //redirect to a subpage in this course
+      path = path.replace('this.', '');
+
+      //HANDLE
+      console.log(path);
+
+    }else {
+      console.warn('unhandled path (goTo menu action)');
+    }
+
+  }
 
   useEffect(() => {
 
