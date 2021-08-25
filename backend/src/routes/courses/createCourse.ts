@@ -68,7 +68,7 @@ createCourseRouter.post(
           access: ['all'],
           actions: [
             {
-              actionType: ActionTypes.LeftClick,
+              actionType: ActionTypes.RightClick,
               goTo: 'this.overview',
             },
           ],
