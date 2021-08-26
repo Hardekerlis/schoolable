@@ -46,7 +46,9 @@ fetchCourseRouter.get(
 
     if (!user) {
       logger.debug('No user found with the id supplied in cookie');
-      throw new BadRequestError('No user found');
+      throw new BadRequestError(
+        "Your account couldn't be found, please logout and in again",
+      );
     }
 
     if (user.courses.length === 0) {
