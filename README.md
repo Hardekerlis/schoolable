@@ -52,3 +52,5 @@ Is it locked/visible for user should be middleware
   - Embedded links. (Youtube videos, tweets (maybe), wikipedia pages, pdf, articles, etc)
 - Completed icon (checkmark)
 - Unlocked after finishing or interacting with... This can be a link or task
+
+#### https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
