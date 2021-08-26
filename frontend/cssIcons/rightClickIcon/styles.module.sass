@@ -1,0 +1,36 @@
+@import "styles/variables"
+
+
+.rightClickIcon
+  width: 62px
+  height: 94px
+  position: relative
+
+  .left, .right
+    background-color: $white
+    width: calc(100%/2 - 8%)
+    height: 33%
+    position: absolute
+    top: 0px
+    border-radius: 10px
+
+  .left
+    left: 0px
+    border-top-left-radius: 50px
+
+  .right
+    right: 0px
+    border-top-right-radius: 50px
+    background-color: transparent
+    border: 2px solid $white
+
+  .base
+    width: 100%
+    height: calc(100% - 33% - 12%)
+    background-color: $white
+    position: absolute
+    left: 0px
+    bottom: 0px
+    border-radius: 5px
+    border-bottom-left-radius: 50px
+    border-bottom-right-radius: 50px

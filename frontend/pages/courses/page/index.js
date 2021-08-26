@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+import { nanoid } from 'nanoid'
+
+
 import Request from 'helpers/request.js';
 
 import getCookies from 'helpers/getCookiesServer.js';
@@ -15,6 +18,8 @@ import { Prompt } from 'helpers/prompt';
 
 import { Sidebar } from 'components';
 
+import { RightClickIcon } from 'cssIcons'
+
 import styles from './coursePage.module.sass';
 
 
@@ -25,6 +30,7 @@ export const getServerSideProps = async(ctx) => {
   let request = new Request(`/api/course/${ctx.query.id}`).get().json().cookie({sessionId});
   let res = await request.send();
 
+  //200 is the expected status code
   const serverErrors = handleErrors(200, res);
   if(serverErrors.isProps) return serverErrors.propsContainer;
 
@@ -53,29 +59,110 @@ const CoursePage = ({ serverErrors, course }) => {
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
-  console.log(course)
 
-  course.coursePage.description = "a desc"
+  // course.coursePage.description = "a desc"
 
   let [menuItems, setMenuItems] = useState([]);
+  let [menuItemsActions, setMenuItemsActions] = useState([]);
 
   useEffect(() => {
 
+    let actionsToAdd = [];
+
     setMenuItems(course.coursePage.menu.map((obj, index) => {
 
-      console.log(obj)
+      let className = styles.menuOption;
+
+      if(index === 0) className = `${styles.menuOption} ${styles.menuOptionSelected}`
+
+      let isRightClickable = false;
+
+      let id = "courseMenuId_" + nanoid(8);
+
+      //handle actions
+      for(let action of obj.actions) {
+
+        console.log(action);
+
+        let internalType = ''
+
+        switch(action.actionType) {
+          case 'rightClick':
+            internalType = 'contextmenu';
+            isRightClickable = true;
+            break;
+          case 'leftClick':
+            internalType = 'click';
+            break;
+          default:
+            console.warn("invalid or unhandled actionType: " + action.actionType);
+            internalType = 'click';
+            break;
+        }
+
+        actionsToAdd.push({
+          id: id,
+          type: internalType,
+          fn: (evt) => {
+            evt.preventDefault();
+
+            if(action.hasOwnProperty("goTo")) {
+
+              parseActionGoTo(action.goTo);
+
+            }
+
+          }
+        })
+
+      }
 
       return(
 
-        <div className={styles.menuOption}>
+        <div id={id} className={className} key={index}>
           <p>{obj.title}</p>
+          { isRightClickable &&
+            <RightClickIcon className={styles.rightClickIcon} />
+          }
         </div>
 
       )
 
     }))
 
+    setMenuItemsActions(actionsToAdd)
+
+
   }, [])
+
+  const parseActionGoTo = (path) => {
+
+    if(path.includes('this.')) {
+      //redirect to a subpage in this course
+      path = path.replace('this.', '');
+
+      //HANDLE
+      console.log(path);
+
+    }else {
+      console.warn('unhandled path (goTo menu action)');
+    }
+
+  }
+
+  useEffect(() => {
+
+    if(menuItemsActions.length !== 0) {
+
+      for(let action of menuItemsActions) {
+
+        document.getElementById(action.id).addEventListener(action.type, action.fn)
+
+      }
+
+    }
+
+  }, [menuItemsActions])
 
   return (
     <Layout>
@@ -93,9 +180,15 @@ const CoursePage = ({ serverErrors, course }) => {
 
           <div className={`hoz_line ${styles.hoz_line}`}></div>
 
+          <div className={styles.courseMenu}>
+            {menuItems}
+          </div>
+
+
           { course.coursePage.description &&
             <div className={styles.descDivider}>
               <div className={styles.descContainer}>
+                <p className={styles.descTitle}>Course description</p>
                 <p>{course.coursePage.description}</p>
               </div>
             </div>
@@ -109,11 +202,8 @@ const CoursePage = ({ serverErrors, course }) => {
 
             </div>
 
-            <div className={styles.mainDivider}></div>
 
-            <div className={styles.courseMenu}>
 
-            </div>
 
           </div>
 
@@ -123,6 +213,9 @@ const CoursePage = ({ serverErrors, course }) => {
 
     </Layout>
   )
+
+//  <div className={styles.mainDivider}></div>
+
 
 }
 

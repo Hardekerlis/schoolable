@@ -1,6 +1,8 @@
 @import "styles/variables"
 
 $pagePadding: 30px
+$contentWidth: 60%
+$menuWidth: 25%
 
 .wrapper
   display: flex
@@ -39,11 +41,12 @@ $pagePadding: 30px
 .descDivider
   width: 100%
   height: auto
+  display: inline-block
 
 .descContainer
   width: auto
   height: auto
-  padding: 10px
+  padding: 10px 20px
   margin: 0px
   margin-top: 30px
 
@@ -59,6 +62,10 @@ $pagePadding: 30px
   p
     width: auto
 
+.descTitle
+  font-weight: 500
+  margin: 0px
+  margin-top: 5px
 
 .mainContainer
   margin-top: 30px
@@ -71,29 +78,65 @@ $pagePadding: 30px
   flex-direction: row
 
 .content
-  width: 60%
+  width: 100%
 
-.mainDivider
-  width: 10%
-  height: auto
+// .mainDivider
+//   width: calc(100% - #{$contentWidth} - #{$menuWidth})
+//   height: auto
 
 .courseMenu
-  width: 30%
+  display: flex
+  flex-direction: row
+  width: auto
   height: auto
-  border: 1px solid $purple
-  border-radius: 5px
+  // border: 1px solid $purple
+  // border-radius: 5px
+
+.menuOption
+  width: auto
+  min-width: 100px
+  height: auto
+  color: $white
+  text-align: center
+  font-size: 1.25rem
+  padding: 12px
+
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: center
+
+  border-bottom: 2px solid $purple
+  border-top: none
+
+  border-right: 2px solid $purple
+
+  cursor: pointer
+  user-select: none
+
+  @include transition(0.2s, ease-out)
+
+  p
+    margin: 0px
+
+.menuOption.menuOptionSelected
+  background-color: rgba($purple, 0.4)
+
+.menuOption:hover
+  background-color: rgba($purple, 0.7)
+
+.menuOption:first-of-type
+  border-bottom-left-radius: 5px
+  border-left: 2px solid $purple
+
+.menuOption:last-of-type
+  border-bottom-right-radius: 5px
 
 
-
-
-
-
-
-
-
-
-
-
+.rightClickIcon
+  width: 15px
+  height: 22px
+  margin-left: 10px
 
 
 

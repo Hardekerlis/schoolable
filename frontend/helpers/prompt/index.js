@@ -11,7 +11,7 @@ let promptRefCallbacks = [];
 
 const setPromptRef = elem => {
 
-  console.log("setting prompt ref", elem)
+  // console.log("setting prompt ref", elem)
 
   promptRef = elem;
 
