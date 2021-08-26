@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import { nanoid } from 'nanoid'
+import { useRouter } from 'next/router';
+
 
 
 import Request from 'helpers/request.js';
@@ -16,9 +17,8 @@ import Layout from 'layouts/default';
 
 import { Prompt } from 'helpers/prompt';
 
-import { Sidebar } from 'components';
+import { Sidebar, CourseMenuItems } from 'components';
 
-import { RightClickIcon } from 'cssIcons'
 
 import styles from './coursePage.module.sass';
 
@@ -40,16 +40,23 @@ export const getServerSideProps = async(ctx) => {
     course = res.course;
   }
 
+  if(!ctx.query.hasOwnProperty('sub')) {
+    ctx.query.sub = 'overview';
+  }
+
   return {
     props: {
       serverErrors,
-      course
+      course,
+      sub: ctx.query.sub
     }
   }
 
 }
 
-const CoursePage = ({ serverErrors, course }) => {
+const CoursePage = ({ serverErrors, course, sub }) => {
+
+  const router = useRouter();
 
   if(serverErrors !== false) {
     Prompt.error(serverErrors);
@@ -57,112 +64,12 @@ const CoursePage = ({ serverErrors, course }) => {
 
   const userData = getUserData();
 
+  const isUserOwnerOfPage = (userData.id === course.owner.id) ? true : false;
+
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
 
   // course.coursePage.description = "a desc"
-
-  let [menuItems, setMenuItems] = useState([]);
-  let [menuItemsActions, setMenuItemsActions] = useState([]);
-
-  useEffect(() => {
-
-    let actionsToAdd = [];
-
-    setMenuItems(course.coursePage.menu.map((obj, index) => {
-
-      let className = styles.menuOption;
-
-      if(index === 0) className = `${styles.menuOption} ${styles.menuOptionSelected}`
-
-      let isRightClickable = false;
-
-      let id = "courseMenuId_" + nanoid(8);
-
-      //handle actions
-      for(let action of obj.actions) {
-
-        console.log(action);
-
-        let internalType = ''
-
-        switch(action.actionType) {
-          case 'rightClick':
-            internalType = 'contextmenu';
-            isRightClickable = true;
-            break;
-          case 'leftClick':
-            internalType = 'click';
-            break;
-          default:
-            console.warn("invalid or unhandled actionType: " + action.actionType);
-            internalType = 'click';
-            break;
-        }
-
-        actionsToAdd.push({
-          id: id,
-          type: internalType,
-          fn: (evt) => {
-            evt.preventDefault();
-
-            if(action.hasOwnProperty("goTo")) {
-
-              parseActionGoTo(action.goTo);
-
-            }
-
-          }
-        })
-
-      }
-
-      return(
-
-        <div id={id} className={className} key={index}>
-          <p>{obj.title}</p>
-          { isRightClickable &&
-            <RightClickIcon className={styles.rightClickIcon} />
-          }
-        </div>
-
-      )
-
-    }))
-
-    setMenuItemsActions(actionsToAdd)
-
-
-  }, [])
-
-  const parseActionGoTo = (path) => {
-
-    if(path.includes('this.')) {
-      //redirect to a subpage in this course
-      path = path.replace('this.', '');
-
-      //HANDLE
-      console.log(path);
-
-    }else {
-      console.warn('unhandled path (goTo menu action)');
-    }
-
-  }
-
-  useEffect(() => {
-
-    if(menuItemsActions.length !== 0) {
-
-      for(let action of menuItemsActions) {
-
-        document.getElementById(action.id).addEventListener(action.type, action.fn)
-
-      }
-
-    }
-
-  }, [menuItemsActions])
 
   return (
     <Layout>
@@ -181,7 +88,7 @@ const CoursePage = ({ serverErrors, course }) => {
           <div className={`hoz_line ${styles.hoz_line}`}></div>
 
           <div className={styles.courseMenu}>
-            {menuItems}
+            <CourseMenuItems styles={styles} course={course} sub={sub} />
           </div>
 
 
@@ -201,9 +108,6 @@ const CoursePage = ({ serverErrors, course }) => {
 
 
             </div>
-
-
-
 
           </div>
 
