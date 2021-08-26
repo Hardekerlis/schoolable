@@ -35,6 +35,8 @@ export const getServerSideProps = async(ctx) => {
   let request = new Request('/api/course').get().json().cookie({sessionId});
   let res = await request.send();
 
+  // console.log(res)
+
   let courses = [];
 
   const serverErrors = handleErrors(200, res);
@@ -44,6 +46,8 @@ export const getServerSideProps = async(ctx) => {
   if(serverErrors === false) {
     courses = res.courses;
   }
+
+  // console.log("serverErrors", serverErrors)
 
   return {
     props: {
@@ -93,7 +97,7 @@ const Courses = ({ courses, serverErrors }) => {
 
       let courseName = firstLetterToUpperCase(course.name);
 
-      const courseClick = () => router.push(`/courses/page?id=${course.id}`);
+      const courseClick = () => router.push(`/courses/page?id=${course.id}&sub=overview`);
 
       return (
         <div onClick={courseClick} className={styles.course} key={index}>

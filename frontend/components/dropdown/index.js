@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Dropdown = ({ onChange, defaultValue, options, height, className, currentClassName, arrowClassName, menuClassName, optionClassName }) => {
 
+  if(!options) return (<div></div>)
+
   const dropdownRef = React.useRef();
 
   const dropdownInitialHeight = (height) ? height : "80px";

@@ -44,7 +44,7 @@ const Login = () => {
 
   let [credentials, setCredentials] = useState({
     email: 'teacherEmail@myTeacherEmail.teach',
-    password: 'a62328d9-9cb0-4a9f-97e7-76ce75443ca4',
+    password: '7ae1b14a-db70-4842-a1ba-511891400bfd',
     userType: 'teacher'
   })
 

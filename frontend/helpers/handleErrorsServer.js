@@ -34,6 +34,8 @@ const handleErrors = (successStatus, response) => {
     errors = checkSpecificStatuses(status)
     if(errors.isProps) return errors;
 
+    console.log("ERRORS:", errors)
+
     if(errors === false) {
 
       if(response.hasOwnProperty("errors")) {
@@ -41,6 +43,8 @@ const handleErrors = (successStatus, response) => {
       }else {
         errors = ['An unexpected error occurred. Please try again later.'];
       }
+
+      console.log("ERRORS:", errors)
 
     }
 
