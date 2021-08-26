@@ -69,7 +69,7 @@ createCourseRouter.post(
           actions: [
             {
               actionType: ActionTypes.RightClick,
-              goTo: 'this.overview',
+              goTo: 'this.asffffffffffffffffffffffff',
             },
           ],
           removeable: false,
@@ -81,7 +81,7 @@ createCourseRouter.post(
           actions: [
             {
               actionType: ActionTypes.LeftClick,
-              goTo: 'this.overview',
+              goTo: 'this.asdasdasda',
             },
           ],
           removeable: false,
@@ -93,7 +93,7 @@ createCourseRouter.post(
           actions: [
             {
               actionType: ActionTypes.LeftClick,
-              goTo: 'this.overview',
+              goTo: 'this.ale_123',
             },
           ],
           removeable: false,
