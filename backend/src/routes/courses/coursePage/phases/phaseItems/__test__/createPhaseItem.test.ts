@@ -221,3 +221,54 @@ it('Phase is locked and not visible', async () => {
   expect(phaseItemRes.body.phaseItem.locked).toEqual(true);
   expect(phaseItemRes.body.phaseItem.visible).toEqual(false);
 });
+
+import Course from '../../../../../../models/course';
+it('Returns 2 phaseItems from course if 2 phaseItems are created', async () => {
+  const [cookie] = await global.getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: 'Math' });
+
+  const phaseRes = await request(app)
+    .post(`/api/course/${res.body.course.id}/createPhase`)
+    .set('Cookie', cookie)
+    .send({ name: 'First phase' })
+    .expect(201);
+
+  await request(app)
+    .post(
+      path
+        .replace('%courseId%', res.body.course.id)
+        .replace('%phase%', phaseRes.body.phase.id),
+    )
+    .set('Cookie', cookie)
+    .send({
+      name: 'First phaseItem',
+    });
+
+  await request(app)
+    .post(
+      path
+        .replace('%courseId%', res.body.course.id)
+        .replace('%phase%', phaseRes.body.phase.id),
+    )
+    .set('Cookie', cookie)
+    .send({
+      name: 'Second phaseItem',
+    });
+
+  const course = await Course.findById(res.body.course.id).populate({
+    path: 'coursePage',
+    populate: {
+      path: 'phases',
+      populate: {
+        path: 'phaseItems',
+      },
+    },
+  });
+
+  // @ts-ignore
+  expect(course.coursePage.phases[0].phaseItems.length).toEqual(2);
+});
