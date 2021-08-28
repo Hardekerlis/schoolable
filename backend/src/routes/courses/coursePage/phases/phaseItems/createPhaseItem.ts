@@ -2,6 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
+import mongoose from 'mongoose';
 
 const createPhaseItemRouter = Router();
 
@@ -35,6 +36,18 @@ createPhaseItemRouter.post(
     }
 
     const { courseId, phaseId } = req.params;
+
+    if (!mongoose.isValidObjectId(courseId)) {
+      throw new BadRequestError(
+        'The supplied course id is not a valid ObjectId',
+      );
+    }
+
+    if (!mongoose.isValidObjectId(phaseId)) {
+      throw new BadRequestError(
+        'The supplied phase id is not a valid ObjectId',
+      );
+    }
 
     const course = await Course.findById(courseId).populate({
       path: 'coursePage',
