@@ -3,6 +3,8 @@ import Grid from './grid'
 import Sidebar from './sidebar'
 import Dropdown from './dropdown'
 import CourseMenuItems from './courseMenuItems'
+import CoursePageRender from './coursePageRender'
+//import pos
 
 
 import { CourseCreation } from './teacher'
@@ -14,5 +16,7 @@ export {
   Sidebar,
   CourseCreation,
   Dropdown,
-  CourseMenuItems
+  CourseMenuItems,
+  CoursePageRender,
+  //export pos
 }

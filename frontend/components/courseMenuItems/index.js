@@ -109,6 +109,10 @@ const CourseMenuItems = ({ course, sub }) => {
 
               parseActionGoTo(action.goTo);
 
+            }else {
+
+              console.warn("unhandled action. action:", action)
+
             }
 
           }
