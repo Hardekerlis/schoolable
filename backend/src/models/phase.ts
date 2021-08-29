@@ -7,7 +7,7 @@ import { PhaseItemDoc } from './phaseItem';
 interface PhaseAttributes {
   name: string;
   phaseItems?: PhaseItemDoc[];
-  descriptiond?: string;
+  description?: string;
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
   hidden?: boolean; // Is the phase visible to students
@@ -23,7 +23,7 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 export interface PhaseDoc extends mongoose.Document {
   name: string;
   phaseItems?: PhaseItemDoc[];
-  descriptiond?: string;
+  description?: string;
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
   hidden?: boolean; // Is the phase visible to students
@@ -38,10 +38,11 @@ const phaseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phaseItem: [
+    phaseItems: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'phaseItems',
+        default: [],
       },
     ],
     description: {
