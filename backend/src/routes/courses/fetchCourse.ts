@@ -86,7 +86,12 @@ fetchCourseRouter.get(
 
     logger.debug('Fetching course');
     const course = await Course.findById(courseId)
-      .populate('coursePage')
+      .populate({
+        path: 'coursePage',
+        populate: {
+          path: 'phases',
+        },
+      })
       .populate({ path: 'owner', select: 'name' });
 
     if (!course) {
