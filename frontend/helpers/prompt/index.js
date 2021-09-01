@@ -11,6 +11,8 @@ let promptRefCallbacks = [];
 
 const setPromptRef = elem => {
 
+  let myElem = elem;
+
   // console.log("setting prompt ref", elem)
 
   promptRef = elem;
@@ -23,7 +25,7 @@ const setPromptRef = elem => {
 
 const PromptRender = () => {
 
-  promptRef = React.useRef();
+  // promptRef = React.useRef();
 
   return (
     <div ref={setPromptRef} className={styles.wrapper}>
@@ -168,33 +170,40 @@ class Prompt_ {
   async success(msg) {
     await this.handleRef();
 
+
     this.openBox(msg, 'success');
 
   }
 
 
+  async callRefHandler() {
+    // console.log("awaiting prompt ref")
+    await new Promise((resolve, reject) => {
+      promptRefCallbacks.push(() => {
+        resolve();
+      })
+    })
+  }
 
   async handleRef() {
 
     // console.log(promptRef, "ref")
 
-    if(!promptRef || !promptRef.current) {
+    if(promptRef.hasOwnProperty("current")) {
+      if(!promptRef.current) {
+        await this.callRefHandler();
+      }
+    }else if(!promptRef) {
 
-      // console.log("awaiting prompt ref")
-
-      await new Promise((resolve, reject) => {
-
-
-
-        promptRefCallbacks.push(() => {
-          resolve();
-        })
-      })
+      await this.callRefHandler();
 
     }
 
+    if(this.elem) return;
+
+    // console.log(this.elem, promptRef, "loggegege");
+
     this.elem = promptRef;
-    console.log(this.elem)
     this.box = this.elem?.children[0];
 
   }

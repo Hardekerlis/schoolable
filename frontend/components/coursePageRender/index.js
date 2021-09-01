@@ -10,7 +10,7 @@ import Layout from 'layouts/default';
 
 import { Prompt } from 'helpers/prompt';
 
-import { Sidebar, CourseMenuItems } from 'components';
+import { Sidebar, CourseMenuItems, SampleCreationSystem } from 'components';
 
 import { firstLetterToUpperCase } from 'helpers/misc.js'
 
@@ -20,13 +20,50 @@ import styles from './coursePageRender.module.sass';
 const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
   const router = useRouter();
-  
+
+  const { coursePage } = course;
+  const { phases } = coursePage;
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
   const editCourseClick = () => {
 
     router.push(`/courses/page/edit?id=${router.query.id}`);
+
+  }
+
+  const fetchPhases = async() => {
+
+    // let request = new Request('/api/course').get().json();
+    // let response = await request.send();
+    //
+    // if(response.errors === false) {
+    //
+    //   courses = response.courses;
+    //
+    //   setCurrentCourses(courses)
+    //
+    // }else {
+    //   Prompt.error(response.errors);
+    // }
+
+  }
+
+  const onPhaseCreation = async(response) => {
+    // console.log(response);
+
+    if(response.errors === false) {
+
+      await fetchPhases();
+
+      Prompt.success('Phase created!')
+      return true;
+    }else {
+      Prompt.error(response.errors)
+      return false;
+    }
+
+    //return false for error.
 
   }
 
@@ -73,6 +110,9 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
             <div className={styles.content}>
 
+              { isEditing &&
+                <SampleCreationSystem requestCallback={onPhaseCreation} itemApiPath={`/api/course/${course.id}/createPhase`} currentItems={phases} itemName="Phase" noCurrentItemText="This course does currently not have any phases." />
+              }
 
 
             </div>
@@ -87,6 +127,18 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
   )
 
 }
+
+// { phases.length === 0 &&
+//   <div className={styles.createFirstPhaseWrapper}>
+//
+//     <div onClick={createNewPhase} className={styles.createFirstPhase}>
+//       <FontAwesomeIcon className={styles.plus} icon={faPlus} />
+//       <p>Create phase</p>
+//     </div>
+//     <p className={styles.helperText}>This course does currently not have any phases.<br /> Create one to start!</p>
+//
+//   </div>
+// }
 
 
 export default CoursePageRender;

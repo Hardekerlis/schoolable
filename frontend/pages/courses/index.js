@@ -13,7 +13,7 @@ import { Prompt } from 'helpers/prompt';
 
 import Layout from 'layouts/default/';
 
-import { Sidebar, CourseCreation, Dropdown } from 'components'
+import { Sidebar, SampleCreationSystem, Dropdown } from 'components'
 
 import getUserData from 'helpers/getUserData.js'
 import getCookies from 'helpers/getCookiesServer.js'
@@ -134,6 +134,24 @@ const Courses = ({ courses, serverErrors }) => {
 
   const onSortMethodChange = (val) => setSortMethod(val.value);
 
+  const onCourseCreation = async(response) => {
+
+    if(response.errors === false) {
+
+      await fetchCourses();
+
+      Prompt.success('Course created!');
+
+      return true;
+
+    }else {
+
+      Prompt.error(response.errors);
+
+      return false;
+    }
+
+  }
 
   return (
     <Layout>
@@ -173,7 +191,7 @@ const Courses = ({ courses, serverErrors }) => {
 
         { userData.userType === "teacher" &&
 
-          <CourseCreation fetchCourses={fetchCourses} currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />
+          <SampleCreationSystem firstWrapperClassName={styles.firstWrapperCourseCreation} requestCallback={onCourseCreation} itemApiPath={`/api/course/create`} currentItems={currentCourses} itemName="Course" noCurrentItemText="You currently don’t own any courses." />
 
         }
 
@@ -192,7 +210,7 @@ const Courses = ({ courses, serverErrors }) => {
 
     </Layout>
   )
-
+// <CourseCreation fetchCourses={fetchCourses} currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />
 }
 
 export default Courses;
