@@ -1,0 +1,6 @@
+# @format
+
+pleaseLogin: 'Please login before you do that'
+accountNotFound: "Your account couldn't be found, please logout and in again"
+noSessionFound: 'Session was not found. Please login before you do that'
+noAccess: "You don't have access to that"

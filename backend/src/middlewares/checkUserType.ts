@@ -1,35 +1,43 @@
 /** @format */
 
 import { Request, Response, NextFunction } from 'express';
-import { NotAuthorizedError, UserTypes } from '../library';
+import { NotAuthorizedError, UserTypes, LANG } from '../library';
 
 import { logger } from '../logger/logger';
 
 export const checkUserType = (allowedUserType: string[]) => {
   return function (req: Request, res: Response, next: NextFunction) {
-    const userType = req.currentUser?.userType;
+    try {
+      // @ts-ignore
+      const lang = req.currentUser.lang;
 
-    logger.info('Checking user type');
+      const userType = req.currentUser?.userType;
 
-    if (!userType) {
-      throw new NotAuthorizedError('Please login before you do that');
-    }
+      logger.info('Checking user type');
 
-    let isAllowed = false; // is true if users usertype is in allowedUserType array
-    for (const i of allowedUserType) {
-      if (i === userType) {
-        isAllowed = true;
-        break;
+      if (!userType) {
+        throw new NotAuthorizedError(LANG[lang].pleaseLogin);
       }
-    }
 
-    if (isAllowed) {
-      next();
-    } else {
-      res.status(401).json({
-        errors: true,
-        msg: "You don't have access to that",
-      });
+      let isAllowed = false; // is true if users usertype is in allowedUserType array
+      for (const i of allowedUserType) {
+        if (i === userType) {
+          isAllowed = true;
+          break;
+        }
+      }
+
+      if (isAllowed) {
+        next();
+      } else {
+        res.status(401).json({
+          errors: true,
+          msg: LANG[lang].noAccess,
+        });
+      }
+    } catch (err) {
+      logger.error(`Ran into an unexpected error. Error msg: ${err}`);
+      res.status(500).send();
     }
   };
 };

@@ -1,7 +1,7 @@
 /** @format */
 
 import { Request, Response, NextFunction } from 'express';
-import { NotAuthorizedError, UserTypes } from '../library';
+import { NotAuthorizedError, UserTypes, LANG } from '../library';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
@@ -10,14 +10,13 @@ var signature = require('cookie-signature');
 
 import { logger } from '../logger/logger';
 import Session from '../models/session';
-import User from '../models/user';
-import Admin from '../models/admin';
 
 export interface UserPayload {
   email: string;
   id: string;
   userType: UserTypes;
   sessionId: string;
+  lang: string;
 }
 
 declare global {
@@ -52,12 +51,18 @@ export const authenticate = async (
     }
   }
 
+  let { selectedLang } = req.cookies.selectedLangang
+    ? req.cookies
+    : req.signedCookies;
+  if (!selectedLang) selectedLang = 'ENG';
+
   // If the cookie couldnt be parsed the function returns false as in no cookie
   // or if no cookie in general was sent
   if (!sessionId) {
     logger.info("User doesn't have session cookie");
     logger.info('Authentication failed');
-    throw new NotAuthorizedError('Please login before you do that');
+
+    throw new NotAuthorizedError(LANG[selectedLang].pleaseLogin);
   }
 
   try {
@@ -69,9 +74,8 @@ export const authenticate = async (
         'No session with the session id contained in the cookie was found',
       );
       logger.info('Authentication failed');
-      throw new NotAuthorizedError(
-        'Session was not found. Please login before you do that',
-      );
+
+      throw new NotAuthorizedError(LANG[selectedLang].noSessionFound);
     }
 
     const token = session.value;

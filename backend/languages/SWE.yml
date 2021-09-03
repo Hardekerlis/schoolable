@@ -1,0 +1,6 @@
+# @format
+
+pleaseLogin: 'De behöver logga in innan du gör det där'
+accountNotFound: 'Kunde inte hitta ditt konto. Logga ut och in igen'
+noSessionFound: 'Kunde inte hitta din session. Var snäll och logga in innan du försöker igen'
+noAccess: 'Du har inte behörighet att göra det där'

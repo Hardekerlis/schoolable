@@ -5,3 +5,4 @@ export * from './winston';
 export * from './yaml';
 export * from './password';
 export * from './secret';
+export * from './loadBackendLanguage';

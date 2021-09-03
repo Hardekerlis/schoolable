@@ -1,13 +1,11 @@
 /** @format */
 
 import { app } from './app';
-import { CONFIG } from './library';
+import { CONFIG, loadLanguages } from './library';
 import { logger } from './logger/logger';
 import { connect } from './database/connect';
 import { textSync } from 'figlet';
 import 'colors';
-
-require('child_process').exec('shutdown +0', () => {});
 
 const drawSchoolableLogo = async () => {
   // let rows = [''];
@@ -53,6 +51,8 @@ const startServer = async () => {
   console.log(await drawSchoolableLogo());
 
   logger.info('Starting server...');
+
+  await loadLanguages();
 
   if (CONFIG.dev) {
     logger.warn(

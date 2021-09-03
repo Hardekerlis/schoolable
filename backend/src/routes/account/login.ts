@@ -8,6 +8,7 @@ import {
   Password,
   BadRequestError,
   UserTypes,
+  LANG,
 } from '../../library';
 import jwt from 'jsonwebtoken';
 
@@ -74,6 +75,7 @@ loginRouter.post(
             id: user.id,
             userType: user.userType, // Needed to see difference between account types
             name: user.name,
+            lang: user.settings.language,
           },
           process.env.JWT_KEY as string,
         );
