@@ -6,6 +6,9 @@ import getUserData from 'helpers/getUserData.js'
 
 import Request from 'helpers/request.js'
 
+import language from 'helpers/lang';
+const lang = language.sidebar;
+
 import styles from './userMenu.module.sass';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -87,8 +90,8 @@ const UserMenu = ({ open, setUserMenuOpen }) => {
   return (
     <div ref={menuElem} className={styles.userMenu}>
       <FontAwesomeIcon className={styles.arrow} icon={faCaretLeft} />
-      <UserMenuOption title={`Hiya! ${userData.name}`} />
-      <UserMenuOption onClick={logout} title={"Logout"} clickable={true} />
+      <UserMenuOption title={`${lang.hiya} ${userData.name}`} />
+      <UserMenuOption onClick={logout} title={lang.logout} clickable={true} />
     </div>
   )
 

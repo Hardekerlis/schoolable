@@ -16,6 +16,9 @@ import Request from 'helpers/request.js';
 
 import { Prompt } from 'helpers/prompt';
 
+import language from 'helpers/lang';
+const lang = language.login;
+
 
 import redirectAuth from 'helpers/redirectAuth.js';
 
@@ -88,15 +91,15 @@ const Login = () => {
   const selectOptions = [
     {
       value: 'teacher',
-      label: 'Teacher'
+      label: lang.teacher
     },
     {
       value: 'student',
-      label: 'Student'
+      label: lang.student
     },
     {
       value: 'legalGuardian',
-      label: 'Legal guardian'
+      label: lang.legalGuardian
     }
   ]
 
@@ -106,7 +109,7 @@ const Login = () => {
 
       <form onSubmit={submit} className={styles.form}>
 
-        <p className={styles.title}>Login</p>
+        <p className={styles.title}>{lang.pageTitle}</p>
 
         <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder="Email" />
         <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder="Password" />
@@ -124,7 +127,7 @@ const Login = () => {
           onChange={(value) => credentialsChange(value, "userType")}
         />
 
-        <button className={styles.submitButton} type="submit">Login</button>
+        <button className={styles.submitButton} type="submit">{lang.loginBtn}</button>
 
       </form>
 
