@@ -49,6 +49,9 @@
     "teacher": "Teacher",
     "student": "Student",
     "legalGuardian": "Legal guardian",
-    "loginBtn": "Login"
+    "loginBtn": "Login",
+    "unexpected": "Unexpected error. Please login again.",
+    "email": "Email",
+    "password": "Password"
   }
 }

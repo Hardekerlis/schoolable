@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 
 import eng from './eng.json';
+import swe from './swe.json';
 
 let cookieValue = Cookies.get('selectedLang');
 
@@ -12,7 +13,8 @@ const setDefaultCookie = () => {
 if(!cookieValue) setDefaultCookie();
 
 const langs = {
-  eng
+  eng,
+  swe
 }
 
 if(!langs.hasOwnProperty(cookieValue)) setDefaultCookie();

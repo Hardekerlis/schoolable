@@ -97,7 +97,7 @@ const SampleCreationSystem = ({ firstWrapperClassName, requestCallback, currentI
 
           <div onClick={openNewItemCreation} className={styles.createItem}>
             <FontAwesomeIcon className={styles.plus} icon={faPlus} />
-            <p>Create {lowerFirstLetter(itemName)}</p>
+            <p>{lang.create} {lowerFirstLetter(itemName)}</p>
           </div>
 
         </>

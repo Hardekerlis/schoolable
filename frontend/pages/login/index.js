@@ -64,7 +64,7 @@ const Login = () => {
       user = JSON.stringify(res.user);
       Cookies.set('user', user);
     }catch(e) {
-      return Prompt.error("Unexpected error. Please login again.");
+      return Prompt.error(lang.unexpected);
     }
 
     if(res.errors) return Prompt.error(res.errors);
@@ -111,8 +111,8 @@ const Login = () => {
 
         <p className={styles.title}>{lang.pageTitle}</p>
 
-        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder="Email" />
-        <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder="Password" />
+        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder={lang.email} />
+        <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder={lang.password} />
 
         <Dropdown
           className={styles.select}
@@ -137,11 +137,5 @@ const Login = () => {
 
 
 }
-
-// <select value={credentials.userType} onChange={(event) => credentialsChange(event, "userType")}>
-//   <option value="teacher">Teacher</option>
-//   <option value="student">Student</option>
-//   <option value="legalGuardian">Legal guardian</option>
-// </select>
 
 export default Login;
