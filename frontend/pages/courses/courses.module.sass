@@ -2,12 +2,26 @@
 
 .wrapper
   display: flex
+  flex-direction: row
   position: relative
+
+.container
+  display: flex
+  flex-direction: column
+
+.pageTitle
+  font-size: 3.5rem
+  font-weight: 600
+  color: $white
+
+  margin: 10px
+  margin-left: 40px
 
 .sortBy
   position: absolute
-  top: 0px
-  left: calc(#{$sidebarWidth} + 40px)
+  top: 20px
+  right: 40px
+  // left: calc(#{$sidebarWidth} + 40px)
   z-index: 10
   display: flex
   flex-direction: row
@@ -40,12 +54,13 @@
       background-color: rgba($white, 0.2)
 
 .courses
-  margin-top: 18px
+  margin-top: 10px
   display: block
   flex-wrap: wrap
 
   padding: 40px
   padding-top: 0px
+  padding-bottom: 80px 
 
   height: 100vh
   width: 100%
@@ -57,7 +72,8 @@ $coursePadding: 20px
 
 .course
   display: inline-block
-  margin-top: 40px
+  // margin-top: 40px
+  margin-bottom: 40px
 
   padding: $coursePadding
 

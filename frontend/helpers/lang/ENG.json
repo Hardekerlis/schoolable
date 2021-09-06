@@ -21,7 +21,8 @@
     "editCourse": "Edit course",
     "phaseItemName": "Phase",
     "courseMissingPhases": "This course does currently not have any phases.",
-    "editPhaseText": "Edit this phase"
+    "editPhaseText": "Edit this phase",
+    "phaseNameEdit": "Edit phase name:"
   },
   "courseMenu": {
     "overview": "Overview"

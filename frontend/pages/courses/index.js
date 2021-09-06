@@ -162,9 +162,13 @@ const Courses = ({ courses, serverErrors }) => {
 
         <Sidebar />
 
+
+
         { coursesForRender.length !== 0 &&
 
-          <>
+          <div className={styles.container}>
+
+            <p className={styles.pageTitle}>Courses</p>
 
             <div className={styles.sortBy}>
               <p className={styles.text}>{lang.courses.sortBy}</p>
@@ -187,7 +191,7 @@ const Courses = ({ courses, serverErrors }) => {
 
             </div>
 
-          </>
+          </div>
 
         }
 

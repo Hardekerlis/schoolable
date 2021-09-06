@@ -19,7 +19,6 @@ import { firstLetterToUpperCase } from 'helpers/misc.js'
 import language from 'helpers/lang';
 const lang = language.coursePage;
 
-
 import styles from './coursePageRender.module.sass';
 
 const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
@@ -30,6 +29,9 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
   let [phases, setPhases] = useState(coursePage.phases);
   let [phasesRender, setPhasesRender] = useState();
+
+  let [phaseChangesSaved, setPhaseChangesSaved] = useState(true);
+  let phaseChanges = 0;
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
@@ -63,7 +65,21 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
   }
 
+  const handlePhaseChanges = (num) => {
+
+    phaseChanges += num;
+
+    if(phaseChanges !== 0) {
+      setPhaseChangesSaved(false);
+    }else if(phaseChanges === 0) {
+      setPhaseChangesSaved(true);
+    }
+
+  }
+
   const updateTitleOnServer = async(value, phaseIndex) => {
+
+    handlePhaseChanges(1);
 
     let phaseId = phases[phaseIndex].id;
 
@@ -71,6 +87,8 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
       name: value
     }).json().put();
     let res = await req.send();
+
+    handlePhaseChanges(-1);
 
   }
 
@@ -95,16 +113,28 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
     setPhasesRender(phases.map((obj, index) => {
       return (
-        <div className={styles.phasesEdit} key={index}>
-          <div className={styles.textContainer}>
-            <input onChange={(event) => onPhaseTitleChange(event, index)} value={phaseTitles[index]} />
-            <p>{lang.editPhaseText}</p>
+        <div className={styles.phaseEdit} key={index}>
+          <p className={styles.name}>{phaseTitles[index]}</p>
+          <div className={styles.editBtn}>
+            <p>Edit</p>
           </div>
         </div>
       )
     }))
 
   }, [phaseTitles])
+
+
+// <div className={styles.phaseEdit} key={index}>
+//   <div className={styles.textContainer}>
+//     <p>{lang.phaseNameEdit}</p>
+//     <input onChange={(event) => onPhaseTitleChange(event, index)} value={phaseTitles[index]} />
+//   </div>
+//   <div className={styles.edit}>
+//     <p>{lang.editPhaseText}</p>
+//   </div>
+// </div>
+
 
   //make spinning thingy that tells the user when all their changes have saved
 
@@ -173,10 +203,34 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
           <div className={styles.mainContainer}>
 
+            { isEditing &&
+
+              <div className={styles.changesSaveStatus}>
+
+                { phaseChangesSaved ?
+
+                  <p>Changes saved.</p>
+
+                  :
+
+                  <p>Saving changes...</p>
+
+
+                }
+
+              </div>
+
+            }
+
             <div className={styles.content}>
 
               { isEditing &&
-                <SampleCreationSystem requestCallback={onPhaseCreation} itemApiPath={`/api/course/${course.id}/createPhase`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
+
+                <>
+                  <SampleCreationSystem requestCallback={onPhaseCreation} itemApiPath={`/api/course/${course.id}/createPhase`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
+
+                </>
+
               }
 
               {phasesRender}

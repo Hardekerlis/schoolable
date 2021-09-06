@@ -16,12 +16,12 @@
     "sortDefaultName": "Standard"
   },
   "coursePage": {
-    "phaseCreated": "Phase skapad!",
+    "phaseCreated": "Fas skapad!",
     "descriptionTitle": "Kurs beskrivning",
     "editCourse": "Redigera kursen",
-    "phaseItemName": "Phase",
-    "courseMissingPhases": "Den här kursen har för tillfället inga phases.",
-    "editPhaseText": "Redigera den här phase"
+    "phaseItemName": "Fas",
+    "courseMissingPhases": "Den här kursen har för tillfället inga faser.",
+    "editPhaseText": "Redigera den här fas"
   },
   "courseMenu": {
     "overview": "Översikt"
