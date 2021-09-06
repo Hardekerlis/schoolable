@@ -47,18 +47,6 @@ loginRouter.post(
         return LANG[lang].wrongPasswordLength
           .replace('%minPasswordLength%', CONFIG.passwords.length.min)
           .replace('%maxPasswordLength%', CONFIG.passwords.length.max);
-      })
-      .bail() // Stop the check if the password is not the required length
-      .custom((value, { req }) => {
-        logger.debug('Comparing password and confirmPassword');
-        if (value !== req.body.confirmPassword) {
-          logger.info("The passwords doesn't match");
-          const { lang } = req;
-          throw new Error(LANG[lang].passwordsDontMatch);
-        } else {
-          logger.debug('The passwords matched');
-          return value;
-        }
       }),
     body('userType').custom((value, { req }) => {
       // Check if the desired userType exists in the enum
