@@ -1,6 +1,75 @@
 # @format
 
 pleaseLogin: 'Please login before you do that'
+
 accountNotFound: "Your account couldn't be found, please logout and in again"
+
 noSessionFound: 'Session was not found. Please login before you do that'
+
 noAccess: "You don't have access to that"
+
+needValidEmail: 'Please supply a valid email'
+
+theSpecifiedUserTypeDoesntExist: "The specified user type doesn't exist"
+
+supplyUsername: 'Please supply a username'
+
+noUsersFound: 'No users found'
+
+usersFound: 'Users found'
+
+notValidObjectId: 'The id supplied is not a valid ObjectId'
+
+noUserFound: 'No user found'
+
+deletedUser: 'Successfully deleted user'
+
+noUserWithId: 'No user with the supplied id found'
+
+updatedUser: 'Successfully updated user'
+
+wrongPasswordLength: 'Passwords must be between %minPasswordLength% and %maxPasswordLength% characters'
+
+loginSuccessful: 'Login successful'
+
+wrongCredentials: 'Wrong credentials'
+
+userWithSuppliedEmailExists: 'An user with the supplied email already exists'
+
+passwordsDontMatch: "Passwords don't match"
+
+registeredAdmin: 'Registered administator'
+
+loggedOut: 'Successfully logged out'
+
+passwordAlreadyChoosen: 'User has already choosen a password'
+
+noUserFoundFromIdInCookie: 'No user found from the id contained in the cookie'
+
+succesfullyUpdatedPassword: 'Succesfully updated password'
+
+emailInUse: 'Email in use'
+
+unexpectedError: 'Ran into an unexpected error'
+
+successfullyCreatedAccount: 'Succesfully created a %userType% account'
+
+nameMustBeString: 'Name has to be a string'
+
+phaseIdIsNotValidObjectId: 'The supplied phase id is not a valid ObjectId'
+
+noCourseWithId: 'No course with that id found'
+
+notAllowedToCreatePhaseItem: 'You are not allowed to create phaseItems for this course'
+
+noPhaseInCourse: 'No phases exists in this course'
+
+specifiedPhaseDoesntBelongToCourse: "The specified phase doesn't belong to the course"
+
+noPhaseWithId: 'No phase with that id found'
+
+createdPhaseItem: 'Successfully created phaseItem'
+
+courseIdNotValidObjectId: 'Course id is not valid'
+
+phaseItemIdNotValidObjectId: 'PhaseItem id is not valid'

@@ -2,13 +2,14 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, CONFIG, UserTypes } from '../../../library';
+import { validateRequest, CONFIG, UserTypes, LANG } from '../../../library';
 import jwt from 'jsonwebtoken';
 
 import Admin from '../../../models/admin';
 
 import { logger } from '../../../logger/logger';
 import createAndSetCookie from '../../../utils/session/createAndSetCookie';
+import { getLanguage } from '../../../middlewares/getLanguage';
 
 const registerAdminRouter = Router();
 
@@ -26,6 +27,7 @@ const registerAdminRouter = Router();
 
 registerAdminRouter.post(
   '/api/admin/register',
+  getLanguage,
   [
     body('email')
       .custom(async (value, { req }) => {
@@ -37,8 +39,9 @@ registerAdminRouter.post(
         );
 
         if (existingUser) {
+          const { lang } = req;
           logger.info('User with the supplied email already exists');
-          throw new Error('An user with the supplied email already exists');
+          throw new Error(LANG[lang].userWithSuppliedEmailExists);
         } else {
           logger.debug("User with the supplied email doesn't exist");
           return value;
@@ -47,7 +50,10 @@ registerAdminRouter.post(
       .bail()
       .isEmail()
       .trim()
-      .withMessage('Email must be valid'), // Check if supplied email is valid
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+        return LANG[lang].needValidEmail;
+      }), // Check if supplied email is valid
     body('name').exists().isString(),
     body('password') // Check if password is valid
       .exists()
@@ -58,15 +64,20 @@ registerAdminRouter.post(
         min: CONFIG.passwords.length.min,
         max: CONFIG.passwords.length.max,
       })
-      .withMessage(
-        `Passwords must be between ${CONFIG.passwords.length.min} and ${CONFIG.passwords.length.max} characters`,
-      )
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+
+        return LANG[lang].wrongPasswordLength
+          .replace('%minPasswordLength%', CONFIG.passwords.length.min)
+          .replace('%maxPasswordLength%', CONFIG.passwords.length.max);
+      })
       .bail() // Stop the check if the password is not the required length
       .custom((value, { req }) => {
         logger.debug('Comparing password and confirmPassword');
         if (value !== req.body.confirmPassword) {
           logger.info("The passwords doesn't match");
-          throw new Error("Passwords don't match");
+          const { lang } = req;
+          throw new Error(LANG[lang].passwordsDontMatch);
         } else {
           logger.debug('The passwords matched');
           return value;
@@ -76,6 +87,7 @@ registerAdminRouter.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const { email, name, password } = req.body;
+    const { lang } = req;
 
     const firstAdminCreated = await Admin.find({});
 
@@ -99,12 +111,13 @@ registerAdminRouter.post(
             email,
             id: admin.id,
             userType: UserTypes.Admin,
+            lang: lang,
           },
           process.env.JWT_KEY as string,
         );
 
         // Create cookie and attatch it to the response object
-        await createAndSetCookie(req, res, admin.id, token);
+        await createAndSetCookie(req, res, admin.id, token, lang);
       } catch (err) {
         logger.error(
           `Ran into error when creating auth token. Error message: ${err}`,
@@ -113,15 +126,11 @@ registerAdminRouter.post(
     }
 
     logger.info('Attempting to save admin user');
-    try {
-      await admin.save();
-    } catch (err) {
-      logger.error(`Saving admin user failed with the error message: ${err}`);
-    }
+    await admin.save();
     logger.info('Succesfully saved admin user');
 
     res.status(201).json({
-      msg: 'Registered administator',
+      msg: LANG[lang].registeredAdmin,
       verified: admin.verified,
     });
   },

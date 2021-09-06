@@ -2,7 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, BadRequestError } from '../../../library';
+import { validateRequest, BadRequestError, LANG } from '../../../library';
 import mongoose from 'mongoose';
 
 import User from '../../../models/user';
@@ -12,6 +12,7 @@ import { logger } from '../../../logger/logger';
 import sendMail from '../../../utils/sendMail';
 
 import { authenticate } from '../../../middlewares/authenticate';
+import { getLanguage } from '../../../middlewares/getLanguage';
 import { checkUserType } from '../../../middlewares/checkUserType';
 
 const updateRouter = Router();
@@ -22,34 +23,51 @@ const updateRouter = Router();
 updateRouter.put(
   '/api/admin/users',
   authenticate,
+  getLanguage,
   checkUserType(['admin']),
   [
-    body('email').exists().isEmail().withMessage('Please supply a valid email'),
-    body('userType').custom((value) => {
+    body('email')
+      .exists()
+      .isEmail()
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+
+        return LANG[lang].needValidEmail;
+      }),
+    body('userType').custom((value, { req }) => {
       // Check if the desired userType exists in the enum
       const enumUserTypes = Object.values(UserTypes);
       if (!enumUserTypes[enumUserTypes.indexOf(value)]) {
         logger.info("The specified user type doesn't exist");
-        throw new Error("The specified user type doesn't exist");
+        const { lang } = req;
+        throw new Error(LANG[lang].theSpecifiedUserTypeDoesntExist);
       } else {
         return value;
       }
     }),
     body('id')
       .exists()
-      .custom((value) => {
+      .custom((value, { req }) => {
         // Check if id is a valid MongoDb ObjectId
         if (!mongoose.isValidObjectId(value)) {
-          throw new BadRequestError('The id supplied is not a valid ObjectId');
+          const { lang } = req;
+          throw new BadRequestError(LANG[lang].notValidObjectId);
         } else {
           return value;
         }
       }),
-    body('name').exists().isString(),
+    body('name')
+      .exists()
+      .isString()
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+        return LANG[lang].supplyUsername;
+      }),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     const { id, email, userType, name } = req.body;
+    const { lang } = req;
 
     // Find user document by id and update it
     const user = await User.findByIdAndUpdate(
@@ -60,10 +78,11 @@ updateRouter.put(
 
     if (!user) {
       res.status(404).json({
-        msg: `No user with id "${id}" was found`,
+        msg: LANG[lang].noUserWithId,
+        suppliedId: id,
       });
     } else {
-      res.status(200).json({ msg: 'Successfully updated user', user });
+      res.status(200).json({ msg: LANG[lang].updatedUser, user });
     }
   },
 );

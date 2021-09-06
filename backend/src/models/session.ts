@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 
 interface SessionAttributes {
   userId: string;
+  lang: string;
   value: string;
   ip: string;
   headers: object | undefined;
@@ -25,6 +26,7 @@ interface SessionModel extends mongoose.Model<SessionDoc> {
 
 export interface SessionDoc extends mongoose.Document {
   userId: string;
+  lang: string;
   value: string;
   ip: string;
   headers: object | undefined;
@@ -47,6 +49,10 @@ const sessionSchema = new mongoose.Schema(
       required: true,
     },
     value: {
+      type: String,
+      required: true,
+    },
+    lang: {
       type: String,
       required: true,
     },

@@ -2,7 +2,12 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, BadRequestError, CONFIG } from '../../../library';
+import {
+  validateRequest,
+  BadRequestError,
+  CONFIG,
+  LANG,
+} from '../../../library';
 import { v4 as uuidv4 } from 'uuid';
 
 import User from '../../../models/user';
@@ -13,6 +18,7 @@ import { logger } from '../../../logger/logger';
 import sendMail from '../../../utils/sendMail';
 
 import { authenticate } from '../../../middlewares/authenticate';
+import { getLanguage } from '../../../middlewares/getLanguage';
 import { checkUserType } from '../../../middlewares/checkUserType';
 
 const registerRouter = Router();
@@ -23,29 +29,44 @@ const registerRouter = Router();
 registerRouter.post(
   '/api/admin/users/register',
   authenticate,
+  getLanguage,
   checkUserType(['admin']),
   [
-    body('email').exists().isEmail().withMessage('Please supply a valid email'),
-    body('userType').custom(async (value) => {
+    body('email')
+      .exists()
+      .isEmail()
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+        return LANG[lang].needValidEmail;
+      }),
+    body('userType').custom(async (value, { req }) => {
       // Check if the desired userType exists in the enum
       const enumUserTypes = Object.values(UserTypes);
       if (!enumUserTypes[enumUserTypes.indexOf(value)]) {
+        const { lang } = req;
         logger.info("The specified user type doesn't exist");
-        throw new Error("The specified user type doesn't exist");
+        throw new Error(LANG[lang].theSpecifiedUserTypeDoesntExist);
       } else {
         return value;
       }
     }),
-    body('name').exists().isString(),
+    body('name')
+      .exists()
+      .isString()
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+        return LANG[lang].supplyUsername;
+      }),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     const { email, name, userType, classes } = req.body;
+    const { lang } = req;
 
     // Check if user witht the supplied email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw new BadRequestError('Email in use');
+      throw new BadRequestError(LANG[lang].emailInUse);
     }
 
     // Temp password is mailed to user email as plaintext.
@@ -62,7 +83,7 @@ registerRouter.post(
     const settings = UserSettings.build({
       notifications: [''],
       theme: 'dark',
-      language: 'SWE',
+      language: lang,
     });
 
     try {
@@ -71,6 +92,7 @@ registerRouter.post(
       logger.error(
         `Unexpected error. Please send the following error to the devs: ${err}`,
       );
+      throw new Error(LANG[lang].unexpectedError);
     }
 
     logger.debug('Building new user');
@@ -88,12 +110,13 @@ registerRouter.post(
     try {
       logger.debug('Saving new user');
       await user.save();
-      user.password = ''; // Just a safe guard to stop password from being sent to frontend
     } catch (err) {
       logger.error(
         `Unexpected error. Please send the following error to the devs: ${err}`,
       );
+      throw new Error(LANG[lang].unexpectedError);
     }
+    user.password = ''; // Just a safe guard to stop password from being sent to frontend
 
     await sendMail(
       email,
@@ -102,7 +125,10 @@ registerRouter.post(
     );
 
     res.status(201).json({
-      msg: `Succesfully created a ${userType} account`,
+      msg: LANG[lang].successfullyCreatedAccount.replace(
+        '%userType%',
+        userType,
+      ),
       tempPassword: CONFIG.dev ? tempPassword : undefined, // Is needed for testing in some cases. Should never be sent in prod env
       user,
     });

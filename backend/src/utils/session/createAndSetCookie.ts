@@ -17,8 +17,9 @@ const createAndSetCookie = async (
   res: Response,
   userId: string,
   token: string,
+  lang: string,
 ) => {
-  const sessionId = await createSession(req, userId, token);
+  const sessionId = await createSession(req, userId, token, lang);
 
   let cookieOptions: cookieOptions = {
     httpOnly: CONFIG.cookies.httpOnly,

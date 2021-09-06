@@ -15,6 +15,7 @@ import jwt from 'jsonwebtoken';
 import User from '../../models/user';
 import { logger } from '../../logger/logger';
 import createAndSetCookie from '../../utils/session/createAndSetCookie';
+import { getLanguage } from '../../middlewares/getLanguage';
 
 const loginRouter = Router();
 
@@ -23,11 +24,16 @@ const loginRouter = Router();
 
 loginRouter.post(
   '/api/login',
+  getLanguage,
   [
     body('email')
       .isEmail()
       .trim()
-      .withMessage('Please supply a valid email adress'), // Check if supplied email is valid
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+
+        return LANG[lang].needValidEmail;
+      }), // Check if supplied email is valid
     body('password') // Check if password is valid
       .exists()
       .trim()
@@ -35,15 +41,33 @@ loginRouter.post(
         min: CONFIG.passwords.length.min,
         max: CONFIG.dev ? 40 : CONFIG.passwords.length.max, // Because temp password is passed when in dev mode and it's 36 chars
       })
-      .withMessage(
-        `Passwords must be between ${CONFIG.passwords.length.min} and ${CONFIG.passwords.length.max} characters`,
-      ),
-    body('userType').custom(async (value) => {
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+
+        return LANG[lang].wrongPasswordLength
+          .replace('%minPasswordLength%', CONFIG.passwords.length.min)
+          .replace('%maxPasswordLength%', CONFIG.passwords.length.max);
+      })
+      .bail() // Stop the check if the password is not the required length
+      .custom((value, { req }) => {
+        logger.debug('Comparing password and confirmPassword');
+        if (value !== req.body.confirmPassword) {
+          logger.info("The passwords doesn't match");
+          const { lang } = req;
+          throw new Error(LANG[lang].passwordsDontMatch);
+        } else {
+          logger.debug('The passwords matched');
+          return value;
+        }
+      }),
+    body('userType').custom((value, { req }) => {
       // Check if the desired userType exists in the enum
       const enumUserTypes = Object.values(UserTypes);
       if (!enumUserTypes[enumUserTypes.indexOf(value)]) {
         logger.info("The specified user type doesn't exist");
-        throw new Error("The specified user type doesn't exist");
+        const { lang } = req;
+
+        throw new Error(LANG[lang].theSpecifiedUserTypeDoesntExist);
       } else {
         return value;
       }
@@ -52,6 +76,7 @@ loginRouter.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const { email, password, userType } = req.body;
+    const { lang } = req;
 
     // Try to find user trying to login
     logger.debug('Looking up user');
@@ -60,7 +85,8 @@ loginRouter.post(
     // No user found
     if (!user) {
       logger.debug('No user found');
-      throw new BadRequestError('No user found');
+
+      throw new BadRequestError(LANG[lang].noUserFound);
     }
 
     // Check if password supplied by user matches the password stored in the DB
@@ -81,12 +107,18 @@ loginRouter.post(
         );
 
         // Create cookie and attatch it to the response object
-        await createAndSetCookie(req, res, user.id, token);
+        await createAndSetCookie(
+          req,
+          res,
+          user.id,
+          token,
+          user.settings.language,
+        );
 
         logger.info('User is authenticated');
         res.status(200).json({
           errors: false,
-          msg: 'Login was successful',
+          msg: LANG[lang].loginSuccessful,
           firstTime: !user.setupComplete, // This is to tell the frontend if a setup prompt should be showed
           user,
         });
@@ -97,7 +129,7 @@ loginRouter.post(
       }
     } else {
       logger.info('The supplied password was wrong');
-      throw new BadRequestError('Wrong password');
+      throw new BadRequestError(LANG[lang].wrongCredentials);
     }
   },
 );

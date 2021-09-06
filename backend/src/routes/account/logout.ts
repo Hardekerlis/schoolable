@@ -5,7 +5,8 @@ import { Router, Request, Response } from 'express';
 import Session from '../../models/session';
 import { logger } from '../../logger/logger';
 import { authenticate } from '../../middlewares/authenticate';
-import { NotAuthorizedError } from '../../library';
+import { getLanguage } from '../../middlewares/getLanguage';
+import { NotAuthorizedError, LANG } from '../../library';
 
 const logoutRouter = Router();
 
@@ -15,14 +16,16 @@ const logoutRouter = Router();
 logoutRouter.get(
   '/api/logout',
   authenticate,
+  getLanguage,
   async (req: Request, res: Response) => {
     const currentUser = req.currentUser;
+    const { lang } = req;
 
     logger.debug('Logging out user');
 
     if (!currentUser) {
       logger.debug('No user to logout found');
-      throw new NotAuthorizedError('Please login before you do that');
+      throw new NotAuthorizedError(LANG[lang].pleaseLogin);
     }
 
     logger.info('Removing user session from database');
@@ -33,7 +36,7 @@ logoutRouter.get(
 
     res.status(200).json({
       error: false,
-      msg: 'Successfully logged out',
+      msg: LANG[lang].loggedOUt,
     });
   },
 );

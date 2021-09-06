@@ -2,7 +2,7 @@
 
 import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
-import { validateRequest, BadRequestError } from '../../library';
+import { validateRequest, BadRequestError, LANG } from '../../library';
 
 import User from '../../models/user';
 import UserSettings from '../../models/userSettings';
@@ -26,9 +26,8 @@ stagesRouter.post(
       .isString()
       .custom((value, { req }) => {
         if (value !== req.body.confirmPassword) {
-          throw new BadRequestError(
-            "Password and confirm password doesn't match",
-          );
+          const lang = req.currentUser.lang;
+          throw new BadRequestError(LANG[lang].passwordsDontMatch);
         } else {
           return value;
         }
@@ -39,15 +38,16 @@ stagesRouter.post(
     // Find user by the information in auth cookie
     const user = await User.findById((req.currentUser as UserPayload).id);
 
+    // @ts-ignore
+    const lang = req.currentUser.lang;
+
     if (!user) {
-      throw new BadRequestError(
-        'No user found from the id contained in the cookie',
-      );
+      throw new BadRequestError(LANG[lang].noUserFoundFromIdInCookie);
     }
 
     // If user already has gone through this stage passwordChoosen will be true
     if (user.passwordChoosen) {
-      throw new BadRequestError(`User has already choosen a password`);
+      throw new BadRequestError(LANG[lang].passwordAlreadyChoosen);
     }
 
     const { password } = req.body;
@@ -60,7 +60,7 @@ stagesRouter.post(
       await user.save();
       res.status(200).json({
         errors: false,
-        msg: 'Succesfully updated password',
+        msg: LANG[lang].succesfullyUpdatedPassword,
         continue: true,
       });
     } catch (err) {
