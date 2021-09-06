@@ -5,6 +5,7 @@ import Dropdown from './dropdown'
 import CourseMenuItems from './courseMenuItems'
 import CoursePageRender from './coursePageRender'
 import SampleCreationSystem from './sampleCreationSystem';
+import Phase from './phase';
 //import pos
 
 
@@ -20,5 +21,6 @@ export {
   CourseMenuItems,
   CoursePageRender,
   SampleCreationSystem,
+  Phase,
   //export pos
 }

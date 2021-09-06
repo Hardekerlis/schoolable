@@ -6,6 +6,9 @@ import Request from 'helpers/request.js';
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import language from 'helpers/lang';
+const lang = language.sampleCreationSystem;
+
 import { lowerFirstLetter } from 'helpers/misc.js';
 
 import styles from './sampleCreationSystem.module.sass';
@@ -84,7 +87,7 @@ const SampleCreationSystem = ({ firstWrapperClassName, requestCallback, currentI
               <FontAwesomeIcon className={styles.plus} icon={faPlus} />
               <p>Create {lowerFirstLetter(itemName)}</p>
             </div>
-            <p className={styles.helperText}>{noCurrentItemText}<br /> Create one to start!</p>
+            <p className={styles.helperText}>{noCurrentItemText}<br /> {lang.noCurrentItems}</p>
 
           </div>
 
@@ -94,7 +97,7 @@ const SampleCreationSystem = ({ firstWrapperClassName, requestCallback, currentI
 
           <div onClick={openNewItemCreation} className={styles.createItem}>
             <FontAwesomeIcon className={styles.plus} icon={faPlus} />
-            <p>Create {lowerFirstLetter(itemName)}</p>
+            <p>{lang.create} {lowerFirstLetter(itemName)}</p>
           </div>
 
         </>
@@ -102,10 +105,10 @@ const SampleCreationSystem = ({ firstWrapperClassName, requestCallback, currentI
 
       <div ref={itemCreationRef} className={styles.newItemCreation}>
         <form onSubmit={itemCreationSubmit}>
-          <input onChange={newItemNameChange} value={newItemName} autoFocus placeholder={`${itemName} name`} />
+          <input onChange={newItemNameChange} value={newItemName} autoFocus placeholder={`${itemName} ${lang.itemNameSuffix}`} />
           <div className={styles.buttonContainer}>
-            <button type="button" onClick={closeItemCreation}>Exit</button>
-            <button type="submit">Create</button>
+            <button type="button" onClick={closeItemCreation}>{lang.exit}</button>
+            <button type="submit">{lang.create}</button>
           </div>
         </form>
       </div>

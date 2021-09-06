@@ -5,6 +5,10 @@ import { useRouter } from 'next/router';
 
 import { nanoid } from 'nanoid';
 
+import language from 'helpers/lang';
+const lang = language.courseMenu;
+
+
 import { RightClickIcon } from 'cssIcons'
 
 import styles from './courseMenuItems.module.sass'
@@ -65,6 +69,8 @@ const CourseMenuItems = ({ course, sub }) => {
         id,
         menuActions
       })
+
+      if(obj.title === "Overview") obj.title = lang.overview;
 
       return(
 

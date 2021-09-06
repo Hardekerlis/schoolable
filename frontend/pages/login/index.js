@@ -16,6 +16,9 @@ import Request from 'helpers/request.js';
 
 import { Prompt } from 'helpers/prompt';
 
+import language from 'helpers/lang';
+const lang = language.login;
+
 
 import redirectAuth from 'helpers/redirectAuth.js';
 
@@ -61,7 +64,7 @@ const Login = () => {
       user = JSON.stringify(res.user);
       Cookies.set('user', user);
     }catch(e) {
-      return Prompt.error("Unexpected error. Please login again.");
+      return Prompt.error(lang.unexpected);
     }
 
     if(res.errors) return Prompt.error(res.errors);
@@ -88,15 +91,15 @@ const Login = () => {
   const selectOptions = [
     {
       value: 'teacher',
-      label: 'Teacher'
+      label: lang.teacher
     },
     {
       value: 'student',
-      label: 'Student'
+      label: lang.student
     },
     {
       value: 'legalGuardian',
-      label: 'Legal guardian'
+      label: lang.legalGuardian
     }
   ]
 
@@ -106,10 +109,10 @@ const Login = () => {
 
       <form onSubmit={submit} className={styles.form}>
 
-        <p className={styles.title}>Login</p>
+        <p className={styles.title}>{lang.pageTitle}</p>
 
-        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder="Email" />
-        <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder="Password" />
+        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder={lang.email} />
+        <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder={lang.password} />
 
         <Dropdown
           className={styles.select}
@@ -124,7 +127,7 @@ const Login = () => {
           onChange={(value) => credentialsChange(value, "userType")}
         />
 
-        <button className={styles.submitButton} type="submit">Login</button>
+        <button className={styles.submitButton} type="submit">{lang.loginBtn}</button>
 
       </form>
 
@@ -134,11 +137,5 @@ const Login = () => {
 
 
 }
-
-// <select value={credentials.userType} onChange={(event) => credentialsChange(event, "userType")}>
-//   <option value="teacher">Teacher</option>
-//   <option value="student">Student</option>
-//   <option value="legalGuardian">Legal guardian</option>
-// </select>
 
 export default Login;

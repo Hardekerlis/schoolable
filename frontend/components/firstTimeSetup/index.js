@@ -6,6 +6,8 @@ import setupOptionsFn from './setupOptions.js'
 
 import { Prompt } from '/helpers/prompt/'
 
+import language from 'helpers/lang';
+const lang = language.firstTimeSetup;
 
 const setupOptions = setupOptionsFn();
 
@@ -90,7 +92,7 @@ const FirstTimeSetup = () => {
     // if(newIndex >= options.length || newIndex < 0) return;
 
     if(!current.completed && current.required) {
-      Prompt.error("Please complete option.");
+      Prompt.error(lang.completeOption);
     }
 
     optionRef.style.opacity = "0";
@@ -110,7 +112,7 @@ const FirstTimeSetup = () => {
   return (
     <div className={styles.wrapper}>
       <div ref={setContainerRef} className={styles.container}>
-        <p className={styles.title}>First-time setup</p>
+        <p className={styles.title}>{lang.pageTitle}</p>
         <div className="hoz_line"></div>
 
         <div ref={setOptionRef} className={styles.optionContainer}>
@@ -125,13 +127,13 @@ const FirstTimeSetup = () => {
         </div>
 
         <div className={styles.btnContainer}>
-          <button onClick={() => changePage(-1)}>Previous</button>
-          <button onClick={() => changePage(1)}>Next</button>
+          <button onClick={() => changePage(-1)}>{lang.previous}</button>
+          <button onClick={() => changePage(1)}>{lang.next}</button>
         </div>
 
       </div>
       <div ref={setViewerRef} className={`${styles.container} ${styles.viewer}`}>
-        <p className={styles.title}>First-time setup</p>
+        <p className={styles.title}>{lang.pageTitle}</p>
         <div className="hoz_line"></div>
 
         <div className={styles.optionContainer}>
@@ -146,8 +148,8 @@ const FirstTimeSetup = () => {
         </div>
 
         <div className={styles.btnContainer}>
-          <button onClick={() => changePage(-1)}>Previous</button>
-          <button onClick={() => changePage(1)}>Next</button>
+          <button onClick={() => changePage(-1)}>{lang.previous}</button>
+          <button onClick={() => changePage(1)}>{lang.next}</button>
         </div>
 
       </div>

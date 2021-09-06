@@ -8,11 +8,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import Layout from 'layouts/default';
 
+import Request from 'helpers/request.js';
+
 import { Prompt } from 'helpers/prompt';
 
-import { Sidebar, CourseMenuItems, SampleCreationSystem } from 'components';
+import { Sidebar, CourseMenuItems, SampleCreationSystem, Phase } from 'components';
 
 import { firstLetterToUpperCase } from 'helpers/misc.js'
+
+import language from 'helpers/lang';
+const lang = language.coursePage;
 
 
 import styles from './coursePageRender.module.sass';
@@ -22,7 +27,9 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
   const router = useRouter();
 
   const { coursePage } = course;
-  const { phases } = coursePage;
+
+  let [phases, setPhases] = useState(coursePage.phases);
+  let [phasesRender, setPhasesRender] = useState();
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
@@ -32,31 +39,20 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
   }
 
-  const fetchPhases = async() => {
-
-    // let request = new Request('/api/course').get().json();
-    // let response = await request.send();
-    //
-    // if(response.errors === false) {
-    //
-    //   courses = response.courses;
-    //
-    //   setCurrentCourses(courses)
-    //
-    // }else {
-    //   Prompt.error(response.errors);
-    // }
-
-  }
 
   const onPhaseCreation = async(response) => {
     // console.log(response);
 
     if(response.errors === false) {
 
-      await fetchPhases();
+      let arr = phases.slice();
 
-      Prompt.success('Phase created!')
+      arr.push(response.phase);
+
+      setPhases(arr);
+
+
+      Prompt.success(lang.phaseCreated)
       return true;
     }else {
       Prompt.error(response.errors)
@@ -66,6 +62,75 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
     //return false for error.
 
   }
+
+  const updateTitleOnServer = async(value, phaseIndex) => {
+
+    let phaseId = phases[phaseIndex].id;
+
+    let req = new Request(`/api/course/${course.id}/${phaseId}`, {
+      name: value
+    }).json().put();
+    let res = await req.send();
+
+  }
+
+  let [phaseTitles, setPhaseTitles] = useState([]);
+
+  const onPhaseTitleChange = (evt, index) => {
+
+    let arr = phaseTitles.slice();
+    arr[index] = evt.target.value;
+    setPhaseTitles(arr);
+
+    updateTitleOnServer(evt.target.value, index);
+
+  }
+
+  useEffect(() => {
+    if(phaseTitles.length === 0) return;
+    if(!isEditing) return;
+
+    //if the user is editing the page
+    //set "phasesRender" here so the phaseTitles have values.
+
+    setPhasesRender(phases.map((obj, index) => {
+      return (
+        <div className={styles.phasesEdit} key={index}>
+          <div className={styles.textContainer}>
+            <input onChange={(event) => onPhaseTitleChange(event, index)} value={phaseTitles[index]} />
+            <p>{lang.editPhaseText}</p>
+          </div>
+        </div>
+      )
+    }))
+
+  }, [phaseTitles])
+
+  //make spinning thingy that tells the user when all their changes have saved
+
+  useEffect(() => {
+
+    if(isEditing) {
+
+      let titles = [];
+
+      for(let obj of phases) {
+        titles.push(obj.name);
+      }
+
+      setPhaseTitles(titles);
+
+    }else {
+
+      setPhasesRender(phases.map((obj, index) => {
+        return (
+          <Phase key={index} name={obj.name} />
+        )
+      }))
+
+    }
+
+  }, [phases])
 
   return (
     <Layout>
@@ -91,7 +156,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
           { course.coursePage.description &&
             <div className={styles.descDivider}>
               <div className={styles.descContainer}>
-                <p className={styles.descTitle}>Course description</p>
+                <p className={styles.descTitle}>{lang.descriptionTitle}</p>
                 <p>{course.coursePage.description}</p>
               </div>
             </div>
@@ -101,7 +166,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
             <div onClick={editCourseClick} className={styles.editCourse}>
               <FontAwesomeIcon icon={faEdit} className={styles.icon} />
-              <p>Edit course</p>
+              <p>{lang.editCourse}</p>
             </div>
 
           }
@@ -111,9 +176,10 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
             <div className={styles.content}>
 
               { isEditing &&
-                <SampleCreationSystem requestCallback={onPhaseCreation} itemApiPath={`/api/course/${course.id}/createPhase`} currentItems={phases} itemName="Phase" noCurrentItemText="This course does currently not have any phases." />
+                <SampleCreationSystem requestCallback={onPhaseCreation} itemApiPath={`/api/course/${course.id}/createPhase`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
               }
 
+              {phasesRender}
 
             </div>
 
@@ -127,18 +193,6 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
   )
 
 }
-
-// { phases.length === 0 &&
-//   <div className={styles.createFirstPhaseWrapper}>
-//
-//     <div onClick={createNewPhase} className={styles.createFirstPhase}>
-//       <FontAwesomeIcon className={styles.plus} icon={faPlus} />
-//       <p>Create phase</p>
-//     </div>
-//     <p className={styles.helperText}>This course does currently not have any phases.<br /> Create one to start!</p>
-//
-//   </div>
-// }
 
 
 export default CoursePageRender;

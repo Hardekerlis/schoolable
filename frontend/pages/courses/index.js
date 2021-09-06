@@ -15,11 +15,13 @@ import Layout from 'layouts/default/';
 
 import { Sidebar, SampleCreationSystem, Dropdown } from 'components'
 
-import getUserData from 'helpers/getUserData.js'
-import getCookies from 'helpers/getCookiesServer.js'
-import handleErrors from 'helpers/handleErrorsServer.js'
+import getUserData from 'helpers/getUserData.js';
+import getCookies from 'helpers/getCookiesServer.js';
+import handleErrors from 'helpers/handleErrorsServer.js';
 
-import { firstLetterToUpperCase } from 'helpers/misc.js'
+import { firstLetterToUpperCase } from 'helpers/misc.js';
+
+import lang from 'helpers/lang';
 
 //css imports
 
@@ -106,7 +108,7 @@ const Courses = ({ courses, serverErrors }) => {
           </div>
           <div className={styles.textContainer}>
             <p className={styles.name}>{courseName}</p>
-            <p className={styles.author}>By: {course.owner.name}</p>
+            <p className={styles.author}>{lang.courses.authorPrefix} {course.owner.name}</p>
           </div>
         </div>
       )
@@ -128,7 +130,7 @@ const Courses = ({ courses, serverErrors }) => {
     },
     {
       value: 'default',
-      name: 'Default'
+      name: lang.courses.sortDefaultName
     }
   ]
 
@@ -140,7 +142,7 @@ const Courses = ({ courses, serverErrors }) => {
 
       await fetchCourses();
 
-      Prompt.success('Course created!');
+      Prompt.success(lang.courses.courseCreated);
 
       return true;
 
@@ -165,7 +167,7 @@ const Courses = ({ courses, serverErrors }) => {
           <>
 
             <div className={styles.sortBy}>
-              <p className={styles.text}>Sort by:</p>
+              <p className={styles.text}>{lang.courses.sortBy}</p>
 
               <Dropdown
                 options={sortOptions}
@@ -191,7 +193,7 @@ const Courses = ({ courses, serverErrors }) => {
 
         { userData.userType === "teacher" &&
 
-          <SampleCreationSystem firstWrapperClassName={styles.firstWrapperCourseCreation} requestCallback={onCourseCreation} itemApiPath={`/api/course/create`} currentItems={currentCourses} itemName="Course" noCurrentItemText="You currently don’t own any courses." />
+          <SampleCreationSystem firstWrapperClassName={styles.firstWrapperCourseCreation} requestCallback={onCourseCreation} itemApiPath={`/api/course/create`} currentItems={currentCourses} itemName={lang.courses.courseItemName} noCurrentItemText={lang.courses.noCoursesOwned} />
 
         }
 
@@ -199,8 +201,8 @@ const Courses = ({ courses, serverErrors }) => {
 
           <div className={styles.noCoursesStudent}>
 
-            <p>No courses found.</p>
-            <p>All of your courses will appear here once they have been created!</p>
+            <p>{lang.courses.noCoursesFound}</p>
+            <p>{lang.courses.noCoursesFoundHelper}</p>
 
           </div>
 
@@ -210,7 +212,6 @@ const Courses = ({ courses, serverErrors }) => {
 
     </Layout>
   )
-// <CourseCreation fetchCourses={fetchCourses} currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />
 }
 
 export default Courses;

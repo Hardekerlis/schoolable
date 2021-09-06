@@ -1,5 +1,7 @@
 import Request from 'helpers/request.js'
 
+//dont forget language
+
 // const password = {
 //   name: "Choose a secure password",
 //   method: async(evt, current) => {

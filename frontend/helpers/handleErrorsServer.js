@@ -1,3 +1,7 @@
+
+import language from 'helpers/lang';
+const lang = language.handleErrorsServer;
+
 const checkSpecificStatuses = (code) => {
 
   if(code === 404) {
@@ -41,7 +45,7 @@ const handleErrors = (successStatus, response) => {
       if(response.hasOwnProperty("errors")) {
         errors = response.errors;
       }else {
-        errors = ['An unexpected error occurred. Please try again later.'];
+        errors = [lang.unexpected];
       }
 
       console.log("ERRORS:", errors)
