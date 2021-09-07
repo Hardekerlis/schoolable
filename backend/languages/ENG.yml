@@ -73,3 +73,53 @@ createdPhaseItem: 'Successfully created phaseItem'
 courseIdNotValidObjectId: 'Course id is not valid'
 
 phaseItemIdNotValidObjectId: 'PhaseItem id is not valid'
+
+notAuthorizedToChangeResource: 'You are no authorized to make any changes to this resource'
+
+noPhaseItemWithId: 'No phaseItem with the supplied id was found'
+
+updatedPhaseItem: 'Successfully updated phaseItem'
+
+supplyNameForPhase: 'Please supply a name for this phase'
+
+notFound: 'Not found'
+
+notAllowedToCreateResourceForCourse: "You don't have access to create resources for this course"
+
+createdPhase: 'Successfully created a phase'
+
+updatedPhase: 'Successfully updated phase'
+
+updatedCoursePage: 'Successfully updated coursePage'
+
+supplyNameForCourse: 'Please supply a name for the course'
+
+createdCourse: 'created a new course'
+
+foundCourses: 'Found courses'
+
+foundCourse: 'Found course'
+
+noAccessToCourse: "You don't have access to this course"
+
+notAuthorized: 'You are not authorized to perform that action'
+
+noCourseOwned: "You don't own any courses"
+
+courseNotOwned: 'You dont own this course'
+
+removedCourse: 'Succesfully removed course and all of its children'
+
+updatedCourse: 'Successfully updated course'
+
+themeDoesntExist: 'No theme with that name exists'
+
+userHasNotChoosenPassword: 'User has not choosen a password yet'
+
+selectedTheme: 'Succesfully selected theme'
+
+languageDoesntExist: "The selected language doesn't exist"
+
+selectedLanguage: 'Succesfully selected language'
+
+userIsLoggedIn: 'User is logged in'

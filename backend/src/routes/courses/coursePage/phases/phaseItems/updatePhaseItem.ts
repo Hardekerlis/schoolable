@@ -51,13 +51,11 @@ updatePhaseItemRouter.put(
     const course = await Course.findById(courseId);
 
     if (!course) {
-      throw new BadRequestError('No course with the supplied id was found');
+      throw new BadRequestError(_lang.noCourseWithId);
     }
 
     if (course.owner.toString() !== currentUser.id.toString()) {
-      throw new NotAuthorizedError(
-        'You are no authorized to make any changes to this resource',
-      );
+      throw new NotAuthorizedError(_lang.notAuthorizedToChangeResource);
     }
 
     const phaseItem = await PhaseItem.findByIdAndUpdate(phaseItemId, req.body, {
@@ -65,12 +63,12 @@ updatePhaseItemRouter.put(
     });
 
     if (!phaseItem) {
-      throw new BadRequestError('No phaseItem with the supplied id was found');
+      throw new BadRequestError(_lang.noPhaseItemWithId);
     }
 
     res.status(200).json({
       errors: false,
-      msg: 'Successfully updated phaseItem',
+      msg: _lang.updatedPhaseItem,
       phaseItem: phaseItem,
     });
   },

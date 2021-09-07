@@ -5,6 +5,7 @@ const updatePhaseRouter = Router();
 import mongoose from 'mongoose';
 
 import { authenticate } from '../../../../middlewares/authenticate';
+import { getLanguage } from '../../../../middlewares/getLanguage';
 import { checkUserType } from '../../../../middlewares/checkUserType';
 
 import {
@@ -12,6 +13,7 @@ import {
   NotAuthorizedError,
   BadRequestError,
   NotFoundError,
+  LANG,
 } from '../../../../library';
 
 import Course from '../../../../models/course';
@@ -22,27 +24,29 @@ import { logger } from '../../../../logger/logger';
 updatePhaseRouter.put(
   '/api/course/:courseId/:phaseId',
   authenticate,
+  getLanguage,
   checkUserType([UserTypes.Teacher, UserTypes.Admin]),
   async (req: Request, res: Response) => {
     const currentUser = req.currentUser;
+    const lang = LANG[`${req.lang}`];
 
     logger.info('Trying to update phase');
 
     if (!currentUser) {
       logger.debug('User is not authenticated');
-      throw new NotAuthorizedError('Please login before you do that');
+      throw new NotAuthorizedError(lang.pleaseLogin);
     }
 
     const { courseId, phaseId } = req.params;
 
     if (!mongoose.isValidObjectId(courseId)) {
       logger.debug('courseId is not an ObjectId');
-      throw new BadRequestError('The course id in URI is not a valid ObjectId');
+      throw new BadRequestError(lang.courseIdNotValidObjectId);
     }
 
     if (!mongoose.isValidObjectId(phaseId)) {
       logger.debug('phaseId is not an ObjectId');
-      throw new BadRequestError('The phase id in URI is not a valid ObjectId');
+      throw new BadRequestError(lang.phaseIdIsNotValidObjectId);
     }
 
     logger.debug('Looking up course');
@@ -50,14 +54,12 @@ updatePhaseRouter.put(
 
     if (!course) {
       logger.debug('Course found');
-      throw new NotFoundError('No course with that id found');
+      throw new NotFoundError(lang.noCourseWithId);
     }
 
     if (course.owner.toString() !== currentUser.id.toString()) {
       logger.debug("User trying to update phase doesn't own course");
-      throw new NotAuthorizedError(
-        'You are no authorized to make any changes to this resource',
-      );
+      throw new NotAuthorizedError(lang.notAuthorizedToChangeResource);
     }
 
     const data = req.body;
@@ -67,13 +69,13 @@ updatePhaseRouter.put(
 
     if (!phase) {
       logger.debug('No phase with the supplied id found in database');
-      throw new NotFoundError('No phase with that id found');
+      throw new NotFoundError(lang.noPhaseWithId);
     }
 
     logger.info('Successfully updated phase');
     res.status(200).json({
       errors: false,
-      msg: 'Successfully updated phase',
+      msg: lang.updatedPhase,
       phase,
     });
   },

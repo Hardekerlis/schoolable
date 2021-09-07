@@ -4,9 +4,15 @@ import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { body } from 'express-validator';
 const removeCourseRouter = Router();
-import { BadRequestError, NotAuthorizedError, UserTypes } from '../../library';
+import {
+  BadRequestError,
+  NotAuthorizedError,
+  UserTypes,
+  LANG,
+} from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
+import { getLanguage } from '../../middlewares/getLanguage';
 import { checkUserType } from '../../middlewares/checkUserType';
 
 import { logger } from '../../logger/logger';
@@ -18,20 +24,23 @@ import removeCourse from '../../utils/course/removeCourse';
   Add course menu items
 */
 
+// TODO: add logger to remoce course
+
 import User from '../../models/user';
 import Course from '../../models/course';
 
 removeCourseRouter.delete(
   '/api/course',
   authenticate,
+  getLanguage,
   checkUserType([UserTypes.Teacher, UserTypes.Admin]),
   [
     body('id')
       .exists()
-      .custom((value) => {
+      .custom((value, { req }) => {
         // Check if id is a valid MongoDb ObjectId
         if (!mongoose.isValidObjectId(value)) {
-          throw new BadRequestError('The id supplied is not a valid ObjectId');
+          throw new BadRequestError(LANG[`${req.lang}`].notValidObjectId);
         } else {
           return value;
         }
@@ -40,33 +49,34 @@ removeCourseRouter.delete(
   async (req: Request, res: Response) => {
     const { id } = req.body;
     const currentUser = req.currentUser;
+    const lang = LANG[`${req.lang}`];
 
     if (!currentUser) {
       // If user isn't logged in
-      throw new BadRequestError('Please login before you do that');
+      throw new BadRequestError(lang.pleaseLogin);
     }
 
     const owner = await User.findById(currentUser.id);
 
     if (!owner) {
       // Check if user exists
-      throw new BadRequestError('Please login before you do that');
+      throw new BadRequestError(lang.notAuthorized);
     }
 
     // If user doesn't own any courses
     if (owner.courses.length === 0) {
-      throw new BadRequestError("You don't have any courses");
+      throw new BadRequestError(lang.noCourseOwned);
     }
 
     const courseToRemove = await Course.findById(id);
 
     if (!courseToRemove) {
-      throw new BadRequestError('No course with that id was found');
+      throw new BadRequestError(lang.noCourseWithId);
     }
 
     // To string becuase ObjectIds can't be compared becuase they are objects
     if (courseToRemove.owner.toString() !== owner.id.toString()) {
-      throw new NotAuthorizedError("You don't own this course");
+      throw new NotAuthorizedError(lang.courseNotOwned);
     }
 
     // Call 4th tier in removal call chain
@@ -74,12 +84,12 @@ removeCourseRouter.delete(
     const removalRes = await removeCourse(courseToRemove);
 
     if (removalRes.error === true) {
-      throw new Error('Unexpected error');
+      throw new Error(lang.unexpectedError);
     }
 
     res.status(200).json({
       errors: false,
-      msg: 'Succesfully removed course and all of its children',
+      msg: lang.removedCourse,
       upForDeletion: removalRes.upForDeletion,
     });
   },

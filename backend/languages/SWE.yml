@@ -1,6 +1,125 @@
 # @format
 
 pleaseLogin: 'De behöver logga in innan du gör det där'
+
 accountNotFound: 'Kunde inte hitta ditt konto. Logga ut och in igen'
+
 noSessionFound: 'Kunde inte hitta din session. Var snäll och logga in innan du försöker igen'
+
 noAccess: 'Du har inte behörighet att göra det där'
+
+needValidEmail: 'Please supply a valid email'
+
+theSpecifiedUserTypeDoesntExist: "The specified user type doesn't exist"
+
+supplyUsername: 'Please supply a username'
+
+noUsersFound: 'No users found'
+
+usersFound: 'Users found'
+
+notValidObjectId: 'The id supplied is not a valid ObjectId'
+
+noUserFound: 'No user found'
+
+deletedUser: 'Successfully deleted user'
+
+noUserWithId: 'No user with the supplied id found'
+
+updatedUser: 'Successfully updated user'
+
+wrongPasswordLength: 'Passwords must be between %minPasswordLength% and %maxPasswordLength% characters'
+
+loginSuccessful: 'Login successful'
+
+wrongCredentials: 'Wrong credentials'
+
+userWithSuppliedEmailExists: 'An user with the supplied email already exists'
+
+passwordsDontMatch: "Passwords don't match"
+
+registeredAdmin: 'Registered administator'
+
+loggedOut: 'Successfully logged out'
+
+passwordAlreadyChoosen: 'User has already choosen a password'
+
+noUserFoundFromIdInCookie: 'No user found from the id contained in the cookie'
+
+succesfullyUpdatedPassword: 'Succesfully updated password'
+
+emailInUse: 'Email in use'
+
+unexpectedError: 'Ran into an unexpected error'
+
+successfullyCreatedAccount: 'Succesfully created a %userType% account'
+
+nameMustBeString: 'Name has to be a string'
+
+phaseIdIsNotValidObjectId: 'The supplied phase id is not a valid ObjectId'
+
+noCourseWithId: 'No course with that id found'
+
+notAllowedToCreatePhaseItem: 'You are not allowed to create phaseItems for this course'
+
+noPhaseInCourse: 'No phases exists in this course'
+
+specifiedPhaseDoesntBelongToCourse: "The specified phase doesn't belong to the course"
+
+noPhaseWithId: 'No phase with that id found'
+
+createdPhaseItem: 'Successfully created phaseItem'
+
+courseIdNotValidObjectId: 'Course id is not valid'
+
+phaseItemIdNotValidObjectId: 'PhaseItem id is not valid'
+
+notAuthorizedToChangeResource: 'You are no authorized to make any changes to this resource'
+
+noPhaseItemWithId: 'No phaseItem with the supplied id was found'
+
+updatedPhaseItem: 'Successfully updated phaseItem'
+
+supplyNameForPhase: 'Please supply a name for this phase'
+
+notFound: 'Not found'
+
+notAllowedToCreateResourceForCourse: "You don't have access to create resources for this course"
+
+createdPhase: 'Successfully created a phase'
+
+updatedPhase: 'Successfully updated phase'
+
+updatedCoursePage: 'Successfully updated coursePage'
+
+supplyNameForCourse: 'Please supply a name for the course'
+
+createdCourse: 'created a new course'
+
+foundCourses: 'Found courses'
+
+foundCourse: 'Found course'
+
+noAccessToCourse: "You don't have access to this course"
+
+notAuthorized: 'You are not authorized to perform that action'
+
+noCourseOwned: "You don't own any courses"
+
+courseNotOwned: 'You dont own this course'
+
+removedCourse: 'Succesfully removed course and all of its children'
+
+updatedCourse: 'Successfully updated course'
+
+themeDoesntExist: 'No theme with that name exists'
+
+userHasNotChoosenPassword: 'User has not choosen a password yet'
+
+selectedTheme: 'Succesfully selected theme'
+
+languageDoesntExist: "The selected language doesn't exist"
+
+selectedLanguage: 'Succesfully selected language'
+
+userIsLoggedIn: 'User is logged in'

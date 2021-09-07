@@ -6,6 +6,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import { authenticate } from '../../../../middlewares/authenticate';
+import { getLanguage } from '../../../../middlewares/getLanguage';
 import { checkUserType } from '../../../../middlewares/checkUserType';
 
 import {
@@ -14,6 +15,7 @@ import {
   NotAuthorizedError,
   BadRequestError,
   NotFoundError,
+  LANG,
 } from '../../../../library';
 
 import Course from '../../../../models/course';
@@ -24,24 +26,37 @@ import { logger } from '../../../../logger/logger';
 createPhaseRouter.post(
   '/api/course/:courseId/createPhase',
   authenticate,
+  getLanguage,
   checkUserType([UserTypes.Teacher, UserTypes.Admin]),
-  [body('name').isString().withMessage('Please supply a name for this phase')],
+  [
+    body('name')
+      .isString()
+      .withMessage((value, { req }) => {
+        const { lang } = req;
+
+        return LANG[lang].supplyNameForPhase;
+      }),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
     const currentUser = req.currentUser;
+
+    const { lang } = req;
+
+    const _lang = LANG[lang];
 
     logger.info('Starting creation of phase');
 
     if (!currentUser) {
       logger.debug('User is not signed in');
-      throw new NotAuthorizedError('Please login before you do that');
+      throw new NotAuthorizedError(_lang.pleaseLogin);
     }
 
     const { courseId } = req.params;
 
     if (!mongoose.isValidObjectId(courseId)) {
       logger.debug('User supplied an invalid ObjectId');
-      throw new BadRequestError('The course id in URI is not a valid ObjectId');
+      throw new BadRequestError(_lang.courseIdNotValidObjectId);
     }
 
     logger.info('Fetching course and populating coursePage');
@@ -49,7 +64,7 @@ createPhaseRouter.post(
 
     if (!course) {
       logger.debug('No course was found');
-      throw new NotFoundError();
+      throw new NotFoundError(_lang.notFound);
     }
 
     logger.debug(
@@ -57,9 +72,7 @@ createPhaseRouter.post(
     );
     if (course.owner.toString() !== currentUser.id.toString()) {
       logger.debug('User was is not allowed to create a phase for this course');
-      throw new NotAuthorizedError(
-        "You don't have access to create resources for this course",
-      );
+      throw new NotAuthorizedError(_lang.notAllowedToCreateResourceForCourse);
     }
 
     logger.debug('Building phase');
@@ -81,7 +94,7 @@ createPhaseRouter.post(
       logger.info('Successfully created phase');
       res.status(201).json({
         errors: false,
-        msg: 'Successfully created a phaes',
+        msg: _lang.createdPhase,
         phase: phase,
       });
     } catch (err) {

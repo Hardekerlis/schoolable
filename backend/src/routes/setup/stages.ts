@@ -5,20 +5,20 @@ import { body } from 'express-validator';
 import { validateRequest, BadRequestError, LANG } from '../../library';
 
 import User from '../../models/user';
-import UserSettings from '../../models/userSettings';
 import { authenticate, UserPayload } from '../../middlewares/authenticate';
+import { getLanguage } from '../../middlewares/getLanguage';
 import { checkUserType } from '../../middlewares/checkUserType';
 import { logger } from '../../logger/logger';
 
 const stagesRouter = Router();
 
-// TODO
-// Remove hardcoded text
+// TODO: Add logger to stages
 
 // The first stage is for choosing password
 stagesRouter.post(
   '/api/setup/stage/1',
   authenticate,
+  getLanguage,
   checkUserType(['student', 'teacher', 'external']), // Allowed usertypes
   [
     body('password')
@@ -26,8 +26,7 @@ stagesRouter.post(
       .isString()
       .custom((value, { req }) => {
         if (value !== req.body.confirmPassword) {
-          const lang = req.currentUser.lang;
-          throw new BadRequestError(LANG[lang].passwordsDontMatch);
+          throw new BadRequestError(LANG[`${req.lang}`].passwordsDontMatch);
         } else {
           return value;
         }
@@ -39,15 +38,15 @@ stagesRouter.post(
     const user = await User.findById((req.currentUser as UserPayload).id);
 
     // @ts-ignore
-    const lang = req.currentUser.lang;
+    const lang = LANG[`${req.lang}`];
 
     if (!user) {
-      throw new BadRequestError(LANG[lang].noUserFoundFromIdInCookie);
+      throw new BadRequestError(lang.noUserFoundFromIdInCookie);
     }
 
     // If user already has gone through this stage passwordChoosen will be true
     if (user.passwordChoosen) {
-      throw new BadRequestError(LANG[lang].passwordAlreadyChoosen);
+      throw new BadRequestError(lang.passwordAlreadyChoosen);
     }
 
     const { password } = req.body;
@@ -60,14 +59,13 @@ stagesRouter.post(
       await user.save();
       res.status(200).json({
         errors: false,
-        msg: LANG[lang].succesfullyUpdatedPassword,
+        msg: lang.succesfullyUpdatedPassword,
         continue: true,
       });
     } catch (err) {
       logger.error(`Unexpected error. Error message: ${err}`);
       res.status(400).json({
         errors: true,
-        msg: err,
         continue: false,
       });
     }
@@ -78,13 +76,14 @@ stagesRouter.post(
 stagesRouter.post(
   '/api/setup/stage/2',
   authenticate,
+  getLanguage,
   [
     body('theme')
       .exists()
       .isString()
-      .custom((value) => {
+      .custom((value, { req }) => {
         if (value !== 'dark' && value !== 'light') {
-          throw new BadRequestError('No theme with that name exists');
+          throw new BadRequestError(LANG[`${req.lang}`].themeDoesntExist);
         } else return value;
       }),
   ],
@@ -94,16 +93,16 @@ stagesRouter.post(
       (req.currentUser as UserPayload).id,
     ).populate('settings'); // Populate populates subdocument
 
+    const lang = LANG[`${req.lang}`];
+
     // If no user found
     if (!user) {
-      throw new BadRequestError(
-        'No user found from the id contained in the cookie',
-      );
+      throw new BadRequestError(lang.noUserFound);
     }
 
     // If user hasn't completed the previous step
     if (!user.passwordChoosen) {
-      throw new BadRequestError('User has not choosen a password yet');
+      throw new BadRequestError(lang.userHasNotChoosenPassword);
     }
 
     // Set the choosen theme
@@ -113,14 +112,13 @@ stagesRouter.post(
       await user.settings.save();
       res.status(200).json({
         errors: false,
-        msg: 'Succesfully selected theme',
+        msg: lang.selectedTheme,
         continue: true,
       });
     } catch (err) {
       logger.error(`Unexpected error. Error message: ${err}`);
       res.status(400).json({
         errors: true,
-        msg: err,
         continue: false,
       });
     }
@@ -131,14 +129,15 @@ stagesRouter.post(
 stagesRouter.post(
   '/api/setup/stage/3',
   authenticate,
+  getLanguage,
   [
     body('language')
       .exists()
       .isString()
-      .custom((value) => {
+      .custom((value, { req }) => {
         value = value.toLowerCase();
         if (value !== 'swe' && value !== 'eng') {
-          throw new BadRequestError("The selected language doesn't exist");
+          throw new BadRequestError(LANG[`${req.lang}`].languageDoesntExist);
         } else return value;
       }),
   ],
@@ -148,15 +147,15 @@ stagesRouter.post(
       (req.currentUser as UserPayload).id,
     ).populate('settings'); // Populate populates subdocument
 
+    const lang = LANG[`${req.lang}`];
+
     // If no user found
     if (!user) {
-      throw new BadRequestError(
-        'No user found from the id contained in the cookie',
-      );
+      throw new BadRequestError(lang.noUserWithId);
     }
 
     if (!user.passwordChoosen) {
-      throw new BadRequestError('User has not choosen a password yet');
+      throw new BadRequestError(lang.userHasNotChoosenPassword);
     }
 
     // Set selected language for user
@@ -170,14 +169,13 @@ stagesRouter.post(
       logger.info('Saving user ');
       res.status(200).json({
         errors: false,
-        msg: 'Succesfully selected language',
+        msg: lang.selectedLanguage,
         finished: true, // To indicate to frontend that setup steps are completed
       });
     } catch (err) {
       logger.error(`Unexpected error. Error message: ${err}`);
       res.status(400).json({
         errors: true,
-        msg: err,
         continue: false,
       });
     }

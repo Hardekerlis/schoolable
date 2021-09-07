@@ -6,14 +6,15 @@ import { body } from 'express-validator';
 
 const removeCourseRouter = Router();
 import {
-  NotFoundError,
   BadRequestError,
   NotAuthorizedError,
   UserTypes,
   validateRequest,
+  LANG,
 } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
+import { getLanguage } from '../../middlewares/getLanguage';
 import { checkUserType } from '../../middlewares/checkUserType';
 
 import { logger } from '../../logger/logger';
@@ -21,17 +22,20 @@ import { logger } from '../../logger/logger';
 import User from '../../models/user';
 import Course from '../../models/course';
 
-removeCourseRouter.patch(
+// TODO: Add logger to updateCourse
+
+removeCourseRouter.put(
   '/api/course',
   authenticate,
+  getLanguage,
   checkUserType([UserTypes.Teacher, UserTypes.Admin]),
   [
     body('id')
       .exists()
-      .custom((value) => {
+      .custom((value, { req }) => {
         // Check if id is a valid MongoDb ObjectId
         if (!mongoose.isValidObjectId(value)) {
-          throw new BadRequestError('The id supplied is not a valid ObjectId');
+          throw new BadRequestError(LANG[`${req.lang}`].notValidObjectId);
         } else {
           return value;
         }
@@ -40,17 +44,18 @@ removeCourseRouter.patch(
   validateRequest,
   async (req: Request, res: Response) => {
     const currentUser = req.currentUser;
+    const lang = LANG[`${req.lang}`];
 
     // Check if token is valid
     if (!currentUser) {
-      throw new NotAuthorizedError('Please login before you do that');
+      throw new NotAuthorizedError(lang.pleaseLogin);
     }
 
     const owner = await User.findById(currentUser.id);
 
     if (!owner) {
       // Just in case token check above fails
-      throw new BadRequestError('No user with that id found');
+      throw new BadRequestError(lang.noUserWithId);
     }
 
     const data = req.body;
@@ -59,9 +64,7 @@ removeCourseRouter.patch(
 
     // Check if user owns the course it is trying to edit
     if (!owner.courses.includes(courseId.toString())) {
-      throw new NotAuthorizedError(
-        "You don't own the course you are trying to edit",
-      );
+      throw new NotAuthorizedError(lang.notAuthorizedToChangeResource);
     }
 
     // find course and update
@@ -71,12 +74,12 @@ removeCourseRouter.patch(
 
     // Check if course was found and updated
     if (!updatedCourse) {
-      throw new BadRequestError('No course with that id found');
+      throw new BadRequestError(lang.noCourseWithId);
     }
 
     res.status(200).json({
       errors: false,
-      msg: 'Successfully updated course',
+      msg: lang.updatedCourse,
       course: updatedCourse,
     });
   },

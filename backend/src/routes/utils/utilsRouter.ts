@@ -1,9 +1,10 @@
 /** @format */
 
 import { Router, Request, Response } from 'express';
-import { NotAuthorizedError } from '../../library';
+import { NotAuthorizedError, LANG } from '../../library';
 
 import { authenticate } from '../../middlewares/authenticate';
+import { getLanguage } from '../../middlewares/getLanguage';
 import { logger } from '../../logger/logger';
 
 const utilsRouter = Router();
@@ -13,19 +14,20 @@ utilsRouter.post(
   '/api/check',
   authenticate,
   async (req: Request, res: Response) => {
+    const lang = LANG[`${req.lang}`];
     if (!req.currentUser) {
       logger.debug('User is not logged in');
 
       res.clearCookie('session');
 
-      throw new NotAuthorizedError('Not logged in');
+      throw new NotAuthorizedError(lang.pleaseLogin);
     }
 
     logger.debug('User is logged in');
 
     res.status(200).json({
       error: false,
-      msg: 'User is logged in',
+      msg: lang.userIsLoggedIn,
     });
   },
 );

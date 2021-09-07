@@ -6,12 +6,14 @@ import mongoose from 'mongoose';
 const updateCoursePageRouter = Router();
 
 import { authenticate } from '../../../middlewares/authenticate';
+import { getLanguage } from '../../../middlewares/getLanguage';
 import { checkUserType } from '../../../middlewares/checkUserType';
 import {
   UserTypes,
   validateRequest,
   BadRequestError,
   NotAuthorizedError,
+  LANG,
 } from '../../../library';
 import Course from '../../../models/course';
 import CoursePage from '../../../models/coursePage';
@@ -19,14 +21,16 @@ import CoursePage from '../../../models/coursePage';
 updateCoursePageRouter.put(
   '/api/coursePage',
   authenticate,
+  getLanguage,
   checkUserType([UserTypes.Admin, UserTypes.Teacher]),
   [
     body('id')
       .exists()
-      .custom((value) => {
+      .custom((value, { req }) => {
         // Check if id is a valid MongoDb ObjectId
         if (!mongoose.isValidObjectId(value)) {
-          throw new BadRequestError('The id supplied is not a valid ObjectId');
+          const lang = LANG[`${req.lang}`];
+          throw new BadRequestError(lang.courseIdNotValidObjectId);
         } else {
           return value;
         }
@@ -39,8 +43,10 @@ updateCoursePageRouter.put(
     const courseId = data.id;
     delete data.id;
 
+    const lang = LANG[`${req.lang}`];
+
     if (!currentUser) {
-      throw new NotAuthorizedError('Please login before you do that');
+      throw new NotAuthorizedError(lang.pleaseLogin);
     }
 
     const course = await Course.findById(courseId)
@@ -48,13 +54,11 @@ updateCoursePageRouter.put(
       .populate({ path: 'owner', select: 'id' });
 
     if (!course) {
-      throw new BadRequestError('No course with that id was found');
+      throw new BadRequestError(lang.noCourseWithId);
     }
 
     if (currentUser.id !== course.owner.id) {
-      throw new NotAuthorizedError(
-        'You are no authorized to make any changes to this resource',
-      );
+      throw new NotAuthorizedError(lang.notAuthorizedToChangeResource);
     }
 
     const updatedCoursePage = await CoursePage.findByIdAndUpdate(
@@ -65,7 +69,7 @@ updateCoursePageRouter.put(
 
     res.status(200).json({
       errors: false,
-      msg: 'Successfully updated coursePage',
+      msg: lang.updatedCoursePage,
       coursePage: updatedCoursePage,
     });
   },

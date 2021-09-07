@@ -6,7 +6,7 @@ import { app } from '../../../app';
 const path = '/api/course';
 
 it("Returns a 401 if user isn't signed in", async () => {
-  await request(app).patch(path).send({}).expect(401);
+  await request(app).put(path).send({}).expect(401);
 });
 
 it('Returns 401 if user is trying to update a course which it doesnt own', async () => {
@@ -29,7 +29,7 @@ it('Returns 401 if user is trying to update a course which it doesnt own', async
     .expect(201);
 
   await request(app)
-    .patch(path)
+    .put(path)
     .set('Cookie', cookie)
     .send({
       id: res.body.course.id,
@@ -50,7 +50,7 @@ it("Returns a 400 if id isn't an ObjectId", async () => {
     .expect(201);
 
   await request(app)
-    .patch(path)
+    .put(path)
     .set('Cookie', cookie)
     .send({
       id: 'notvalidid',
@@ -71,7 +71,7 @@ it('Returns a 200 on succesful update', async () => {
     .expect(201);
 
   await request(app)
-    .patch(path)
+    .put(path)
     .set('Cookie', cookie)
     .send({
       id: res.body.course.id,
