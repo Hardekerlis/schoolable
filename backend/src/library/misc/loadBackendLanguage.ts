@@ -6,7 +6,7 @@ import fs from 'fs';
 export const LANG: any = {};
 
 export const loadLanguages = async () => {
-  const path = __dirname.replace('src/library/misc', 'languages');
+  const path = __dirname.replace(`${process.env.PARENT_FOLDER}/library/misc`, 'languages');
 
   const langFiles = fs.readdirSync(path);
 
@@ -16,5 +16,4 @@ export const loadLanguages = async () => {
     LANG[_file] = fileContent;
   }
 
-  console.log(LANG);
 };

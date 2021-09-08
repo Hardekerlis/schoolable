@@ -5,14 +5,18 @@ import mongoose from 'mongoose';
 import express from 'express';
 import cors from 'cors';
 import 'express-async-errors';
-import { json } from 'body-parser';
+import { json, urlencoded } from 'body-parser';
 import cookieParser from 'cookie-parser';
+import path from "path";
 
 import { NotFoundError, ConfigHandler, errorHandler, Secrets } from './library';
 
+// Get parent folder to check if it is in dev or in prod folder
+process.env.PARENT_FOLDER = path.basename(path.dirname(__filename));
+
 // Load the config file into CONFIG variable
 const configPath =
-  __dirname.substring(0, __dirname.indexOf('/src')) + '/config/app-config.yml';
+  __dirname.substring(0, __dirname.indexOf(`/${process.env.PARENT_FOLDER}`)) + '/config/app-config.yml';
 
 ConfigHandler.loadConfig(configPath);
 
@@ -41,7 +45,7 @@ app.use(
 
 app.set('trust proxy', true);
 
-// app.use(urlencoded({ extended: true }));
+app.use(urlencoded({ extended: false }));
 
 app.use(
   json({

@@ -8,7 +8,10 @@
     "build/**/*"
   ],
   "scripts": {
-    "start": "nodemon ./src/index.ts",
+    "build": "npm run clean && tsc",
+    "start": "npm run build && node build/index.js",
+    "clean": "del ./build/*",
+    "dev": "nodemon ./src/index.ts",
     "test": "jest --watchAll --no-cache --runInBand",
     "test:ci": "jest --no-cache"
   },
@@ -49,6 +52,7 @@
     "@types/nodemailer": "^6.4.4",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^8.3.1",
+    "del-cli": "^4.0.1",
     "faker": "^5.5.3",
     "jest": "^27.0.6",
     "nodemon": "^2.0.12",
