@@ -13,6 +13,7 @@ const utilsRouter = Router();
 utilsRouter.post(
   '/api/check',
   authenticate,
+  getLanguage,
   async (req: Request, res: Response) => {
     const lang = LANG[`${req.lang}`];
     if (!req.currentUser) {

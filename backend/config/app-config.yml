@@ -1,7 +1,7 @@
 # @format
 
-debug: false
-dev: false
+debug: true
+dev: true
 version: 0.0.1
 isSetup: false
 port: 3001

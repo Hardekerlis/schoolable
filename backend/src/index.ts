@@ -6,6 +6,7 @@ import { logger } from './logger/logger';
 import { connect } from './database/connect';
 import { textSync } from 'figlet';
 import 'colors';
+import cron from 'node-cron';
 
 const drawSchoolableLogo = async () => {
   // let rows = [''];
@@ -59,6 +60,12 @@ const startServer = async () => {
       'The application is in dev mode. If this is an production environment please change dev to false in the config',
     );
   }
+
+  const task = cron.schedule('10 * * * *', () => {
+    console.log(' : )');
+  });
+
+  console.log(task);
 
   try {
     logger.info('Connecting to MongoDB');

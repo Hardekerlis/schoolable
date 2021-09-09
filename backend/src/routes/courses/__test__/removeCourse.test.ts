@@ -1,8 +1,6 @@
 /** @format */
 
 import request from 'supertest';
-import { CONFIG, UserTypes } from '../../../library';
-import faker from 'faker';
 import { app } from '../../../app';
 
 const path = '/api/course';
@@ -50,7 +48,7 @@ it('Returns 200 on Successfully deleting course', async () => {
     })
     .expect(201);
 
-  const asd = await request(app)
+  await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
