@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faFileAlt, faPen, faPenSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import Layout from 'layouts/default';
@@ -113,12 +113,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
     setPhasesRender(phases.map((obj, index) => {
       return (
-        <div className={styles.phaseEdit} key={index}>
-          <p className={styles.name}>{phaseTitles[index]}</p>
-          <div className={styles.editBtn}>
-            <p>Edit</p>
-          </div>
-        </div>
+        <Phase editing={true} key={index} name={phaseTitles[index]} />
       )
     }))
 
@@ -154,7 +149,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
       setPhasesRender(phases.map((obj, index) => {
         return (
-          <Phase key={index} name={obj.name} />
+          <Phase editing={false} key={index} name={obj.name} />
         )
       }))
 
@@ -203,37 +198,58 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
           <div className={styles.mainContainer}>
 
-            { isEditing &&
-
-              <div className={styles.changesSaveStatus}>
-
-                { phaseChangesSaved ?
-
-                  <p>Changes saved.</p>
-
-                  :
-
-                  <p>Saving changes...</p>
-
-
-                }
-
-              </div>
+            { // isEditing &&
+            //
+            //   <div className={styles.changesSaveStatus}>
+            //
+            //     { phaseChangesSaved ?
+            //
+            //       <p>Changes saved.</p>
+            //
+            //       :
+            //
+            //       <p>Saving changes...</p>
+            //
+            //
+            //     }
+            //
+            //   </div>
 
             }
+
+
 
             <div className={styles.content}>
 
               { isEditing &&
 
                 <>
+
                   <SampleCreationSystem requestCallback={onPhaseCreation} itemApiPath={`/api/course/${course.id}/createPhase`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
 
                 </>
 
               }
 
-              {phasesRender}
+              { sub === "overview" &&
+
+                <>
+
+                  <p className={styles.phasesText}>{lang.phases}</p>
+
+                  <div className={styles.phasesContainer}>
+
+
+
+                    {phasesRender}
+
+                  </div>
+
+                </>
+
+              }
+
+
 
             </div>
 
@@ -248,5 +264,8 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
 }
 
+// { isEditing === false &&
+//   <div className={styles.phaseDivider}></div>
+// }
 
 export default CoursePageRender;

@@ -85,15 +85,46 @@ $mainContainerMargin: 30px
 .content
   width: 100%
   height: calc(100vh - #{$headerHeight} - #{$courseMenuHeight} - #{$mainContainerMargin} - 20px)
-  overflow-y: scroll
-  padding-bottom: 20px
-  display: flex
-  flex-wrap: wrap
+  position: relative
+  // overflow-y: scroll
+  // padding-bottom: 20px
+  // display: flex
+  // flex-wrap: wrap
   // justify-content: center
 
 // .mainDivider
 //   width: calc(100% - #{$contentWidth} - #{$menuWidth})
 //   height: auto
+
+.phasesContainer
+  height: 100%
+  width: 100%
+  overflow-y: scroll
+  padding-bottom: 60px
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  align-content: flex-start
+  // justify-content: center
+  padding-left: 100px
+
+.phaseDivider
+  position: absolute
+  height: 100%
+  width: 2px
+  background-color: $lightGrey
+  margin-left: 50%
+  left: -2px
+
+.phasesText
+  font-size: 2rem
+  color: $white
+  font-weight: 600
+  margin: 0px
+  margin-left: 100px
+  margin-bottom: 30px
+
+
 
 .courseMenu
   display: flex
@@ -139,109 +170,6 @@ $mainContainerMargin: 30px
   background-color: $darkPurple2
 
 
-
-.phaseEdit
-  margin-top: 40px
-  margin-left: 40px
-  width: 360px
-  background-color: $white
-  border-radius: 5px
-  display: inline-block
-  position: relative
-  align-items: center
-
-  cursor: pointer
-
-  height: 80px
-
-  box-shadow: 5px 5px 30px 0px rgba(0,0,0, 0.4)
-
-  .name
-    font-size: 1.5rem
-    height: 100%
-    display: flex
-    justify-content: center
-    align-items: center
-    font-weight: 300
-
-  .editBtn
-    position: absolute
-    top: 0px
-    right: 0px
-    height: 100%
-    width: 100px
-    display: flex
-    justify-content: center
-    align-items: center
-    background-color: $lightBlue
-    border-bottom-right-radius: 4px
-    border-top-right-radius: 4px
-
-    p
-      text-align: center
-      color: $white
-      font-size: 1.65rem
-      font-weight: 300
-
-  input
-    font-size: 1.5rem
-    outline: none
-    padding: 10px
-    // border-radius: 3px
-    border: none
-    background: none
-    background-color: rgba($black, 0.3)
-    // border: 2px solid $lightGrey
-    height: 100%
-    width: 100%
-    border-top-right-radius: 3px
-
-    @include transitionProp(0.2s, ease-out, background-color)
-
-  input:focus
-    background-color: rgba($black, 0.3)
-
-
-  .edit
-    width: 100%
-    background-color: $darkPurple2
-    height: 40%
-    color: $white
-    border-bottom-left-radius: 4px
-    border-bottom-right-radius: 4px
-    display: flex
-    justify-content: center
-    align-items: center
-
-    user-select: none
-
-    p
-      width: auto
-
-
-  .textContainer
-    display: flex
-    flex-direction: row
-    align-items: center
-    // padding: 10px
-    padding-left: 10px
-    height: 60%
-
-
-  p
-    margin: 0px
-    // position: absolute
-    // right: 20px
-    font-size: 1.3rem
-    width: 240px
-
-.phaseEdit:first-of-type
-  margin-top: 0px !important
-  background-color: $black
-
-// .phasesEdit:nth-of-type(2)
-//   margin-top: 0px !important
-
 .changesSaveStatus
   margin-left: 20px
   color: $white
@@ -249,6 +177,13 @@ $mainContainerMargin: 30px
 
   p
     margin: 0px
+
+
+
+
+
+
+
 
 
 

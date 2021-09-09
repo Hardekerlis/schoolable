@@ -189,7 +189,7 @@ class Prompt_ {
 
     // console.log(promptRef, "ref")
 
-    if(promptRef.hasOwnProperty("current")) {
+    if(promptRef?.hasOwnProperty("current")) {
       if(!promptRef.current) {
         await this.callRefHandler();
       }

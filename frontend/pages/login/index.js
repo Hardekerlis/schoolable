@@ -57,7 +57,6 @@ const Login = () => {
     let request = new Request('/api/login', credentials).post().json();
     let res = await request.send();
 
-
     let user;
 
     try {

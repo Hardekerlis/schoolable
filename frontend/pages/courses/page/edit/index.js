@@ -48,24 +48,31 @@ export const getServerSideProps = async(ctx) => {
 
   }
 
+  if(!ctx.query.hasOwnProperty('sub')) {
+    ctx.query.sub = 'overview';
+  }
+
   return {
     props: {
       course,
+      sub: ctx.query.sub,
       serverErrors
     }
   }
 
 }
 
-const EditCourse = ({ serverErrors, course }) => {
+const EditCourse = ({ serverErrors, course, sub }) => {
 
   if(serverErrors !== false) {
     Prompt.error(serverErrors);
     //maybe add another render (return) if serverErrors
   }
 
+  console.log(sub)
+
   return(
-    <CoursePageRender isEditing={true} course={course} />
+    <CoursePageRender isEditing={true} course={course} sub={sub} />
   )
 
 }
