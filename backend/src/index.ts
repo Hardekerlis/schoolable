@@ -1,7 +1,7 @@
 /** @format */
 
 import { app } from './app';
-import { CONFIG, loadLanguages } from './library';
+import { CONFIG } from './library';
 import { logger } from './logger/logger';
 import { connect } from './database/connect';
 import { textSync } from 'figlet';
@@ -53,19 +53,17 @@ const startServer = async () => {
 
   logger.info('Starting server...');
 
-  await loadLanguages();
-
   if (CONFIG.dev) {
     logger.warn(
       'The application is in dev mode. If this is an production environment please change dev to false in the config',
     );
   }
 
-  const task = cron.schedule('10 * * * *', () => {
-    console.log(' : )');
-  });
-
-  console.log(task);
+  // const task = cron.schedule('10 * * * *', () => {
+  //   console.log(' : )');
+  // });
+  //
+  // console.log(task);
 
   try {
     logger.info('Connecting to MongoDB');

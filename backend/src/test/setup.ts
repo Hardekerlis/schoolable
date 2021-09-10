@@ -3,9 +3,7 @@
 // --- Global variables ---
 import mongoose from 'mongoose';
 import request from 'supertest';
-import cookieParser from 'cookie-parser';
-import { UserTypes, winstonTestSetup } from '../library';
-import Session from '../models/session';
+import { UserTypes, winstonTestSetup, loadLanguages } from '../library';
 
 import { app } from '../app';
 import User from '../models/user';

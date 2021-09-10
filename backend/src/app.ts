@@ -7,18 +7,30 @@ import cors from 'cors';
 import 'express-async-errors';
 import { json, urlencoded } from 'body-parser';
 import cookieParser from 'cookie-parser';
-import path from "path";
+import path from 'path';
 
-import { NotFoundError, ConfigHandler, errorHandler, Secrets } from './library';
+import {
+  NotFoundError,
+  ConfigHandler,
+  errorHandler,
+  Secrets,
+  loadLanguages,
+  LANG,
+} from './library';
 
 // Get parent folder to check if it is in dev or in prod folder
 process.env.PARENT_FOLDER = path.basename(path.dirname(__filename));
 
 // Load the config file into CONFIG variable
 const configPath =
-  __dirname.substring(0, __dirname.indexOf(`/${process.env.PARENT_FOLDER}`)) + '/config/app-config.yml';
+  __dirname.substring(0, __dirname.indexOf(`/${process.env.PARENT_FOLDER}`)) +
+  '/config/app-config.yml';
 
 ConfigHandler.loadConfig(configPath);
+
+console.log(LANG);
+loadLanguages();
+console.log(LANG);
 
 try {
   // Try to load secret
@@ -45,7 +57,7 @@ app.use(
 
 app.set('trust proxy', true);
 
-app.use(urlencoded({ extended: false }));
+// app.use(urlencoded({ extended: false }));
 
 app.use(
   json({

@@ -4,5 +4,10 @@
   "globalTeardown": "./src/test/globalTeardown.ts",
   "verbose": true,
   "testEnvironment": "node",
-  "setupFilesAfterEnv": ["./src/test/setup.ts"]
+  "setupFilesAfterEnv": ["./src/test/setup.ts"],
+  "globals": {
+    "ts-jest": {
+      "isolatedModules": true
+    }
+  }
 }
