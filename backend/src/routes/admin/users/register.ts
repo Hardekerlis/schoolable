@@ -118,11 +118,11 @@ registerRouter.post(
     }
     user.password = ''; // Just a safe guard to stop password from being sent to frontend
 
-    await sendMail(
-      email,
-      'Temporary password',
-      `<p>Temporary password: ${tempPassword}<p>`,
-    );
+    // await sendMail(
+    //   email,
+    //   'Temporary password',
+    //   `<p>Temporary password: ${tempPassword}<p>`,
+    // );
 
     res.status(201).json({
       msg: LANG[lang].successfullyCreatedAccount.replace(

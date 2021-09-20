@@ -15,7 +15,6 @@ import {
   errorHandler,
   Secrets,
   loadLanguages,
-  LANG,
 } from './library';
 
 // Get parent folder to check if it is in dev or in prod folder
@@ -28,9 +27,7 @@ const configPath =
 
 ConfigHandler.loadConfig(configPath);
 
-console.log(LANG);
 loadLanguages();
-console.log(LANG);
 
 try {
   // Try to load secret

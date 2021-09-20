@@ -80,7 +80,6 @@ global.getAuthCookie = async (type?: UserTypes) => {
   }
 
   const random = Math.random();
-
   const newUser = await request(app)
     .post('/api/admin/users/register')
     .set('Cookie', adminCookie)
