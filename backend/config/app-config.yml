@@ -4,7 +4,7 @@ debug: true
 dev: true
 version: 0.0.1
 isSetup: false
-port: 3000
+port: 3001
 cookies:
   signed: true
   httpOnly: false
