@@ -30,7 +30,7 @@ spec:
               "2",
               "-SD",
               "-cid",
-              "schoolable",
+              "development",
             ]
 ---
 apiVersion: v1

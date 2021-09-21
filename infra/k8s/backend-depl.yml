@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: us.gcr.io/schoolable/backend
+          image: us.gcr.io/schoolable-platform/backend
 ---
 apiVersion: v1
 kind: Service

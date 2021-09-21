@@ -8,9 +8,9 @@ build:
   # local:
   #   push: false
   googleCloudBuild:
-    projectId: schoolable
+    projectId: schoolable-platform
   artifacts:
-    - image: us.gcr.io/schoolable/client
+    - image: us.gcr.io/schoolable-platform/client
       context: client
       kaniko:
         dockerfile: Dockerfile.dev
@@ -21,7 +21,7 @@ build:
             dest: .
           - src: "**/*.sass"
             dest: .
-    - image: us.gcr.io/schoolable/backend
+    - image: us.gcr.io/schoolable-platform/backend
       context: backend
       kaniko:
         dockerfile: Dockerfile.dev
