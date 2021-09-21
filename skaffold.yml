@@ -22,7 +22,7 @@ build:
           - src: "**/*.sass"
             dest: .
     - image: us.gcr.io/schoolable/backend
-      context: auth
+      context: backend
       kaniko:
         dockerfile: Dockerfile.dev
         cache: {}
