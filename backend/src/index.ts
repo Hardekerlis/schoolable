@@ -7,6 +7,7 @@ import { connect } from './database/connect';
 import { textSync } from 'figlet';
 import 'colors';
 import cron from 'node-cron';
+import Date2Cron from 'date2cron';
 
 const drawSchoolableLogo = async () => {
   // let rows = [''];
@@ -59,11 +60,16 @@ const startServer = async () => {
     );
   }
 
-  // const task = cron.schedule('10 * * * *', () => {
-  //   console.log(' : )');
-  // });
+  const task = cron.schedule(
+    new Date2Cron(new Date(new Date().setMinutes(17))).convert(),
+    () => {
+      console.log('running every minute 1, 2, 4 and 5');
+    },
+  );
+
+  // task.start();
   //
-  // console.log(task);
+  console.log(console.log(task));
 
   try {
     logger.info('Connecting to MongoDB');
