@@ -1,0 +1,7 @@
+tsconfig.json
+package.json
+package-lock.json
+build
+coverage
+node_modules/
+.next/

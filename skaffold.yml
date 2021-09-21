@@ -1,0 +1,34 @@
+apiVersion: skaffold/v2beta21
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  # local:
+  #   push: false
+  googleCloudBuild:
+    projectId: schoolable
+  artifacts:
+    - image: us.gcr.io/schoolable/client
+      context: client
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.sass"
+            dest: .
+    - image: us.gcr.io/schoolable/backend
+      context: auth
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.yml"
+            dest: .

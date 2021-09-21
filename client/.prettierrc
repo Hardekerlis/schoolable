@@ -1,0 +1,8 @@
+singleQuote: true
+jsxSingleQuote: true
+trailingComma: 'all'
+bracketSpacing: true
+# requirePragma: true
+insertPragma: false
+arrowParens: 'avoid'
+semi: true
