@@ -1,0 +1,57 @@
+{
+  "sampleCreationSystem": {
+    "noCurrentItems": "Skapa en för att börja!",
+    "exit": "Stäng",
+    "create": "Skapa",
+    "itemNameSuffix": "namn"
+  },
+  "courses": {
+    "sortBy": "Sortera efter:",
+    "noCoursesFound": "Kunde inte hitta några kurser.",
+    "noCoursesFoundHelper": "Alla dina skapade kurser kommer finnas här!",
+    "courseItemName": "Kurs",
+    "noCoursesOwned": "Du äger inga kurser för tillfället.",
+    "courseCreated": "Kurs skapad!",
+    "authorPrefix": "Av:",
+    "sortDefaultName": "Standard"
+  },
+  "coursePage": {
+    "phaseCreated": "Fas skapad!",
+    "descriptionTitle": "Kurs beskrivning",
+    "editCourse": "Redigera kursen",
+    "phaseItemName": "Fas",
+    "courseMissingPhases": "Den här kursen har för tillfället inga faser.",
+    "editPhaseText": "Redigera den här fas"
+  },
+  "courseMenu": {
+    "overview": "Översikt"
+  },
+  "sidebar": {
+    "user": "Användare",
+    "home": "Hem",
+    "courses": "Kurser",
+    "assignments": "Uppgifter",
+    "schedule": "Schema",
+    "hiya": "Hej!",
+    "logout": "Logga ut"
+  },
+  "firstTimeSetup": {
+    "completeOption": "Var snäll gör klart inställningen.",
+    "pageTitle": "Basinställningar",
+    "previous": "Föregående",
+    "next": "Nästa"
+  },
+  "handleErrorsServer": {
+    "unexpected": "Ett oförväntat fel uppstod. Var vänligen försök igen senare."
+  },
+  "login": {
+    "pageTitle": "Logga in",
+    "teacher": "Lärare",
+    "student": "Student",
+    "legalGuardian": "Vårdnadshavare",
+    "loginBtn": "Logga in",
+    "unexpected": "Ett oförväntat uppstod. Försök logga in igen.",
+    "email": "E-postadress",
+    "password": "Lösenord"
+  }
+}

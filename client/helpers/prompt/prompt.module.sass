@@ -1,0 +1,85 @@
+@import "styles/variables"
+
+.wrapper
+  position: absolute
+  bottom: 0px
+  left: 0px
+  z-index: 999999
+  width: 100%
+
+$containerHeight: 125px
+$containerMargin: 10px
+
+.container
+  height: $containerHeight
+  position: absolute
+  bottom: -$containerHeight
+  left: $containerMargin
+  width: calc(100% - #{$containerMargin}*2)
+  // background-color: $red
+  // background-color: $green
+  // background-color: $darkPurple
+  // background-color: $purple
+
+  text-align: left
+
+
+  color: $white
+  border-radius: 5px
+  border: 3px solid rgba($white, 0.55)
+
+  padding: 10px 20px
+  font-size: 1.5rem
+
+  display: flex
+  justify-content: center
+  align-items: center
+
+  @include transitionProp(0.2s, ease-out, bottom)
+
+
+  p
+    margin: 0px
+    width: 100%
+
+.open
+  bottom: $containerMargin !important
+
+.error
+  background-color: $red
+
+.success
+  background-color: $green
+
+.show
+  background-color: $purple
+
+.close
+  position: absolute
+  top: 10px
+  right: 10px
+
+  width: 15px
+  height: 15px
+
+  cursor: pointer
+
+  display: flex
+  justify-content: center
+  align-items: center
+
+  color: rgba($white, 0.7)
+
+  @include transitionProp(0.2s, ease-out, color)
+
+.close:hover
+  color: rgba($white, 1)
+
+
+
+
+
+
+
+
+//

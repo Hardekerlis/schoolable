@@ -1,0 +1,149 @@
+@import "styles/variables"
+
+$formChildrenMarginBottom: 10px
+
+.title
+  position: absolute
+  top: 10px
+  color: $white
+  font-weight: 300
+  font-size: 3rem
+  margin: 0px
+
+
+.Dropdown-option
+  background-color: #000 !important
+
+.form
+  position: relative
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  height: 600px
+  width: 60%
+
+  border: 2px solid $purple
+  border-radius: 5px
+
+  .select
+    width: 300px
+    cursor: pointer
+
+
+  .selectControl
+    background-color: $black
+    border: 2px solid $purple
+    border-radius: 5px
+    padding: 10px
+    color: $white
+
+    font-size: 2rem !important
+
+    display: flex
+    justify-content: left
+    align-items: center
+    flex-direction: row
+
+    position: relative
+
+    background-color: rgba($white, 0)
+    cursor: pointer
+
+
+    @include transition(0.2s, ease-out)
+
+
+  .select:hover .selectControl
+    background-color: rgba($white, 0.2)
+
+  .selectMenu
+    background-color: #000
+
+  .selectArrow
+    position: absolute
+    top: 25px
+
+    border-width: 10px 7px 0px
+    border-color: $purple transparent transparent
+
+  select
+    background-color: $black
+    border: 1px solid $purple
+    border-radius: 5px
+    padding: 10px
+    color: $white
+
+    font-size: 2rem !important
+    display: grid
+
+
+  select::after
+    content: ""
+    width: 2em
+    height: 2em
+    background-color: $white
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%)
+
+  input, button
+    font-size: 2rem
+    outline: none
+    margin-bottom: $formChildrenMarginBottom
+
+    background: none
+    border: none
+
+    color: $white
+
+    @include transition(0.2s, ease-out)
+
+
+  input
+    width: 50%
+    border: 2px solid $purple
+    border-radius: 5px
+    padding: 10px
+
+    background-color: rgba($white, 0)
+
+
+
+
+  input:first-of-type
+    margin-top: 15px
+
+
+  input:hover
+    background-color: rgba($white, 0.2)
+
+  input:focus
+    background-color: rgba($purple, 0.3)
+
+  .submitButton
+    cursor: pointer
+    background-color: rgba($green, 0.75)
+    padding: 15px
+    border-radius: 5px
+
+    position: absolute
+    bottom: 10px
+
+  .submitButton:hover
+    background-color: rgba($green, 1)
+
+  select
+    width: 50%
+    font-size: 1.2rem
+    margin-bottom: $formChildrenMarginBottom
+    outline: none
+
+  // button
+
+
+.positioning
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-direction: column
+
+  background-color: $black

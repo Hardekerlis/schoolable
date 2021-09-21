@@ -1,0 +1,62 @@
+@import "styles/variables"
+
+$gridPadding: 25px
+
+$gridColumnAmt: 6
+$gridColumnGap: 25px
+$gridColumnSingle: calc((100% / #{$gridColumnAmt}) - #{$gridColumnGap})
+
+$gridRowAmt: 5
+$gridRowGap: 25px
+$gridRowSingle: calc((100% / #{$gridRowAmt}) - #{$gridRowGap})
+
+
+.wrapper
+  position: relative
+  width: 100%
+  padding-left: 25px
+  padding-top: 25px
+
+.viewer_module
+  width: 150px
+  height: 150px
+  background-color: rgba($white, 0.2)
+  border: 1px solid rgba($white, 0.5)
+  border-radius: 5px
+
+.module
+  position: absolute
+  z-index: 1
+  margin: 25px 0px 0px 25px
+
+  .muuri-item-dragging
+    z-index: 3
+
+  .muuri-item-releasing
+    z-index: 2
+
+  .muuri-item-hidden
+    z-index: 0
+
+
+
+
+// .wrapper
+//   width: 100vw
+//   height: 100vh
+//
+//   padding: $gridPadding
+//   padding-right: 0px
+//   padding-bottom: 0px
+//
+//   display: grid
+//   grid-template-columns: $gridColumnSingle $gridColumnSingle $gridColumnSingle $gridColumnSingle $gridColumnSingle $gridColumnSingle
+//   grid-column-gap: $gridColumnGap
+//
+//   grid-template-rows: $gridRowSingle $gridRowSingle $gridRowSingle $gridRowSingle $gridRowSingle
+//   grid-row-gap: $gridRowGap
+//
+//
+// .module
+//   grid-column: 1 / span 2
+//   grid-row: 1 / span 1
