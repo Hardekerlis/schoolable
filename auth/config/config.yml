@@ -1,0 +1,78 @@
+# @format
+
+debug: true
+dev: true
+port: 3000
+cookies:
+  signed: true
+  httpOnly: false
+  maxAge: -1
+logs:
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
+accounts:
+  supportedTypes:
+    custom: true
+    google: false
+    microsoft: false
+database:
+  uri: auth-mongo-srv
+  localIp: '127.0.0.1'
+  useMemoryLocal: true
+  port: 27017
+  name: auth
+passwords:
+  length:
+    min: 5
+    max: 15
+language: SWE
+nats:
+  url: 'http://nats-srv:4222'
+  clusterId: schoolable
+smtpOptions:
+  host: gmail
+  port: 587
+  secure: true
+  username: username
+  password: password
+allowedFileTypes:
+  - ext: '.doc'
+    mimeType: 'application/msword'
+  - ext: '.docx'
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  - ext: '.gif'
+    mimeType: 'image/gif'
+  - ext: '.jpg'
+    mimeType: 'image/jpeg'
+  - ext: '.jpeg'
+    mimeType: 'image/jpeg'
+  - ext: '.mp3'
+    mimeType: 'audio/mpeg'
+  - ext: '.mp4'
+    mimeType: 'video/mp4'
+  - ext: '.mpeg'
+    mimeType: 'video/mpeg'
+  - ext: '.odp'
+    mimeType: 'application/vnd.oasis.opendocument.presentation'
+  - ext: '.ods'
+    mimeType: 'application/vnd.oasis.opendocument.spreadsheet'
+  - ext: '.odt'
+    mimeType: 'application/vnd.oasis.opendocument.text'
+  - ext: '.png'
+    mimeType: 'image/png'
+  - ext: '.pdf	'
+    mimeType: 'application/pdf'
+  - ext: '.ppt'
+    mimeType: 'application/vnd.ms-powerpoint'
+  - ext: '.pptx'
+    mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+  - ext: '.txt'
+    mimeType: 'text/plain'
+  - ext: '.wav'
+    mimeType: 'audio/wav'
+  - ext: '.xls'
+    mimeType: 'application/vnd.ms-excel'
+  - ext: '.xlsx'
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  - ext: '.zip'
+    mimeType: 'application/zip'

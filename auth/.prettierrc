@@ -1,0 +1,7 @@
+# @format
+
+singleQuote: true
+trailingComma: 'all'
+bracketSpacing: true
+insertPragma: false
+requirePragma: false
