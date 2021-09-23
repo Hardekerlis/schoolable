@@ -19,7 +19,7 @@
     "phaseCreated": "Phase created!",
     "descriptionTitle": "Course description",
     "editCourse": "Edit course",
-    "phaseItemName": "Phase",
+    "phaseItemNcoursesame": "Phase",
     "courseMissingPhases": "This course does currently not have any phases.",
     "editPhaseText": "Edit this phase",
     "phaseNameEdit": "Edit phase name:",
@@ -34,7 +34,7 @@
     "home": "Home",
     "courses": "Courses",
     "assignments": "Assignments",
-    "schedule": "Schedule",
+    "schedule": "Calendar",
     "hiya": "Hiya!",
     "logout": "Logout"
   },
@@ -56,5 +56,13 @@
     "unexpected": "Unexpected error. Please login again.",
     "email": "Email",
     "password": "Password"
+  },
+  "phaseEditMenu": {
+    "phaseNameText": "Edit phase name",
+    "phaseNameInputPlaceholder": "Phase name",
+    "changesSaved": "Changes saved.",
+    "savingChanges": "Saving changes ...",
+    "editPhasePage": "Edit phase page",
+    "exit": "Exit"
   }
 }

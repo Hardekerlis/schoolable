@@ -77,7 +77,7 @@ const Sidebar = () => {
         <SidebarOption path={["/", "/home"]} onClick={() => navTo('/')} current={current} name={lang.home} icon={faHome} />
         <SidebarOption onClick={() => navTo('/courses')} current={current} name={lang.courses} icon={faLandmark} />
         <SidebarOption current={current} iconSize={"40%"} name={lang.assignments} icon={faBook} />
-        <SidebarOption current={current} iconSize={"40%"} name={lang.schedule} icon={faCalendar} />
+        <SidebarOption onClick={() => navTo('/calendar')} current={current} iconSize={"40%"} name={lang.schedule} icon={faCalendar} />
       </div>
       <UserMenu setUserMenuOpen={setUserMenuOpen} open={userMenuOpen} />
     </>

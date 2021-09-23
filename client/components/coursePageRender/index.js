@@ -173,7 +173,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
           }
 
           <div className={styles.header}>
-            { isEditing ?
+            { !isEditing ?
                 <p className={styles.headline}>{parsedCourseName}</p>
               :
                 <p className={styles.headline}><span style={{fontWeight: 300}}>{lang.coursePageTitleEditing}</span>{parsedCourseName}</p>

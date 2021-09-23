@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/router';
+
+
 import { Phase } from 'components'
 
 import Request from 'helpers/request.js'
 
+import { faPenSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import language from 'helpers/lang';
+const lang = language.phaseEditMenu;
+
 import styles from './phaseEditMenu.module.sass';
 
 const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
+
+  const router = useRouter();
 
   let [phaseName, setPhaseName] = useState(info.name);
   let [changesSaved, setChangesSaved] = useState(true);
@@ -64,33 +75,53 @@ const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
 
   }
 
+  const goToPhasePageEdit = () => {
+    //go to phase edit page
+    // router.push()
+  }
+
   return(
     <div ref={wrapperRef} className={styles.wrapper}>
       <div className={styles.container}>
         <Phase className={styles.showcase} clickable={false} editing={false} id={info.id} name={phaseName} />
         <div className={styles.nameContainer}>
-          <p className={styles.phaseNameText}>Edit phase name</p>
-          <input placeholder="Phase name" value={phaseName} onChange={onNameChange} />
+          <p className={styles.phaseNameText}>{lang.phaseNameText}</p>
+          <input placeholder={lang.phaseNameInputPlaceholder} value={phaseName} onChange={onNameChange} />
         </div>
 
         <div className={styles.changesSaveStatus}>
 
           { changesSaved ?
 
-            <p>Changes saved.</p>
+            <p>{lang.changesSaved}</p>
 
             :
 
-            <p>Saving changes...</p>
+            <p>{lang.savingChanges}</p>
 
 
           }
 
         </div>
 
-        <button onClick={exitMenu}>Exit</button>
+        <div className={styles.toolbar}>
+          <ToolbarOption title={lang.editPhasePage} icon={faPenSquare} action={goToPhasePageEdit} />
+        </div>
+
+        <button onClick={exitMenu}>{lang.exit}</button>
 
       </div>
+    </div>
+  )
+
+}
+
+const ToolbarOption = ({ action, icon, title }) => {
+
+  return (
+    <div onClick={action} className={styles.option}>
+      <FontAwesomeIcon icon={icon} className={styles.icon} />
+      <p>{title}</p>
     </div>
   )
 
