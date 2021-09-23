@@ -101,3 +101,40 @@
 
   button:hover
     background-color: $red
+
+.toolbar
+  position: absolute
+  width: 250px
+  right: -250px
+  top: 10px
+
+  color: $white
+
+  display: flex
+  flex-direction: column
+  align-items: flex-start
+
+  .option:hover
+    background-color: rgba($white, 0.3)
+    margin-left: 10px
+
+  .option
+    display: flex
+    flex-direction: row
+    align-items: center
+    font-size: 1.2rem
+    font-weight: 300
+    user-select: none
+    cursor: pointer
+    padding: 10px
+    width: auto
+
+    @include transition(0.2s, ease-out)
+
+    .icon
+      width: 40px
+      height: 40px
+
+    p
+      margin: 0px
+      margin-left: 10px
