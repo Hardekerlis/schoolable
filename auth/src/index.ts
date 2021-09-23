@@ -1,9 +1,9 @@
 /** @format */
 
 import { app } from './app';
-import { CONFIG } from '@gustafdahl/common';
-import { logger } from './utils/logger';
-import { connect } from './utils/connectToMongo';
+import { CONFIG } from '@gustafdahl/schoolable-utils';
+import logger from './utils/logger';
+import { connectToMongo } from '@gustafdahl/schoolable-utils';
 import 'colors';
 
 const startServer = async () => {
@@ -20,7 +20,7 @@ const startServer = async () => {
 
   try {
     logger.info('Connecting to MongoDB');
-    await connect();
+    await connectToMongo();
     logger.info('Successfully connected to MongoDB');
   } catch (err) {
     logger.warn(`Failed to connect to MongoDB. Error message: ${err}`);

@@ -2,7 +2,7 @@
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
-import { CONFIG } from '@gustafdahl/common';
+import { CONFIG } from '@gustafdahl/schoolable-utils';
 
 /** @format */
 

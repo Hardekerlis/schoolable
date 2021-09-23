@@ -2,14 +2,17 @@
 
 import mongoose from 'mongoose';
 import { Password } from '../utils/password';
-import { UserTypes } from '../utils/usertypes.enum';
+import { UserTypes } from '@gustafdahl/schoolable-enums';
 
 import { UserSettingsDoc } from './userSettings';
 
 interface UserAttributes {
   email: string;
   password: string;
-  name: string;
+  name: {
+    first: string;
+    last: string;
+  };
   userType: UserTypes;
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
@@ -24,7 +27,10 @@ interface UserModel extends mongoose.Model<UserDoc> {
 export interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
-  name: string;
+  name: {
+    first: string;
+    last: string;
+  };
   userType: UserTypes;
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
@@ -102,7 +108,7 @@ userSchema.index({
   classes: 'text',
 });
 
-userSchema.pre('save', async function (done) {
+userSchema.pre('save', async function(done) {
   if (this.isModified('password')) {
     const hashed = await Password.toHash(this.get('password'));
     this.set('password', hashed);

@@ -1,0 +1,24 @@
+{
+  "name": "@gustafdahl/schoolable-enums",
+  "version": "1.0.0",
+  "description": "Enums library for schoolable",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build/**/*"
+  ],
+  "scripts": {
+    "clean": "del ./build/*",
+    "build": "npm run clean && tsc"
+  },
+  "dependencies": {
+    "@types/node": "^15.12.5"
+  },
+  "devDependencies": {
+    "del-cli": "^4.0.1",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3"
+  },
+  "author": "",
+  "license": "ISC"
+}

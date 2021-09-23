@@ -1,3 +1,5 @@
+/** @format */
+
 export enum UserTypes {
   Admin = 'admin',
   Teacher = 'teacher',

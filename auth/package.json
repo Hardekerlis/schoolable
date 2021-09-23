@@ -16,8 +16,11 @@
     "test:ci": "jest --no-cache"
   },
   "dependencies": {
-    "@gustafdahl/common": "^1.0.15",
-    "@gustafdahl/loadlanguagefile": "^1.0.1",
+    "@gustafdahl/schoolable-enums": "^1.0.0",
+    "@gustafdahl/schoolable-errors": "^1.0.1",
+    "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
+    "@gustafdahl/schoolable-middlewares": "^1.0.4",
+    "@gustafdahl/schoolable-utils": "^1.0.0",
     "colors": "^1.4.0",
     "cookie-parser": "^1.4.5",
     "cookie-signature": "^1.0.6",
@@ -29,8 +32,9 @@
     "geoip-lite": "^1.4.2",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.13.2",
+    "mongoose": "^5.13.9",
     "multer": "^1.4.3",
+    "node-nats-streaming": "^0.3.2",
     "nodemailer": "^6.6.3"
   },
   "devDependencies": {

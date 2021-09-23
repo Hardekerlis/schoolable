@@ -1,0 +1,25 @@
+{
+  "name": "@gustafdahl/schoolable-events",
+  "version": "1.0.0",
+  "description": "Events library for schoolable",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build/**/*"
+  ],
+  "scripts": {
+    "clean": "del ./build/*",
+    "build": "npm run clean && tsc"
+  },
+  "dependencies": {
+    "@types/node": "^15.12.5",
+    "node-nats-streaming": "^0.3.2"
+  },
+  "devDependencies": {
+    "del-cli": "^4.0.1",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3"
+  },
+  "author": "",
+  "license": "ISC"
+}

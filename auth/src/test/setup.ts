@@ -4,9 +4,9 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
 import { app } from '../app';
-import { ConfigHandler, CONFIG } from '@gustafdahl/common';
+import { ConfigHandler, CONFIG } from '@gustafdahl/schoolable-utils';
 
-import { UserTypes } from '../utils/usertypes.enum';
+import { UserTypes } from '@gustafdahl/schoolable-enums';
 
 declare global {
   namespace NodeJS {
@@ -26,7 +26,10 @@ beforeAll(async () => {
   process.env.MONGOMS_VERSION = '4.2.8';
 
   try {
-    await mongoose.connect(process.env.MONGO_URI as string);
+    await mongoose.connect(`${process.env.MONGO_URI}/${CONFIG.database.name}`, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   } catch (err) {
     console.error(err);
   }
@@ -50,7 +53,7 @@ global.getAuthCookie = async (userType: string): Promise<string[]> => {
   const name = `${faker.name.firstName()} ${faker.name.lastName()}`;
 
   const response = await request(app)
-    .post('/api/users/signup')
+    .post('/api/auth/register')
     .send({ email, userType, name })
     .expect(201);
 

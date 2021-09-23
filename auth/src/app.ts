@@ -9,14 +9,10 @@ import { json, urlencoded } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
-import { loadLanguages } from '@gustafdahl/loadlanguagefile';
-
-import {
-  NotFoundError,
-  ConfigHandler,
-  errorHandler,
-  Secrets,
-} from '@gustafdahl/common';
+import { loadLanguages } from '@gustafdahl/schoolable-loadlanguages';
+import { NotFoundError } from '@gustafdahl/schoolable-errors';
+import { ConfigHandler, Secrets } from '@gustafdahl/schoolable-utils';
+import { errorHandler } from '@gustafdahl/schoolable-middlewares';
 
 // Get parent folder to check if it is in dev or in prod folder
 process.env.PARENT_FOLDER = path.basename(path.dirname(__filename));
@@ -69,6 +65,9 @@ app.use(
 // TODO
 // Add maxAge calculation
 app.use(cookieParser(process.env.JWT_KEY as string));
+
+import router from './routes';
+app.use('/api/auth', router);
 
 app.all('*', async () => {
   throw new NotFoundError();

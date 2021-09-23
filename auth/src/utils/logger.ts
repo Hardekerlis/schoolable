@@ -1,6 +1,6 @@
 /** @format */
 
-import { Logger, CONFIG } from '@gustafdahl/common';
+import { Logger, CONFIG } from '@gustafdahl/schoolable-utils';
 
 const logsFolder =
   __dirname.substring(0, __dirname.indexOf(`/${process.env.PARENT_FOLDER}`)) +
@@ -13,4 +13,4 @@ const logger = Logger(
   CONFIG.debug,
 );
 
-export { logger };
+export default logger;
