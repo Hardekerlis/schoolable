@@ -5,7 +5,7 @@ import { promisify } from 'util';
 
 const scryptAsync = promisify(scrypt);
 
-export class Password {
+export default class Password {
   /*
     Hash string with salt
     @param {string} password to be hashed

@@ -4,7 +4,9 @@
   "description": "",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
-  "files": ["build/**/*"],
+  "files": [
+    "build/**/*"
+  ],
   "scripts": {
     "build": "npm run clean && tsc",
     "start": "npm ci && npm run build && npm ci --only=production && node build/index.js",
@@ -16,6 +18,7 @@
   "dependencies": {
     "@gustafdahl/schoolable-enums": "^1.0.0",
     "@gustafdahl/schoolable-errors": "^1.0.1",
+    "@gustafdahl/schoolable-events": "^1.0.2",
     "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
     "@gustafdahl/schoolable-middlewares": "^1.0.7",
     "@gustafdahl/schoolable-utils": "^1.0.0",

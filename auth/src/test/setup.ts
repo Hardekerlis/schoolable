@@ -3,10 +3,14 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import { app } from '../app';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
-
+import { CONFIG, winstonTestSetup } from '@gustafdahl/schoolable-utils';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
+
+import { app } from '../app';
+import logger from '../utils/logger';
+
+logger.debug('Setting up tests...');
+winstonTestSetup();
 
 declare global {
   namespace NodeJS {

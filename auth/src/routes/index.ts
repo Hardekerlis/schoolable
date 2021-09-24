@@ -11,7 +11,6 @@ import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import { body } from 'express-validator';
 
 import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
 
 const router = Router();
 
@@ -24,23 +23,29 @@ router.post(
     body('email')
       .exists()
       .isEmail()
-      .withMessage('Please supply a valid email'),
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].invalidEmail;
+      }),
     body('userType')
       .exists()
       .custom((value, { req }) => {
         if (!Object.values(UserTypes).includes(value)) {
-          return 'Please supply a valid userType';
+          return LANG[`${req.lang}`].needValidUserType;
         }
         return value;
       }),
     body('name.first')
       .exists()
       .isString()
-      .withMessage('Please supply a first name'),
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].noFirstName;
+      }),
     body('name.last')
       .exists()
       .isString()
-      .withMessage('Please supply a last name'),
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].noLastName;
+      }),
   ],
   validateResult,
   register,
@@ -55,9 +60,13 @@ router.post(
       .exists()
       .isEmail()
       .withMessage((value, { req }) => {
-        console.log(req.lang);
-
-        return value;
+        return LANG[`${req.lang}`].invalidEmail;
+      }),
+    body('password')
+      .exists()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPassword;
       }),
   ],
   validateResult,

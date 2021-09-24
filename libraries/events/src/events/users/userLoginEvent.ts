@@ -6,6 +6,5 @@ export interface UserLoginEvent {
   subject: Subjects.UserLogin;
   data: {
     userId: string;
-    lastSeen: Date;
   };
 }

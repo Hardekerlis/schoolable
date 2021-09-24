@@ -1,0 +1,7 @@
+invalidEmail: 'Please supply a valid email'
+noFirstName: 'Please supply a first name'
+noLastName: 'Please supply a last name'
+needValidUserType: 'Please supply a valid userType'
+needPassword: 'Please supply a password'
+wrongCredentials: 'Wrong credentials'
+successfulLogin: 'Login was successful'

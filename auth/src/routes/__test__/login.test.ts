@@ -42,9 +42,9 @@ const registerUser = async (userType: UserTypes): Promise<RegisteredUser> => {
     .send(getUserData(userType))
     .expect(201);
 
-  const { user } = body;
+  const { user, tempPassword } = body;
 
-  const { email, tempPassword, id } = user;
+  const { email, id } = user;
 
   return { email, password: tempPassword, id };
 };
@@ -61,6 +61,17 @@ it('Returns a 400 if email is invalid', async () => {
     .expect(400);
 });
 
+it('Returns a 400 if no password is supplied', async () => {
+  const { email } = await registerUser(UserTypes.Teacher);
+
+  await request(app)
+    .post(path)
+    .send({
+      email,
+    })
+    .expect(400);
+});
+
 it('Returns a 400 if no user is found', async () => {
   await request(app)
     .post(path)
@@ -69,6 +80,18 @@ it('Returns a 400 if no user is found', async () => {
       password: faker.internet.password(),
     })
     .expect(400);
+});
+
+it("Returns error message 'Wrong credentials' if no user is found", async () => {
+  const res = await request(app)
+    .post(path)
+    .send({
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    })
+    .expect(400);
+
+  expect(res.body.errors[0].message).toEqual('Wrong credentials');
 });
 
 it('Returns a 400 if password is wrong', async () => {
@@ -81,20 +104,6 @@ it('Returns a 400 if password is wrong', async () => {
       password: faker.internet.password(),
     })
     .expect(400);
-});
-
-it("Returns error message 'Wrong credentials' if email is wrong", async () => {
-  const { password } = await registerUser(UserTypes.Teacher);
-
-  const res = await request(app)
-    .post(path)
-    .send({
-      email: faker.internet.email(),
-      password,
-    })
-    .expect(400);
-
-  expect(res.body.errors[0].message).toEqual('Wrong credentials');
 });
 
 it("Returns error message 'Wrong credentials' if password is wrong", async () => {
@@ -114,10 +123,7 @@ it("Returns error message 'Wrong credentials' if password is wrong", async () =>
 it('Returns a 200 if login is successful', async () => {
   const { email, password } = await registerUser(UserTypes.Teacher);
 
-  await request(app)
-    .post(path)
-    .send({ email, password })
-    .expect(200);
+  await request(app).post(path).send({ email, password }).expect(200);
 });
 
 it('Sets a cookie if login is successful', async () => {

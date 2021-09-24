@@ -6,5 +6,7 @@ export interface UserCreatedEvent {
   subject: Subjects.UserCreated;
   data: {
     userId: string;
+    email: string;
+    tempPassword: string;
   };
 }
