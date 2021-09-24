@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "build": "npm run clean && tsc",
-    "start": "npm ci && npm run build && node build/index.js",
+    "start": "npm ci && npm run build && npm ci --only=production && node build/index.js",
     "clean": "del ./build/*",
-    "dev": "nodemon ./src/index.ts",
+    "dev": "npm clean && npm ci && nodemon ./src/index.ts",
     "test": "jest --watchAll --no-cache --runInBand",
     "test:ci": "jest --no-cache"
   },
@@ -35,7 +35,8 @@
     "mongoose": "^5.13.9",
     "multer": "^1.4.3",
     "node-nats-streaming": "^0.3.2",
-    "nodemailer": "^6.6.3"
+    "nodemailer": "^6.6.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/colors": "^1.2.1",
