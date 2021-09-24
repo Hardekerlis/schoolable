@@ -47,6 +47,7 @@ const getInvalidUserData = (
 };
 
 it("Returns a 401 if user registering account isn't of type Admin", async () => {
+  await global.getAuthCookie(UserTypes.Admin);
   const [teacherCookie] = await global.getAuthCookie(UserTypes.Teacher);
 
   await request(app)
@@ -93,5 +94,5 @@ it('Returns a 201 if user is registered', async () => {
     .post(path)
     .set('Cookie', adminCookie)
     .send(getUserData(UserTypes.Teacher))
-    .expect(400);
+    .expect(201);
 });

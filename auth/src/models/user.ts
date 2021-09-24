@@ -17,7 +17,6 @@ interface UserAttributes {
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
   setupComplete?: boolean;
-  courses?: string[]; // course ids
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -35,7 +34,6 @@ export interface UserDoc extends mongoose.Document {
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
   setupComplete?: boolean;
-  courses?: string[]; // course ids
 }
 
 const userSchema = new mongoose.Schema(
@@ -53,21 +51,20 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     name: {
-      type: String,
-      required: true,
+      first: {
+        type: String,
+        required: true,
+      },
+      last: {
+        type: String,
+        required: true,
+      },
     },
     userType: {
       type: String,
       enum: Object.values(UserTypes),
       required: true,
     },
-    courses: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'courses',
-        default: [],
-      },
-    ],
     setupComplete: {
       type: Boolean,
       default: false,
@@ -98,15 +95,6 @@ const userSchema = new mongoose.Schema(
     },
   },
 );
-
-userSchema.index({
-  email: 'text',
-  name: 'text',
-  userType: 'text',
-  setupComplete: 'text',
-  passwordChoosen: 'text',
-  classes: 'text',
-});
 
 userSchema.pre('save', async function(done) {
   if (this.isModified('password')) {

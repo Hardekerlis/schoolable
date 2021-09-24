@@ -18,13 +18,15 @@ export const currentUser = (
   res: Response,
   next: NextFunction,
 ) => {
-  if (!req.cookies?.jwt) {
+  const { token } = req.cookies.token ? req.cookies : req.signedCookies;
+
+  if (!token) {
     return next();
   }
 
   try {
     const payload = jwt.verify(
-      req.cookies.jwt,
+      token,
       process.env.JWT_KEY as string,
     ) as UserPayload;
 

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
 import { app } from '../app';
-import { ConfigHandler, CONFIG } from '@gustafdahl/schoolable-utils';
+import { CONFIG } from '@gustafdahl/schoolable-utils';
 
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 
@@ -48,9 +48,12 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-global.getAuthCookie = async (userType: string): Promise<string[]> => {
+global.getAuthCookie = async (userType: UserTypes): Promise<string[]> => {
   const email = faker.internet.email();
-  const name = `${faker.name.firstName()} ${faker.name.lastName()}`;
+  const name = {
+    first: faker.name.firstName(),
+    last: faker.name.lastName(),
+  };
 
   const response = await request(app)
     .post('/api/auth/register')
