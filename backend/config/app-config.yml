@@ -18,7 +18,7 @@ accounts:
     google: false
     microsoft: false
 database:
-  url: auth-mongo-srv
+  url: backend-mongo-srv
   port: '27017'
   name: schoolable
 passwords:
