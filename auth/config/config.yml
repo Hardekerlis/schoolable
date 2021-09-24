@@ -14,7 +14,7 @@ accounts:
     google: false
     microsoft: false
 database:
-  uri: auth-mongo-srv
+  uri: backend-mongo-srv
   localIp: 127.0.0.1
   useMemoryLocal: true
   port: 27017

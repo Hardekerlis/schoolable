@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: us.gcr.io/schoolable-platform/client
+          image: eu.gcr.io/schoolable-platform/client
 ---
 apiVersion: v1
 kind: Service

@@ -4,16 +4,14 @@
   "description": "",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
-  "files": [
-    "build/**/*"
-  ],
+  "files": ["build/**/*"],
   "scripts": {
     "build": "npm run clean && tsc",
     "start": "npm ci && npm run build && npm ci --only=production && node build/index.js",
     "clean": "del ./build/*",
     "dev": "npm clean && npm ci && nodemon ./src/index.ts",
-    "test": "jest --watchAll --no-cache --runInBand",
-    "test:ci": "jest --no-cache"
+    "test": "npm run clean && npm ci && jest --watchAll --no-cache --runInBand",
+    "test:ci": "npm clean && npm ci && jest --no-cache"
   },
   "dependencies": {
     "@gustafdahl/schoolable-enums": "^1.0.0",

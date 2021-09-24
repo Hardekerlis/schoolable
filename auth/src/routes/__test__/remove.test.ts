@@ -57,11 +57,10 @@ it('Returns a 401 if user is not an admin', async () => {
   await request(app)
     .delete(path)
     .set('Cookie', teacherCookie)
-    .send({ id });
+    .send({ id })
+    .expect(401);
 });
 
-it('Returns a 405 if an admin is trying to remove the last admin account', async () => {
-  const [adminCookie] = await global.getAuthCookie(UserTypes.Admin);
-});
+it.todo('Returns a 405 if an admin is trying to remove the last admin account');
 
-it('Returns a 200 if account is successfully removed', async () => {});
+it.todo('Returns a 200 if account is successfully removed');
