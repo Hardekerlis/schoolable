@@ -3,22 +3,28 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import { CONFIG, winstonTestSetup } from '@gustafdahl/schoolable-utils';
+import {
+  CONFIG,
+  ConfigHandler,
+  winstonTestSetup,
+} from '@gustafdahl/schoolable-utils';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 
 import { app } from '../app';
-import logger from '../utils/logger';
-
-logger.debug('Setting up tests...');
-winstonTestSetup();
 
 declare global {
   namespace NodeJS {
     interface Global {
-      getAuthCookie(userType: string): Promise<string[]>;
+      getAuthCookie(userType: UserTypes, email?: string): Promise<string[]>;
+      adminCookie?: string;
     }
   }
 }
+
+import logger from '../utils/logger';
+
+logger.debug('Setting up tests...');
+winstonTestSetup();
 
 jest.mock('../utils/natsWrapper');
 
@@ -40,6 +46,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  global.adminCookie = undefined;
   try {
     await mongoose.connection.dropDatabase();
   } catch (err) {
@@ -52,19 +59,56 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-global.getAuthCookie = async (userType: UserTypes): Promise<string[]> => {
+const getUserData = () => {
   const email = faker.internet.email();
   const name = {
     first: faker.name.firstName(),
     last: faker.name.lastName(),
   };
 
-  const response = await request(app)
+  return { email, name };
+};
+
+global.getAuthCookie = async (
+  userType: UserTypes,
+  email?: string,
+): Promise<string[]> => {
+  if (!global.adminCookie) {
+    const { email, name } = getUserData();
+    const adminRes = await request(app)
+      .post('/api/auth/register')
+      .send({ email, userType: UserTypes.Admin, name })
+      .expect(201);
+
+    const adminLoginRes = await request(app).post('/api/auth/login').send({
+      email: email,
+      password: adminRes.body.tempPassword,
+    });
+
+    const [adminCookie] = adminLoginRes.get('Set-Cookie');
+    global.adminCookie = adminCookie;
+  }
+
+  const userData = getUserData();
+
+  const createRes = await request(app)
     .post('/api/auth/register')
-    .send({ email, userType, name })
+    .send({
+      email: email ? email : userData.email,
+      userType,
+      name: userData.name,
+    })
+    .set('Cookie', global.adminCookie)
     .expect(201);
 
-  const cookie = response.get('Set-Cookie');
+  const res = await request(app)
+    .post('/api/auth/login')
+    .send({
+      email: email ? email : userData.email,
+      password: createRes.body.tempPassword,
+    });
+
+  const cookie = res.get('Set-Cookie');
 
   return cookie;
 };

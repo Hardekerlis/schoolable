@@ -58,23 +58,6 @@ const register = async (req: Request, res: Response) => {
     logger.info('Trying to save new user');
     await newUser.save();
 
-    logger.debug('Creating token');
-    // Creating token to be stored in cookie
-    const token = jwt.sign(
-      {
-        email: newUser.email,
-        id: newUser.id,
-        userType: newUser.userType,
-        name: newUser.name,
-        lang: newUser.settings.language,
-      },
-      process.env.JWT_KEY as string,
-    );
-
-    logger.info('Setting token cookie');
-    // Setting token as token in cookie
-    res.cookie('token', token);
-
     // Couldnt get nats mock to work
     // Code is only ran if its not test environment
     if (process.env.NODE_ENV !== 'test') {

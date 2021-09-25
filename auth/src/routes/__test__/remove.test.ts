@@ -1,8 +1,12 @@
 import request from 'supertest';
 import faker from 'faker';
-import { app } from '../../app';
-
 import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserPayload } from '@gustafdahl/schoolable-interfaces';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+
+import { app } from '../../app';
+import User from '../../models/user';
 
 const path = '/api/auth/remove';
 
@@ -33,7 +37,7 @@ interface RegisteredUser {
 }
 
 const registerUser = async (userType: UserTypes): Promise<RegisteredUser> => {
-  const [adminCookie] = await global.getAuthCookie(UserTypes.Admin);
+  const adminCookie = global.adminCookie;
   const path = '/api/auth/register';
 
   const { body } = await request(app)
@@ -42,9 +46,9 @@ const registerUser = async (userType: UserTypes): Promise<RegisteredUser> => {
     .send(getUserData(userType))
     .expect(201);
 
-  const { user } = body;
+  const { user, tempPassword } = body;
 
-  const { email, tempPassword, id } = user;
+  const { email, id } = user;
 
   return { email, password: tempPassword, id };
 };
@@ -61,6 +65,43 @@ it('Returns a 401 if user is not an admin', async () => {
     .expect(401);
 });
 
-it.todo('Returns a 405 if an admin is trying to remove the last admin account');
+it('Returns a 405 if an admin is trying to remove the last admin account', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Student);
 
-it.todo('Returns a 200 if account is successfully removed');
+  const token = cookie.split(' ')[0].replace('token=', '').replace(';', '');
+
+  const payload = jwt.verify(
+    token,
+    process.env.JWT_KEY as string,
+  ) as UserPayload;
+
+  await request(app)
+    .delete(path)
+    .set('Cookie', cookie)
+    .send({ id: payload.id })
+    .expect(405);
+});
+
+it('Returns a 400 if no user is found to delete', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+  await request(app)
+    .delete(path)
+    .set('Cookie', cookie)
+    .send({
+      id: mongoose.Types.ObjectId(),
+    })
+    .expect(400);
+});
+
+it('Returns a 200 if account is successfully removed', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+  const { id } = await registerUser(UserTypes.Student);
+
+  await request(app)
+    .delete(path)
+    .set('Cookie', cookie)
+    .send({ id })
+    .expect(200);
+});
