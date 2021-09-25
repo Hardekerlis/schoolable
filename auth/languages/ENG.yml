@@ -5,3 +5,5 @@ needValidUserType: 'Please supply a valid userType'
 needPassword: 'Please supply a password'
 wrongCredentials: 'Wrong credentials'
 successfulLogin: 'Login was successful'
+needId: 'Please supply a id as a string'
+noUserFoundId: "Couln't find a user with the supplied id"

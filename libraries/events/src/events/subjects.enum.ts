@@ -5,4 +5,5 @@ export enum Subjects {
   UserUpdated = 'user:updated',
   UserLogin = 'user:login',
   UserLogout = 'user:logout',
+  UserRemoved = 'user:removed',
 }

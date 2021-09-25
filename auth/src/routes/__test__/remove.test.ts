@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 
 import { app } from '../../app';
 import User from '../../models/user';
+import UserSettings from '../../models/userSettings';
 
 const path = '/api/auth/remove';
 
@@ -42,6 +43,7 @@ const registerUser = async (userType: UserTypes): Promise<RegisteredUser> => {
 
   const { body } = await request(app)
     .post(path)
+    // @ts-ignore
     .set('Cookie', adminCookie)
     .send(getUserData(userType))
     .expect(201);
@@ -68,7 +70,11 @@ it('Returns a 401 if user is not an admin', async () => {
 it('Returns a 405 if an admin is trying to remove the last admin account', async () => {
   const [cookie] = await global.getAuthCookie(UserTypes.Student);
 
-  const token = cookie.split(' ')[0].replace('token=', '').replace(';', '');
+  // @ts-ignore
+  const token = global.adminCookie
+    .split(' ')[0]
+    .replace('token=', '')
+    .replace(';', '');
 
   const payload = jwt.verify(
     token,
@@ -77,7 +83,8 @@ it('Returns a 405 if an admin is trying to remove the last admin account', async
 
   await request(app)
     .delete(path)
-    .set('Cookie', cookie)
+    // @ts-ignore
+    .set('Cookie', global.adminCookie)
     .send({ id: payload.id })
     .expect(405);
 });

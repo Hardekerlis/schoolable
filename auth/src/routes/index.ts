@@ -73,4 +73,22 @@ router.post(
   login,
 );
 
+import remove from './remove';
+router.use(
+  '/remove',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin]),
+  [
+    body('id')
+      .exists()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needId;
+      }),
+  ],
+  validateResult,
+  remove,
+);
+
 export default router;
