@@ -3,16 +3,11 @@ dev: true
 port: 3000
 cookies:
   signed: true
-  httpOnly: false
+  httpOnly: true
   maxAge: -1
 logs:
   newLogFileFrequency: 24h
   maxFileSize: 50m
-accounts:
-  supportedTypes:
-    custom: true
-    google: false
-    microsoft: false
 database:
   uri: backend-mongo-srv
   localIp: 127.0.0.1

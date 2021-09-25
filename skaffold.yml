@@ -32,3 +32,14 @@ build:
             dest: .
           - src: "**/*.yml"
             dest: .
+    - image: eu.gcr.io/schoolable-platform/auth
+      context: auth
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.yml"
+            dest: .

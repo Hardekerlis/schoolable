@@ -11,7 +11,7 @@
     "build": "npm run clean && tsc",
     "start": "npm ci && npm run build && npm ci --only=production && node build/index.js",
     "clean": "del ./build/*",
-    "dev": "npm clean && npm ci && nodemon ./src/index.ts",
+    "dev": "npm run clean && npm ci && nodemon ./src/index.ts",
     "test": "npm run clean && npm ci && jest --watchAll --no-cache --runInBand",
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
