@@ -5,5 +5,5 @@ import {
 } from '@gustafdahl/schoolable-events';
 
 export default class UserRemovedPublisher extends Publisher<UserRemovedEvent> {
-  subject: Subjects.UserLogin = Subjects.UserLogin;
+  subject: Subjects.UserRemoved = Subjects.UserRemoved;
 }

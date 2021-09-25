@@ -15,7 +15,7 @@ import { app } from '../app';
 declare global {
   namespace NodeJS {
     interface Global {
-      getAuthCookie(userType: UserTypes, email?: string): Promise<string[]>;
+      getAuthCookie(userType?: UserTypes, email?: string): Promise<string[]>;
       adminCookie?: string;
     }
   }
@@ -70,7 +70,7 @@ const getUserData = () => {
 };
 
 global.getAuthCookie = async (
-  userType: UserTypes,
+  userType?: UserTypes,
   email?: string,
 ): Promise<string[]> => {
   if (!global.adminCookie) {
@@ -88,6 +88,8 @@ global.getAuthCookie = async (
     const [adminCookie] = adminLoginRes.get('Set-Cookie');
     global.adminCookie = adminCookie;
   }
+
+  if (!userType) return [global.adminCookie];
 
   const userData = getUserData();
 

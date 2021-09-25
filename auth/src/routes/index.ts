@@ -1,6 +1,6 @@
 /** @format */
 
-import { Router, NextFunction, Request, Response } from 'express';
+import { Router } from 'express';
 import {
   currentUser,
   validateResult,
@@ -90,5 +90,8 @@ router.use(
   validateResult,
   remove,
 );
+
+import logout from './logout';
+router.get('/logout', currentUser, getLanguage, logout);
 
 export default router;

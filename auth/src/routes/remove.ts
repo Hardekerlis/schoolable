@@ -5,13 +5,11 @@ import {
   UnexpectedError,
   BadRequestError,
 } from '@gustafdahl/schoolable-errors';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
 import UserRemovedPublisher from '../events/userRemoved';
 import { natsWrapper } from '../utils/natsWrapper';
 import User from '../models/user';
-import UserSettings from '../models/userSettings';
 import logger from '../utils/logger';
 
 const remove = async (req: Request, res: Response) => {
