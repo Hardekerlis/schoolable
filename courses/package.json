@@ -15,7 +15,23 @@
     "test": "npm run clean && npm ci && jest --watchAll --no-cache --runInBand",
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
+  "dependencies": {
+    "@gustafdahl/schoolable-enums": "^1.0.3",
+    "@gustafdahl/schoolable-errors": "^1.0.1",
+    "@gustafdahl/schoolable-interfaces": "^1.0.5",
+    "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
+    "@gustafdahl/schoolable-middlewares": "^1.0.10",
+    "@gustafdahl/schoolable-utils": "^1.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-validator": "^6.12.2"
+  },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/faker": "^5.5.8",
+    "@types/jest": "^27.0.2",
     "@types/node": "^15.12.5",
     "@types/supertest": "^2.0.11",
     "del-cli": "^4.0.1",

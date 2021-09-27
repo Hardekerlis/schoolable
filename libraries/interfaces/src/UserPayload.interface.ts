@@ -6,6 +6,9 @@ export interface UserPayload {
   email: string;
   id: string;
   userType: UserTypes;
-  sessionId: string;
+  name: {
+    first: string;
+    last: string;
+  };
   lang: string;
 }

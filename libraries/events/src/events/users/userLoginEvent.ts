@@ -6,5 +6,8 @@ export interface UserLoginEvent {
   subject: Subjects.UserLogin;
   data: {
     userId: string;
+    ip: string;
+    headers: object;
+    lang: string;
   };
 }

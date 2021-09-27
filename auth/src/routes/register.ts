@@ -6,7 +6,6 @@ import {
 } from '@gustafdahl/schoolable-errors';
 import { CONFIG } from '@gustafdahl/schoolable-utils';
 import { v4 as uuidv4 } from 'uuid';
-import jwt from 'jsonwebtoken';
 
 import UserCreatedPublisher from '../events/userCreated';
 import { natsWrapper } from '../utils/natsWrapper';
@@ -18,6 +17,7 @@ const register = async (req: Request, res: Response) => {
   const { email, userType, name } = req.body;
   const { currentUser } = req;
 
+  // TODO: does this block of code make it possible for any user who isnt authenticated to make accounts? Need to be fixed!
   logger.info('Starting user registration');
   // This check can only be true if an admin user exists
   if (currentUser && currentUser?.userType !== UserTypes.Admin) {

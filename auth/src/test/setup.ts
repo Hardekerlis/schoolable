@@ -3,11 +3,7 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import {
-  CONFIG,
-  ConfigHandler,
-  winstonTestSetup,
-} from '@gustafdahl/schoolable-utils';
+import { CONFIG, winstonTestSetup } from '@gustafdahl/schoolable-utils';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 
 import { app } from '../app';
@@ -29,6 +25,8 @@ winstonTestSetup();
 jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
+
+process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 beforeAll(async () => {
   process.env.MONGOMS_DOWNLOAD_URL =

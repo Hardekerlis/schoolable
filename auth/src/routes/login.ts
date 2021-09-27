@@ -57,6 +57,9 @@ const login = async (req: Request, res: Response) => {
         // Publishes event to nats service
         new UserLoginPublisher(natsWrapper.client).publish({
           userId: user.id,
+          ip: req.socket.remoteAddress || req.ip,
+          headers: req.headers,
+          lang: req.lang,
         });
         logger.info('Sent Nats login event');
       }

@@ -1,6 +1,6 @@
 {
   "name": "@gustafdahl/schoolable-enums",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Enums library for schoolable",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

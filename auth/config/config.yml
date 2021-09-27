@@ -22,12 +22,6 @@ language: SWE
 nats:
   url: http://nats-srv:4222
   clusterId: schoolable
-smtpOptions:
-  host: gmail
-  port: 587
-  secure: true
-  username: username
-  password: password
 allowedFileTypes:
   - ext: .doc
     mimeType: application/msword

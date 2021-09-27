@@ -1,6 +1,6 @@
 {
   "name": "@gustafdahl/schoolable-interfaces",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Interface library for schoolable",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -12,7 +12,7 @@
     "build": "npm run clean && tsc"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-enums": "^1.0.0",
+    "@gustafdahl/schoolable-enums": "^1.0.1",
     "@types/node": "^15.12.5"
   },
   "devDependencies": {
