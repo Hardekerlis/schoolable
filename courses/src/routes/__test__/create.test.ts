@@ -13,7 +13,10 @@ it(`Has a route handler listening on ${path} for post requests`, async () => {
 });
 
 it('Returns a 401 if user is not logged in', async () => {
-  await request(app).post(path).send({ name: 'test name' }).expect(401);
+  await request(app)
+    .post(path)
+    .send({ name: faker.company.companyName() })
+    .expect(401);
 });
 
 it('Returns a 401 if user is not an admin or teacher', async () => {
@@ -22,7 +25,7 @@ it('Returns a 401 if user is not an admin or teacher', async () => {
   await request(app)
     .post(path)
     .set('Cookie', cookie)
-    .send({ name: 'test name' })
+    .send({ name: faker.company.companyName() })
     .expect(401);
 });
 
@@ -38,7 +41,7 @@ it('Returns a 200 if a course is successfully created', async () => {
   await request(app)
     .post(path)
     .set('Cookie', cookie)
-    .send({ name: 'Test name' })
+    .send({ name: faker.company.companyName() })
     .expect(201);
 });
 
@@ -48,7 +51,7 @@ it('coursePage key is defined in course if creation is successful', async () => 
   const res = await request(app)
     .post(path)
     .set('Cookie', cookie)
-    .send({ name: 'Test name' })
+    .send({ name: faker.company.companyName() })
     .expect(201);
 
   expect(res.body.course.coursePage).toBeDefined();
