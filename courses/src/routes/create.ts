@@ -7,6 +7,8 @@ import { CONFIG } from '@gustafdahl/schoolable-utils';
 import CoursePage from '../models/coursePage';
 import Course from '../models/course';
 
+import CourseCreatedPublisher from '../events/publishers/courseCreated';
+import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
 const create = async (req: Request, res: Response) => {
@@ -35,6 +37,8 @@ const create = async (req: Request, res: Response) => {
         ],
         removeable: false,
       },
+      // Every menu item below is just for example
+      // TODO: Remove example menu items
       {
         title: 'Example 1',
         value: 'example_1',
@@ -91,7 +95,21 @@ const create = async (req: Request, res: Response) => {
 
     logger.info('Successfully saved course');
 
-    logger.info('Course successfully created. Responding to user');
+    logger.info('Course successfully created');
+
+    // Couldnt get nats mock to work
+    // Code is only ran if its not test environment
+    if (process.env.NODE_ENV !== 'test') {
+      // Publishes event to nats service
+      new CourseCreatedPublisher(natsWrapper.client).publish({
+        courseId: course.id as string,
+        name: course.name,
+      });
+
+      logger.info('Sent Nats user registered event');
+    }
+
+    logger.info('Responding user');
     res.status(201).json({
       errors: false,
       message: lang.createdCourse,

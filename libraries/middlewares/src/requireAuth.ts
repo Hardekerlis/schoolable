@@ -4,8 +4,9 @@ import { Request, Response, NextFunction } from 'express';
 import { NotAuthorizedError } from '@gustafdahl/schoolable-errors';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 
-export const requireAuth = (allowedUserType: UserTypes[]) => {
+export const requireAuth = (allowedUserType: UserTypes[] | string) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    const { currentUser } = req;
     if (!req.currentUser) {
       throw new NotAuthorizedError();
     }
@@ -18,6 +19,13 @@ export const requireAuth = (allowedUserType: UserTypes[]) => {
         isAllowed = true;
         break;
       }
+    }
+
+    if (
+      Object.values(UserTypes).includes(currentUser!.userType) &&
+      allowedUserType === 'all'
+    ) {
+      isAllowed = true;
     }
 
     if (isAllowed) {

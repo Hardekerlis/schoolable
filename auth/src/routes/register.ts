@@ -66,6 +66,7 @@ const register = async (req: Request, res: Response) => {
         userId: newUser.id,
         email: newUser.email, // To send email to the user registered
         tempPassword, // Temp password to be included in email
+        name: name,
       });
 
       logger.info('Sent Nats user registered event');
