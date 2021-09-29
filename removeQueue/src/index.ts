@@ -44,7 +44,7 @@ const start = async () => {
       process.exit();
     });
 
-    new CourseQueueRemoveListener(natsWrapper.client).listen();
+    new CourseQueueRemoveListener(natsWrapper.client, logger).listen();
 
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
