@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: courses-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: courses
+  template:
+    metadata:
+      labels:
+        app: courses
+    spec:
+      containers:
+        - name: courses
+          image: eu.gcr.io/schoolable-platform/courses
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # this is refering to the pods name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: courses-srv
+spec:
+  selector:
+    app: courses
+  ports:
+    - name: courses
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

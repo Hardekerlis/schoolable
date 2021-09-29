@@ -12,6 +12,8 @@ import { natsWrapper } from '../utils/natsWrapper';
 import User from '../models/user';
 import logger from '../utils/logger';
 
+// TODO: This should queue user for deletion instead of removing it
+// TODO: Create nats listener for removal complete
 const remove = async (req: Request, res: Response) => {
   const { id } = req.body;
 
@@ -62,7 +64,8 @@ const remove = async (req: Request, res: Response) => {
         // Code is only ran if its not test environment
         if (process.env.NODE_ENV !== 'test') {
           // Publishes event to nats service
-          new UserRemovedPublisher(natsWrapper.client).publish({
+          // TODO: Change this to UserQueueRemove
+          new UserRemovedPublisher(natsWrapper.client, logger).publish({
             userId: userToRemove.id,
           });
 

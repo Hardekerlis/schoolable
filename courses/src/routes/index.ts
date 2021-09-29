@@ -29,4 +29,22 @@ router.post(
   create,
 );
 
+import remove from './remove';
+router.delete(
+  '/remove',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher]),
+  [
+    body('courseId')
+      .exists()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needCourseId;
+      }),
+  ],
+  validateResult,
+  remove,
+);
+
 export default router;

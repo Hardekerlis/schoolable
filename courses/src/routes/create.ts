@@ -101,7 +101,7 @@ const create = async (req: Request, res: Response) => {
     // Code is only ran if its not test environment
     if (process.env.NODE_ENV !== 'test') {
       // Publishes event to nats service
-      new CourseCreatedPublisher(natsWrapper.client).publish({
+      new CourseCreatedPublisher(natsWrapper.client, logger).publish({
         courseId: course.id as string,
         name: course.name,
       });

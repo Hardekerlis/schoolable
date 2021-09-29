@@ -55,7 +55,7 @@ const login = async (req: Request, res: Response) => {
       // Code is only ran if its not test environment
       if (process.env.NODE_ENV !== 'test') {
         // Publishes event to nats service
-        new UserLoginPublisher(natsWrapper.client).publish({
+        new UserLoginPublisher(natsWrapper.client, logger).publish({
           userId: user.id,
           ip: req.socket.remoteAddress || req.ip,
           headers: req.headers,

@@ -9,6 +9,7 @@ export interface UserCreatedEvent {
     userId: string;
     email: string;
     userType: UserTypes;
+    tempPassword: string;
     name: {
       first: string;
       last: string;

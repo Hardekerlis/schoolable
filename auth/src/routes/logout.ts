@@ -25,7 +25,7 @@ const logout = async (req: Request, res: Response) => {
   // Code is only ran if its not test environment
   if (process.env.NODE_ENV !== 'test') {
     // Publishes event to nats service
-    new UserLogoutEvent(natsWrapper.client).publish({
+    new UserLogoutEvent(natsWrapper.client, logger).publish({
       userId: currentUser.id,
     });
     logger.info('Sent Nats logout event');

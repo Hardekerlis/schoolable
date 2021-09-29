@@ -29,7 +29,6 @@ const userSettingsSchema = new mongoose.Schema(
     notifications: [
       {
         type: String,
-        // required: true,
         default: '',
       },
     ],

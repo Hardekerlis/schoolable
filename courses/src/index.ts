@@ -3,7 +3,9 @@
 import { app } from './app';
 import { CONFIG } from '@gustafdahl/schoolable-utils';
 import logger from './utils/logger';
-import { connectToMongo } from '@gustafdahl/schoolable-utils';
+import { natsWrapper } from './utils/natsWrapper';
+import { RemoveCourseListener } from './events/listeners';
+import mongoose from 'mongoose';
 
 const startServer = async () => {
   const { env } = process;
@@ -23,8 +25,25 @@ const startServer = async () => {
   }
 
   try {
+    await natsWrapper.connect(
+      CONFIG.nats.clusterId,
+      process.env.NATS_CLIENT_ID as string,
+      CONFIG.nats.url,
+    );
+
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed');
+      process.exit();
+    });
+    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGTERM', () => natsWrapper.client.close());
+
+    new RemoveCourseListener(natsWrapper.client, logger).listen();
+
     logger.info('Connecting to MongoDB');
-    await connectToMongo();
+    await mongoose.connect(
+      `mongodb://${CONFIG.database.uri}:${CONFIG.database.port}/${CONFIG.database.name}`,
+    );
     logger.info('Successfully connected to MongoDB');
   } catch (err) {
     logger.warn(`Failed to connect to MongoDB. Error message: ${err}`);

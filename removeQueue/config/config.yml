@@ -1,0 +1,11 @@
+debug: true
+dev: true
+port: 3000
+logs:
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
+nats:
+  url: http://nats-srv:4222
+  clusterId: schoolable
+redis:
+  host: remove-queue-redis-srv

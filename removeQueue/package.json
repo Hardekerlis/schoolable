@@ -1,0 +1,33 @@
+{
+  "name": "removequeue",
+  "version": "1.0.0",
+  "description": "Queue for removing resources in cluster",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build/**/*"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "start": "npm ci && npm run build && npm ci --only=production && node build/index.js",
+    "clean": "del ./build/*",
+    "dev": "npm run clean && npm ci && nodemon ./src/index.ts",
+    "devK8s": "nodemon ./src/index.ts"
+  },
+  "dependencies": {
+    "@gustafdahl/schoolable-events": "^1.2.4",
+    "@gustafdahl/schoolable-utils": "^1.0.0",
+    "bull": "^3.29.2",
+    "node-nats-streaming": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/bull": "^3.15.4",
+    "del-cli": "^4.0.1",
+    "nodemon": "^2.0.13",
+    "prettier": "^2.4.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.3"
+  },
+  "author": "Schoolable AB",
+  "license": "ISC"
+}

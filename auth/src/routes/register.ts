@@ -30,7 +30,7 @@ const register = async (req: Request, res: Response) => {
   const tempPassword = uuidv4();
   logger.debug(
     `Creating temp password. ${
-      CONFIG.dev ? `Temppassword: ${tempPassword}` : ''
+      CONFIG.dev ? `TempPassword: ${tempPassword}` : ''
     }`,
   );
 
@@ -62,10 +62,11 @@ const register = async (req: Request, res: Response) => {
     // Code is only ran if its not test environment
     if (process.env.NODE_ENV !== 'test') {
       // Publishes event to nats service
-      new UserCreatedPublisher(natsWrapper.client).publish({
+      new UserCreatedPublisher(natsWrapper.client, logger).publish({
         userId: newUser.id,
         email: newUser.email, // To send email to the user registered
         tempPassword, // Temp password to be included in email
+        userType: userType,
         name: name,
       });
 
