@@ -26,7 +26,7 @@ export class RemoveCourseListener extends Listener<RemoveCourseEvent> {
     }
     logger.info('Found course');
 
-    if (!course.upForDeletion) {
+    if (!course.deletion.isUpForDeletion) {
       logger.info(`Course with id ${courseId} is not up for deletion`);
       return msg.ack();
     }
