@@ -47,6 +47,7 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    admins: [{ type: String, default: '' }],
     coursePage: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'coursePages',

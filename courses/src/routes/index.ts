@@ -47,4 +47,14 @@ router.delete(
   remove,
 );
 
+import { fetchMany, fetchOne } from './fetch';
+router.post('/fetch', currentUser, getLanguage, requireAuth('all'), fetchMany);
+router.get(
+  '/fetch/:courseId',
+  currentUser,
+  getLanguage,
+  requireAuth('all'),
+  fetchOne,
+);
+
 export default router;
