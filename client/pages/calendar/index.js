@@ -142,6 +142,18 @@ const Calendar = () => {
       end: selThird.set({hour: 11, minute: 55}),
       location: 'rummet'
     },
+    // {
+    //   title: 'Svenska hejhejhej 3',
+    //   start: selThird.set({hour: 7, minute: 30}),
+    //   end: selThird.set({hour: 10, minute: 55}),
+    //   location: 'rummet'
+    // },
+    {
+      title: 'Svenska hejhejhej 3',
+      start: selThird.set({hour: 11, minute: 30}),
+      end: selThird.set({hour: 11, minute: 55}),
+      location: 'rummet'
+    }
   ]
 
   //how many px is one hour
@@ -151,7 +163,9 @@ const Calendar = () => {
   let sorted = [];
 
   const oneDaySchedule = (data) => {
-    const oneDay = generateOneDaySchedule(selectedDay, styles.oneDaySchedule, hourHeight, data);
+    const oneDay = generateOneDaySchedule(selectedDay, hourHeight, data, {
+      extraClass: styles.oneDaySchedule
+    });
     eventRenderers = oneDay.eventRenderers;
     sorted = oneDay.sorted;
   }
@@ -160,13 +174,28 @@ const Calendar = () => {
 
   // console.log(selDayData, selSecondDay)
 
-  const threeDaySchedule = (data) => {
+  //REBUILD TO RELATIVE POSITIONS INSTEAD.
+  //FUCK MEEEEEEEEEE
+  //WARNING WILL TAKE 50min AT LEAST
+
+  const threeDaySchedule = (data, marginLeft, evtWidth, daySpacing) => {
+
+    let firstEvt = null;
 
     let master = {};
     const firstDayDate = selectedDayObject;
 
     for(let evt of data) {
       let formatted = evt.start.toFormat('dd:MM:yyyy');
+
+
+      let comp = (evt.start.get('hour') + (evt.start.get('minute') / 100));
+      if(firstEvt === null || comp < firstEvt.comparer) {
+        firstEvt = {
+          comparer: comp,
+          evt: evt
+        }
+      }
 
       let nums = formatted.split(':');
       let sum = 0;
@@ -190,22 +219,27 @@ const Calendar = () => {
 
       const dayDate = dayData[0].start.startOf('day');
 
-      const day = generateOneDaySchedule(dayDate, styles.threeDaySchedule, hourHeight, dayData, 250 * i);
+      const day = generateOneDaySchedule(dayDate, hourHeight, dayData, {
+        eventWidth: evtWidth,
+        ghostLeft: (evtWidth * i) + (daySpacing * i) + marginLeft,
+      });
 
       eventRenderers = eventRenderers.concat(day.eventRenderers)
 
     }
 
+    sorted = [firstEvt.evt];
+
   }
 
   const threeDayData = selDayData.concat(selSecondDay).concat(selThirdDay);
-  // threeDaySchedule(threeDayData)
+  threeDaySchedule(threeDayData, 180, 250, 36)
 
   //scroll the calendar to the earliest event.
   const setCalendarElem = (elem) => {
     if(!elem) return;
-    elem.scrollTop = 11 * hourHeight
-    // elem.scrollTop = sorted[0].start.hour * hourHeight;
+    // elem.scrollTop = 11 * hourHeight
+    elem.scrollTop = sorted[0].start.hour * hourHeight;
   }
 
   //generating segment.
