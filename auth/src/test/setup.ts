@@ -34,10 +34,7 @@ beforeAll(async () => {
   process.env.MONGOMS_VERSION = '4.2.8';
 
   try {
-    await mongoose.connect(`${process.env.MONGO_URI}/${CONFIG.database.name}`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(`${process.env.MONGO_URI}/${CONFIG.database.name}`);
   } catch (err) {
     console.error(err);
   }

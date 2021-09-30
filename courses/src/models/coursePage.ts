@@ -21,42 +21,62 @@ export interface CoursePageDoc extends mongoose.Document {
   upForDeletion?: boolean;
 }
 
-const coursePageSchema = new mongoose.Schema({
-  phases: [
-    {
+const coursePageSchema = new mongoose.Schema(
+  {
+    phases: [
+      {
+        type: String,
+        default: '',
+      },
+    ],
+    menu: [
+      {
+        icon: String,
+        access: [String],
+        title: String,
+        value: String,
+        removeable: Boolean,
+        actions: [
+          {
+            actionType: {
+              type: String,
+              enum: Object.values(ActionTypes),
+            },
+            download: String,
+            goTo: String,
+            openMenu: String,
+          },
+        ],
+      },
+    ],
+    description: {
       type: String,
       default: '',
     },
-  ],
-  menu: [
-    {
-      icon: String,
-      access: [String],
-      title: String,
-      value: String,
-      removeable: Boolean,
-      actions: [
-        {
-          actionType: {
-            type: String,
-            enum: Object.values(ActionTypes),
-          },
-          download: String,
-          goTo: String,
-          openMenu: String,
-        },
-      ],
+    upForDeletion: {
+      type: Boolean,
+      default: false,
     },
-  ],
-  description: {
-    type: String,
-    default: '',
   },
-  upForDeletion: {
-    type: Boolean,
-    default: false,
+  {
+    toObject: {
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+    toJSON: {
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
   },
-});
+);
 
 coursePageSchema.statics.build = (attributes: CoursePageAttributes) => {
   return new CoursePage(attributes);
