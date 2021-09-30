@@ -5,6 +5,8 @@ import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import Course from '../models/course';
 import CoursePage from '../models/coursePage';
 import logger from '../utils/logger';
+import CourseUpdatedPublisher from '../events/publishers/courseUpdated';
+import { natsWrapper } from '../utils/natsWrapper';
 
 const update = async (req: Request, res: Response) => {
   const { currentUser } = req;
@@ -19,11 +21,14 @@ const update = async (req: Request, res: Response) => {
 
   logger.info(`Starting update for course with id ${courseId}`);
 
+  // To satisfy typescript
+  // Current user is always defined here
   if (!currentUser) throw new NotAuthorizedError();
 
   logger.debug('Looking up course and trying to update it');
   const course = await Course.findOneAndUpdate(
     {
+      // Need course id to be correcnt and current users id to be in owner key or in admins array
       $and: [
         { id: courseId },
         { $or: [{ owner: currentUser.id }, { admins: currentUser.id }] },
@@ -35,12 +40,15 @@ const update = async (req: Request, res: Response) => {
     },
   );
 
+  // If no course was found it was because either no course was found
+  // or because user is not authorized to edit course.
   if (!course) {
     logger.debug('No course found');
     throw new NotAuthorizedError();
   }
 
   logger.debug('Checking if course page is to be updated');
+  // Check if user is trying to updated course page
   if (coursePageData) {
     logger.debug('Found course page present in body');
     logger.debug('Updating course page');
@@ -54,6 +62,16 @@ const update = async (req: Request, res: Response) => {
   }
 
   logger.debug('Course was updated');
+
+  if (process.env.NODE_ENV !== 'test') {
+    // Publishes event to nats service
+    new CourseUpdatedPublisher(natsWrapper.client, logger).publish({
+      courseId: course.id as string,
+      name: course.name,
+    });
+
+    logger.info('Sent Nats user registered event');
+  }
 
   res.status(200).json({
     errors: false,

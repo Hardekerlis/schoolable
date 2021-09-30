@@ -13,6 +13,8 @@ import CourseQueueRemovePublisher from '../events/publishers/courseQueueRemove';
 import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
+// TODO: Add logger
+// TODO: Comment
 const remove = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const { courseId } = req.body;
