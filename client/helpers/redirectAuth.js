@@ -8,19 +8,19 @@ export default async function redirectAuth(ctx) {
 
   // console.log("sessionId", sessionId)
 
-  let request = new Request('/api/check', {sessionId}).post().json();
-  let response = await request.send();
-
+  // let request = new Request('/api/check', {sessionId}).post().json();
+  // let response = await request.send();
+  //
   // console.log(response)
-
-  if(response._response.status !== 200) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      }
-    }
-  }
+  //
+  // if(response._response.status !== 200) {
+  //   return {
+  //     redirect: {
+  //       destination: '/login',
+  //       permanent: false,
+  //     }
+  //   }
+  // }
 
   return {
     props: {

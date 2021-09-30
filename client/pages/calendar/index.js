@@ -2,15 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 
-
 import { useRouter } from 'next/router';
 
-import { DateTime, Interval } from 'luxon';
+import { DateTime } from 'luxon';
+
 
 //custom imports
 
-import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 import Request from 'helpers/request.js'
@@ -23,22 +21,29 @@ import { Sidebar } from 'components'
 
 import lang from 'helpers/lang';
 
+
+
+import generateOneDaySchedule from './oneDay.js';
+
 //css imports
 
 import styles from './calendar.module.sass';
 
-
 const Calendar = () => {
+
+  let [scheduleType, setScheduleType] = useState('oneDay');
 
   const today = DateTime.now().startOf('day');
 
-  const selectedDay = DateTime.fromObject({
+  const selectedDayObject = {
     year: 2021,
     month: 9,
     day: 22
-  })
+  }
 
-  const data = [
+  const selectedDay = DateTime.fromObject(selectedDayObject)
+
+  const selDayData = [
     {
       title: 'Svenska',
       start: selectedDay.set({hour: 12}),
@@ -52,61 +57,164 @@ const Calendar = () => {
       location: 'WHOOP'
     },
     {
-      title: 'Svenska 2',
+      title: 'Svenska hejhejhej 2',
       start: selectedDay.set({hour: 11, minute: 30}),
       end: selectedDay.set({hour: 11, minute: 55}),
       location: 'rummet'
-    }
+    },
+    // {
+    //   title: 'Coole',
+    //   start: selectedDay.set({hour: 11, minute: 10}),
+    //   end: selectedDay.set({hour: 11, minute: 40}),
+    //   location: 'coole'
+    // },
+    // {
+    //   title: 'Coole 2',
+    //   start: selectedDay.set({hour: 11, minute: 20}),
+    //   end: selectedDay.set({hour: 11, minute: 50}),
+    //   location: 'coole 2'
+    // },
+    // {
+    //   title: 'Coole 2.5',
+    //   start: selectedDay.set({hour: 11, minute: 20}),
+    //   end: selectedDay.set({hour: 11, minute: 50}),
+    //   location: 'coole 2.5'
+    // },
+    // {
+    //   title: 'Coole 2.5.5',
+    //   start: selectedDay.set({hour: 11, minute: 20}),
+    //   end: selectedDay.set({hour: 11, minute: 50}),
+    //   location: 'coole 2.5.5'
+    // },
+    // {
+    //   title: 'Coole 2.5.5.5',
+    //   start: selectedDay.set({hour: 11, minute: 20}),
+    //   end: selectedDay.set({hour: 11, minute: 50}),
+    //   location: 'coole 2.5.5.5'
+    // },
+    // {
+    //   title: 'Coole 2.5.5',
+    //   start: selectedDay.set({hour: 11, minute: 20}),
+    //   end: selectedDay.set({hour: 11, minute: 50}),
+    //   location: 'coole 2.5.5'
+    // },
   ]
 
-  const sorted = data.sort((d1, d2) => {
-    return d1.start.toSeconds() - d2.start.toSeconds()
-  })
+  const selSecond = selectedDay.plus({day: 1});
+  const selSecondDay = [
+    {
+      title: 'Svenska',
+      start: selSecond.set({hour: 12}),
+      end: selSecond.set({hour: 13}),
+      location: 'PBA'
+    },
+    {
+      title: 'Svenska 2',
+      start: selSecond.set({hour: 13, minute: 30}),
+      end: selSecond.set({hour: 14, minute: 37}),
+      location: 'WHOOP'
+    },
+    {
+      title: 'Svenska hejhejhej 2',
+      start: selSecond.set({hour: 11, minute: 30}),
+      end: selSecond.set({hour: 11, minute: 55}),
+      location: 'rummet'
+    },
+  ]
 
-  console.log("Showing day:", selectedDay.setLocale('en-US').toLocaleString({
-    month: 'long',
-    day: 'numeric'
-  }))
+  const selThird = selSecond.plus({day: 1});
+  const selThirdDay = [
+    {
+      title: 'Svenska',
+      start: selThird.set({hour: 12}),
+      end: selThird.set({hour: 13}),
+      location: 'PBA'
+    },
+    {
+      title: 'Svenska 2',
+      start: selThird.set({hour: 13, minute: 30}),
+      end: selThird.set({hour: 14, minute: 37}),
+      location: 'WHOOP'
+    },
+    {
+      title: 'Svenska hejhejhej 2',
+      start: selThird.set({hour: 11, minute: 30}),
+      end: selThird.set({hour: 11, minute: 55}),
+      location: 'rummet'
+    },
+  ]
 
+  //how many px is one hour
   const hourHeight = 160;
 
-  const setCalendarElem = (elem) => {
-    if(!elem) return;
-    elem.scrollTop = sorted[0].start.hour * hourHeight;
+  let eventRenderers = [];
+  let sorted = [];
+
+  const oneDaySchedule = (data) => {
+    const oneDay = generateOneDaySchedule(selectedDay, styles.oneDaySchedule, hourHeight, data);
+    eventRenderers = oneDay.eventRenderers;
+    sorted = oneDay.sorted;
   }
 
-  const eventRenderers = sorted.map((obj, index) => {
+  // oneDaySchedule(selDayData);
 
-    const diff = obj.end.toSeconds() - obj.start.toSeconds();
+  // console.log(selDayData, selSecondDay)
 
-    const lessonInterval = Interval.fromDateTimes(obj.start, obj.end);
-    const timeInterval = Interval.fromDateTimes(selectedDay, obj.start);
+  const threeDaySchedule = (data) => {
 
-    const hours = lessonInterval.length('hour');
+    let master = {};
+    const firstDayDate = selectedDayObject;
 
-    let height = hours * hourHeight;
-    let top = timeInterval.length('hour') * hourHeight;
+    for(let evt of data) {
+      let formatted = evt.start.toFormat('dd:MM:yyyy');
 
-    return (
-      <div data-index={index} style={{top: top + "px", height: height + "px"}} key={index} className={styles.event}>
-        <p className={styles.eventName}>{obj.title}</p>
-        <p className={styles.time}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
+      let nums = formatted.split(':');
+      let sum = 0;
 
-        <div className={styles.locationWrapper}>
-          <FontAwesomeIcon className={styles.mapIcon} icon={faMapMarkerAlt} />
-          <p>{obj.location}</p>
-        </div>
+      for(let num of nums) {
+        sum += parseFloat(num);
+      }
 
-      </div>
-    )
+      if(!master.hasOwnProperty(sum)) {
+        master[sum] = [];
+      }
 
-  })
+      master[sum].push(evt);
 
-  const renderers = [];
+    }
+
+
+    for(let i = 0; i < 3; i++) {
+
+      const dayData = master[Object.keys(master)[i]];
+
+      const dayDate = dayData[0].start.startOf('day');
+
+      const day = generateOneDaySchedule(dayDate, styles.threeDaySchedule, hourHeight, dayData, 250 * i);
+
+      eventRenderers = eventRenderers.concat(day.eventRenderers)
+
+    }
+
+  }
+
+  const threeDayData = selDayData.concat(selSecondDay).concat(selThirdDay);
+  // threeDaySchedule(threeDayData)
+
+  //scroll the calendar to the earliest event.
+  const setCalendarElem = (elem) => {
+    if(!elem) return;
+    elem.scrollTop = 11 * hourHeight
+    // elem.scrollTop = sorted[0].start.hour * hourHeight;
+  }
+
+  //generating segment.
+  //i.e the lines that indicate time.
+  const segmentRenderers = [];
 
   for(let i = 0; i < 24; i++) {
 
-    renderers.push(
+    segmentRenderers.push(
       <div style={{top: (hourHeight * i) + "px"}} key={i} className={styles.segment}>
         <div className={styles.line}></div>
         <p className={styles.hour}>{`${i}:00`}</p>
@@ -116,7 +224,7 @@ const Calendar = () => {
   }
 
   return (
-    <Layout>
+    <Layout mainClass={styles.headWrapper}>
 
       <div className={styles.wrapper}>
 
@@ -127,7 +235,7 @@ const Calendar = () => {
 
           <div ref={setCalendarElem} className={styles.calendar}>
             {eventRenderers}
-            {renderers}
+            {segmentRenderers}
           </div>
 
         </div>
