@@ -1,0 +1,37 @@
+{
+  "name": "search",
+  "version": "1.0.0",
+  "description": "Search endpoint for data",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build/**/*"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "start": "npm ci && npm run build && npm ci --only=production && node build/index.js",
+    "clean": "del ./build/*",
+    "dev": "npm run clean && npm ci && nodemon ./src/index.ts",
+    "devK8s": "nodemon ./src/index.ts"
+  },
+  "dependencies": {
+    "@gustafdahl/schoolable-events": "^1.2.5",
+    "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
+    "@gustafdahl/schoolable-middlewares": "^1.1.0",
+    "@gustafdahl/schoolable-utils": "^1.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "node-nats-streaming": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "del-cli": "^4.0.1",
+    "nodemon": "^2.0.13",
+    "prettier": "^2.4.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.3"
+  },
+  "author": "Schoolable AB",
+  "license": "ISC"
+}

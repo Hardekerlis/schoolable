@@ -31,10 +31,7 @@ export = async function globalSetup() {
     process.env.MONGO_URI = `mongodb://${CONFIG.database.localIp}:${CONFIG.database.port}`;
   }
 
-  await mongoose.connect(`${process.env.MONGO_URI}/${CONFIG.database.name}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(`${process.env.MONGO_URI}/${CONFIG.database.name}`);
   await mongoose.connection.db.dropDatabase();
   await mongoose.disconnect();
 };
