@@ -8,9 +8,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import styles from './calendar.module.sass'
 
-const generateOneDaySchedule = (day, extraClass, hourHeight, data, ghostLeft) => {
+const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
-  if(ghostLeft === undefined || ghostLeft === null) ghostLeft = 0;
+  if(options.ghostLeft === undefined || options.ghostLeft === null) options.ghostLeft = 0;
 
   console.log("Generating day:", day.setLocale('en-US').toLocaleString({
     month: 'long',
@@ -95,6 +95,8 @@ const generateOneDaySchedule = (day, extraClass, hourHeight, data, ghostLeft) =>
     let left = 0;
 
     let enableLocation = true;
+    let titleWidth = 60;
+    let timeTextTop = 10;
 
     //resizing if overlapping
     if(info.collidedWith.length !== 0) {
@@ -105,22 +107,34 @@ const generateOneDaySchedule = (day, extraClass, hourHeight, data, ghostLeft) =>
       cols.push(index);
       cols.sort();
 
-      width = 100 / cols.length;
+      width = width / cols.length;
       left = cols.indexOf(index) * width;
+
+      titleWidth = 100;
+      timeTextTop = 35;
 
     }
 
     left = `${left}%`;
     width = `${width}%`;
+    titleWidth = `${titleWidth}%`;
+    timeTextTop = `${timeTextTop}px`
 
 
-    const className = `${styles.ghostEventContainer} ${extraClass}`
+    const className = (options.extraClass) ? `${styles.ghostEventContainer} ${options.extraClass}` : styles.ghostEventContainer;
+
+    const ghostStyle = {
+      top: `${info.top}px`,
+      height: `${info.height}px`
+    }
+
+    if(options.ghostLeft) ghostStyle.left = `${options.ghostLeft}px`;
+    if(options.eventWidth) ghostStyle.width = `${options.eventWidth}px`;
 
     return (
-      <div style={{left: `${ghostLeft}px`,top: `${info.top}px`, height: `${info.height}px`}} className={className} key={index + nanoid(6)}>
+      <div style={ghostStyle} className={className} key={index + nanoid(6)}>
         <div data-index={index} style={{width: width, left: left}} className={styles.event}>
-          <p className={styles.eventName}>{obj.title}</p>
-          <p className={styles.time}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
+          <p style={{width: titleWidth}} className={styles.eventName}>{obj.title}</p>
 
           { enableLocation &&
             <div className={styles.locationWrapper}>
@@ -128,6 +142,8 @@ const generateOneDaySchedule = (day, extraClass, hourHeight, data, ghostLeft) =>
               <p>{obj.location}</p>
             </div>
           }
+
+          <p style={{top: timeTextTop}} className={styles.time}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
 
         </div>
       </div>
