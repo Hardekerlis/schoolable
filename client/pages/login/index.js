@@ -2,9 +2,6 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router';
 
-import Dropdown from 'react-dropdown';
-import 'react-dropdown/style.css';
-
 import Cookies from 'js-cookie';
 
 import Layout from 'layouts/default/';
@@ -47,14 +44,13 @@ const Login = () => {
 
   let [credentials, setCredentials] = useState({
     email: 'teacherEmail@myTeacherEmail.teach',
-    password: '144e3c38-a8ab-42e1-a619-32035d946ce2',
-    userType: 'teacher'
+    password: 'fc209b0a-c115-4433-a725-f6daff784e93'
   })
 
   const submit = async(evt) => {
     evt.preventDefault();
 
-    let request = new Request('/api/login', credentials).post().json();
+    let request = new Request('/api/auth/login', credentials).post().json();
     let res = await request.send();
 
     let user;
@@ -87,20 +83,6 @@ const Login = () => {
 
   }
 
-  const selectOptions = [
-    {
-      value: 'teacher',
-      label: lang.teacher
-    },
-    {
-      value: 'student',
-      label: lang.student
-    },
-    {
-      value: 'legalGuardian',
-      label: lang.legalGuardian
-    }
-  ]
 
   return (
 
@@ -113,18 +95,6 @@ const Login = () => {
         <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder={lang.email} />
         <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder={lang.password} />
 
-        <Dropdown
-          className={styles.select}
-          controlClassName={styles.selectControl}
-
-          menuClassName={styles.selectMenu}
-
-          arrowClassName={styles.selectArrow}
-
-          options={selectOptions}
-          value={credentials.userType}
-          onChange={(value) => credentialsChange(value, "userType")}
-        />
 
         <button className={styles.submitButton} type="submit">{lang.loginBtn}</button>
 

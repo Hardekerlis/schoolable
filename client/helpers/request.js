@@ -2,7 +2,13 @@ class Request {
 
   constructor(url, body) {
 
-    this.url = 'http://localhost:3001' + url;
+    if(typeof window === undefined) {
+      this.url = 'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' + url;
+    }else {
+      this.url = window.location.origin + url;
+    }
+
+    // this.url = 'http://localhost:3001' + url;
     this.body = body;
 
     this._json = false;
