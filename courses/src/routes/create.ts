@@ -85,7 +85,7 @@ const create = async (req: Request, res: Response) => {
 
     logger.info('Building course');
     const course = Course.build({
-      name,
+      name: name as string,
       owner: ownerId!,
       coursePage: coursePage,
     });
