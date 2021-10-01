@@ -15,11 +15,11 @@
   .pageTitle
     position: absolute
     margin: 0px
-    top: 20px
-    left: 20px
+    top: 4px
+    left: 8px
     color: $white
     font-weight: 800
-    font-size: 2.5rem
+    font-size: 1.8rem
 
 .calendar
   position: absolute
@@ -34,18 +34,84 @@
 
   display: flex
 
+.dayDivider
+  position: absolute
+  top: 0px
+  width: 2px
+  background-color: $lightGrey
+  left: 34%
+
+.events
+  position: relative
+  height: 100%
+  width: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.multipleDayExtraPositioning
+  position: absolute
+  top: 0px
+  left: 0px
+  width: calc(100% - 55px - 55px)
+  margin-left: 55px
+
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+
+.completeThreeEventDay
+  width: 30%
+  display: flex
+  justify-content: center
+
+.completeSevenEventDay
+  width: 13%
+  display: flex
+  justify-content: center
+
+.dayIdentifier
+  position: fixed
+  color: $white
+  font-weight: 300
+  margin: 0px
+  margin-top: -60px
+  width: 120px
+  user-select: none
+
+  p:first-child
+    font-size: 1.4rem !important
+    font-weight: 500 !important
+
+  p
+    margin: 0px
+    text-align: center
+    font-size: 1rem
+
+.oneDayTitle
+  margin-left: -100px
+
+.multipleDayEvents
+  width: 100%
 
 .ghostEventContainer
-  position: absolute
+  position: relative
   height: 100px
-  min-height: 70px
+  min-height: 65px !important
   z-index: 10
 
 
 .oneDaySchedule
-  width: 600px
-  left: -300px !important
-  margin-left: 50%
+  width: 60%
+
+.multipleDaySchedule
+  width: 100%
+
+.oneDayContainer
+  display: flex
+  width: 100%
+  flex-direction: column
+  align-items: center
 
 .event
   position: absolute
@@ -78,6 +144,20 @@
     position: absolute
     right: 10px
     top: 10px
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+  .timeSmall
+    right: 5px
+    padding-left: 5px
+    top: 35px
+    width: calc(100% - 5px)
+    text-align: right
+    white-space: nowrap
+    font-size: 0.8rem
+    overflow: hidden
+    text-overflow: ellipsis
 
   .eventName
     color: $white
@@ -131,7 +211,17 @@
     position: absolute
     top: 0px
 
+.navigation
+  position: absolute
+  right: 10px
+  top: 10px
 
+  .arrow
+    cursor: pointer
+    .icon
+      width: 30px
+      height: 30px
+      color: $white
 
 
 
