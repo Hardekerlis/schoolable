@@ -25,8 +25,12 @@ const coursePageSchema = new mongoose.Schema(
   {
     phases: [
       {
-        type: String,
-        default: '',
+        phaseId: { type: String, default: '' },
+        name: String,
+        parentCourse: String,
+        locked: { type: Boolean, default: true },
+        hidden: { type: Boolean, default: true },
+        upForDeletion: { type: Boolean, default: false },
       },
     ],
     menu: [

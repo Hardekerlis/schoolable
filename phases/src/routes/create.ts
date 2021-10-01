@@ -55,7 +55,6 @@ const create = async (req: Request, res: Response) => {
     // Publishes event to nats service
     new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
       phaseId: phase.id as string,
-      name: phase.name,
       parentCourse: parentCourse,
     });
 
