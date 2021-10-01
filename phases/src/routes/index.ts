@@ -17,4 +17,13 @@ router.post(
   create,
 );
 
+import update from './update';
+router.put(
+  '/update',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  update,
+);
+
 export default router;

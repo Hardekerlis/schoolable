@@ -8,52 +8,49 @@ import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import Phase from '../models/phase';
 import Course from '../models/course';
 
-import PhaseCreatedPublisher from '../events/publishers/createdPhase';
+import PhaseUpdatedPublisher from '../events/publishers/updatedPhase';
 import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
-const create = async (req: Request, res: Response) => {
-  const { name, parentCourse } = req.body;
+const update = async (req: Request, res: Response) => {
+  const { phaseId, parentCourse } = req.body;
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
+  const data = req.body;
+  delete data.phaseId;
+  delete data.parentCourse;
 
-  logger.info('Starting creation of phase');
-  logger.debug('Looking up course');
-  // Find course to make sure the phase has a course to exist in
   const course = await Course.findOne({ courseId: parentCourse });
 
-  // Logger check if course exists
   if (!course) {
     logger.debug('No course found');
     throw new BadRequestError(lang.noParentCourse);
   }
 
-  logger.debug('Checking if user is allowed to create course phase');
+  logger.debug('Checking if user is allowed to update course phase');
   if (
     // Check if user is allowed to create phases for course
     course.owner !== currentUser?.id &&
     !course.admins?.includes(currentUser?.id as string)
   ) {
-    logger.debug('User is not allowed to create course phase');
+    logger.debug('User is not allowed to update course phase');
     throw new NotAuthorizedError();
   }
 
-  logger.debug('Building phase');
-  const phase = Phase.build({
-    name,
-    parentCourse,
-  });
+  logger.debug('Updating phase');
+  const phase = await Phase.findByIdAndUpdate(phaseId, data, { new: true });
 
-  logger.debug('Trying to save phase');
-  await phase.save();
-  logger.debug('Saved phase');
+  if (!phase) {
+    logger.debug('No phase found');
+    throw new BadRequestError(lang.noPhaseFound);
+  }
 
   // Couldnt get nats mock to work
   // Code is only ran if its not test environment
   if (process.env.NODE_ENV !== 'test') {
     // Publishes event to nats service
-    new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
+    new PhaseUpdatedPublisher(natsWrapper.client, logger).publish({
       phaseId: phase.id as string,
       parentCourse: parentCourse,
     });
@@ -61,13 +58,13 @@ const create = async (req: Request, res: Response) => {
     logger.info('Sent Nats phase created event');
   }
 
-  logger.info('Created phase');
+  logger.info('Updated phase. Returning to user');
 
-  res.status(201).json({
+  res.status(200).json({
     errors: false,
-    message: lang.createdPhase,
+    message: lang.updatedCourse,
     phase,
   });
 };
 
-export default create;
+export default update;
