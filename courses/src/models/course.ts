@@ -5,6 +5,7 @@ interface CourseAttributes {
   name: string; // Name of the course
   owner: string; // Teacher whom owns the course
   coursePage: CoursePageDoc; // The course page. Fetched when course is entered
+  admins?: string[];
   students?: string[]; // user ids - subdocuments?
   locked?: boolean; // Is the course locked but visible to students
   unlockOn?: Date; // What date should the course be unlocked
@@ -25,6 +26,7 @@ export interface CourseDoc extends mongoose.Document {
   name: string; // Name of the course
   owner: string; // Teacher whom owns the course
   coursePage: CoursePageDoc; // The course page. Fetched when course is entered
+  admins?: string[];
   students?: string[]; // user ids - subdocuments?
   locked?: boolean; // Is the course locked but visible to students
   unlockOn?: Date; // What date should the course be unlocked
