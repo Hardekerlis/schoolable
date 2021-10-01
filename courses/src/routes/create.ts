@@ -104,9 +104,10 @@ const create = async (req: Request, res: Response) => {
       new CourseCreatedPublisher(natsWrapper.client, logger).publish({
         courseId: course.id as string,
         name: course.name,
+        owner: course.owner,
       });
 
-      logger.info('Sent Nats user registered event');
+      logger.info('Sent Nats course created event');
     }
 
     logger.info('Responding user');

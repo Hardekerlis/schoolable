@@ -21,17 +21,6 @@ build:
             dest: .
           - src: "**/*.sass"
             dest: .
-    - image: eu.gcr.io/schoolable-platform/backend
-      context: backend
-      kaniko:
-        dockerfile: Dockerfile.dev
-        cache: {}
-      sync:
-        manual:
-          - src: "**/*.ts"
-            dest: .
-          - src: "**/*.yml"
-            dest: .
     - image: eu.gcr.io/schoolable-platform/auth
       context: auth
       kaniko:
@@ -64,4 +53,15 @@ build:
           - src: "**/*.ts"
             dest: .
           - src: "**/*.yml"
+            dest: .
+    - image: eu.gcr.io/schoolable-platform/phases
+      context: phases
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.sass"
             dest: .

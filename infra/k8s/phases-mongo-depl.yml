@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-depl
+  name: phases-mongo-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: phases-mongo
   template:
     metadata:
       labels:
-        app: backend
+        app: phases-mongo
     spec:
       containers:
-        - name: backend
-          image: eu.gcr.io/schoolable-platform/backend
+        - name: phases-mongo
+          image: mongo
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-srv
+  name: phases-mongo-srv
 spec:
   selector:
-    app: backend
+    app: phases-mongo
   ports:
-    - name: backend
+    - name: db
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 27017
+      targetPort: 27017

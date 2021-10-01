@@ -68,6 +68,7 @@ const update = async (req: Request, res: Response) => {
     new CourseUpdatedPublisher(natsWrapper.client, logger).publish({
       courseId: course.id as string,
       name: course.name,
+      admins: course.admins,
     });
 
     logger.info('Sent Nats user registered event');

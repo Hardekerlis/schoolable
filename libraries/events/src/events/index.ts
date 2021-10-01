@@ -5,3 +5,4 @@ export * from './subjects.enum';
 export * from './event.interface';
 export * from './courses';
 export * from './remove';
+export * from './phases';

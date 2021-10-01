@@ -50,12 +50,11 @@ app.use(
     limit: '5mb',
   }),
 );
-// TODO
-// Add maxAge calculation
+// TODO: Add maxAge calculation
 app.use(cookieParser(process.env.JWT_KEY as string));
 
 import router from './routes';
-app.use('/api/course', router);
+app.use('/api/phase', router);
 
 app.all('*', async () => {
   throw new NotFoundError();

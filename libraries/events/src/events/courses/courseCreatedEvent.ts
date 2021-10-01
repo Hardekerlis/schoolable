@@ -7,5 +7,6 @@ export interface CourseCreatedEvent {
   data: {
     courseId: string;
     name: string;
+    owner: string;
   };
 }
