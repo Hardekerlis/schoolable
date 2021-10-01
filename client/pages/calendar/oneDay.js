@@ -12,11 +12,13 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
   if(options.ghostLeft === undefined || options.ghostLeft === null) options.ghostLeft = 0;
 
-  console.log("Generating day:", day.setLocale('en-US').toLocaleString({
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
-  }))
+
+
+  // console.log("Generating day:", day.setLocale('en-US').toLocaleString({
+  //   month: 'long',
+  //   day: 'numeric',
+  //   year: 'numeric'
+  // }))
 
   //sort every event. So the one that starts earliest
   //is on top.
@@ -30,6 +32,7 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
   //this also check for any event overlapping
 
   const eventInfos = [];
+  let heightOfAllPrevEvents = 0;
 
   for(let j = 0; j < sorted.length; j++) {
     const obj = sorted[j];
@@ -42,9 +45,16 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
     const hours = lessonInterval.length('hour');
 
+    //skip luxon for this step
+    //the lesson start times does not need to factor
+    //in DST for calculation.
+    // const topHours = timeInterval.length('hour');
+    const topHours = day.toObject().hour + obj.start.toObject().hour + ((day.toObject().minute + obj.start.toObject().minute) / 60);
+
     //generating size and position
     const height = hours * hourHeight;
-    const top = timeInterval.length('hour') * hourHeight;
+    let top = (topHours * hourHeight);
+
 
     //these are used for calculating overlapping
     //some are hardcoded because it's only one day
@@ -71,6 +81,8 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
     }
 
+    top -= heightOfAllPrevEvents;
+
     eventInfos.push({
       height,
       width,
@@ -81,6 +93,9 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
       index: j,
       collidedWith
     })
+
+    heightOfAllPrevEvents += height;
+
 
   }
 
@@ -96,7 +111,9 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
     let enableLocation = true;
     let titleWidth = 60;
-    let timeTextTop = 10;
+    // let timeTextTop = 10;
+
+    let timeTextClass = styles.time;
 
     //resizing if overlapping
     if(info.collidedWith.length !== 0) {
@@ -111,15 +128,30 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
       left = cols.indexOf(index) * width;
 
       titleWidth = 100;
-      timeTextTop = 35;
+      // timeTextTop = 35;
+
+      timeTextClass = `${styles.time} ${styles.timeSmall}`
 
     }
 
     left = `${left}%`;
     width = `${width}%`;
     titleWidth = `${titleWidth}%`;
-    timeTextTop = `${timeTextTop}px`
 
+    let eventNameStyle = {
+      width: titleWidth,
+    }
+
+    if(options.sevenDaySchedule === true) {
+
+      if(info.height < 90) {
+        //remove location
+        enableLocation = false;
+      }
+
+      eventNameStyle.width = '100%'
+
+    }
 
     const className = (options.extraClass) ? `${styles.ghostEventContainer} ${options.extraClass}` : styles.ghostEventContainer;
 
@@ -134,16 +166,39 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
     return (
       <div style={ghostStyle} className={className} key={index + nanoid(6)}>
         <div data-index={index} style={{width: width, left: left}} className={styles.event}>
-          <p style={{width: titleWidth}} className={styles.eventName}>{obj.title}</p>
+          <p style={eventNameStyle} className={styles.eventName}>{obj.title}</p>
 
-          { enableLocation &&
-            <div className={styles.locationWrapper}>
-              <FontAwesomeIcon className={styles.mapIcon} icon={faMapMarkerAlt} />
-              <p>{obj.location}</p>
-            </div>
+          { options.sevenDaySchedule ?
+              <>
+
+                <p style={{position: 'relative', top: 'unset', left: 'unset', marginLeft: '10px'}} className={timeTextClass}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
+
+                { enableLocation &&
+                  <div className={styles.locationWrapper}>
+                    <FontAwesomeIcon className={styles.mapIcon} icon={faMapMarkerAlt} />
+                    <p>{obj.location}</p>
+                  </div>
+                }
+
+              </>
+
+            :
+
+            <>
+
+              { enableLocation &&
+                <div className={styles.locationWrapper}>
+                  <FontAwesomeIcon className={styles.mapIcon} icon={faMapMarkerAlt} />
+                  <p>{obj.location}</p>
+                </div>
+              }
+
+              <p className={timeTextClass}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
+
+            </>
+
           }
 
-          <p style={{top: timeTextTop}} className={styles.time}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
 
         </div>
       </div>
@@ -151,11 +206,26 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
   })
 
+  const fullRender = () => {
+
+    const evtsClass = (options.eventsClass) ? `${styles.events} ${options.eventsClass}` : styles.events;
+
+    return (
+      <div style={{height: `${(hourHeight * 24)}px`}} className={evtsClass}>
+        {eventRenderers}
+      </div>
+    )
+
+  }
+
+  const completeRender = fullRender();
+
   //return all useful information
   return {
     eventRenderers,
     sorted,
-    eventInfos
+    eventInfos,
+    completeRender
   }
 
 }
