@@ -22,9 +22,11 @@
     "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
     "@gustafdahl/schoolable-middlewares": "^1.1.0",
     "@gustafdahl/schoolable-utils": "^1.0.1",
+    "@types/luxon": "^2.0.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.12.2",
+    "luxon": "^2.0.2",
     "mongoose": "^6.0.8"
   },
   "devDependencies": {

@@ -20,4 +20,5 @@ export enum Subjects {
 
   RemoveCourse = 'remove:course',
   RemoveUser = 'remove:user',
+  RemovePhase = 'remove:phase',
 }

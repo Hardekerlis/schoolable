@@ -65,7 +65,7 @@ const remove = async (req: Request, res: Response) => {
       removeAt: removeAt,
     });
 
-    logger.info('Sent Nats user registered event');
+    logger.info('Sent Nats course queue remove event');
   }
 
   logger.info('Successfully marked course for deletion');

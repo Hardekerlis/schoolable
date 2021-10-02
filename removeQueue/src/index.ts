@@ -14,6 +14,7 @@ ConfigHandler.loadConfig(configPath);
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import { CourseQueueRemoveListener } from './events/listeners/courseQueueRemove';
+import { PhaseQueueRemoveListener } from './events/listeners/phaseQueueRemove';
 
 const start = async () => {
   logger.info('Starting server...');
@@ -45,6 +46,7 @@ const start = async () => {
     });
 
     new CourseQueueRemoveListener(natsWrapper.client, logger).listen();
+    new PhaseQueueRemoveListener(natsWrapper.client, logger).listen();
 
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());

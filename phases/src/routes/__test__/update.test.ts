@@ -83,6 +83,32 @@ it('Returns a 401 if user is not course owner or admin', async () => {
     .expect(401);
 });
 
+it('Returns a 400 if parentCourse is not defined in body', async () => {
+  const { phaseId, cookie } = await createPhase();
+
+  const res = await request(app)
+    .put(path)
+    .set('Cookie', cookie)
+    .send({ phaseId: phaseId, name: 'new name' })
+    .expect(400);
+
+  expect(res.body.errors[0].message).toEqual(
+    'No parent course id found in body',
+  );
+});
+
+it('Returns a 400 if phaseId is not defined in body', async () => {
+  const { parentCourse, cookie } = await createPhase();
+
+  const res = await request(app)
+    .put(path)
+    .set('Cookie', cookie)
+    .send({ parentCourse: parentCourse, name: 'new name' })
+    .expect(400);
+
+  expect(res.body.errors[0].message).toEqual('No phase id found in body');
+});
+
 it('Returns a 200 if phase is successfully updated', async () => {
   const { phaseId, cookie, parentCourse } = await createPhase();
 

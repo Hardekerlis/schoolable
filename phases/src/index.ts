@@ -5,6 +5,7 @@ import { CONFIG } from '@gustafdahl/schoolable-utils';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import { CoruseCreatedListener } from './events/listeners/courseCreated';
+import { RemovePhaseListener } from './events/listeners/removePhase';
 import mongoose from 'mongoose';
 
 const startServer = async () => {
@@ -39,6 +40,7 @@ const startServer = async () => {
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     new CoruseCreatedListener(natsWrapper.client, logger).listen();
+    new RemovePhaseListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

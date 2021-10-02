@@ -1,18 +1,20 @@
 import { Request, Response } from 'express';
+import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import {
   BadRequestError,
   NotAuthorizedError,
 } from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+import { DateTime } from 'luxon';
+import { CONFIG } from '@gustafdahl/schoolable-utils';
 
 import Phase from '../models/phase';
 import Course from '../models/course';
 
-import PhaseUpdatedPublisher from '../events/publishers/updatedPhase';
+import PhaseQueueRemovePublisher from '../events/publishers/phaseQueueRemove';
 import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
-const update = async (req: Request, res: Response) => {
+const remove = async (req: Request, res: Response) => {
   const { phaseId, parentCourse } = req.body;
   const { currentUser } = req;
   const _lang = req.lang;
@@ -21,7 +23,7 @@ const update = async (req: Request, res: Response) => {
   delete data.phaseId;
   delete data.parentCourse;
 
-  logger.info(`Trying to update phase with id ${phaseId}`);
+  logger.info(`Trying to queue phase with id ${phaseId} for removal`);
 
   const course = await Course.findOne({ courseId: parentCourse });
 
@@ -40,33 +42,42 @@ const update = async (req: Request, res: Response) => {
     throw new NotAuthorizedError();
   }
 
-  logger.debug('Updating phase');
-  const phase = await Phase.findByIdAndUpdate(phaseId, data, { new: true });
+  const phase = await Phase.findById(phaseId);
 
   if (!phase) {
-    logger.debug('No phase found');
     throw new BadRequestError(lang.noPhaseFound);
   }
 
-  // Couldnt get nats mock to work
-  // Code is only ran if its not test environment
+  const removeAt = DateTime.now()
+    .plus(CONFIG.debug ? { seconds: 5 } : { days: 30 })
+    .toJSDate();
+
+  phase.deletion = {
+    isUpForDeletion: true,
+    removeAt,
+  };
+
+  phase.locked = true;
+  phase.hidden = true;
+
+  await phase.save();
+
   if (process.env.NODE_ENV !== 'test') {
     // Publishes event to nats service
-    new PhaseUpdatedPublisher(natsWrapper.client, logger).publish({
-      phaseId: phase.id as string,
-      parentCourse: parentCourse,
+    new PhaseQueueRemovePublisher(natsWrapper.client, logger).publish({
+      parentCourse: course.id as string,
+      phaseId: phase.id,
+      removeAt: removeAt,
     });
 
-    logger.info('Sent Nats phase created event');
+    logger.info('Sent Nats phase queue remove event');
   }
-
-  logger.info('Updated phase. Returning to user');
 
   res.status(200).json({
     errors: false,
-    message: lang.updatedCourse,
+    message: lang.upForDeletion.replace('%name%', phase.name),
     phase,
   });
 };
 
-export default update;
+export default remove;

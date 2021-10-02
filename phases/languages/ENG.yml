@@ -1,3 +1,6 @@
 noParentCourse: "Couldn't find parent course"
 createdPhase: 'Successfully created phase'
 noPhaseFound: "Couln't find phase"
+noPhaseId: 'No phase id found in body'
+noParentCourseId: 'No parent course id found in body'
+upForDeletion: 'Queued phase %name% for deletion'
