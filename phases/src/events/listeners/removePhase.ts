@@ -1,12 +1,16 @@
-import { Listener, Subjects, RemovePhase } from '@gustafdahl/schoolable-events';
+import {
+  Listener,
+  Subjects,
+  RemovePhaseEvent,
+} from '@gustafdahl/schoolable-events';
 import { Message } from 'node-nats-streaming';
 
 import { queueGroupName } from './queueGroupName';
 import Phase from '../../models/phase';
 import logger from '../../utils/logger';
-import PhaseRemovedPublisher from '../Publishers/phaseRemoved';
+import PhaseRemovedPublisher from '../publishers/phaseRemoved';
 
-export class RemovePhaseListener extends Listener<RemovePhase> {
+export class RemovePhaseListener extends Listener<RemovePhaseEvent> {
   subject: Subjects.RemovePhase = Subjects.RemovePhase;
   queueGroupName = queueGroupName;
 

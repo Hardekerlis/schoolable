@@ -10,17 +10,17 @@ interface Payload {
   phaseId: string;
 }
 
-const removeCourseQueue = new Queue<Payload>('remove:course', {
+const removePhaseQueue = new Queue<Payload>('remove:phase', {
   redis: {
     host: CONFIG.redis.host,
   },
 });
 
-removeCourseQueue.process(async (job) => {
+removePhaseQueue.process(async (job) => {
   new RemovePhasePublisher(natsWrapper.client, logger).publish({
     parentCourse: job.data.parentCourse,
     phaseId: job.data.phaseId,
   });
 });
 
-export default removeCourseQueue;
+export default removePhaseQueue;

@@ -34,7 +34,7 @@ describe('Fetch many courses. CoursePage is not populated in this case', () => {
     await request(app).post(getPath()).send({});
   });
 
-  it('Returns 0 courses if user has no courses assigned to user', async () => {
+  it('Returns 0 courses if no courses are assigned to user', async () => {
     await createCourse();
     const [cookie] = await global.getAuthCookie();
 

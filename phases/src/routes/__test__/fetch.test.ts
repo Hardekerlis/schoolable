@@ -47,14 +47,16 @@ const createPhase = async () => {
   };
 };
 
-it(`Has a route handler listening on ${path} for get requests`, async () => {
-  const res = await request(app).get(path).send({});
+describe('Fetch many phases. Phase items are not populated in this case', () => {
+  it(`Has a route handler listening on ${path} for post requests`, async () => {
+    const res = await request(app).post(path).send({});
 
-  expect(res.status).not.toEqual(404);
-});
+    expect(res.status).not.toEqual(404);
+  });
 
-it('Returns a 401 if user is not authenticated', async () => {
-  const { phaseId, parentCourse } = await createPhase();
+  it('Returns a 401 if user is not authenticated', async () => {
+    const { phaseId, parentCourse } = await createPhase();
 
-  await request(app).get(path).send({ phaseId, parentCourse }).expect(401);
+    await request(app).post(path).send({ phaseId, parentCourse }).expect(401);
+  });
 });

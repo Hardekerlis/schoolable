@@ -3,10 +3,9 @@
 import { Subjects } from '../';
 
 export interface RemovePhaseEvent {
-  subject: Subjects.RemoveUser;
+  subject: Subjects.RemovePhase;
   data: {
     parentCourse: string;
     phaseId: string;
-    removeAt: Date;
   };
 }
