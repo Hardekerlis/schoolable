@@ -69,6 +69,7 @@ const update = async (req: Request, res: Response) => {
       courseId: course.id as string,
       name: course.name,
       admins: course.admins as string[],
+      students: course.students as string[],
     });
 
     logger.info('Sent Nats user registered event');

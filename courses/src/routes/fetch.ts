@@ -10,7 +10,7 @@ const fetchMany = async (req: Request, res: Response) => {
   const _lang = req.lang;
   const lang = LANG[_lang];
 
-  // TODO: Might need to set limit to find courses.
+  // TODO: Might need to set limit to fetch courses.
   if (!currentUser) throw new NotAuthorizedError();
 
   let courses;

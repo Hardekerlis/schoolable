@@ -1,6 +1,6 @@
 {
   "name": "@gustafdahl/schoolable-events",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "Events library for schoolable",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

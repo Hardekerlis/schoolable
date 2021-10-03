@@ -4,3 +4,7 @@ noPhaseFound: "Couln't find phase"
 noPhaseId: 'No phase id found in body'
 noParentCourseId: 'No parent course id found in body'
 upForDeletion: 'Queued phase %name% for deletion'
+noPhasesFound: "Couldn't find any phases for course"
+foundPhases: 'Found phases'
+badIds: 'Ids must be valid object ids'
+foundPhase: 'Found phase'

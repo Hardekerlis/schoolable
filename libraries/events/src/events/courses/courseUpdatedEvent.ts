@@ -8,5 +8,6 @@ export interface CourseUpdatedEvent {
     courseId: string;
     name: string;
     admins: string[];
+    students: string[];
   };
 }

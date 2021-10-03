@@ -64,7 +64,7 @@ describe('Fetch many courses. CoursePage is not populated in this case', () => {
   it('Returns a 404 if no courses are found', async () => {
     const [cookie] = await global.getAuthCookie();
 
-    const res = await request(app)
+    await request(app)
       .post(getPath())
       .set('Cookie', cookie)
       .send({})
