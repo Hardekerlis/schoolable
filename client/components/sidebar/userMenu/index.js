@@ -80,8 +80,10 @@ const UserMenu = ({ open, setUserMenuOpen }) => {
 
   const logout = async() => {
 
-    let req = new Request('/api/logout').get();
+    let req = new Request('/api/auth/logout').get();
     let res = await req.send();
+
+    console.log(res);
 
     router.push('/login');
 
@@ -90,7 +92,7 @@ const UserMenu = ({ open, setUserMenuOpen }) => {
   return (
     <div ref={menuElem} className={styles.userMenu}>
       <FontAwesomeIcon className={styles.arrow} icon={faCaretLeft} />
-      <UserMenuOption title={`${lang.hiya} ${userData.name}`} />
+      <UserMenuOption title={`${lang.hiya} ${userData.name?.first} ${userData.name?.last}`} />
       <UserMenuOption onClick={logout} title={lang.logout} clickable={true} />
     </div>
   )

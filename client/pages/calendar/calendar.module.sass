@@ -15,16 +15,57 @@
   .pageTitle
     position: absolute
     margin: 0px
-    top: 4px
-    left: 8px
+    top: 12px
+    left: 12px
     color: $white
     font-weight: 800
     font-size: 1.8rem
 
+
+  .typeSelector
+    border: 2px solid $purple
+    border-radius: 5px
+    position: absolute
+    top: 10px
+    display: flex
+    flex-direction: row
+    align-items: center
+    height: 50px
+
+    // padding: 0px 5px
+
+    .selector:last-of-type
+      border-right: none !important
+
+    .selector
+      padding: 5px
+      color: $white
+      border-right: 2px solid $purple
+      height: 100%
+      display: flex
+      flex-direction: row
+      align-items: center
+      justify-content: center
+      min-width: 90px
+      user-select: none
+      cursor: pointer
+
+      font-size: 1rem
+
+      @include transitionProp(0.2s, ease-out, background-color)
+
+    .selector:hover
+      background-color: rgba($purple, 0.2)
+
+    .selector.selected
+      background-color: rgba($purple, 0.6)
+
+
+
 .calendar
   position: absolute
   width: 100%
-  height: 90vh
+  height: 85vh
   // background-color: $white
   border-radius: 5px
   bottom: 0px
@@ -103,6 +144,7 @@
 
 .oneDaySchedule
   width: 60%
+  width: 30%
 
 .multipleDaySchedule
   width: 100%
@@ -174,24 +216,60 @@
     justify-content: flex-start
     margin-top: 3px
 
-    // width: 150px
-
-    // position: absolute
-    // right: 18px
-    // top: 18px
-
     p
       color: rgba($white, 0.8)
       font-size: 1rem
       font-weight: 400
-      // text-align: center
-      // width: 100%
 
     .mapIcon
       width: 15px
       height: 15px
       color: rgba($white, 0.8)
       margin-right: 5px
+
+.monthContainer
+  width: 100%
+  padding: 0px 10px
+
+  .dayIds
+    position: fixed
+    display: flex
+    flex-direction: row
+    align-items: center
+    width: 100%
+    margin-top: -40px
+
+    .monthDayIdentifier
+      font-size: 1.4rem
+      width: calc((100% / 7) + 2px - 20px)
+      text-align: center
+      color: $white
+
+  .month
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
+    align-content: stretch
+    border-left: 1px solid $lightGrey
+    border-top: 1px solid $lightGrey
+    height: 100%
+
+    .monthDay
+      width: calc(100% / 7)
+      border-bottom: 1px solid $lightGrey
+      border-right: 1px solid $lightGrey
+      color: $white
+      display: flex
+      flex-direction: column
+      justify-content: center
+      align-items: center
+      font-size: 1.5rem
+
+      p
+        margin: 0px
+
+      .day
+        font-size: 0.8rem
 
 .segment
   width: 100%
@@ -211,17 +289,40 @@
     position: absolute
     top: 0px
 
+.currentWeek
+  color: $white
+  margin: 0px
+  margin-bottom: 5px
+  font-size: 1.5rem
+  position: absolute
+  left: 10px
+  top: calc(10vh - 0.25rem)
+  font-weight: 300
+  user-select: none
+
 .navigation
   position: absolute
-  right: 10px
-  top: 10px
+  right: 20px
+  top: 20px
+  display: flex
+  flex-direction: column
+  align-items: center
 
-  .arrow
-    cursor: pointer
-    .icon
-      width: 30px
-      height: 30px
-      color: $white
+  .arrowContainer
+    display: flex
+    flex-direction: row
+    align-items: center
+
+
+    .arrow:last-of-type
+      margin-left: 20px !important
+
+    .arrow
+      cursor: pointer
+      .icon
+        width: 30px
+        height: 30px
+        color: $white
 
 
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { DateTime } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 
 
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
@@ -22,8 +22,8 @@ import Layout from 'layouts/default/';
 
 import { Sidebar } from 'components'
 
-import lang from 'helpers/lang';
-
+import language from 'helpers/lang';
+const lang = language.calendar;
 
 
 import generateOneDaySchedule from './oneDay.js';
@@ -36,8 +36,8 @@ const Calendar = () => {
 
   let calendarElem = React.useRef();
 
-  let [scheduleType, setScheduleType] = useState('sevenDay');
-  let [currentDay, setCurrentDay] = useState(DateTime.now().startOf('day').set({day: 31, month: 10}));
+  let [scheduleType, setScheduleType] = useState('month');
+  let [currentDay, setCurrentDay] = useState(DateTime.now().startOf('day'));
   let [completeRender, setCompleteRender] = useState();
 
   let navigated = false;
@@ -53,7 +53,7 @@ const Calendar = () => {
 
      if(scheduleType === 'sevenDay')  {
        //find the corresponding sunday with todays date
-        let day = DateTime.now().startOf('day');
+        let day = currentDay.startOf('day');
 
         let weekday = parseFloat(day.toFormat('c'));
 
@@ -124,7 +124,7 @@ const Calendar = () => {
     const selSecondDay = [
       {
         title: 'Svenska',
-        start: selSecond.set({hour: 12}),
+        start: selSecond.set({hour: 12, minute: 30}),
         end: selSecond.set({hour: 13}),
         location: 'PBA'
       },
@@ -162,12 +162,6 @@ const Calendar = () => {
         end: selThird.set({hour: 11, minute: 55}),
         location: 'rummet'
       },
-      // {
-      //   title: 'Svenska hejhejhej 3',
-      //   start: selThird.set({hour: 7, minute: 30}),
-      //   end: selThird.set({hour: 10, minute: 55}),
-      //   location: 'rummet'
-      // },
       {
         title: 'Svenska hejhejhej 3',
         start: selThird.set({hour: 11, minute: 30}),
@@ -308,9 +302,7 @@ const Calendar = () => {
       for(let i = 0; i < days-1; i++) {
 
         dividers.push (
-          <div key={i} style={{left: `${(left * (i+1)) + (scalingNum * i)}%`, height: `${hourHeight * 24}px`}} className={styles.dayDivider}>
-
-          </div>
+          <div key={i} style={{left: `${(left * (i+1)) + (scalingNum * i)}%`, height: `${hourHeight * 24}px`}} className={styles.dayDivider}></div>
         )
       }
 
@@ -421,9 +413,6 @@ const Calendar = () => {
     const sevenDayData = selDayData.concat(selSecondDay).concat(selThirdDay).concat(selFourthDay).concat(selFifthDay).concat(selSixthDay).concat(selSeventhDay);
     const threeDayData = selDayData.concat(selSecondDay).concat(selThirdDay);
 
-    // oneDaySchedule(selDayData);
-    // multipleDaySchedule(sevenDayData)
-
     const oneDaySchedule = (data) => {
       const oneDay = generateOneDaySchedule(selectedDay, hourHeight, data, {
         extraClass: styles.oneDaySchedule,
@@ -438,6 +427,120 @@ const Calendar = () => {
       )
     }
 
+    const monthSchedule = () => {
+
+      const firstDayOfMonth = currentDay.startOf('month');
+
+      let firstDay = firstDayOfMonth.startOf('day');
+
+      const weekday = parseFloat(firstDay.toFormat('c'));
+
+      if(weekday != 7) {
+        firstDay = firstDay.minus({ day: weekday }).startOf('day');
+      }
+
+      let prefixDays = 0;
+
+      if(firstDay.toObject().month !== currentDay.toObject().month) {
+        let interval = Interval.fromDateTimes(firstDay, firstDayOfMonth);
+        prefixDays = interval.length('day');
+      }
+
+      let dayRenders = [];
+
+      let workingDay = firstDay.startOf('day');
+
+      let totalDays = prefixDays + firstDayOfMonth.daysInMonth;
+
+      const addMonthDay = (i) => {
+
+        dayRenders.push(
+          <div key={i} className={styles.monthDay}>
+            <p className={styles.date}>{workingDay.toFormat('d')}</p>
+          </div>
+        );
+
+        workingDay = workingDay.plus({day: 1})
+
+      }
+
+
+      for(let i = 0; i < prefixDays; i++) {
+
+        addMonthDay(i);
+
+      }
+
+      for(let i = 0; i <= firstDayOfMonth.daysInMonth; i++) {
+
+        addMonthDay(prefixDays + i);
+
+      }
+
+      let suffixDays = 0;
+
+      if(workingDay.minus({day: 1}).toObject().month !== firstDayOfMonth.toObject().month) {
+        // console.log(, firstDayOfMonth.daysInMonth)
+        if(workingDay.minus({day: 2}).toObject().day === firstDayOfMonth.daysInMonth) {
+          if(parseFloat(workingDay.minus({day: 2}).toFormat('c')) === 6) {
+            dayRenders.pop();
+            suffixDays = -1;
+          }
+        }
+      }
+
+      console.log(workingDay.toObject())
+      console.log(firstDayOfMonth.toObject())
+      console.log(firstDayOfMonth.daysInMonth)
+
+      let suffixWeekday = parseFloat(workingDay.toFormat('c'));
+
+      // console.log(workingDay.toObject())
+      // console.log(parseFloat(workingDay.toFormat('c')))
+
+      if(suffixDays !== -1) {
+        if(suffixWeekday < 6) {
+          // suffixDays = 6 - workingDay.toObject().day;
+          suffixDays = 6 - parseFloat(workingDay.toFormat('c'));
+        }else if(suffixWeekday > 6) {
+          suffixDays = -1;
+        }
+
+      }
+
+
+      for(let i = 0; i <= suffixDays; i++) {
+
+        addMonthDay(totalDays + i + 1);
+
+      }
+
+      let dayIdentifiers = [];
+      let dayBuildHelper = workingDay.set({weekDay: 0});
+
+      for(let i = 0; i < 7; i++) {
+        dayIdentifiers.push(
+          <div key={"id" + i} className={styles.monthDayIdentifier}>
+            {dayBuildHelper.toFormat('cccc')}
+          </div>
+        )
+        dayBuildHelper = dayBuildHelper.plus({day: 1})
+      }
+
+      setCompleteRender(
+        <div className={styles.monthContainer}>
+          <div className={styles.dayIds}>
+            {dayIdentifiers}
+          </div>
+          <div className={styles.month}>
+            {dayRenders}
+          </div>
+        </div>
+      )
+
+
+    }
+
 
     switch(scheduleType) {
       case 'oneDay':
@@ -449,6 +552,9 @@ const Calendar = () => {
       case 'sevenDay':
         multipleDaySchedule(sevenDayData);
         break;
+      case 'month':
+        monthSchedule();
+        break;
       case 'default':
         break;
     }
@@ -457,34 +563,35 @@ const Calendar = () => {
 
   useEffect(() => {
 
-    console.log("generating scheudle")
+    console.log("generating schedule")
 
     generateSchedule();
 
-  }, [currentDay])
+  }, [currentDay, scheduleType])
 
   useEffect(() => {
 
     //scroll the calendar to the earliest event.
     if(sorted.length === 0) return;
-    console.log(sorted)
     calendarElem.current.scrollTop = sorted[0].start.hour * hourHeight;
 
-  }, [completeRender])
+  }, [sorted])
 
   //generating segment.
   //i.e the lines that indicate time.
   const segmentRenderers = [];
 
-  for(let i = 0; i < 24; i++) {
+  if(scheduleType !== 'month') {
+    for(let i = 0; i < 24; i++) {
 
-    segmentRenderers.push(
-      <div style={{top: (hourHeight * i) + "px"}} key={i} className={styles.segment}>
-        <div className={styles.line}></div>
-        <p className={styles.hour}>{`${i}:00`}</p>
-      </div>
-    )
+      segmentRenderers.push(
+        <div style={{top: (hourHeight * i) + "px"}} key={i} className={styles.segment}>
+          <div className={styles.line}></div>
+          <p className={styles.hour}>{`${i}:00`}</p>
+        </div>
+      )
 
+    }
   }
 
   const nav = (dir) => {
@@ -497,13 +604,54 @@ const Calendar = () => {
       daysToAdd = 3;
     }else if(scheduleType === 'oneDay') {
       daysToAdd = 1;
+    }else if(scheduleType === 'month') {
+      setCurrentDay(
+        currentDay.plus({month: dir})
+      )
+      return;
     }
 
     setCurrentDay(
-      currentDay.plus({day: daysToAdd})
+      currentDay.plus({day: daysToAdd * dir})
     )
 
   }
+
+  const typeSelectorsOptions = [
+    {
+      name: 'One day',
+      value: 'oneDay'
+    },
+    {
+      name: 'Three day',
+      value: 'threeDay'
+    },
+    {
+      name: 'Week',
+      value: 'sevenDay'
+    },
+    {
+      name: 'Month',
+      value: 'month'
+    }
+  ];
+
+  const scheduleTypeSelectorClicked = (value) => {
+
+    if (scheduleType === value) return;
+
+    setScheduleType(value);
+
+  }
+
+  const typeSelectors = typeSelectorsOptions.map((obj, index) => {
+
+    const selectorClass = (scheduleType === obj.value) ? `${styles.selector} ${styles.selected}` : styles.selector;
+
+    return (
+      <div onClick={() => scheduleTypeSelectorClicked(obj.value)} key={index} className={selectorClass}>{obj.name}</div>
+    )
+  })
 
   return (
     <Layout mainClass={styles.headWrapper}>
@@ -513,13 +661,29 @@ const Calendar = () => {
         <Sidebar />
 
         <div className={styles.calendarWrapper}>
+
           <p className={styles.pageTitle}>Calendar</p>
 
+          <div className={styles.typeSelector}>
+            {typeSelectors}
+          </div>
+
+
           <div className={styles.navigation}>
-            <div onClick={() => nav(1)} className={styles.arrow}>
-              <FontAwesomeIcon className={styles.icon} icon={faArrowRight} />
+            <div className={styles.arrowContainer}>
+              <div onClick={() => nav(-1)} className={styles.arrow}>
+                <FontAwesomeIcon className={styles.icon} icon={faArrowLeft} />
+              </div>
+              <div onClick={() => nav(1)} className={styles.arrow}>
+                <FontAwesomeIcon className={styles.icon} icon={faArrowRight} />
+              </div>
             </div>
           </div>
+
+          { (scheduleType !== 'month') &&
+            <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
+          }
+
 
           <div ref={calendarElem} className={styles.calendar}>
             {completeRender}

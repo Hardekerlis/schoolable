@@ -2,7 +2,7 @@ class Request {
 
   constructor(url, body) {
 
-    if(typeof window === undefined) {
+    if((typeof window) == "undefined" || (typeof window) == undefined) {
       this.url = 'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' + url;
     }else {
       this.url = window.location.origin + url;

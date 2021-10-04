@@ -64,5 +64,8 @@
     "savingChanges": "Saving changes ...",
     "editPhasePage": "Edit phase page",
     "exit": "Exit"
+  },
+  "calendar": {
+    "shortWeekNumber": "w. "
   }
 }
