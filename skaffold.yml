@@ -63,5 +63,16 @@ build:
         manual:
           - src: "**/*.js"
             dest: .
-          - src: "**/*.sass"
+          - src: "**/*.yml"
+            dest: .
+    - image: eu.gcr.io/schoolable-platform/phase-items
+      context: phaseItems
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.yml"
             dest: .

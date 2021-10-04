@@ -74,7 +74,7 @@ router.post(
 );
 
 import remove from './remove';
-router.use(
+router.delete(
   '/remove',
   currentUser,
   getLanguage,
@@ -93,5 +93,8 @@ router.use(
 
 import logout from './logout';
 router.get('/logout', currentUser, getLanguage, logout);
+
+import check from './check';
+router.get('/check', currentUser, getLanguage, check);
 
 export default router;

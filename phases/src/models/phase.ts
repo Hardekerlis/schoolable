@@ -4,7 +4,7 @@ interface PhaseItem {
   name: string;
   id: string;
   locked: boolean;
-  visisible: boolean;
+  hidden: boolean;
 }
 
 interface PhaseAttributes {
@@ -69,18 +69,12 @@ const phaseSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    unlockedOn: {
-      type: Date,
-      default: +new Date(),
-    },
+    unlockedOn: Date,
     hidden: {
       type: Boolean,
       default: true,
     },
-    visibleOn: {
-      type: Date,
-      default: +new Date(),
-    },
+    visibleOn: Date,
     lockOn: Date,
     deletion: {
       isUpForDeletion: {

@@ -14,6 +14,13 @@ spec:
             path: /api/phase/*
             backend:
               service:
+                name: phase-items-srv
+                port:
+                  number: 3000
+          - pathType: Prefix
+            path: /api/phase/*
+            backend:
+              service:
                 name: phases-srv
                 port:
                   number: 3000

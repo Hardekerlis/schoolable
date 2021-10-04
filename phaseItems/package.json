@@ -29,12 +29,12 @@
     "mongoose": "^6.0.8"
   },
   "devDependencies": {
-    "@types/luxon": "^2.0.4",
     "@types/cors": "^2.8.12",
     "@types/faker": "^5.5.8",
     "@types/jest": "^27.0.2",
     "@types/node": "^15.12.5",
     "@types/supertest": "^2.0.11",
+    "@types/luxon": "^2.0.4",
     "del-cli": "^4.0.1",
     "express-async-errors": "^3.1.1",
     "faker": "^5.5.3",

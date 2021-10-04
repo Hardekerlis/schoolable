@@ -9,3 +9,4 @@ needId: 'Please supply a id as a string'
 noUserFoundId: "Couln't find a user with the supplied id"
 notLoggedIn: 'You are not logged in'
 loggedOut: 'User was logged out'
+isLoggedIn: 'You are logged in'
