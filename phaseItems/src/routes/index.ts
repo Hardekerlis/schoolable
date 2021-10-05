@@ -81,4 +81,58 @@ router.post(
   fetchOne,
 );
 
+import update from './update';
+router.put(
+  '/update',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  [
+    body('parentPhase')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseId;
+      }),
+    body('parentCourse')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needParentCourse;
+      }),
+    body('phaseItemId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseItemId;
+      }),
+  ],
+  validateResult,
+  update,
+);
+
+import remove from './remove';
+router.delete(
+  '/remove',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  [
+    body('parentPhase')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseId;
+      }),
+    body('parentCourse')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needParentCourse;
+      }),
+    body('phaseItemId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseItemId;
+      }),
+  ],
+  validateResult,
+  remove,
+);
+
 export default router;

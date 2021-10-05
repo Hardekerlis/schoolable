@@ -11,6 +11,8 @@ import Course from '../models/course';
 import Phase from '../models/phase';
 import PhaseItem from '../models/phaseItem';
 
+// TODO: Add logger
+
 export const fetchMany = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const _lang = req.lang;

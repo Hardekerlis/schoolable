@@ -32,7 +32,7 @@ const update = async (req: Request, res: Response) => {
 
   logger.debug('Checking if user is allowed to update course phase');
   if (
-    // Check if user is allowed to create phases for course
+    // Check if user is allowed to update phases for course
     course.owner !== currentUser?.id &&
     !course.admins?.includes(currentUser?.id as string)
   ) {
