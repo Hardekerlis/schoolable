@@ -6,23 +6,22 @@ import {
   NotAuthorizedError,
 } from '@gustafdahl/schoolable-errors';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { CONFIG } from '@gustafdahl/schoolable-utils';
+import { DateTime } from 'luxon';
 
 import Course from '../models/course';
 import Phase from '../models/phase';
 import PhaseItem from '../models/phaseItem';
+
+import PhaseItemQueueRemovePublisher from '../events/publishers/phaseItemQueueRemove';
+
 import logger from '../utils/logger';
 
-const update = async (req: Request, res: Response) => {
+const remove = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const { phaseItemId, parentPhase, parentCourse } = req.body;
-  const data = req.body;
-  delete data.phaseItemId;
-  delete data.parentPhase;
-  delete data.parentCourse;
   const _lang = req.lang;
   const lang = LANG[_lang];
-
-  logger.info(`Trying to update phase item with id ${phaseItemId}`);
 
   if (!isValidObjectId(parentPhase)) {
     logger.debug('Parent phase id is not a valid ObjectId');
@@ -83,24 +82,44 @@ const update = async (req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
-  logger.debug('Looking up phase item and updating it if one is found');
-  const updatedPhaseItem = await PhaseItem.findByIdAndUpdate(
-    phaseItemId,
-    data,
-    { new: true },
-  );
+  const phaseItem = await PhaseItem.findById(phaseItemId);
 
-  if (!updatedPhaseItem) {
+  if (!phaseItem) {
     logger.debug('No phase item found');
     throw new NotFoundError();
   }
 
-  logger.info('Successfully updated phase item. Returning to user');
+  const removeAt = DateTime.now()
+    .plus(CONFIG.debug ? { seconds: 5 } : { days: 30 })
+    .toJSDate();
+
+  phaseItem.deletion = {
+    isUpForDeletion: true,
+    removeAt,
+  };
+
+  phaseItem.locked = true;
+  phaseItem.hidden = true;
+
+  await phaseItem.save();
+
+  if (process.env.NODE_ENV !== 'test') {
+    // Publishes event to nats service
+    new PhaseItemQueueRemovePublisher(natsWrapper.client, logger).publish({
+      parentCourse: course.id as string,
+      parentPhase: phase.id,
+      phaseItemId: phaseItem.id,
+      removeAt: removeAt,
+    });
+
+    logger.info('Sent Nats phase item queue remove event');
+  }
+
   res.status(200).json({
     errors: false,
-    message: lang.updatedPhaseItem,
-    phaseItem: updatedPhaseItem,
+    message: lang.upForDeletion.replace('%name%', phaseItem.name),
+    phaseItem,
   });
 };
 
-export default update;
+export default remove;

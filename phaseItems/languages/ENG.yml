@@ -10,3 +10,4 @@ noPhaseItem: "Couldn't find phase item"
 foundPhaseItem: 'Found phase item'
 needPhaseItemId: 'Need a phase item id'
 updatedPhaseItem: 'Successfully updated phase item'
+upForDeletion: 'Queued phase item %name% for deletion'
