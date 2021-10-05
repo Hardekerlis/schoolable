@@ -21,13 +21,13 @@ export class CourseRemovedListener extends Listener<CourseRemovedEvent> {
     logger.info(
       `Removing course with id ${courseId} and its phases and phase items`,
     );
-    await PhaseItem.findAndRemove({
+    await PhaseItem.deleteMany({
       parentCourse: courseId,
     });
 
     logger.debug('Removed phase items');
 
-    await Phase.findAndRemove({
+    await Phase.deleteMany({
       parentCourse: courseId,
     });
 

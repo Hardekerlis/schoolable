@@ -43,7 +43,7 @@ export const fetchMany = async (req: Request, res: Response) => {
     if (
       course.owner !== currentUser?.id &&
       !course.admins?.includes(currentUser?.id as string) &&
-      !course.students?.includes(currentUser?.id)
+      !course.students?.includes(currentUser?.id as string)
     ) {
       throw new NotAuthorizedError();
     }
@@ -117,7 +117,7 @@ export const fetchOne = async (req: Request, res: Response) => {
     if (
       course.owner !== currentUser?.id &&
       !course.admins?.includes(currentUser?.id as string) &&
-      !course.students?.includes(currentUser?.id)
+      !course.students?.includes(currentUser?.id as string)
     ) {
       throw new NotAuthorizedError();
     }

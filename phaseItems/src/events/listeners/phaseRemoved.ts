@@ -19,7 +19,7 @@ export class PhaseRemovedListener extends Listener<PhaseRemovedEvent> {
 
     logger.info('Removing phase');
 
-    const phaseItems = await PhaseItem.findAndRemove({
+    const phaseItems = await PhaseItem.deleteMany({
       parentPhase: phaseId,
       parentCourse,
     });
