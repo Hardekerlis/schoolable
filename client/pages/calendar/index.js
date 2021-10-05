@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 
 import { DateTime, Interval } from 'luxon';
 
-
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -49,6 +48,10 @@ export const getServerSideProps = async(ctx) => {
 const Calendar = ({ sType }) => {
 
   const router = useRouter();
+
+  //initialize holidays for the users contry
+  hd.init('SE');
+
 
   const typeSelectorsOptions = [
     {
@@ -110,6 +113,7 @@ const Calendar = ({ sType }) => {
   let [scheduleType, setScheduleType] = useState(sType);
   let [currentDay, setCurrentDay] = useState(DateTime.now().startOf('day'));
   let [completeRender, setCompleteRender] = useState();
+  let [renderNavigation, setRenderNavigation] = useState(true);
 
   let calendarElem = React.useRef();
 
@@ -158,7 +162,10 @@ const Calendar = ({ sType }) => {
 
     const selectedDayObject = today.toObject();
 
-    const selectedDay = DateTime.fromObject(selectedDayObject)
+    const selectedDay = DateTime.fromObject(selectedDayObject).minus({day: 1})
+    // const selectedDay = DateTime.fromObject(selectedDayObject).set({month: 12, day: 23}).setZone("Sweden/Stockholm");
+
+    console.log(selectedDay.toObject())
 
     const selDayData = [
       {
@@ -548,6 +555,26 @@ const Calendar = ({ sType }) => {
           addMonthText = true;
         }
 
+        let holiday = false;
+
+        let _weekday = parseFloat(workingDay.toFormat('c'));
+
+        if(_weekday >= 6) holiday = true;
+
+        let _hdHoliday = hd.isHoliday(workingDay.startOf('day').toJSDate());
+
+        if(_hdHoliday !== false) {
+          holiday = true;
+        }
+
+        if(holiday) {
+          //is holiday
+
+          className += ` ${styles.holiday}`;
+
+        }
+
+
         if(addMonthText) {
           dayRenders.push(
             <div key={i} className={className}>
@@ -707,7 +734,11 @@ const Calendar = ({ sType }) => {
 
   }
 
+
   useEffect(() => {
+
+    if(scheduleType === 'timeline') setRenderNavigation(false);
+    else if(renderNavigation === false) setRenderNavigation(true);
 
     console.log("generating schedule")
 
@@ -800,8 +831,6 @@ const Calendar = ({ sType }) => {
 
         <Sidebar />
 
-
-
           <div className={styles.calendarWrapper}>
 
             <p className={styles.pageTitle}>Calendar</p>
@@ -812,17 +841,18 @@ const Calendar = ({ sType }) => {
 
             <p className={styles.monthText}>{currentDay.toFormat('y, LLLL')}</p>
 
-
-            <div className={styles.navigation}>
-              <div className={styles.arrowContainer}>
-                <div onClick={() => nav(-1)} className={styles.arrow}>
-                  <FontAwesomeIcon className={styles.icon} icon={faArrowLeft} />
-                </div>
-                <div onClick={() => nav(1)} className={styles.arrow}>
-                  <FontAwesomeIcon className={styles.icon} icon={faArrowRight} />
+            { renderNavigation &&
+              <div className={styles.navigation}>
+                <div className={styles.arrowContainer}>
+                  <div onClick={() => nav(-1)} className={styles.arrow}>
+                    <FontAwesomeIcon className={styles.icon} icon={faArrowLeft} />
+                  </div>
+                  <div onClick={() => nav(1)} className={styles.arrow}>
+                    <FontAwesomeIcon className={styles.icon} icon={faArrowRight} />
+                  </div>
                 </div>
               </div>
-            </div>
+            }
 
             { (scheduleType !== 'month' && scheduleType !== 'timeline') &&
               <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>

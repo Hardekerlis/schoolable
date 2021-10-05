@@ -60,15 +60,25 @@ const generateTimelineDay = (events, hourHeight, index) => {
   //only for rendering
   if(index !== 0) sumHeight += containerTop;
 
-  let isCurrentDay = (events[0].start.startOf('day').toISO() === DateTime.now().startOf('day').toISO());
+  const isCurrentDay = (events[0].start.startOf('day').toISO() === DateTime.now().startOf('day').toISO());
 
-  console.log(isCurrentDay)
+  let dotClassName = (isCurrentDay) ? `${styles.dotContainer} ${styles.current}` : styles.dotContainer;
 
-  const dotClassName = (isCurrentDay) ? `${styles.dot} ${styles.current}` : styles.dot;
+  if(!isCurrentDay) {
+
+    if(DateTime.now().startOf('day').ts > events[0].start.startOf('day').ts) {
+
+      dotClassName += ` ${styles.beforeToday}`;
+
+    }
+
+  }
 
   let showcase = (
     <div className={styles.showcase}>
-      <div style={{marginTop: `${containerTop}px`}} className={dotClassName}></div>
+      <div style={{marginTop: `${containerTop}px`}} className={dotClassName}>
+        <div className={styles.dot}></div>
+      </div>
       <div className={styles.date}>
         <p>{events[0].start.toFormat(`ccc`)}</p>
         <p>{events[0].start.toFormat(`LL`)}</p>
