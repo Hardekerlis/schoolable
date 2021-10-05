@@ -10,6 +10,8 @@ import styles from './calendar.module.sass'
 
 const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
+  if(!options) options = {};
+
   if(options.ghostLeft === undefined || options.ghostLeft === null) options.ghostLeft = 0;
 
 

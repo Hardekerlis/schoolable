@@ -27,18 +27,91 @@ const lang = language.calendar;
 
 
 import generateOneDaySchedule from './oneDay.js';
+import generateTimelineDay from './timeline.js'
 
 //css imports
 
 import styles from './calendar.module.sass';
 
-const Calendar = () => {
+export const getServerSideProps = async(ctx) => {
 
-  let calendarElem = React.useRef();
+  let type = ctx.query?.type;
+  if(!type) type = null;
 
-  let [scheduleType, setScheduleType] = useState('month');
+  return {
+    props: {
+      sType: type
+    }
+  }
+
+}
+
+const Calendar = ({ sType }) => {
+
+  const router = useRouter();
+
+  const typeSelectorsOptions = [
+    {
+      name: lang.oneDay,
+      value: 'oneDay'
+    },
+    {
+      name: lang.threeDay,
+      value: 'threeDay'
+    },
+    {
+      name: lang.sevenDay,
+      value: 'week'
+    },
+    {
+      name: lang.month,
+      value: 'month'
+    },
+    {
+      name: lang.timeline,
+      value: 'timeline'
+    }
+  ];
+
+  let _qFound = false;
+
+  if(sType) {
+
+    for(let obj of typeSelectorsOptions) {
+      if(obj.value === sType) {
+        _qFound = true;
+        break;
+      }
+    }
+
+  }
+
+  if(!_qFound) {
+    sType = 'week';
+
+    useEffect(() => {
+
+      router.push({
+          pathname: '/calendar',
+          query: {
+            type: sType
+          }
+        },
+        undefined,
+        {
+          shallow: true
+        }
+      )
+
+    }, [])
+
+  }
+
+  let [scheduleType, setScheduleType] = useState(sType);
   let [currentDay, setCurrentDay] = useState(DateTime.now().startOf('day'));
   let [completeRender, setCompleteRender] = useState();
+
+  let calendarElem = React.useRef();
 
   let navigated = false;
 
@@ -51,7 +124,7 @@ const Calendar = () => {
 
   const generateSchedule = () => {
 
-     if(scheduleType === 'sevenDay')  {
+     if(scheduleType === 'week')  {
        //find the corresponding sunday with todays date
         let day = currentDay.startOf('day');
 
@@ -66,7 +139,7 @@ const Calendar = () => {
      const getCurrentDay = () => {
        let day = currentDay;
 
-       if(scheduleType === 'sevenDay')  {
+       if(scheduleType === 'week')  {
           //find the corresponding sunday with todays date
 
           let weekday = parseFloat(day.toFormat('c'));
@@ -439,6 +512,8 @@ const Calendar = () => {
         firstDay = firstDay.minus({ day: weekday }).startOf('day');
       }
 
+      //calculating the amount of days to add at the beginning
+      //of the month to make all rows include 7 days
       let prefixDays = 0;
 
       if(firstDay.toObject().month !== currentDay.toObject().month) {
@@ -448,39 +523,64 @@ const Calendar = () => {
 
       let dayRenders = [];
 
+      //the day which updates after one day have generated
       let workingDay = firstDay.startOf('day');
 
+      //used for key to suffixDays
       let totalDays = prefixDays + firstDayOfMonth.daysInMonth;
 
-      const addMonthDay = (i) => {
-
-        dayRenders.push(
-          <div key={i} className={styles.monthDay}>
+      const dayJSX = (className, key) => {
+        return (
+          <div key={key} className={className}>
             <p className={styles.date}>{workingDay.toFormat('d')}</p>
           </div>
-        );
+        )
+      }
+
+      //generating JSX for each day
+      const addMonthDay = (i, addMonthText) => {
+        let className = styles.monthDay;
+        if(workingDay.startOf('day').toISO() === DateTime.now().startOf('day').toISO()) {
+          className = `${styles.monthDay} ${styles.current}`;
+        }
+
+        if(workingDay.toObject().day === 1) {
+          addMonthText = true;
+        }
+
+        if(addMonthText) {
+          dayRenders.push(
+            <div key={i} className={className}>
+              <p className={styles.monthInDay}>{workingDay.toFormat('LLL')}</p>
+              <p className={styles.date}>{workingDay.toFormat('d')}</p>
+            </div>
+          )
+        }else {
+          dayRenders.push(
+            dayJSX(className, i)
+          );
+        }
 
         workingDay = workingDay.plus({day: 1})
-
       }
 
-
+      //adding prefix days
       for(let i = 0; i < prefixDays; i++) {
-
-        addMonthDay(i);
-
+        if(i === 0) addMonthDay(i, true);
+        else addMonthDay(i);
       }
 
+      //adding all days from the current month
       for(let i = 0; i <= firstDayOfMonth.daysInMonth; i++) {
-
         addMonthDay(prefixDays + i);
-
       }
 
+      //how many days to add to end of month
       let suffixDays = 0;
 
+      //fixing an edge case where a whole week from the next
+      //month would show up
       if(workingDay.minus({day: 1}).toObject().month !== firstDayOfMonth.toObject().month) {
-        // console.log(, firstDayOfMonth.daysInMonth)
         if(workingDay.minus({day: 2}).toObject().day === firstDayOfMonth.daysInMonth) {
           if(parseFloat(workingDay.minus({day: 2}).toFormat('c')) === 6) {
             dayRenders.pop();
@@ -489,18 +589,12 @@ const Calendar = () => {
         }
       }
 
-      console.log(workingDay.toObject())
-      console.log(firstDayOfMonth.toObject())
-      console.log(firstDayOfMonth.daysInMonth)
-
+      //calculate have many days to add to end of month
+      //so all rows include 7 days
       let suffixWeekday = parseFloat(workingDay.toFormat('c'));
-
-      // console.log(workingDay.toObject())
-      // console.log(parseFloat(workingDay.toFormat('c')))
 
       if(suffixDays !== -1) {
         if(suffixWeekday < 6) {
-          // suffixDays = 6 - workingDay.toObject().day;
           suffixDays = 6 - parseFloat(workingDay.toFormat('c'));
         }else if(suffixWeekday > 6) {
           suffixDays = -1;
@@ -508,13 +602,11 @@ const Calendar = () => {
 
       }
 
-
       for(let i = 0; i <= suffixDays; i++) {
-
         addMonthDay(totalDays + i + 1);
-
       }
 
+      //generating week day texts
       let dayIdentifiers = [];
       let dayBuildHelper = workingDay.set({weekDay: 0});
 
@@ -527,6 +619,7 @@ const Calendar = () => {
         dayBuildHelper = dayBuildHelper.plus({day: 1})
       }
 
+      //updating the render
       setCompleteRender(
         <div className={styles.monthContainer}>
           <div className={styles.dayIds}>
@@ -538,6 +631,56 @@ const Calendar = () => {
         </div>
       )
 
+    }
+
+    const timelineSchedule = (data) => {
+
+      //master is a collection of all days with their
+      //events as props
+      let master = {};
+      const firstDayDate = selectedDayObject;
+
+      for(let evt of data) {
+        let formatted = evt.start.toFormat('dd:MM:yyyy');
+
+        //calculate a number (sum) which is used for
+        //sorting the dates. e.g 24 sept will be after 23 sept
+        let nums = formatted.split(':');
+        let sum = 0;
+
+        for(let t = 0; t < nums.length; t++) {
+          let num = nums[t];
+          //MIGHT HAVE TO BE TWEAKED
+          sum += parseFloat(num) * (Math.pow(t+1, 5));
+        }
+
+        if(!master.hasOwnProperty(sum)) {
+          master[sum] = [];
+        }
+
+        master[sum].push(evt);
+
+      }
+
+      // console.log(master)
+
+      let dayRenders = [];
+
+      for(let i = 0; i < 4; i++) {
+        let day = master[Object.keys(master)[i]];
+
+        // console.log(day)
+
+        dayRenders.push(generateTimelineDay(day, hourHeight, i));
+
+
+      }
+
+      setCompleteRender(
+        <div className={styles.timelineWrapper}>
+          {dayRenders}
+        </div>
+      )
 
     }
 
@@ -549,11 +692,14 @@ const Calendar = () => {
       case 'threeDay':
         multipleDaySchedule(threeDayData);
         break;
-      case 'sevenDay':
+      case 'week':
         multipleDaySchedule(sevenDayData);
         break;
       case 'month':
         monthSchedule();
+        break;
+      case 'timeline':
+        timelineSchedule(sevenDayData)
         break;
       case 'default':
         break;
@@ -573,6 +719,7 @@ const Calendar = () => {
 
     //scroll the calendar to the earliest event.
     if(sorted.length === 0) return;
+    if(!calendarElem.current) return;
     calendarElem.current.scrollTop = sorted[0].start.hour * hourHeight;
 
   }, [sorted])
@@ -581,7 +728,7 @@ const Calendar = () => {
   //i.e the lines that indicate time.
   const segmentRenderers = [];
 
-  if(scheduleType !== 'month') {
+  if(scheduleType !== 'month' && scheduleType !== 'timeline') {
     for(let i = 0; i < 24; i++) {
 
       segmentRenderers.push(
@@ -598,7 +745,7 @@ const Calendar = () => {
 
     let daysToAdd = 0;
 
-    if(scheduleType === 'sevenDay') {
+    if(scheduleType === 'week') {
       daysToAdd = 7;
     }else if(scheduleType === 'threeDay') {
       daysToAdd = 3;
@@ -617,30 +764,23 @@ const Calendar = () => {
 
   }
 
-  const typeSelectorsOptions = [
-    {
-      name: 'One day',
-      value: 'oneDay'
-    },
-    {
-      name: 'Three day',
-      value: 'threeDay'
-    },
-    {
-      name: 'Week',
-      value: 'sevenDay'
-    },
-    {
-      name: 'Month',
-      value: 'month'
-    }
-  ];
-
   const scheduleTypeSelectorClicked = (value) => {
 
     if (scheduleType === value) return;
 
     setScheduleType(value);
+
+    router.push({
+        pathname: '/calendar',
+        query: {
+          type: value
+        }
+      },
+      undefined,
+      {
+        shallow: true
+      }
+    )
 
   }
 
@@ -660,43 +800,47 @@ const Calendar = () => {
 
         <Sidebar />
 
-        <div className={styles.calendarWrapper}>
-
-          <p className={styles.pageTitle}>Calendar</p>
-
-          <div className={styles.typeSelector}>
-            {typeSelectors}
-          </div>
 
 
-          <div className={styles.navigation}>
-            <div className={styles.arrowContainer}>
-              <div onClick={() => nav(-1)} className={styles.arrow}>
-                <FontAwesomeIcon className={styles.icon} icon={faArrowLeft} />
-              </div>
-              <div onClick={() => nav(1)} className={styles.arrow}>
-                <FontAwesomeIcon className={styles.icon} icon={faArrowRight} />
+          <div className={styles.calendarWrapper}>
+
+            <p className={styles.pageTitle}>Calendar</p>
+
+            <div className={styles.typeSelector}>
+              {typeSelectors}
+            </div>
+
+            <p className={styles.monthText}>{currentDay.toFormat('y, LLLL')}</p>
+
+
+            <div className={styles.navigation}>
+              <div className={styles.arrowContainer}>
+                <div onClick={() => nav(-1)} className={styles.arrow}>
+                  <FontAwesomeIcon className={styles.icon} icon={faArrowLeft} />
+                </div>
+                <div onClick={() => nav(1)} className={styles.arrow}>
+                  <FontAwesomeIcon className={styles.icon} icon={faArrowRight} />
+                </div>
               </div>
             </div>
+
+            { (scheduleType !== 'month' && scheduleType !== 'timeline') &&
+              <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
+            }
+
+
+            <div ref={calendarElem} className={styles.calendar}>
+              {completeRender}
+              {segmentRenderers}
+            </div>
+
           </div>
-
-          { (scheduleType !== 'month') &&
-            <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
-          }
-
-
-          <div ref={calendarElem} className={styles.calendar}>
-            {completeRender}
-            {segmentRenderers}
-          </div>
-
-        </div>
-
 
       </div>
 
     </Layout>
   )
+
 
 }
 
