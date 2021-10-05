@@ -3,12 +3,13 @@ import { nanoid } from 'nanoid';
 import { DateTime, Interval } from 'luxon';
 
 import generateOneDaySchedule from './oneDay.js';
+import isHoliday from './holiday.js';
 
 import styles from './calendar.module.sass'
 
 const generateTimelineDay = (events, hourHeight, index) => {
 
-  console.log(events)
+  let holiday = isHoliday(events[0].start.startOf('day'));
 
   let hourHeightUse = 100;
 
@@ -60,16 +61,28 @@ const generateTimelineDay = (events, hourHeight, index) => {
   //only for rendering
   if(index !== 0) sumHeight += containerTop;
 
-  let isCurrentDay = (events[0].start.startOf('day').toISO() === DateTime.now().startOf('day').toISO());
+  const isCurrentDay = (events[0].start.startOf('day').toISO() === DateTime.now().startOf('day').toISO());
 
-  console.log(isCurrentDay)
+  let dotClassName = (isCurrentDay) ? `${styles.dotContainer} ${styles.current}` : styles.dotContainer;
 
-  const dotClassName = (isCurrentDay) ? `${styles.dot} ${styles.current}` : styles.dot;
+  if(!isCurrentDay) {
+
+    if(DateTime.now().startOf('day').ts > events[0].start.startOf('day').ts) {
+
+      dotClassName += ` ${styles.beforeToday}`;
+
+    }
+
+  }
+
+  let dateClasses = (holiday) ? `${styles.date} ${styles.holiday}` : styles.date;
 
   let showcase = (
     <div className={styles.showcase}>
-      <div style={{marginTop: `${containerTop}px`}} className={dotClassName}></div>
-      <div className={styles.date}>
+      <div style={{marginTop: `${containerTop}px`}} className={dotClassName}>
+        <div className={styles.dot}></div>
+      </div>
+      <div className={dateClasses}>
         <p>{events[0].start.toFormat(`ccc`)}</p>
         <p>{events[0].start.toFormat(`LL`)}</p>
       </div>
