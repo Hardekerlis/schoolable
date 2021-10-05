@@ -66,6 +66,11 @@
     "exit": "Exit"
   },
   "calendar": {
-    "shortWeekNumber": "w. "
+    "shortWeekNumber": "w. ",
+    "oneDay": "One day",
+    "threeDay": "Three day",
+    "sevenDay": "Week",
+    "month": "Month",
+    "timeline": "Timeline"
   }
 }
