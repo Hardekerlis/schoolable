@@ -8,17 +8,19 @@ export default async function redirectAuth(ctx) {
   //
   // console.log(token)
 
-  // let request = new Request('/api/auth/check').get();
-  // let response = await request.send();
-  //
-  // if(response.status !== 200) {
-  //   return {
-  //     redirect: {
-  //       destination: '/login',
-  //       permanent: false,
-  //     }
-  //   }
-  // }
+  let request = new Request('/api/auth/check').get();
+  let response = await request.send();
+
+  console.log(response)
+
+  if(response.status !== 200) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
 
   return {
     props: {
