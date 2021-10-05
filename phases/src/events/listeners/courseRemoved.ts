@@ -35,6 +35,8 @@ export class CourseRemovedListener extends Listener<CourseRemovedEvent> {
       logger.debug('Removed phases');
     }
 
+    logger.info('Removed course and its phases');
+
     msg.ack();
   }
 }

@@ -5,7 +5,7 @@ import {
   UnexpectedError,
 } from '@gustafdahl/schoolable-errors';
 import { CONFIG } from '@gustafdahl/schoolable-utils';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 import UserCreatedPublisher from '../events/userCreated';
 import { natsWrapper } from '../utils/natsWrapper';
@@ -27,7 +27,7 @@ const register = async (req: Request, res: Response) => {
 
   // Creating tempPassword for users first login
   // An email should be sent from email service with temp password to user
-  const tempPassword = uuidv4();
+  const tempPassword = nanoid();
   logger.debug(
     `Creating temp password. ${
       CONFIG.dev ? `TempPassword: ${tempPassword}` : ''

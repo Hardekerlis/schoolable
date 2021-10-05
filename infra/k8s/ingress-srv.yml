@@ -11,7 +11,7 @@ spec:
       http:
         paths:
           - pathType: Prefix
-            path: /api/phase/*
+            path: /api/phaseitems/*
             backend:
               service:
                 name: phase-items-srv

@@ -61,7 +61,7 @@ build:
         cache: {}
       sync:
         manual:
-          - src: "**/*.js"
+          - src: "**/*.ts"
             dest: .
           - src: "**/*.yml"
             dest: .
@@ -72,7 +72,7 @@ build:
         cache: {}
       sync:
         manual:
-          - src: "**/*.js"
+          - src: "**/*.ts"
             dest: .
           - src: "**/*.yml"
             dest: .
