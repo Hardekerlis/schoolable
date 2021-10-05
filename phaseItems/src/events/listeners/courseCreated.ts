@@ -9,7 +9,7 @@ import { queueGroupName } from './queueGroupName';
 import Course from '../../models/course';
 import logger from '../../utils/logger';
 
-export class CoruseCreatedListener extends Listener<CourseCreatedEvent> {
+export class CourseCreatedListener extends Listener<CourseCreatedEvent> {
   subject: Subjects.CourseCreated = Subjects.CourseCreated;
   queueGroupName = queueGroupName;
 

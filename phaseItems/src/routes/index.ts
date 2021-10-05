@@ -39,4 +39,46 @@ router.post(
   create,
 );
 
+import { fetchMany, fetchOne } from './fetch';
+router.post(
+  '/fetch',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  [
+    body('phaseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseId;
+      }),
+    body('parentCourse')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needParentCourse;
+      }),
+  ],
+  validateResult,
+  fetchMany,
+);
+router.post(
+  '/fetch/:phaseItemId',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  [
+    body('phaseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseId;
+      }),
+    body('parentCourse')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needParentCourse;
+      }),
+  ],
+  validateResult,
+  fetchOne,
+);
+
 export default router;
