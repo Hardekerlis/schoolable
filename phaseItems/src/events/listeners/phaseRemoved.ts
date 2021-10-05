@@ -7,6 +7,7 @@ import { Message } from 'node-nats-streaming';
 
 import { queueGroupName } from './queueGroupName';
 import Phase from '../../models/phase';
+import PhaseItem from '../../models/phaseItem';
 import logger from '../../utils/logger';
 
 export class PhaseRemovedListener extends Listener<PhaseRemovedEvent> {
@@ -17,6 +18,11 @@ export class PhaseRemovedListener extends Listener<PhaseRemovedEvent> {
     const { phaseId, parentCourse } = data;
 
     logger.info('Removing phase');
+
+    const phaseItems = await PhaseItem.deleteMany({
+      parentPhase: phaseId,
+      parentCourse,
+    });
 
     await Phase.findOneAndRemove({ phaseId, parentCourse });
 

@@ -18,7 +18,7 @@ export class CourseUpdatedListener extends Listener<CourseUpdatedEvent> {
 
     logger.info(`Updating course with id ${courseId}`);
 
-    await Course.findByIdAndUpdate(courseId, { name, admins, students });
+    await Course.findOneAndUpdate({ courseId }, { name, admins, students });
 
     logger.info('Updated course');
 

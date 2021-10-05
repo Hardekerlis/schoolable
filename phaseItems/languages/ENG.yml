@@ -4,3 +4,7 @@ needPhaseId: 'Need a phase id'
 needParentCourse: 'Need a parent course'
 noPhase: "Couldn't find phase"
 createdPhaseItem: 'Successfully created phase item'
+noPhaseItems: "Couldn't find any phase items"
+foundPhaseItems: 'Found phase items'
+noPhaseItem: "Couldn't find phase item"
+foundPhaseItem: 'Found phase item'

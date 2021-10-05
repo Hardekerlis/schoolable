@@ -4,9 +4,13 @@ import { app } from './app';
 import { CONFIG } from '@gustafdahl/schoolable-utils';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
-import { CoruseCreatedListener } from './events/listeners/courseCreated';
-import { PhaseRemovedListener } from './events/listeners/phaseRemoved';
+
+import { CourseCreatedListener } from './events/listeners/courseCreated';
+import { CourseRemovedListener } from './events/listeners/courseRemoved';
 import { CourseUpdatedListener } from './events/listeners/courseUpdated';
+import { PhaseRemovedListener } from './events/listeners/phaseRemoved';
+import { PhaseCreatedListener } from './events/listeners/phaseCreated';
+
 import mongoose from 'mongoose';
 
 const startServer = async () => {
@@ -40,9 +44,11 @@ const startServer = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    new CoruseCreatedListener(natsWrapper.client, logger).listen();
+    new CourseCreatedListener(natsWrapper.client, logger).listen();
     new PhaseRemovedListener(natsWrapper.client, logger).listen();
     new CourseUpdatedListener(natsWrapper.client, logger).listen();
+    new CourseRemovedListener(natsWrapper.client, logger).listen();
+    new PhaseCreatedListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(
