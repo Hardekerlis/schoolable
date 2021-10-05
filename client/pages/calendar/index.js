@@ -11,8 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 //custom imports
 
-
-
 import Request from 'helpers/request.js'
 
 import { Prompt } from 'helpers/prompt';
@@ -27,6 +25,8 @@ const lang = language.calendar;
 
 import generateOneDaySchedule from './oneDay.js';
 import generateTimelineDay from './timeline.js'
+
+import isHoliday from './holiday.js';
 
 //css imports
 
@@ -48,10 +48,6 @@ export const getServerSideProps = async(ctx) => {
 const Calendar = ({ sType }) => {
 
   const router = useRouter();
-
-  //initialize holidays for the users contry
-  hd.init('SE');
-
 
   const typeSelectorsOptions = [
     {
@@ -162,10 +158,8 @@ const Calendar = ({ sType }) => {
 
     const selectedDayObject = today.toObject();
 
-    const selectedDay = DateTime.fromObject(selectedDayObject).minus({day: 1})
+    const selectedDay = DateTime.fromObject(selectedDayObject)
     // const selectedDay = DateTime.fromObject(selectedDayObject).set({month: 12, day: 23}).setZone("Sweden/Stockholm");
-
-    console.log(selectedDay.toObject())
 
     const selDayData = [
       {
@@ -392,8 +386,11 @@ const Calendar = ({ sType }) => {
     }
 
     const generateDayIdentifier = (date) => {
+
+      let className = (isHoliday(date)) ? `${styles.dayIdentifier} ${styles.holiday}` : styles.dayIdentifier;
+
       return (
-        <div className={styles.dayIdentifier}>
+        <div className={className}>
           <p>{date.toFormat('cccc')}</p>
           <p>{date.toLocaleString({ month: 'long', day: 'numeric' })}</p>
         </div>
@@ -555,23 +552,10 @@ const Calendar = ({ sType }) => {
           addMonthText = true;
         }
 
-        let holiday = false;
 
-        let _weekday = parseFloat(workingDay.toFormat('c'));
-
-        if(_weekday >= 6) holiday = true;
-
-        let _hdHoliday = hd.isHoliday(workingDay.startOf('day').toJSDate());
-
-        if(_hdHoliday !== false) {
-          holiday = true;
-        }
-
-        if(holiday) {
+        if(isHoliday(workingDay)) {
           //is holiday
-
           className += ` ${styles.holiday}`;
-
         }
 
 

@@ -5,7 +5,6 @@ import { DateTime, Interval } from 'luxon';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-
 import styles from './calendar.module.sass'
 
 const generateOneDaySchedule = (day, hourHeight, data, options) => {
@@ -13,8 +12,6 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
   if(!options) options = {};
 
   if(options.ghostLeft === undefined || options.ghostLeft === null) options.ghostLeft = 0;
-
-
 
   // console.log("Generating day:", day.setLocale('en-US').toLocaleString({
   //   month: 'long',
@@ -155,7 +152,7 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
     }
 
-    const className = (options.extraClass) ? `${styles.ghostEventContainer} ${options.extraClass}` : styles.ghostEventContainer;
+    let className = (options.extraClass) ? `${styles.ghostEventContainer} ${options.extraClass}` : styles.ghostEventContainer;
 
     const ghostStyle = {
       top: `${info.top}px`,

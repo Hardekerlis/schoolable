@@ -3,12 +3,13 @@ import { nanoid } from 'nanoid';
 import { DateTime, Interval } from 'luxon';
 
 import generateOneDaySchedule from './oneDay.js';
+import isHoliday from './holiday.js';
 
 import styles from './calendar.module.sass'
 
 const generateTimelineDay = (events, hourHeight, index) => {
 
-  console.log(events)
+  let holiday = isHoliday(events[0].start.startOf('day'));
 
   let hourHeightUse = 100;
 
@@ -74,12 +75,14 @@ const generateTimelineDay = (events, hourHeight, index) => {
 
   }
 
+  let dateClasses = (holiday) ? `${styles.date} ${styles.holiday}` : styles.date;
+
   let showcase = (
     <div className={styles.showcase}>
       <div style={{marginTop: `${containerTop}px`}} className={dotClassName}>
         <div className={styles.dot}></div>
       </div>
-      <div className={styles.date}>
+      <div className={dateClasses}>
         <p>{events[0].start.toFormat(`ccc`)}</p>
         <p>{events[0].start.toFormat(`LL`)}</p>
       </div>
