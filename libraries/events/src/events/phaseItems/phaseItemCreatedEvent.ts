@@ -8,5 +8,6 @@ export interface PhaseItemCreatedEvent {
     parentPhase: string;
     parentCourse: string;
     phaseItemId: string;
+    name: string;
   };
 }

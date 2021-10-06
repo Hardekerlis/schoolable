@@ -34,6 +34,7 @@ const createPhase = async (ownerId?: string) => {
   const phase = Phase.build({
     phaseId: phaseId as string,
     parentCourse: courseId,
+    name: faker.company.companyName(),
   });
 
   await phase.save();

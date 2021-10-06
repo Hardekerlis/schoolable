@@ -10,6 +10,13 @@ import Course from '../models/course';
 import Phase from '../models/phase';
 import PhaseItem from '../models/phaseItem';
 
+import { natsWrapper } from '../utils/natsWrapper';
+import logger from '../utils/logger';
+
+import PhaseItemCreatedPublisher from '../events/publishers/phaseItemCreated';
+
+// TODO: Add logger and comments
+
 const create = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const { name, phaseId, parentCourse } = req.body;
@@ -56,6 +63,18 @@ const create = async (req: Request, res: Response) => {
   });
 
   await phaseItem.save();
+
+  if (process.env.NODE_ENV !== 'test') {
+    // Publishes event to nats service
+    new PhaseItemCreatedPublisher(natsWrapper.client, logger).publish({
+      parentCourse: course.id as string,
+      parentPhase: phase.id,
+      phaseItemId: phaseItem.id,
+      name,
+    });
+
+    logger.info('Sent Nats phase item queue remove event');
+  }
 
   res.status(201).json({
     errors: false,

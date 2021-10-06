@@ -11,6 +11,13 @@ spec:
       http:
         paths:
           - pathType: Prefix
+            path: /api/submissions/*
+            backend:
+              service:
+                name: submissions-srv
+                port:
+                  number: 3000
+          - pathType: Prefix
             path: /api/phaseitems/*
             backend:
               service:

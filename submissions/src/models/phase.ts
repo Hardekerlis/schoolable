@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 interface PhaseAttributes {
-  phaseId: string;
   parentCourse: string;
+  phaseId: string;
   name: string;
 }
 
@@ -11,22 +11,22 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 }
 
 export interface PhaseDoc extends mongoose.Document {
-  phaseId: string;
   parentCourse: string;
+  phaseId: string;
   name: string;
 }
 
 const phaseSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+    },
     phaseId: {
       type: String,
       required: true,
     },
     parentCourse: {
-      type: String,
-      required: true,
-    },
-    name: {
       type: String,
       required: true,
     },

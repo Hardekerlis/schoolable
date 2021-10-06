@@ -7,5 +7,6 @@ export interface PhaseCreatedEvent {
   data: {
     phaseId: string;
     parentCourse: string;
+    name: string;
   };
 }
