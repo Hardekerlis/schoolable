@@ -22,15 +22,9 @@ import { Sidebar } from 'components'
 import language from 'helpers/lang';
 const lang = language.calendar;
 
+import { OneDaySchedule, MultipleDaySchedule, Month, Timeline, CalendarTypeSelector } from 'components'
 
-import timelineSchedule from './modules/timeline.js'
-
-import isHoliday from './modules/holiday.js';
-
-import { multipleDaySchedule, oneDaySchedule } from './modules/dayScheduleGeneration.js';
-import monthSchedule from './modules/monthGeneration.js';
-
-import { hourHeight } from './modules/misc.js';
+import { hourHeight } from 'components/calendar/misc.js'
 
 //TEMP
 import generateDayData from './modules/temp.js';
@@ -63,23 +57,11 @@ const Calendar = ({ sType }) => {
 
   const windowResize = () => {
 
-    // console.log(isFullDesktop);
-    // console.log(window.innerWidth)
-
-    //TODO: save resize listener and ensure there's only one active
-
-    // if(window.innerWidth < minDesktopWidth && isFullDesktop !== false) {
-    //   setIsFullDesktop(false);
-    // }else if(window.innerWidth > minDesktopWidth && isFullDesktop !== true) {
-    //   setIsFullDesktop(true);
-    // }
-
     if(window.innerWidth < minDesktopWidth) {
       setIsFullDesktop(false);
     }else if(window.innerWidth > minDesktopWidth) {
       setIsFullDesktop(true);
     }
-
 
   }
 
@@ -159,9 +141,20 @@ const Calendar = ({ sType }) => {
 
   let eventRenderers = [];
   let sorted = [];
-  // let completeRender;
+
+  let sevenDayData;
+  let threeDayData;
+  let oneDayData;
+
+  const _data = generateDayData(currentDay);
+  sevenDayData = _data.sevenDayData;
+  threeDayData = _data.threeDayData;
+  oneDayData = _data.oneDayData;
+
 
   const generateSchedule = () => {
+
+    //TODO: ALWAYS START ON SUNDAY
 
      if(scheduleType === 'week')  {
        //find the corresponding sunday with todays date
@@ -180,6 +173,8 @@ const Calendar = ({ sType }) => {
 
        if(scheduleType === 'week')  {
           //find the corresponding sunday with todays date
+
+          console.log("sunday")
 
           let weekday = parseFloat(day.toFormat('c'));
 
@@ -200,35 +195,28 @@ const Calendar = ({ sType }) => {
     const selectedDay = DateTime.fromObject(selectedDayObject)
     // const selectedDay = DateTime.fromObject(selectedDayObject).set({month: 12, day: 23}).setZone("Sweden/Stockholm");
 
-    const { sevenDayData, threeDayData, oneDayData } = generateDayData(selectedDay);
-
-
-    const genMultipleDays = (data) => {
-
-      let { jsx, firstEvent } = multipleDaySchedule(data, selectedDayObject);
-      sorted = [firstEvent];
-      setCompleteRender(jsx);
-
-    }
+    // const _data = generateDayData(selectedDay);
+    // sevenDayData = _data.sevenDayData;
+    // threeDayData = _data.threeDayData;
+    // oneDayData = _data.oneDayData;
 
 
     switch(scheduleType) {
       case 'oneDay':
-        let { jsx, firstEvent } = oneDaySchedule(oneDayData);
-        sorted = [firstEvent];
-        setCompleteRender(jsx);
+        setCompleteRender(OneDaySchedule(oneDayData));
         break;
       case 'threeDay':
-        genMultipleDays(threeDayData);
+        setCompleteRender(MultipleDaySchedule(threeDayData));
         break;
       case 'week':
-        genMultipleDays(sevenDayData);
+        setCompleteRender(MultipleDaySchedule(sevenDayData));
         break;
       case 'month':
-        setCompleteRender(monthSchedule(currentDay));
+        setCompleteRender(<Month date={currentDay} />);
         break;
       case 'timeline':
-        setCompleteRender(timelineSchedule(sevenDayData, selectedDayObject));
+        // setCompleteRender(Timeline(sevenDayData, selectedDayObject));
+        setCompleteRender(<Timeline data={sevenDayData} date={selectedDayObject} />);
         break;
       case 'default':
         break;
@@ -257,9 +245,15 @@ const Calendar = ({ sType }) => {
     }
 
     //scroll the calendar to the earliest event.
-    if(sorted.length === 0) return;
     if(!calendarElem.current) return;
-    calendarElem.current.scrollTop = sorted[0].start.hour * hourHeight;
+
+    calendarElem.current.scrollTop = (11 * hourHeight) - 40;
+
+    if(sorted.length === 0) return;
+
+    //40 = fullDayEventHeight + 10px padding
+    // calendarElem.current.scrollTop = (sorted[0].start.hour * hourHeight) - 40;
+
 
   }, [sorted])
 
@@ -303,83 +297,9 @@ const Calendar = ({ sType }) => {
 
   }
 
-  const scheduleTypeSelectorClicked = (value) => {
-
-    if (scheduleType === value) return;
-
-    setScheduleType(value);
-
-    router.push({
-        pathname: '/calendar',
-        query: {
-          type: value
-        }
-      },
-      undefined,
-      {
-        shallow: true
-      }
-    )
-
+  const goToToday = () => {
+    setCurrentDay(DateTime.now().startOf('day'));
   }
-
-  const typeSelectors = typeSelectorsOptions.map((obj, index) => {
-
-    const selectorClass = (scheduleType === obj.value) ? `${styles.selector} ${styles.selected}` : styles.selector;
-
-    return (
-      <div onClick={() => scheduleTypeSelectorClicked(obj.value)} key={index} className={selectorClass}>{obj.name}</div>
-    )
-  })
-
-  //handling open and closing of dots menu
-  //when not in full-desktop mode
-  let [subDesktopTypes, setSubDesktopTypes] = useState(false);
-
-  let hej = React.useRef(subDesktopTypes);
-
-  const _setSubDesktopTypes = (value) => {
-    hej.current = value;
-    setSubDesktopTypes(value);
-  }
-
-  let [subDesktopTypesClass, setSubDesktopTypesClass] = useState(styles.typeSelector);
-
-  const toggleSubDesktopTypes = () => {
-    _setSubDesktopTypes(!subDesktopTypes);
-  }
-
-  useEffect(() => {
-
-    if(!subDesktopTypes && subDesktopTypesClass !== styles.typeSelector) {
-      setSubDesktopTypesClass(styles.typeSelector);
-    }else if(subDesktopTypes && subDesktopTypesClass !== `${styles.typeSelector} ${styles.open}`) {
-      setSubDesktopTypesClass(`${styles.typeSelector} ${styles.open}`);
-    }
-
-  }, [subDesktopTypes])
-
-  const listener = (evt) => {
-    console.log(hej.current)
-
-    //TODO: probably more cross browser compatibility
-    // let evtPath = evt.path || evt.composedPath();
-
-    console.log("gpnieapijgeapjigea")
-
-    // for(let elem of evtPath) {
-    //   console.log(elem)
-    // }
-
-    // setSubDesktopTypes(false);
-  }
-
-
-  useEffect(() => {
-
-    window.addEventListener('click', listener, false)
-
-  }, [])
 
   return (
     <Layout mainClass={styles.headWrapper}>
@@ -394,36 +314,15 @@ const Calendar = ({ sType }) => {
 
               <p className={styles.pageTitle}>Calendar</p>
 
-              { isFullDesktop ?
+              <div onClick={goToToday} className={styles.todayBtn}>
+                {lang.today}
+              </div>
 
-                  <div className={styles.typeSelector}>
-                    {typeSelectors}
-                  </div>
-
-                :
-                  <>
-
-                    <div onClick={() => toggleSubDesktopTypes()} className={styles.bars}>
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                    </div>
-
-                    <div className={subDesktopTypesClass}>
-                      {typeSelectors}
-                    </div>
-
-                  </>
-
-              }
-
-
+              <CalendarTypeSelector isFullDesktop={isFullDesktop} setScheduleType={setScheduleType} scheduleType={scheduleType} types={typeSelectorsOptions} />
 
               <p className={styles.monthText}>{currentDay.toFormat('y, LLLL')}</p>
 
-              { (scheduleType !== 'month' && scheduleType !== 'timeline') &&
-                <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
-              }
+              <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
 
               { renderNavigation &&
                 <div className={styles.navigation}>
@@ -454,6 +353,10 @@ const Calendar = ({ sType }) => {
 
 
 }
+
+// { (scheduleType !== 'month' && scheduleType !== 'timeline') &&
+//   <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
+// }
 
 export default Calendar;
 

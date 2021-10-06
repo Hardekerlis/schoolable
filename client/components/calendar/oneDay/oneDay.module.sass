@@ -1,0 +1,122 @@
+@import "styles/variables"
+
+//TODO: import height instead
+$calendarHeight: 85vh
+
+.time
+  color: $white
+  font-weight: 500
+  font-size: 1rem
+  position: absolute
+  right: 10px
+  top: 10px
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.timeSmall
+  right: 5px
+  padding-left: 5px
+  top: 35px
+  width: calc(100% - 5px)
+  text-align: right
+  white-space: nowrap
+  font-size: 0.8rem
+  overflow: hidden
+  text-overflow: ellipsis
+
+
+.ghostEventContainer
+  position: relative
+  height: 100px
+  // min-height: 65px !important
+  z-index: 10
+
+
+.events
+  position: relative
+  height: 100%
+  width: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.event
+  position: absolute
+  top: 0px
+  left: 0px
+
+  background-color: $purple
+
+  border-bottom: 2px solid rgba($darkPurple2, 0.4)
+  border-right: 2px solid rgba($darkPurple2, 0.4)
+
+  //static color
+  box-shadow: 2px 2px 45px 0px rgba(#191A1C, 0.3)
+
+  width: 100%
+  height: 100%
+
+  border-radius: 5px
+
+  padding: 10px
+  padding-top: 5px
+
+  p
+    margin: 0px
+
+  .eventName
+    color: $white
+    font-size: 1.4rem
+    // width: 60%
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+  .locationWrapper
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: flex-start
+    margin-top: 3px
+
+    p
+      color: rgba($white, 0.8)
+      font-size: 1rem
+      font-weight: 400
+
+    .mapIcon
+      width: 15px
+      height: 15px
+      color: rgba($white, 0.8)
+      margin-right: 5px
+
+.fullDayContainer
+  position: sticky
+  top: 0px
+  margin-top: calc(-#{$calendarHeight}/2)
+  height: 30px
+  z-index: 35
+  width: 100%
+  display: flex
+  flex-direction: row
+
+.fullDayEvent
+  background-color: $purple
+  height: 100%
+  border-radius: 5px
+  display: flex
+  align-items: center
+  padding-left: 20px
+
+  p
+    margin: 0px
+    color: $white
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+    width: calc(100% - 20px)
+
+
+
+//

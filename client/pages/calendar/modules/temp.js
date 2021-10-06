@@ -5,13 +5,16 @@ const generateDayData = (selectedDay) => {
       title: 'Svenska 10',
       start: selectedDay.set({hour: 12}),
       end: selectedDay.set({hour: 13}),
-      location: 'PBA'
+      location: 'PBA',
+      color: '#2C6DBC',
+      fullDay: true
     },
     {
       title: 'Svenska 2',
       start: selectedDay.set({hour: 13, minute: 30}),
       end: selectedDay.set({hour: 14, minute: 37}),
-      location: 'WHOOP'
+      location: 'WHOOP',
+      fullDay: true
     },
     {
       title: 'Svenska hejhejhej 2',
@@ -198,8 +201,6 @@ const generateDayData = (selectedDay) => {
       location: 'rummet'
     }
   ];
-
-
 
   return {
     sevenDayData: selDayData.concat(selSecondDay).concat(selThirdDay).concat(selFourthDay).concat(selFifthDay).concat(selSixthDay).concat(selSeventhDay),

@@ -1,5 +1,7 @@
 @import "styles/variables"
 
+$calendarHeight: 85vh
+
 .wrapper
   display: flex
   flex-direction: row
@@ -13,37 +15,9 @@
 
     .pageTitle
       position: absolute
-      right: 20px
+      left: 0px !important
       top: 10px
       left: unset
-
-    .bars
-      position: absolute
-      left: 10px
-      width: 50px
-      height: auto
-      top: 15px
-      cursor: pointer
-      display: flex
-      flex-direction: column
-      align-items: center
-
-      div:first-of-type
-        margin-top: 0px
-
-      div
-        margin-top: 8px
-        background-color: $white
-        width: 10px
-        height: 10px
-        border-radius: 100px
-
-
-    .typeSelector
-      display: none
-
-    .typeSelector.open
-      display: flex
 
     .navigation
       .arrowContainer
@@ -75,6 +49,24 @@
   align-items: flex-start
   justify-content: flex-end
   padding-top: 10px
+
+  .todayBtn
+    padding: 14px 15px
+    border: 1px solid $purple
+    font-size: 1rem
+    font-weight: 400
+    color: $white
+    border-radius: 5px
+    user-select: none
+    cursor: pointer
+
+    position: absolute
+    left: 160px
+
+    @include transitionProp(0.2s, ease-out, background-color)
+
+  .todayBtn:hover
+    background-color: rgba($lightGrey, 0.4)
 
   .monthText
     color: $white
@@ -110,6 +102,7 @@
     margin-left: 10px
     position: absolute
     left: 10px
+    top: 15px
 
   .navigation
     margin-top: 10px
@@ -133,61 +126,10 @@
           width: 30px
           height: 30px
           color: $white
-
-
-  .typeSelector
-    border: 2px solid $purple
-    // border-right: none
-    // border-top: none
-    border-radius: 5px
-    border-bottom-left-radius: 5px
-    border-top-left-radius: 5px
-    // position: absolute
-    // top: 10px
-    // right: 0px
-    display: flex
-    flex-direction: row
-    align-items: center
-    height: 50px
-    width: calc(92px * 5)
-    position: absolute
-    left: 50%
-    margin-left: calc((-92px * 5)/2)
-
-    // padding: 0px 5px
-
-    .selector:last-of-type
-      border-right: none !important
-
-    .selector
-      width: 92px
-      padding: 5px
-      color: $white
-      border-right: 2px solid $purple
-      height: 100%
-      display: flex
-      flex-direction: row
-      align-items: center
-      justify-content: center
-      user-select: none
-      cursor: pointer
-
-      font-size: 1rem
-
-      @include transitionProp(0.2s, ease-out, background-color)
-
-    .selector:hover
-      background-color: rgba($purple, 0.2)
-
-    .selector.selected
-      background-color: rgba($purple, 0.6)
-
-
-
 .calendar
   position: absolute
   width: 100%
-  height: 85vh
+  height: $calendarHeight
   // background-color: $white
   bottom: 0px
   border-bottom-left-radius: 0px
@@ -195,331 +137,6 @@
   overflow-y: scroll
 
   display: flex
-
-.dayDivider
-  position: absolute
-  top: 0px
-  width: 2px
-  background-color: $lightGrey
-  left: 34%
-
-.events
-  position: relative
-  height: 100%
-  width: 100%
-  display: flex
-  flex-direction: column
-  align-items: center
-
-.multipleDayExtraPositioning
-  position: absolute
-  top: 0px
-  left: 0px
-  width: calc(100% - 55px - 55px)
-  margin-left: 55px
-
-  display: flex
-  flex-direction: row
-  justify-content: space-between
-
-.completeThreeEventDay
-  width: 30%
-  display: flex
-  justify-content: center
-
-.completeSevenEventDay
-  width: 13%
-  display: flex
-  justify-content: center
-
-
-.dayIdentifier.holiday
-    color: $red !important
-
-
-.dayIdentifier
-  position: fixed
-  color: $white
-  font-weight: 300
-  margin: 0px
-  margin-top: -60px
-  width: 120px
-  user-select: none
-
-  p:first-child
-    font-size: 1.4rem !important
-    font-weight: 500 !important
-
-  p
-    margin: 0px
-    text-align: center
-    font-size: 1rem
-
-.oneDayTitle
-  margin-left: -100px
-
-.multipleDayEvents
-  width: 100%
-
-.ghostEventContainer
-  position: relative
-  height: 100px
-  // min-height: 65px !important
-  z-index: 10
-
-
-.oneDaySchedule
-  width: 60%
-  width: 30%
-
-.multipleDaySchedule
-  width: 100%
-
-.oneDayContainer
-  display: flex
-  width: 100%
-  flex-direction: column
-  align-items: center
-
-.event
-  position: absolute
-  top: 0px
-  left: 0px
-
-  background-color: $purple
-
-  border-bottom: 2px solid rgba($darkPurple2, 0.4)
-  border-right: 2px solid rgba($darkPurple2, 0.4)
-
-  //static color
-  box-shadow: 2px 2px 45px 0px rgba(#191A1C, 0.3)
-
-  width: 100%
-  height: 100%
-
-  border-radius: 5px
-
-  padding: 10px
-  padding-top: 5px
-
-  p
-    margin: 0px
-
-  .time
-    color: $white
-    font-weight: 500
-    font-size: 1rem
-    position: absolute
-    right: 10px
-    top: 10px
-    white-space: nowrap
-    overflow: hidden
-    text-overflow: ellipsis
-
-  .timeSmall
-    right: 5px
-    padding-left: 5px
-    top: 35px
-    width: calc(100% - 5px)
-    text-align: right
-    white-space: nowrap
-    font-size: 0.8rem
-    overflow: hidden
-    text-overflow: ellipsis
-
-  .eventName
-    color: $white
-    font-size: 1.4rem
-    // width: 60%
-    white-space: nowrap
-    overflow: hidden
-    text-overflow: ellipsis
-
-  .locationWrapper
-    display: flex
-    flex-direction: row
-    align-items: center
-    justify-content: flex-start
-    margin-top: 3px
-
-    p
-      color: rgba($white, 0.8)
-      font-size: 1rem
-      font-weight: 400
-
-    .mapIcon
-      width: 15px
-      height: 15px
-      color: rgba($white, 0.8)
-      margin-right: 5px
-
-.timelineWrapper
-  width: 100%
-  height: auto
-  padding-top: 10px
-  // display: flex
-  // flex-direction: column
-
-.timeline:first-of-type
-  margin-top: 10px
-
-  .timelineContainer
-    margin-top: 0px !important
-
-  .dotContainer
-    margin-top: 0px !important
-
-.timeline
-  display: flex
-  width: 100%
-  flex-direction: column
-  align-items: center
-  position: relative
-
-  .showcase
-    position: absolute
-    left: 0px
-    top: 0px
-    width: 120px
-    height: 100%
-    // background-color: $white
-    border-right: 2px solid $purple
-
-    .date.holiday
-
-      p
-        color: $red !important
-
-    p
-      color: $white
-      text-align: center
-      margin: 0px
-      margin-top: 10px
-
-    p:first-of-type
-      font-size: 1.4rem
-      font-weight: 600
-
-    p:last-of-type
-      font-size: 1.2rem
-      margin-top: 5px
-
-    .dotContainer
-      position: absolute
-      top: -10px
-      right: -10px
-      border-radius: 100px
-      width: 18px
-      height: 18px
-      background-color: $purple
-      display: flex
-      justify-content: center
-      align-items: center
-
-    .dotContainer.beforeToday
-      background-color: $white
-      border: 3px solid $purple !important
-
-    .dotContainer.current
-      border: 3px solid $brightGreen !important
-      width: 24px
-      height: 24px
-      top: -13px
-      right: -13px
-
-    .dot
-      width: 100%
-      height: 100%
-      border-radius: 100px
-
-
-  .timelineSchedule
-    width: 60%
-    position: absolute !important
-
-    .time
-      font-size: 1rem !important
-
-  .timelineContainer
-    position: relative
-    display: flex
-    width: 100%
-    height: 100%
-    flex-direction: column
-    align-items: flex-start
-    // margin-top: 30px
-
-    .events
-      align-items: flex-start
-      padding-left: 160px
-
-.monthContainer
-  width: 100%
-  padding: 0px 10px
-  position: relative
-
-  .dayIds
-    position: fixed
-    display: flex
-    flex-direction: row
-    align-items: center
-    width: 100%
-    margin-top: -40px
-
-    .monthDayIdentifier
-      font-size: 1.4rem
-      width: calc((100% / 7) + 2px - 20px)
-      text-align: center
-      color: $white
-      user-select: none
-
-  .month
-    display: flex
-    flex-direction: row
-    flex-wrap: wrap
-    align-content: stretch
-    border-left: 1px solid $lightGrey
-    border-top: 1px solid $lightGrey
-    height: 100%
-
-    .holiday
-
-      .date
-        color: $red !important
-
-    .monthDay.current
-      background-color: rgba($purple, 0.4)
-
-      .date
-        // background-color: $purple
-
-    .monthDay
-      width: calc(100% / 7)
-      border-bottom: 1px solid $lightGrey
-      border-right: 1px solid $lightGrey
-      color: $white
-      display: flex
-      flex-direction: column
-      justify-content: center
-      align-items: center
-      font-size: 1.5rem
-      position: relative
-
-      .monthInDay
-        position: absolute
-        top: 5px
-        left: 5px
-        font-size: 1.2rem
-        font-weight: 300
-
-      p
-        margin: 0px
-
-      .date
-        width: 30px
-        height: 30px
-        text-align: center
-        border-radius: 50px
 
 .segment
   width: 100%
@@ -538,13 +155,6 @@
     background-color: $lightGrey
     position: absolute
     top: 0px
-
-
-
-
-
-
-
 
 
 //

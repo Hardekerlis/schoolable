@@ -1,12 +1,13 @@
-import { generateDayDividers, generateDayIdentifier, hourHeight } from './misc.js';
+import { OneDay, DayIdentifier, DayDividers } from 'components/calendar'
 
-import generateOneDaySchedule from './oneDay.js';
+import { DateTime, Interval } from 'luxon';
 
-import styles from '../calendar.module.sass';
+
+import styles from './daySchedules.module.sass';
 
 
 //generate multiple days.
-const multipleDaySchedule = (data, selectedDayObject) => {
+const MultipleDaySchedule = (data, selectedDayObject) => {
 
   //used as a reference to find out which is the earliest
   //event
@@ -64,55 +65,44 @@ const multipleDaySchedule = (data, selectedDayObject) => {
 
     const dayDate = dayData[0].start.startOf('day');
 
-    const day = generateOneDaySchedule(dayDate, hourHeight, dayData, {
-      extraClass: styles.multipleDaySchedule,
-      eventsClass: styles.multipleDayEvents,
-      sevenDaySchedule: isSevenDay
-    });
-
-    // <p className={styles.dayDateText}>{dayDate.toLocaleString({ month: 'long', day: 'numeric' })}</p>
-
     completeRenderPreparer.push(
       <div key={i} className={(isSevenDay) ? styles.completeSevenEventDay : styles.completeThreeEventDay}>
-        {generateDayIdentifier(dayDate)}
-        {day.completeRender}
+        <DayIdentifier date={dayDate} />
+        <OneDay day={dayDate} data={dayData} options={{
+          extraClass: styles.multipleDaySchedule,
+          eventsClass: styles.multipleDayEvents,
+          sevenDaySchedule: isSevenDay
+        }} />
       </div>
     )
 
   }
 
-  //generate the vertical lines that divide the days
-  let divider = generateDayDividers(Object.keys(master).length);
-
-  return {
-    jsx: (
-      <div className={styles.multipleDayExtraPositioning}>
-        {completeRenderPreparer}
-        {divider}
-      </div>
-    ),
-    firstEvent: firstEvt.evt
-  }
+  return (
+    <div className={styles.multipleDayExtraPositioning}>
+      {completeRenderPreparer}
+      <DayDividers amount={Object.keys(master).length} />
+    </div>
+  )
 }
 
-const oneDaySchedule = (data) => {
-  const oneDay = generateOneDaySchedule(data[0].start.startOf('day'), hourHeight, data, {
-    extraClass: styles.oneDaySchedule,
-  });
+const OneDaySchedule = (data) => {
+  let d = data[0].start.startOf('day');
 
-  return {
-    jsx: (
-      <div className={styles.oneDayContainer}>
-        <div className={styles.oneDayTitle}>{generateDayIdentifier(data[0].start.startOf('day'))}</div>
-        {oneDay.completeRender}
-      </div>
-    ),
-    firstEvent: oneDay.sorted[0]
-  }
+  return (
+    <div className={styles.oneDayContainer}>
+      <div className={styles.oneDayTitle}><DayIdentifier date={d}/></div>
+      <OneDay day={d} data={data} options={{
+        extraClass: styles.oneDaySchedule,
+        fullDayClass: styles.fullDayContainer
+      }} />
+    </div>
+  )
+
 }
 
 
 export {
-  multipleDaySchedule,
-  oneDaySchedule
+  MultipleDaySchedule,
+  OneDaySchedule
 }

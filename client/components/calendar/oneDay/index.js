@@ -1,13 +1,29 @@
+import React, { useEffect, useState } from 'react';
+
+import dynamic from 'next/dynamic';
+
+
 import { nanoid } from 'nanoid';
 
-import { DateTime, Interval } from 'luxon';
 
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import styles from '../calendar.module.sass'
 
-const generateOneDaySchedule = (day, hourHeight, data, options) => {
+import { DateTime, Interval } from 'luxon';
+
+import { hourHeight as HourHeight } from '../misc.js';
+
+import { DayDividers, DayIdentifier } from 'components/calendar';
+
+
+import styles from './oneDay.module.sass';
+
+const _OneDayExtra = (day, data, options) => {
+
+  const hourHeight = (options.hourHeight) ? options.hourHeight : HourHeight;
+
+  data = data.concat([])
 
   if(!options) options = {};
 
@@ -19,9 +35,28 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
   //   year: 'numeric'
   // }))
 
+  let fullDayEvents = [];
+
+  for(let o = 0; o < data.length; o++) {
+
+    if(data[o].fullDay) {
+      fullDayEvents.push({evt: data[o], index: o});
+    }
+
+  }
+
+  let _offset = 0;
+  fullDayEvents = fullDayEvents.map(obj => {
+
+    data.splice(obj.index + _offset, 1);
+    _offset++;
+
+    return (obj.evt);
+
+  })
+
   //sort every event. So the one that starts earliest
   //is on top.
-
   const sorted = data.sort((d1, d2) => {
     return d1.start.toSeconds() - d2.start.toSeconds()
   })
@@ -101,7 +136,7 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
   //create the actual event elements
   //to be used for rendering
 
-  const eventRenderers = sorted.map((obj, index) => {
+  let eventRenderers = sorted.map((obj, index) => {
 
     const info = eventInfos[index];
 
@@ -115,7 +150,7 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
     let timeTextClass = styles.time;
 
     //resizing if overlapping
-    if(info.collidedWith.length !== 0) {
+    if(info?.collidedWith.length !== 0) {
 
       enableLocation = false;
 
@@ -148,23 +183,30 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
         enableLocation = false;
       }
 
-      eventNameStyle.width = '100%'
+      eventNameStyle.width = '100%';
 
     }
 
     let className = (options.extraClass) ? `${styles.ghostEventContainer} ${options.extraClass}` : styles.ghostEventContainer;
 
     const ghostStyle = {
-      top: `${info.top}px`,
-      height: `${info.height}px`
+      top: `${info?.top}px`,
+      height: `${info?.height}px`
     }
 
     if(options.ghostLeft) ghostStyle.left = `${options.ghostLeft}px`;
     if(options.eventWidth) ghostStyle.width = `${options.eventWidth}px`;
 
+    const eventStyle = {
+      width: width,
+      left: left
+    }
+
+    if(obj.color) eventStyle.backgroundColor = obj.color;
+
     return (
       <div style={ghostStyle} className={className} key={index + nanoid(6)}>
-        <div data-index={index} style={{width: width, left: left}} className={styles.event}>
+        <div data-index={index} style={eventStyle} className={styles.event}>
           <p style={eventNameStyle} className={styles.eventName}>{obj.title}</p>
 
           { options.sevenDaySchedule ?
@@ -205,28 +247,64 @@ const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
   })
 
-  const fullRender = () => {
+  let fullDayEventsWidth = 100 / fullDayEvents.length;
+  let fullDayEventRenderers = [];
 
-    const evtsClass = (options.eventsClass) ? `${styles.events} ${options.eventsClass}` : styles.events;
+  //generate full day events
+  for(let i = 0; i < fullDayEvents.length; i++) {
 
-    return (
-      <div style={{height: `${(hourHeight * 24)}px`}} className={evtsClass}>
-        {eventRenderers}
+    const evt = fullDayEvents[i];
+
+    const evtStyle = {
+      width: `${fullDayEventsWidth}%`
+    };
+
+    if(evt.color) evtStyle.backgroundColor = evt.color;
+
+    fullDayEventRenderers.push(
+      <div key={i} style={evtStyle} className={styles.fullDayEvent}>
+        <p>{evt.title}</p>
       </div>
     )
 
   }
 
-  const completeRender = fullRender();
+  let fullDayEventContainer = (
+    <div key={"fullDayEventContainer"} className={(options.fullDayClass) ? `${styles.fullDayContainer} ${options.fullDayClass}` : styles.fullDayContainer}>
+      {fullDayEventRenderers}
+    </div>
+  )
 
-  //return all useful information
+
+  eventRenderers = eventRenderers.concat([fullDayEventContainer])
+
+
+  const evtsClass = (options.eventsClass) ? `${styles.events} ${options.eventsClass}` : styles.events;
+
   return {
+    jsx: (
+      <div style={{minHeight: `${(hourHeight * 24)}px`}} className={evtsClass}>
+        {eventRenderers}
+      </div>
+    ),
     eventRenderers,
-    sorted,
-    eventInfos,
-    completeRender
+    eventInfos
   }
 
 }
 
-export default generateOneDaySchedule;
+const _OneDay = ({ day, data, options }) => {
+  return _OneDayExtra(day, data, options).jsx;
+}
+
+//TODO: Investigate SSR
+const OneDay = dynamic(() => Promise.resolve(_OneDay), {
+  ssr: false
+})
+
+const OneDayExtra = _OneDayExtra;
+
+export {
+  OneDay,
+  OneDayExtra
+}
