@@ -16,6 +16,7 @@ import PhaseItem from '../models/phaseItem';
 import PhaseItemQueueRemovePublisher from '../events/publishers/phaseItemQueueRemove';
 
 import logger from '../utils/logger';
+import { natsWrapper } from '../utils/natsWrapper';
 
 const remove = async (req: Request, res: Response) => {
   const { currentUser } = req;
