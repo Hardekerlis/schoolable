@@ -13,37 +13,87 @@
 
     .pageTitle
       position: absolute
-      right: 20px
+      left: 0px !important
       top: 10px
       left: unset
 
     .bars
       position: absolute
-      left: 10px
-      width: 50px
+      right: 10px
+      width: 25px
       height: auto
       top: 15px
       cursor: pointer
       display: flex
       flex-direction: column
       align-items: center
+      z-index: 41
+
+      @include transition(0.2s, ease-out)
 
       div:first-of-type
         margin-top: 0px
 
       div
-        margin-top: 8px
+        margin-top: 6px
         background-color: $white
-        width: 10px
-        height: 10px
+        width: 8px
+        height: 8px
         border-radius: 100px
+        @include transitionProp(0.2s, ease-out, background-color)
 
 
     .typeSelector
       display: none
+      left: 0px
+      top: 0px
+      margin-left: 0px
+      border-top-left-radius: 0px
+      border-bottom-right-radius: 0px
+      border-top-right-radius: 0px
+      flex-direction: column
+      align-items: center
+      width: 100%
+      height: auto
+      z-index: 40
+      background-color: $grey
+      padding-top: 35px
+      border-top: none
+      border-right: none
 
-    .typeSelector.open
-      display: flex
+      .selector
+        border-right: none
+        border-bottom: 1px solid $purple
+        padding: 15px 0px
+        font-size: 1.4rem
+        padding-left: 10px
+        justify-content: flex-start
+        width: 98%
+
+      .selector.selected
+        background-color: rgba($purple, 0.4) !important
+
+      .selector:last-of-type
+        border-bottom: none
+
+    .typeSelectorWrapper
+      width: 200px
+      position: absolute
+      top: 0px
+      right: 0px
+
+    .typeSelectorWrapper.open
+
+      .bars
+        right: 15px
+        top: 0px
+        @include rotate(90)
+
+        div
+          background-color: $purple
+
+      .typeSelector
+        display: flex
 
     .navigation
       .arrowContainer
@@ -270,7 +320,7 @@
 
 .oneDaySchedule
   width: 60%
-  width: 30%
+  // width: 30%
 
 .multipleDaySchedule
   width: 100%
@@ -280,6 +330,7 @@
   width: 100%
   flex-direction: column
   align-items: center
+  margin-left: -12px
 
 .event
   position: absolute

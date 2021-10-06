@@ -22,8 +22,9 @@ import { Sidebar } from 'components'
 import language from 'helpers/lang';
 const lang = language.calendar;
 
+import { createStateListener } from 'helpers/stateEventListener.js';
 
-import timelineSchedule from './modules/timeline.js'
+import timelineSchedule from './modules/timeline.js';
 
 import isHoliday from './modules/holiday.js';
 
@@ -334,52 +335,44 @@ const Calendar = ({ sType }) => {
 
   //handling open and closing of dots menu
   //when not in full-desktop mode
-  let [subDesktopTypes, setSubDesktopTypes] = useState(false);
+  const subDesktopTypesListener = (evt, linkedState) => {
+    if(linkedState.current === false) return;
 
-  let hej = React.useRef(subDesktopTypes);
+    //TODO: probably more cross browser compatibility
+    let evtPath = evt.path || evt.composedPath();
 
-  const _setSubDesktopTypes = (value) => {
-    hej.current = value;
-    setSubDesktopTypes(value);
+    let foundBars = false;
+
+    for(let elem of evtPath) {
+      if(elem.classList?.contains(styles.bars)) {
+        foundBars = true;
+        break;
+      }
+    }
+
+    if(!foundBars) {
+      setSubDesktopTypes(false);
+    }
+
   }
 
-  let [subDesktopTypesClass, setSubDesktopTypesClass] = useState(styles.typeSelector);
+  let [ subDesktopTypes, setSubDesktopTypes ] = createStateListener(false, '*', 'click', subDesktopTypesListener);
+
+  let [subDesktopTypesClass, setSubDesktopTypesClass] = useState(styles.typeSelectorWrapper);
 
   const toggleSubDesktopTypes = () => {
-    _setSubDesktopTypes(!subDesktopTypes);
+    setSubDesktopTypes(!subDesktopTypes);
   }
 
   useEffect(() => {
 
-    if(!subDesktopTypes && subDesktopTypesClass !== styles.typeSelector) {
-      setSubDesktopTypesClass(styles.typeSelector);
-    }else if(subDesktopTypes && subDesktopTypesClass !== `${styles.typeSelector} ${styles.open}`) {
-      setSubDesktopTypesClass(`${styles.typeSelector} ${styles.open}`);
+    if(!subDesktopTypes && subDesktopTypesClass !== styles.typeSelectorWrapper) {
+      setSubDesktopTypesClass(styles.typeSelectorWrapper);
+    }else if(subDesktopTypes && subDesktopTypesClass !== `${styles.typeSelectorWrapper} ${styles.open}`) {
+      setSubDesktopTypesClass(`${styles.typeSelectorWrapper} ${styles.open}`);
     }
 
   }, [subDesktopTypes])
-
-  const listener = (evt) => {
-    console.log(hej.current)
-
-    //TODO: probably more cross browser compatibility
-    // let evtPath = evt.path || evt.composedPath();
-
-    console.log("gpnieapijgeapjigea")
-
-    // for(let elem of evtPath) {
-    //   console.log(elem)
-    // }
-
-    // setSubDesktopTypes(false);
-  }
-
-
-  useEffect(() => {
-
-    window.addEventListener('click', listener, false)
-
-  }, [])
 
   return (
     <Layout mainClass={styles.headWrapper}>
@@ -401,7 +394,7 @@ const Calendar = ({ sType }) => {
                   </div>
 
                 :
-                  <>
+                  <div className={subDesktopTypesClass}>
 
                     <div onClick={() => toggleSubDesktopTypes()} className={styles.bars}>
                       <div></div>
@@ -409,11 +402,11 @@ const Calendar = ({ sType }) => {
                       <div></div>
                     </div>
 
-                    <div className={subDesktopTypesClass}>
+                    <div className={styles.typeSelector}>
                       {typeSelectors}
                     </div>
 
-                  </>
+                  </div>
 
               }
 
@@ -421,9 +414,7 @@ const Calendar = ({ sType }) => {
 
               <p className={styles.monthText}>{currentDay.toFormat('y, LLLL')}</p>
 
-              { (scheduleType !== 'month' && scheduleType !== 'timeline') &&
-                <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
-              }
+              <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
 
               { renderNavigation &&
                 <div className={styles.navigation}>
@@ -454,6 +445,10 @@ const Calendar = ({ sType }) => {
 
 
 }
+
+// { (scheduleType !== 'month' && scheduleType !== 'timeline') &&
+//   <p className={styles.currentWeek}>{lang.shortWeekNumber}{currentDay.weekNumber}</p>
+// }
 
 export default Calendar;
 
