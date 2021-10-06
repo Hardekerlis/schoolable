@@ -10,8 +10,8 @@ import PhaseEditMenu from './phaseEditMenu';
 //import pos
 
 
-import { CourseCreation } from './teacher'
-
+import { CourseCreation } from './teacher';
+import { OneDaySchedule, MultipleDaySchedule, Month, Timeline, CalendarTypeSelector } from './calendar'
 
 export {
   FirstTimeSetup,
@@ -24,5 +24,10 @@ export {
   SampleCreationSystem,
   Phase,
   PhaseEditMenu,
+  OneDaySchedule,
+  MultipleDaySchedule,
+  Month,
+  Timeline,
+  CalendarTypeSelector
   //export pos
 }

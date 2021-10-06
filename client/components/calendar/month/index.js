@@ -1,12 +1,14 @@
-import isHoliday from './holiday.js';
+import React, { useEffect, useState } from 'react';
 
 import { DateTime, Interval } from 'luxon';
 
-import styles from '../calendar.module.sass';
+import isHoliday from '../holiday.js'
 
-const monthSchedule = (currentDay) => {
+import styles from './month.module.sass';
 
-  const firstDayOfMonth = currentDay.startOf('month');
+const Month = ({ date }) => {
+
+  const firstDayOfMonth = date.startOf('month');
 
   let firstDay = firstDayOfMonth.startOf('day');
 
@@ -20,7 +22,7 @@ const monthSchedule = (currentDay) => {
   //of the month to make all rows include 7 days
   let prefixDays = 0;
 
-  if(firstDay.toObject().month !== currentDay.toObject().month) {
+  if(firstDay.toObject().month !== date.toObject().month) {
     let interval = Interval.fromDateTimes(firstDay, firstDayOfMonth);
     prefixDays = interval.length('day');
   }
@@ -142,6 +144,7 @@ const monthSchedule = (currentDay) => {
     </div>
   )
 
+
 }
 
-export default monthSchedule;
+export default Month;

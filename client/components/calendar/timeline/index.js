@@ -1,13 +1,15 @@
+import React, { useEffect, useState } from 'react';
+
 import { nanoid } from 'nanoid';
 
 import { DateTime, Interval } from 'luxon';
 
-import generateOneDaySchedule from './oneDay.js';
-import isHoliday from './holiday.js';
+import { OneDayExtra } from 'components/calendar'
+import isHoliday from '../holiday.js';
 
-import { hourHeight } from './misc.js';
+import { hourHeight } from '../misc.js';
 
-import styles from '../calendar.module.sass'
+import styles from './timeline.module.sass';
 
 const generateTimelineDay = (events, index) => {
 
@@ -15,9 +17,10 @@ const generateTimelineDay = (events, index) => {
 
   let hourHeightUse = 100;
 
-  let schedule = generateOneDaySchedule(events[0].start.startOf('day'), hourHeightUse, events, {
+  let schedule = OneDayExtra(events[0].start.startOf('day'), events, {
     timeline: true,
-    extraClass: styles.timelineSchedule
+    extraClass: styles.timelineSchedule,
+    hourHeight: hourHeightUse
   });
 
   let { eventRenderers, eventInfos } = schedule;
@@ -30,10 +33,18 @@ const generateTimelineDay = (events, index) => {
   let marginTopSkipped = 0;
   let marginTopApplied = 0;
 
+  let fullDayEvents = [];
+
   for(let i = 0; i < eventRenderers.length; i++) {
 
     let elem = eventRenderers[i];
     let info = eventInfos[i];
+
+    if(!info) {
+      //is full day event
+      fullDayEvents.push(elem);
+      continue;
+    }
 
     elem.props.style.height = `${hourHeightUse}px`;
 
@@ -55,6 +66,12 @@ const generateTimelineDay = (events, index) => {
     if(info.collidedWith.length !== 0) {
       prevCollision = i;
     }
+
+  }
+
+  for(let i = 0; i < fullDayEvents.length; i++) {
+
+
 
   }
 
@@ -109,12 +126,12 @@ const generateTimelineDay = (events, index) => {
 
 }
 
-const timelineSchedule = (data, selectedDayObject) => {
+const Timeline = ({ data, date }) => {
 
   //master is a collection of all days with their
   //events as props
   let master = {};
-  const firstDayDate = selectedDayObject;
+  const firstDayDate = date;
 
   for(let evt of data) {
     let formatted = evt.start.toFormat('dd:MM:yyyy');
@@ -160,4 +177,4 @@ const timelineSchedule = (data, selectedDayObject) => {
 
 }
 
-export default timelineSchedule;
+export default Timeline;

@@ -71,6 +71,7 @@
     "threeDay": "Three day",
     "sevenDay": "Week",
     "month": "Month",
-    "timeline": "Timeline"
+    "timeline": "Timeline",
+    "today": "Today"
   }
 }
