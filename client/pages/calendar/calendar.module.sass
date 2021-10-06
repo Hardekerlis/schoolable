@@ -4,6 +4,58 @@
   display: flex
   flex-direction: row
 
+.wrapper.mobile
+  .header
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    padding-top: 0px
+
+    .pageTitle
+      position: absolute
+      right: 20px
+      top: 10px
+      left: unset
+
+    .bars
+      position: absolute
+      left: 10px
+      width: 50px
+      height: auto
+      top: 15px
+      cursor: pointer
+      display: flex
+      flex-direction: column
+      align-items: center
+
+      div:first-of-type
+        margin-top: 0px
+
+      div
+        margin-top: 8px
+        background-color: $white
+        width: 10px
+        height: 10px
+        border-radius: 100px
+
+
+    .typeSelector
+      display: none
+
+    .typeSelector.open
+      display: flex
+
+    .navigation
+      .arrowContainer
+        width: 280px
+        position: relative
+        margin-top: -60px
+
+        .arrow:last-of-type
+          float: right
+          position: absolute
+          right: 0px
+
 .calendarWrapper
   width: 100%
   height: 100vh
@@ -12,28 +64,95 @@
   align-items: center
   position: relative
 
-  .pageTitle
-    position: absolute
+.header
+  position: absolute
+  left: 0px
+  top: 0px
+  height: calc(15vh - 65px)
+  width: 100%
+  display: flex
+  flex-direction: row
+  align-items: flex-start
+  justify-content: flex-end
+  padding-top: 10px
+
+  .monthText
+    color: $white
+    font-size: 1.5rem
+    font-weight: 300
+    user-select: none
     margin: 0px
-    top: 12px
-    left: 12px
+    margin-left: 25px
+    margin-right: 25px
+    height: 50px
+    display: flex
+    align-items: center
+
+  .currentWeek
+    color: $white
+    margin: 0px
+    font-size: 1.5rem
+    font-weight: 300
+    user-select: none
+
+    margin-left: 25px
+    height: 50px
+    display: flex
+    align-items: center
+    margin-right: 25px
+    margin-left: 0px
+
+  .pageTitle
+    margin: 0px
     color: $white
     font-weight: 800
     font-size: 1.8rem
+    margin-left: 10px
+    position: absolute
+    left: 10px
+
+  .navigation
+    margin-top: 10px
+    margin-right: 25px
+    display: flex
+    flex-direction: column
+    align-items: center
+
+    .arrowContainer
+      display: flex
+      flex-direction: row
+      align-items: center
+
+
+      .arrow:last-of-type
+        margin-left: 20px !important
+
+      .arrow
+        cursor: pointer
+        .icon
+          width: 30px
+          height: 30px
+          color: $white
 
 
   .typeSelector
     border: 2px solid $purple
-    border-top: none
+    // border-right: none
+    // border-top: none
     border-radius: 5px
-    border-top-left-radius: 0px
-    border-top-right-radius: 0px
-    position: absolute
-    top: 0px
+    border-bottom-left-radius: 5px
+    border-top-left-radius: 5px
+    // position: absolute
+    // top: 10px
+    // right: 0px
     display: flex
     flex-direction: row
     align-items: center
     height: 50px
+    width: calc(92px * 5)
+    position: absolute
+    left: 50%
+    margin-left: calc((-92px * 5)/2)
 
     // padding: 0px 5px
 
@@ -41,6 +160,7 @@
       border-right: none !important
 
     .selector
+      width: 92px
       padding: 5px
       color: $white
       border-right: 2px solid $purple
@@ -49,7 +169,6 @@
       flex-direction: row
       align-items: center
       justify-content: center
-      min-width: 90px
       user-select: none
       cursor: pointer
 
@@ -145,7 +264,7 @@
 .ghostEventContainer
   position: relative
   height: 100px
-  min-height: 65px !important
+  // min-height: 65px !important
   z-index: 10
 
 
@@ -237,6 +356,7 @@
 .timelineWrapper
   width: 100%
   height: auto
+  padding-top: 10px
   // display: flex
   // flex-direction: column
 
@@ -333,19 +453,6 @@
       align-items: flex-start
       padding-left: 160px
 
-
-
-
-
-.monthText
-  position: absolute
-  color: $white
-  top: 30px
-  left: 20px
-  font-size: 1.5rem
-  font-weight: 300
-  user-select: none
-
 .monthContainer
   width: 100%
   padding: 0px 10px
@@ -432,40 +539,6 @@
     position: absolute
     top: 0px
 
-.currentWeek
-  color: $white
-  margin: 0px
-  margin-bottom: 5px
-  font-size: 1.5rem
-  position: absolute
-  left: 10px
-  top: calc(10vh - 0.25rem)
-  font-weight: 300
-  user-select: none
-
-.navigation
-  position: absolute
-  right: 20px
-  top: 20px
-  display: flex
-  flex-direction: column
-  align-items: center
-
-  .arrowContainer
-    display: flex
-    flex-direction: row
-    align-items: center
-
-
-    .arrow:last-of-type
-      margin-left: 20px !important
-
-    .arrow
-      cursor: pointer
-      .icon
-        width: 30px
-        height: 30px
-        color: $white
 
 
 

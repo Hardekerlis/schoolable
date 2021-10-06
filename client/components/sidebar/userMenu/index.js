@@ -54,7 +54,7 @@ const UserMenu = ({ open, setUserMenuOpen }) => {
 
     if(!isOpen) return;
 
-    //probably more cross browser compatibility
+    //TODO: probably more cross browser compatibility
     let evtPath = evt.path || evt.composedPath();
 
     let match = false;

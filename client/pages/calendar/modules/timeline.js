@@ -5,9 +5,11 @@ import { DateTime, Interval } from 'luxon';
 import generateOneDaySchedule from './oneDay.js';
 import isHoliday from './holiday.js';
 
-import styles from './calendar.module.sass'
+import { hourHeight } from './misc.js';
 
-const generateTimelineDay = (events, hourHeight, index) => {
+import styles from '../calendar.module.sass'
+
+const generateTimelineDay = (events, index) => {
 
   let holiday = isHoliday(events[0].start.startOf('day'));
 
@@ -107,4 +109,55 @@ const generateTimelineDay = (events, hourHeight, index) => {
 
 }
 
-export default generateTimelineDay;
+const timelineSchedule = (data, selectedDayObject) => {
+
+  //master is a collection of all days with their
+  //events as props
+  let master = {};
+  const firstDayDate = selectedDayObject;
+
+  for(let evt of data) {
+    let formatted = evt.start.toFormat('dd:MM:yyyy');
+
+    //calculate a number (sum) which is used for
+    //sorting the dates. e.g 24 sept will be after 23 sept
+    let nums = formatted.split(':');
+    let sum = 0;
+
+    for(let t = 0; t < nums.length; t++) {
+      let num = nums[t];
+      //MIGHT HAVE TO BE TWEAKED
+      sum += parseFloat(num) * (Math.pow(t+1, 5));
+    }
+
+    if(!master.hasOwnProperty(sum)) {
+      master[sum] = [];
+    }
+
+    master[sum].push(evt);
+
+  }
+
+  // console.log(master)
+
+  let dayRenders = [];
+
+  for(let i = 0; i < 4; i++) {
+    let day = master[Object.keys(master)[i]];
+
+    // console.log(day)
+
+    dayRenders.push(generateTimelineDay(day, i));
+
+
+  }
+
+  return(
+    <div className={styles.timelineWrapper}>
+      {dayRenders}
+    </div>
+  )
+
+}
+
+export default timelineSchedule;

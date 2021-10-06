@@ -5,7 +5,7 @@ import { DateTime, Interval } from 'luxon';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import styles from './calendar.module.sass'
+import styles from '../calendar.module.sass'
 
 const generateOneDaySchedule = (day, hourHeight, data, options) => {
 
