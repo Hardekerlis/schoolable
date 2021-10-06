@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: submissions-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: submissions-mongo
+  template:
+    metadata:
+      labels:
+        app: submissions-mongo
+    spec:
+      containers:
+        - name: submissions-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: submissions-mongo-srv
+spec:
+  selector:
+    app: submissions-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

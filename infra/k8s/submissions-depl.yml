@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: submissions-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: submissions
+  template:
+    metadata:
+      labels:
+        app: submissions
+    spec:
+      containers:
+        - name: submissions
+          image: eu.gcr.io/schoolable-platform/submissions
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: B2_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: backblaze-api-token
+                  key: B2_API_TOKEN
+            - name: B2_API_TOKEN_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backblaze-api-token-id
+                  key: B2_API_TOKEN_ID
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # this is refering to the pods name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: submissions-srv
+spec:
+  selector:
+    app: submissions
+  ports:
+    - name: submissions
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
