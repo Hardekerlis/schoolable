@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { BadRequestError } from '@gustafdahl/schoolable-errors';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
-const check = (req: Request, res: Response) => {
+const check = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
