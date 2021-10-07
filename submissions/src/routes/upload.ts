@@ -93,8 +93,6 @@ const upload = async (req: Request, res: Response) => {
     parentCourse,
   });
 
-  // console.log(phaseItem, phaseItemId, parentPhase, parentCourse);
-
   if (!phaseItem) {
     throw new NotFoundError();
   }
@@ -112,13 +110,19 @@ const upload = async (req: Request, res: Response) => {
         bucketId: buckets[0].bucketId,
       });
 
+      const fileName = `${phaseItemId}/${currentUser.name.first}-${currentUser.name.last}/${file.originalname}`;
+
       console.log(uploadUrl);
       console.log(authorizationToken);
+      console.log(fileName);
 
-      // const asd = await b2.uploadFile({
-      //   uploadUrl,
-      //   authorizationToken,
-      // });
+      const fileInfo = await b2.uploadFile({
+        uploadUrl: uploadUrl,
+        uploadAuthToken: authorizationToken,
+        fileName: fileName,
+        data: file.buffer,
+        mime: file.mimetype,
+      });
     }
 
     res.status(202).send();

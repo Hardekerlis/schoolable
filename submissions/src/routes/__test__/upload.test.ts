@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import fs from 'fs';
 
 import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
 
 import Course from '../../models/course';
 import Phase from '../../models/phase';

@@ -36,7 +36,7 @@ const fetchMany = async (req: Request, res: Response) => {
     });
   }
 
-  res.status(200).send({
+  res.status(200).json({
     errors: false,
     message: lang.foundCourses,
     courses: courses,
