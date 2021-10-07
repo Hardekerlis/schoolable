@@ -2,28 +2,28 @@
 import language from 'helpers/lang';
 const lang = language.handleErrorsServer;
 
-const checkSpecificStatuses = (code) => {
-
-  if(code === 404) {
-
-    //will make the getServerSideProps caller to return
-    //propsContainer. Therefore redirect.
-    return {
-      isProps: true,
-      propsContainer: {
-        redirect: {
-          destination: '/pageNotFound',
-          permanent: false,
-        }
-      }
-    }
-
-
-  }
-
-  return false;
-
-}
+// const checkSpecificStatuses = (code) => {
+//
+//   if(code === 404) {
+//
+//     //will make the getServerSideProps caller to return
+//     //propsContainer. Therefore redirect.
+//     return {
+//       isProps: true,
+//       propsContainer: {
+//         redirect: {
+//           destination: '/pageNotFound',
+//           permanent: false,
+//         }
+//       }
+//     }
+//
+//
+//   }
+//
+//   return false;
+//
+// }
 
 const handleErrors = (successStatus, response) => {
 
@@ -31,12 +31,9 @@ const handleErrors = (successStatus, response) => {
 
   let errors;
 
-  if(status !== successStatus) {
+  if(status !== successStatus && status !== 404) {
 
     //handle specific status code
-
-    errors = checkSpecificStatuses(status)
-    if(errors.isProps) return errors;
 
     console.log("ERRORS:", errors)
 

@@ -7,7 +7,7 @@ import styles from './daySchedules.module.sass';
 
 
 //generate multiple days.
-const MultipleDaySchedule = (data, selectedDayObject) => {
+const MultipleDaySchedule = (data, firstHour) => {
 
   //used as a reference to find out which is the earliest
   //event
@@ -16,7 +16,6 @@ const MultipleDaySchedule = (data, selectedDayObject) => {
   //master is a collection of all days with their
   //events as props
   let master = {};
-  const firstDayDate = selectedDayObject;
 
   for(let evt of data) {
     let formatted = evt.start.toFormat('dd:MM:yyyy');
@@ -78,6 +77,8 @@ const MultipleDaySchedule = (data, selectedDayObject) => {
 
   }
 
+  firstHour.current = firstEvt.evt.start.toObject().hour;
+
   return (
     <div className={styles.multipleDayExtraPositioning}>
       {completeRenderPreparer}
@@ -86,7 +87,7 @@ const MultipleDaySchedule = (data, selectedDayObject) => {
   )
 }
 
-const OneDaySchedule = (data) => {
+const OneDaySchedule = (data, firstHour) => {
   let d = data[0].start.startOf('day');
 
   return (
@@ -95,7 +96,7 @@ const OneDaySchedule = (data) => {
       <OneDay day={d} data={data} options={{
         extraClass: styles.oneDaySchedule,
         fullDayClass: styles.fullDayContainer
-      }} />
+      }} firstHour={firstHour} />
     </div>
   )
 

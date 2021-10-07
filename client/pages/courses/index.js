@@ -32,9 +32,7 @@ import styles from './courses.module.sass';
 
 export const getServerSideProps = async(ctx) => {
 
-  const { sessionId } = getCookies(ctx);
-
-  let request = new Request('/api/course').get().json().cookie({sessionId});
+  let request = new Request('/api/course/fetch').post().json().ctx(ctx);
   let res = await request.send();
 
   // console.log(res)
@@ -42,7 +40,7 @@ export const getServerSideProps = async(ctx) => {
   let courses = [];
 
   const serverErrors = handleErrors(200, res);
-  if(serverErrors.isProps) return serverErrors.propsContainer;
+  // if(serverErrors.isProps) return serverErrors.propsContainer;
 
 
   if(serverErrors === false) {
@@ -78,8 +76,10 @@ const Courses = ({ courses, serverErrors }) => {
 
   const fetchCourses = async() => {
 
-    let request = new Request('/api/course').get().json();
+    let request = new Request('/api/course/fetch').post().json();
     let response = await request.send();
+
+    // console.log(response)
 
     if(response.errors === false) {
 
@@ -108,7 +108,7 @@ const Courses = ({ courses, serverErrors }) => {
           </div>
           <div className={styles.textContainer}>
             <p className={styles.name}>{courseName}</p>
-            <p className={styles.author}>{lang.courses.authorPrefix} {course.owner.name}</p>
+            <p className={styles.author}>{lang.courses.authorPrefix} {`${course.owner.name.first} ${course.owner.name.last}`}</p>
           </div>
         </div>
       )

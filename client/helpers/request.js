@@ -3,10 +3,10 @@ class Request {
   constructor(url, body) {
 
     if((typeof window) == "undefined" || (typeof window) == undefined) {
-      // this.url = 'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' + url;
-      this.url = 'http://dev.schoolable.se' + url;
-
+      this.url = 'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' + url;
+      this.isServer = true;
     }else {
+      this.isServer = false;
       this.url = window.location.origin + url;
     }
 
@@ -19,6 +19,8 @@ class Request {
     this.method = 'POST';
 
     this.cookies = '';
+
+    this.extraHeaders = {};
 
   }
 
@@ -54,6 +56,17 @@ class Request {
     return this;
   }
 
+  headers(headers) {
+    this.extraHeaders = Object.assign(this.extraHeaders, headers);
+    // this.extraHeaders = headers;
+    return this;
+  }
+
+  ctx(ctx) {
+    this.headers(ctx.req.headers);
+    return this;
+  }
+
   cookie(obj) {
 
     let text = "";
@@ -74,13 +87,28 @@ class Request {
 
     let response;
 
+    let headers = {
+      'Content-Type': this.contentType,
+      'Cookie': this.cookies,
+    }
+
+
+    if(this.isServer) headers.Host = 'dev.schoolable.se';
+
+    headers = Object.assign(headers, this.extraHeaders);
+
+    // console.log(headers);
+
+
+    // for(let head in this.extraHeaders) {
+    //   headers[head] = this.extraHeaders[head];
+    // }
+
+
     const res = await fetch(this.url, {
       method: this.method,
       body: this.body,
-      headers: {
-        'Content-Type': this.contentType,
-        'Cookie': this.cookies
-      },
+      headers,
       credentials: "include"
     })
 

@@ -1,0 +1,22 @@
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdate_N_E"]("pages/courses/page",{
+
+/***/ "./helpers/lang/ENG.json":
+/*!*******************************!*\
+  !*** ./helpers/lang/ENG.json ***!
+  \*******************************/
+/***/ (function(module) {
+
+"use strict";
+module.exports = JSON.parse('{"sampleCreationSystem":{"noCurrentItems":"Create one to start!","exit":"Exit","create":"Create","itemNameSuffix":"name"},"courses":{"sortBy":"Sort by:","noCoursesFound":"No courses found.","noCoursesFoundHelper":"All of your courses will appear here once they have been created!","courseItemName":"Course","noCoursesOwned":"You currently don’t own any courses.","courseCreated":"Course created!","authorPrefix":"By:","sortDefaultName":"Default"},"coursePage":{"phaseCreated":"Phase created!","descriptionTitle":"Course description","editCourse":"Edit course","phaseItemName":"Phase","courseMissingPhases":"This course does currently not have any phases.","editPhaseText":"Edit this phase","phaseNameEdit":"Edit phase name:","phases":"Course phases","coursePageTitleEditing":"Editing: "},"courseMenu":{"overview":"Overview"},"sidebar":{"user":"User","home":"Home","courses":"Courses","assignments":"Assignments","schedule":"Schedule","hiya":"Hiya!","logout":"Logout"},"firstTimeSetup":{"completeOption":"Please complete the option.","pageTitle":"First-time setup","previous":"Previous","next":"Next"},"handleErrorsServer":{"unexpected":"An unexpected error occurred. Please try again later."},"login":{"pageTitle":"Login","teacher":"Teacher","student":"Student","legalGuardian":"Legal guardian","loginBtn":"Login","unexpected":"Unexpected error. Please login again.","email":"Email","password":"Password"}}');
+
+/***/ })
+
+});
