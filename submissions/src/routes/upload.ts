@@ -127,16 +127,6 @@ const upload = async (req: Request, res: Response) => {
 
     res.status(202).send();
   } else throw new UnexpectedError();
-  // let uploadUrl = await b2.getUploadUrl({
-  //   bucketId: response.data.buckets[0].bucketId,
-  // });
-  //
-  // const res1 = await b2.uploadFile({
-  //   uploadUrl: uploadUrl.data.uploadUrl,
-  //   uploadAuthToken: uploadUrl.data.authorizationToken,
-  //   fileName: 'test',
-  //   data: req.files[0]?.buffer,
-  // });
 };
 
 export default upload;
