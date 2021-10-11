@@ -1,6 +1,7 @@
 import request from 'supertest';
 import faker from 'faker';
 import { app } from '../../app';
+import mongoose from 'mongoose';
 
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 

@@ -8,6 +8,7 @@ import { CONFIG } from '@gustafdahl/schoolable-utils';
 import { DateTime } from 'luxon';
 
 import Course from '../models/course';
+import User from '../models/user';
 
 import CourseQueueRemovePublisher from '../events/publishers/courseQueueRemove';
 import { natsWrapper } from '../utils/natsWrapper';
@@ -26,6 +27,10 @@ const remove = async (req: Request, res: Response) => {
   logger.debug('Looking up course');
   const course = await Course.findById(courseId);
 
+  const user = await User.findOne({ userId: currentUser!.id });
+
+  if (!user) throw new NotAuthorizedError();
+
   if (!course) {
     logger.debug('No course found');
     throw new BadRequestError(lang.noCourse);
@@ -36,7 +41,7 @@ const remove = async (req: Request, res: Response) => {
     throw new BadRequestError(lang.alreadyUpForDeletion);
   }
 
-  if (course.owner.toString() !== currentUser?.id) {
+  if (course.owner.toString() !== user?.id) {
     logger.debug("User doesn't own course and therefor can't remove it");
     throw new NotAuthorizedError();
   }

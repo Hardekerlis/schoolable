@@ -6,7 +6,7 @@ const check = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
-  console.log(currentUser);
+
   if (!currentUser) {
     throw new BadRequestError(lang.notLoggedIn);
   }

@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 import { CoursePageDoc } from './coursePage';
+import { UserDoc } from './user';
 
 interface CourseAttributes {
   name: string; // Name of the course
-  owner: string; // Teacher whom owns the course
+  owner: UserDoc; // Teacher whom owns the course
   coursePage: CoursePageDoc; // The course page. Fetched when course is entered
-  admins?: string[];
-  students?: string[]; // user ids - subdocuments?
+  admins?: UserDoc[];
+  students?: UserDoc[]; // user ids - subdocuments?
   locked?: boolean; // Is the course locked but visible to students
   unlockOn?: Date; // What date should the course be unlocked
   hidden?: boolean; // Is the course visible to students
@@ -24,10 +25,10 @@ interface CourseModel extends mongoose.Model<CourseDoc> {
 
 export interface CourseDoc extends mongoose.Document {
   name: string; // Name of the course
-  owner: string; // Teacher whom owns the course
+  owner: UserDoc; // Teacher whom owns the course
   coursePage: CoursePageDoc; // The course page. Fetched when course is entered
-  admins?: string[];
-  students?: string[]; // user ids - subdocuments?
+  admins?: UserDoc[];
+  students?: UserDoc[]; // user ids - subdocuments?
   locked?: boolean; // Is the course locked but visible to students
   unlockOn?: Date; // What date should the course be unlocked
   hidden?: boolean; // Is the course visible to students
@@ -47,15 +48,23 @@ const courseSchema = new mongoose.Schema(
     },
     students: [
       {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
         default: '',
       },
     ],
     owner: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users',
       required: true,
     },
-    admins: [{ type: String, default: '' }],
+    admins: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        default: '',
+      },
+    ],
     coursePage: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'coursePages',

@@ -14,6 +14,8 @@ import { UserPayload } from '@gustafdahl/schoolable-interfaces';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 
+import b2 from '../utils/b2';
+
 const b2Keys = JSON.parse(
   fs.readFileSync(
     __dirname.substring(0, __dirname.indexOf(`/src`)) +

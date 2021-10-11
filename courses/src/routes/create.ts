@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { ActionTypes } from '@gustafdahl/schoolable-enums';
-import { UnexpectedError } from '@gustafdahl/schoolable-errors';
+import {
+  UnexpectedError,
+  NotAuthorizedError,
+} from '@gustafdahl/schoolable-errors';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+// import { CONFIG } from '@gustafdahl/schoolable-utils';
 
 import CoursePage from '../models/coursePage';
 import Course from '../models/course';
+import User from '../models/user';
 
 import CourseCreatedPublisher from '../events/publishers/courseCreated';
 import { natsWrapper } from '../utils/natsWrapper';
@@ -22,7 +26,17 @@ const create = async (req: Request, res: Response) => {
 
   const ownerId = currentUser?.id;
 
-  logger.info('Building coursePage');
+  logger.debug('Looking up if owner user exists');
+  const ownerUser = await User.findOne({ userId: ownerId });
+
+  if (!ownerUser) {
+    logger.info('No user found');
+    throw new NotAuthorizedError();
+  }
+
+  logger.debug('Found user');
+
+  logger.debug('Building coursePage');
   const coursePage = CoursePage.build({
     menu: [
       {
@@ -78,24 +92,22 @@ const create = async (req: Request, res: Response) => {
     ],
   });
 
-  logger.info('Trying to save coursePage');
+  logger.debug('Trying to save coursePage');
   try {
     await coursePage.save();
-    logger.info('Successfully saved coursePage');
+    logger.debug('Successfully saved coursePage');
 
-    logger.info('Building course');
+    logger.debug('Building course');
     const course = Course.build({
       name: name as string,
-      owner: ownerId!,
+      owner: ownerUser,
       coursePage: coursePage,
     });
 
-    logger.info('Trying to save course');
+    logger.debug('Trying to save course');
     await course.save();
 
-    logger.info('Successfully saved course');
-
-    logger.info('Course successfully created');
+    logger.debug('Successfully saved course');
 
     // Couldnt get nats mock to work
     // Code is only ran if its not test environment
@@ -104,13 +116,13 @@ const create = async (req: Request, res: Response) => {
       new CourseCreatedPublisher(natsWrapper.client, logger).publish({
         courseId: course.id as string,
         name: course.name,
-        owner: course.owner,
+        owner: course.owner.userId,
       });
 
       logger.info('Sent Nats course created event');
     }
 
-    logger.info('Responding user');
+    logger.info('Course successfully created. Responding user');
     res.status(201).json({
       errors: false,
       message: lang.createdCourse,

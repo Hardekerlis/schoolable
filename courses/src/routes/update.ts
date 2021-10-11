@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { NotAuthorizedError } from '@gustafdahl/schoolable-errors';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
+import User from '../models/user';
 import Course from '../models/course';
 import CoursePage from '../models/coursePage';
 import logger from '../utils/logger';
@@ -25,13 +26,19 @@ const update = async (req: Request, res: Response) => {
   // Current user is always defined here
   if (!currentUser) throw new NotAuthorizedError();
 
+  const user = await User.findOne({ userId: currentUser.id });
+
+  if (!user) throw new NotAuthorizedError();
+
   logger.debug('Looking up course and trying to update it');
   const course = await Course.findOneAndUpdate(
     {
       // Need course id to be correcnt and current users id to be in owner key or in admins array
       $and: [
         { id: courseId },
-        { $or: [{ owner: currentUser.id }, { admins: currentUser.id }] },
+        // this is supposed to be user.id and not user.userId.
+        // This is because owner and admins are subdocuments of user
+        { $or: [{ owner: user.id }, { admins: user.id }] },
       ],
     },
     data,

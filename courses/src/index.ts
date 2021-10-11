@@ -6,6 +6,7 @@ import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import { RemoveCourseListener } from './events/listeners';
 import { PhaseCreatedListener } from './events/listeners';
+import { UserCreatedListener } from './events/listeners';
 import mongoose from 'mongoose';
 
 const startServer = async () => {
@@ -41,6 +42,7 @@ const startServer = async () => {
 
     new RemoveCourseListener(natsWrapper.client, logger).listen();
     new PhaseCreatedListener(natsWrapper.client, logger).listen();
+    new UserCreatedListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

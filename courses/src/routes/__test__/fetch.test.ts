@@ -92,6 +92,18 @@ describe('Fetch many courses. CoursePage is not populated in this case', () => {
 
     expect(res.body.courses).toHaveLength(1);
   });
+
+  it('Course owner name is defined', async () => {
+    const { cookie } = await createCourse();
+
+    const res = await request(app)
+      .post(getPath())
+      .set('Cookie', cookie)
+      .send({})
+      .expect(200);
+
+    expect(res.body.courses[0].owner.name).toBeDefined();
+  });
 });
 
 describe('Fetch a single course. CoursePage is populated in this case', () => {
@@ -138,5 +150,17 @@ describe('Fetch a single course. CoursePage is populated in this case', () => {
       .expect(200);
 
     expect(res.body.course.coursePage.menu[0]).toBeDefined();
+  });
+
+  it('If owner name should be included in owner key', async () => {
+    const { cookie, course } = await createCourse();
+
+    const res = await request(app)
+      .get(getPath(course.id))
+      .set('Cookie', cookie)
+      .send()
+      .expect(200);
+
+    expect(res.body.course.owner.name).toBeDefined();
   });
 });

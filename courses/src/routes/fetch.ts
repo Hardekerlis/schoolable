@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { NotAuthorizedError } from '@gustafdahl/schoolable-errors';
 
+import User from '../models/user';
 import Course from '../models/course';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
@@ -13,17 +14,18 @@ const fetchMany = async (req: Request, res: Response) => {
   // TODO: Might need to set limit to fetch courses.
   if (!currentUser) throw new NotAuthorizedError();
 
+  const user = await User.findOne({ userId: currentUser.id });
+
+  if (!user) throw new NotAuthorizedError();
+
   let courses;
+  // FIXME: This needs to be fixed. owner, admins and students keys have been changed from type string to UserDoc
   if (currentUser.userType !== UserTypes.Admin) {
     courses = await Course.find({
-      $or: [
-        { owner: currentUser.id },
-        { students: currentUser.id },
-        { admins: currentUser.id },
-      ],
-    });
+      $or: [{ owner: user.id }, { students: user.id }, { admins: user.id }],
+    }).populate('owner');
   } else if (currentUser.userType === UserTypes.Admin) {
-    courses = await Course.find({});
+    courses = await Course.find({}).populate('owner');
   } else {
     throw new NotAuthorizedError();
   }
@@ -52,22 +54,26 @@ const fetchOne = async (req: Request, res: Response) => {
 
   if (!currentUser) throw new NotAuthorizedError();
 
+  const user = await User.findOne({ userId: currentUser.id });
+
+  if (!user) throw new NotAuthorizedError();
+
   let course;
   if (currentUser.userType !== UserTypes.Admin) {
     course = await Course.findOne({
       $and: [
         { id: courseId },
         {
-          $or: [
-            { owner: currentUser.id },
-            { students: currentUser.id },
-            { admins: currentUser.id },
-          ],
+          $or: [{ owner: user.id }, { students: user.id }, { admins: user.id }],
         },
       ],
-    }).populate('coursePage');
+    })
+      .populate('coursePage')
+      .populate('owner');
   } else if (currentUser.userType === UserTypes.Admin) {
-    course = await Course.findById(courseId).populate('coursePage');
+    course = await Course.findById(courseId)
+      .populate('coursePage')
+      .populate('owner');
   } else {
     throw new NotAuthorizedError();
   }

@@ -3,15 +3,11 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import path from 'path';
-import {
-  CONFIG,
-  ConfigHandler,
-  winstonTestSetup,
-} from '@gustafdahl/schoolable-utils';
+import { CONFIG, winstonTestSetup } from '@gustafdahl/schoolable-utils';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 import { UserPayload } from '@gustafdahl/schoolable-interfaces';
 import jwt from 'jsonwebtoken';
+import User from '../models/user';
 
 import { app } from '../app';
 app; // Load env variables in app
@@ -60,22 +56,45 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
+const createUser = async (
+  userType: UserTypes,
+  email: string,
+  userId: string,
+) => {
+  const name = {
+    first: faker.name.firstName(),
+    last: faker.name.lastName(),
+  };
+
+  const user = User.build({
+    userId,
+    email,
+    userType,
+    name,
+  });
+
+  await user.save();
+
+  return user;
+};
+
 global.getAuthCookie = async (
   userType?: UserTypes,
   email?: string,
+  userId?: string,
 ): Promise<string[]> => {
   if (!userType) userType = UserTypes.Teacher;
   if (!email) email = faker.internet.email();
+  if (!userId) userId = new mongoose.Types.ObjectId().toHexString();
+
+  const user = await createUser(userType, email, userId);
 
   const payload: UserPayload = {
-    id: new mongoose.Types.ObjectId().toHexString(),
-    email,
-    userType,
+    id: user.userId,
+    email: user.email,
+    userType: user.userType,
     lang: 'ENG',
-    name: {
-      first: faker.name.firstName(),
-      last: faker.name.lastName(),
-    },
+    name: user.name,
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);

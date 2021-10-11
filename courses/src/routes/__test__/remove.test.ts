@@ -65,7 +65,7 @@ it('Returns a 200 on successful deletion', async () => {
     .expect(200);
 });
 
-it('upForDeletion is true', async () => {
+it('deletion.isUpForDeletion is true', async () => {
   const { course, cookie } = await createCourse();
 
   const res = await request(app)
@@ -74,5 +74,5 @@ it('upForDeletion is true', async () => {
     .send({ courseId: course.id })
     .expect(200);
 
-  expect(res.body.course.upForDeletion).toEqual(true);
+  expect(res.body.course.deletion.isUpForDeletion).toEqual(true);
 });

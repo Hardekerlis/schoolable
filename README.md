@@ -18,5 +18,7 @@ kubectl create secret generic backblaze-api-token-id --from-literal=B2_API_TOKEN
 
 To run submission tests please create a file called backblaze.secret.json in root dir of submissions with your api keys
 
+https://www.backblaze.com/b2/docs/server_side_encryption.html
+
 #### Notes
 Use multer for file uploads
