@@ -1,6 +1,6 @@
 //lib imports
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -134,58 +134,34 @@ const Calendar = ({ sType }) => {
   let [currentDay, setCurrentDay] = useState(DateTime.now().startOf('day'));
   let [completeRender, setCompleteRender] = useState();
   let [renderNavigation, setRenderNavigation] = useState(true);
+  let firstHour = React.useRef(0);
 
   let calendarElem = React.useRef();
-
-  let navigated = false;
-
-  let eventRenderers = [];
-  let sorted = [];
 
   let sevenDayData;
   let threeDayData;
   let oneDayData;
 
-  const _data = generateDayData(currentDay);
-  sevenDayData = _data.sevenDayData;
-  threeDayData = _data.threeDayData;
-  oneDayData = _data.oneDayData;
-
-
   const generateSchedule = () => {
 
-    //TODO: ALWAYS START ON SUNDAY
+    //currently depending on which day is loaded when.
+    //should not be a problem when temp.js is deleted.
+    const getCurrentDay = () => {
+     let day = currentDay;
 
      if(scheduleType === 'week')  {
-       //find the corresponding sunday with todays date
-        let day = currentDay.startOf('day');
+        //find the corresponding sunday with todays date
 
         let weekday = parseFloat(day.toFormat('c'));
 
         if(weekday != 7) {
-          day = day.minus({ day: weekday });
+          day = day.minus({ day: weekday }).startOf('day');
         }
 
      }
 
-     const getCurrentDay = () => {
-       let day = currentDay;
-
-       if(scheduleType === 'week')  {
-          //find the corresponding sunday with todays date
-
-          console.log("sunday")
-
-          let weekday = parseFloat(day.toFormat('c'));
-
-          if(weekday != 7) {
-            day = day.minus({ day: weekday }).startOf('day');
-          }
-
-       }
-
-       return day;
-     }
+     return day;
+    }
 
 
     const today = getCurrentDay();
@@ -193,29 +169,27 @@ const Calendar = ({ sType }) => {
     const selectedDayObject = today.toObject();
 
     const selectedDay = DateTime.fromObject(selectedDayObject)
-    // const selectedDay = DateTime.fromObject(selectedDayObject).set({month: 12, day: 23}).setZone("Sweden/Stockholm");
 
-    // const _data = generateDayData(selectedDay);
-    // sevenDayData = _data.sevenDayData;
-    // threeDayData = _data.threeDayData;
-    // oneDayData = _data.oneDayData;
+    const _data = generateDayData(selectedDay);
+    sevenDayData = _data.sevenDayData;
+    threeDayData = _data.threeDayData;
+    oneDayData = _data.oneDayData;
 
 
     switch(scheduleType) {
       case 'oneDay':
-        setCompleteRender(OneDaySchedule(oneDayData));
+        setCompleteRender(OneDaySchedule(oneDayData, firstHour));
         break;
       case 'threeDay':
-        setCompleteRender(MultipleDaySchedule(threeDayData));
+        setCompleteRender(MultipleDaySchedule(threeDayData, firstHour));
         break;
       case 'week':
-        setCompleteRender(MultipleDaySchedule(sevenDayData));
+        setCompleteRender(MultipleDaySchedule(sevenDayData, firstHour));
         break;
       case 'month':
         setCompleteRender(<Month date={currentDay} />);
         break;
       case 'timeline':
-        // setCompleteRender(Timeline(sevenDayData, selectedDayObject));
         setCompleteRender(<Timeline data={sevenDayData} date={selectedDayObject} />);
         break;
       case 'default':
@@ -237,6 +211,9 @@ const Calendar = ({ sType }) => {
   }, [currentDay, scheduleType])
 
   useEffect(() => {
+    if(!completeRender) return;
+
+    if(scheduleType === 'month') return;
 
     if(scheduleType === 'timeline') {
       if(!calendarElem.current) return;
@@ -247,15 +224,12 @@ const Calendar = ({ sType }) => {
     //scroll the calendar to the earliest event.
     if(!calendarElem.current) return;
 
-    calendarElem.current.scrollTop = (11 * hourHeight) - 40;
+    setTimeout(() => {
+      //40 = fullDayEventHeight + 10px padding
+      calendarElem.current.scrollTop = (firstHour.current * hourHeight) - 40;
+    }, 0)
 
-    if(sorted.length === 0) return;
-
-    //40 = fullDayEventHeight + 10px padding
-    // calendarElem.current.scrollTop = (sorted[0].start.hour * hourHeight) - 40;
-
-
-  }, [sorted])
+  }, [completeRender])
 
   //generating segment.
   //i.e the lines that indicate time.

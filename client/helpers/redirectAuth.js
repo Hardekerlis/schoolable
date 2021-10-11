@@ -4,16 +4,20 @@ import Request from 'helpers/request.js';
 
 export default async function redirectAuth(ctx) {
 
+  const { req } = ctx;
+
+  // console.log(req.headers)
+
   // const { token } = cookies(ctx);
   //
   // console.log(token)
 
-  let request = new Request('/api/auth/check').get();
+  let request = new Request('/api/auth/check').get().json().headers(req.headers);
   let response = await request.send();
 
-  // console.log(response)
+  // console.log(response.headers)
 
-  if(response.status !== 200) {
+  if(response._response.status !== 200) {
     return {
       redirect: {
         destination: '/login',

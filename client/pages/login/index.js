@@ -44,7 +44,7 @@ const Login = () => {
 
   let [credentials, setCredentials] = useState({
     email: 'teacherEmail@myTeacherEmail.teach',
-    password: 'QPq3Q9rgN462rqAm7Xpl6'
+    password: 'qtiMfIbPbIJ286DiiqoV4'
   })
 
   const submit = async(evt) => {
@@ -52,6 +52,8 @@ const Login = () => {
 
     let request = new Request('/api/auth/login', credentials).post().json();
     let res = await request.send();
+
+    // console.log(res)
 
     let user;
 

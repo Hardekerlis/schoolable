@@ -19,7 +19,7 @@ import { DayDividers, DayIdentifier } from 'components/calendar';
 
 import styles from './oneDay.module.sass';
 
-const _OneDayExtra = (day, data, options) => {
+const _OneDayExtra = (day, data, options, firstHour) => {
 
   const hourHeight = (options.hourHeight) ? options.hourHeight : HourHeight;
 
@@ -281,6 +281,8 @@ const _OneDayExtra = (day, data, options) => {
 
   const evtsClass = (options.eventsClass) ? `${styles.events} ${options.eventsClass}` : styles.events;
 
+  if(firstHour) firstHour.current = sorted[0].start.toObject().hour;
+
   return {
     jsx: (
       <div style={{minHeight: `${(hourHeight * 24)}px`}} className={evtsClass}>
@@ -293,8 +295,8 @@ const _OneDayExtra = (day, data, options) => {
 
 }
 
-const _OneDay = ({ day, data, options }) => {
-  return _OneDayExtra(day, data, options).jsx;
+const _OneDay = ({ day, data, options, firstHour }) => {
+  return _OneDayExtra(day, data, options, firstHour).jsx;
 }
 
 //TODO: Investigate SSR

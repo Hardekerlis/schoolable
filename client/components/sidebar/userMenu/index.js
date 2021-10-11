@@ -80,10 +80,8 @@ const UserMenu = ({ open, setUserMenuOpen }) => {
 
   const logout = async() => {
 
-    let req = new Request('/api/auth/logout').get();
+    let req = new Request('/api/auth/logout').get().json();
     let res = await req.send();
-
-    console.log(res);
 
     router.push('/login');
 
