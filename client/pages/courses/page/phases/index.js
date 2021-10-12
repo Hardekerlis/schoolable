@@ -23,7 +23,7 @@ export const getServerSideProps = async(ctx) => {
 
   console.log(res)
 
-  const serverErrors = handleErrors(200, res);
+  const serverErrors = handleErrors(200, res, [404]);
   if(serverErrors.isProps) return serverErrors.propsContainer;
 
 

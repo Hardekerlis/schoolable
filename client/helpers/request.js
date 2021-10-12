@@ -115,9 +115,13 @@ class Request {
     response = res;
 
     if(this._json) {
-      response = await res.json();
-      response._response = res;
-      response._isJSON = true;
+      try {
+        response = await res.json();
+        response._response = res;
+        response._isJSON = true;
+      }catch(err) {
+        response._isJSON = false;
+      }
     }else {
       response._isJSON = false;
     }

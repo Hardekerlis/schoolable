@@ -14,20 +14,24 @@ import { Prompt } from 'helpers/prompt';
 
 import { Sidebar, CourseMenuItems, SampleCreationSystem, Phase, PhaseEditMenu } from 'components';
 
-import { firstLetterToUpperCase } from 'helpers/misc.js'
+import { firstLetterToUpperCase } from 'helpers/misc.js';
 
 import language from 'helpers/lang';
 const lang = language.coursePage;
 
 import styles from './coursePageRender.module.sass';
 
-const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
+const CoursePageRender = ({ isEditing, coursePhases, course, isUserOwnerOfPage, sub }) => {
 
   const router = useRouter();
 
+  console.log(course)
+
   const { coursePage } = course;
 
-  let [phases, setPhases] = useState(coursePage.phases);
+  if(!coursePhases) coursePhases = [];
+
+  let [phases, setPhases] = useState(coursePhases);
   let [phasesRender, setPhasesRender] = useState();
 
   let [phaseEditMenuOpen, setPhaseEditMenuOpen] = useState(false);
@@ -111,18 +115,6 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
   }, [phaseTitles])
 
-
-// <div className={styles.phaseEdit} key={index}>
-//   <div className={styles.textContainer}>
-//     <p>{lang.phaseNameEdit}</p>
-//     <input onChange={(event) => onPhaseTitleChange(event, index)} value={phaseTitles[index]} />
-//   </div>
-//   <div className={styles.edit}>
-//     <p>{lang.editPhaseText}</p>
-//   </div>
-// </div>
-
-
   //make spinning thingy that tells the user when all their changes have saved
 
   useEffect(() => {
@@ -140,6 +132,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
     }else {
 
       setPhasesRender(phases.map((obj, index) => {
+
         return (
           <Phase editing={false} key={index} id={obj.id} name={obj.name} />
         )
@@ -153,16 +146,6 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
     <Layout>
 
       <div className={styles.wrapper}>
-
-        { isEditing &&
-
-          <>
-
-            <SampleCreationSystem requestCallback={onPhaseCreation} itemApiPath={`/api/course/${course.id}/createPhase`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
-
-          </>
-
-        }
 
         <Sidebar />
 
@@ -179,7 +162,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
                 <p className={styles.headline}><span style={{fontWeight: 300}}>{lang.coursePageTitleEditing}</span>{parsedCourseName}</p>
             }
 
-            <p className={styles.authorText}>{course.owner.name}</p>
+            <p className={styles.authorText}>{course.owner.name.first} {course.owner.name.last}</p>
           </div>
 
           <div className={`hoz_line ${styles.hoz_line}`}></div>
@@ -209,27 +192,6 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
           <div className={styles.mainContainer}>
 
-            { // isEditing &&
-            //
-            //   <div className={styles.changesSaveStatus}>
-            //
-            //     { phaseChangesSaved ?
-            //
-            //       <p>Changes saved.</p>
-            //
-            //       :
-            //
-            //       <p>Saving changes...</p>
-            //
-            //
-            //     }
-            //
-            //   </div>
-
-            }
-
-
-
             <div className={styles.content}>
 
 
@@ -240,7 +202,7 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
                   { phasesRender?.length === 0 ?
 
-                      <p>No phases</p>
+                      <p className={styles.noPhasesText}>{lang.noPhasesText}</p>
 
                     :
 
@@ -250,7 +212,17 @@ const CoursePageRender = ({ isEditing, course, isUserOwnerOfPage, sub }) => {
 
                         <div className={styles.phasesContainer}>
 
+                          { isEditing &&
 
+                            <>
+
+                              <SampleCreationSystem creationContainerClassName={styles.creationContainer} body={{
+                                parentCourse: course.id
+                              }} requestCallback={onPhaseCreation} itemApiPath={`/api/phase/create`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
+
+                            </>
+
+                          }
 
                           {phasesRender}
 

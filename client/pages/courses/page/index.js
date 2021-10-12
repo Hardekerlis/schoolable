@@ -16,7 +16,9 @@ import getUserData from 'helpers/getUserData.js'
 
 import { Prompt } from 'helpers/prompt';
 
-import { CoursePageRender } from 'components';
+import Layout from 'layouts/default/';
+
+import { CoursePageRender, Sidebar } from 'components';
 
 
 import styles from './coursePage.module.sass';
@@ -24,20 +26,37 @@ import styles from './coursePage.module.sass';
 
 export const getServerSideProps = async(ctx) => {
 
-  const { sessionId } = getCookies(ctx);
+  console.log(ctx.query.id)
 
-  let request = new Request(`/api/course/${ctx.query.id}`).get().json().cookie({sessionId});
+  //Get course data. Not phases.
+  let request = new Request(`/api/course/fetch/${ctx.query.id}`).get().json().ctx(ctx);
   let res = await request.send();
 
-  //200 is the expected status code
-  const serverErrors = handleErrors(200, res);
-  if(serverErrors.isProps) return serverErrors.propsContainer;
+  // console.log(res)
 
-  let course;
+  //200 is the expected status code
+  let serverErrors = handleErrors(200, res, [404]);
+
+  let course = null;
+  let phases = [];
 
   if(!serverErrors) {
     course = res.course;
+
+    //Get phases
+    let response = await (new Request(`/api/phase/fetch`, {
+      parentCourse: ctx.query.id
+    }).post().json().ctx(ctx)).send();
+
+    serverErrors = handleErrors(200, response, [404]);
+
+    if(!serverErrors) {
+      phases = response.phases;
+    }
+
   }
+
+
 
   if(!ctx.query.hasOwnProperty('sub')) {
     ctx.query.sub = 'overview';
@@ -47,33 +66,35 @@ export const getServerSideProps = async(ctx) => {
     props: {
       serverErrors,
       course,
+      phases,
       sub: ctx.query.sub
     }
   }
 
 }
 
-const CoursePage = ({ serverErrors, course, sub }) => {
+const CoursePage = ({ serverErrors, course, phases, sub }) => {
 
   const router = useRouter();
 
   if(serverErrors !== false) {
     Prompt.error(serverErrors);
+    return (
+      <Layout>
+        <Sidebar />
+      </Layout>
+    )
   }
 
   const userData = getUserData();
 
-  const isUserOwnerOfPage = (userData.id === course.owner.id) ? true : false;
+  const isUserOwnerOfPage = (userData.id === course.owner.userId) ? true : false;
 
-
-  // course.coursePage.description = "a desc"
+  console.log(phases);
 
   return (
-    <CoursePageRender isEditing={false} course={course} isUserOwnerOfPage={isUserOwnerOfPage} sub={sub} />
+    <CoursePageRender isEditing={false} coursePhases={phases} course={course} isUserOwnerOfPage={isUserOwnerOfPage} sub={sub} />
   )
-
-//  <div className={styles.mainDivider}></div>
-
 
 }
 

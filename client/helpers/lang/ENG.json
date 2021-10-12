@@ -24,7 +24,9 @@
     "editPhaseText": "Edit this phase",
     "phaseNameEdit": "Edit phase name:",
     "phases": "Course phases",
-    "coursePageTitleEditing": "Editing: "
+    "coursePageTitleEditing": "Editing: ",
+    "noPhasesText": "No phases found",
+    "phaseItemName": "Phase"
   },
   "courseMenu": {
     "overview": "Overview"
