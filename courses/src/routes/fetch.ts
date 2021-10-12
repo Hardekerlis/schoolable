@@ -77,6 +77,8 @@ const fetchOne = async (req: Request, res: Response) => {
     throw new NotAuthorizedError();
   }
 
+  console.log(courseId);
+
   const course = await Course.findOne(query)
     .populate('coursePage')
     .populate('owner');
