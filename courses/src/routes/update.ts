@@ -4,7 +4,7 @@ import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
 import User from '../models/user';
 import Course from '../models/course';
-import CoursePage from '../models/coursePage';
+import CoursePage, { CoursePageDoc } from '../models/coursePage';
 import logger from '../utils/logger';
 import CourseUpdatedPublisher from '../events/publishers/courseUpdated';
 import { natsWrapper } from '../utils/natsWrapper';
@@ -61,10 +61,10 @@ const update = async (req: Request, res: Response) => {
     logger.debug('Updating course page');
     const coursePage = await CoursePage.findByIdAndUpdate(
       course.coursePage,
-      coursePageData,
+      coursePageData as CoursePageDoc,
       { new: true },
     );
-    course.coursePage = coursePage;
+    course.coursePage = coursePage as CoursePageDoc;
     logger.debug('Updated course page');
   }
 
@@ -75,8 +75,8 @@ const update = async (req: Request, res: Response) => {
     new CourseUpdatedPublisher(natsWrapper.client, logger).publish({
       courseId: course.id as string,
       name: course.name,
-      admins: course.admins as string[],
-      students: course.students as string[],
+      admins: course.admins as unknown as string[],
+      students: course.students as unknown as string[],
     });
 
     logger.info('Sent Nats user registered event');

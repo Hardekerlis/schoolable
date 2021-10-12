@@ -294,5 +294,5 @@ it("Returns 'Upload was succesful' in body", async () => {
     .attach('files', fs.readFileSync(filePath), filePath)
     .expect(201);
 
-  expect(res.body.message).toEqual('Upload was succesful');
+  expect(res.body.message).toEqual('Upload was successful');
 });

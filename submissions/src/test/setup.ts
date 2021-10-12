@@ -13,6 +13,7 @@ import { UserTypes } from '@gustafdahl/schoolable-enums';
 import { UserPayload } from '@gustafdahl/schoolable-interfaces';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
+jest.mock('backblaze-b2');
 
 import b2 from '../utils/b2';
 

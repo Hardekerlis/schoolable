@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import B2 from 'backblaze-b2';
+import { Request, Response, Express } from 'express';
 import { isValidObjectId } from 'mongoose';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
@@ -24,7 +23,7 @@ const upload = async (req: Request, res: Response) => {
   const _lang = req.lang;
   const lang = LANG[_lang];
 
-  if (!req.files[0]) {
+  if (!(req.files[0]! as Express.Multer.File)) {
     throw new BadRequestError(lang.needFile);
   }
 
@@ -97,36 +96,48 @@ const upload = async (req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
-  await b2.authorize();
-  let {
-    data: { buckets },
-  } = await b2.getBucket({ bucketName: CONFIG.bucket.name });
+  if (process.env.NODE_ENV !== 'test') {
+    await b2.authorize();
+    let {
+      data: { buckets },
+    } = await b2.getBucket({ bucketName: CONFIG.bucket.name });
 
-  if (buckets[0]) {
-    for (const file of req.files) {
-      let {
-        data: { uploadUrl, authorizationToken },
-      } = await b2.getUploadUrl({
-        bucketId: buckets[0].bucketId,
-      });
+    if (buckets[0]) {
+      for (const file of req.files as Express.Multer.File[]) {
+        let {
+          data: { uploadUrl, authorizationToken },
+        } = await b2.getUploadUrl({
+          bucketId: buckets[0].bucketId,
+        });
 
-      const fileName = `${phaseItemId}/${currentUser.name.first}-${currentUser.name.last}/${file.originalname}`;
+        const fileName = `${phaseItemId}/${currentUser?.name.first}-${currentUser?.name.last}/${file.originalname}`;
 
-      console.log(uploadUrl);
-      console.log(authorizationToken);
-      console.log(fileName);
+        console.log(uploadUrl);
+        console.log(authorizationToken);
+        console.log(fileName);
 
-      const fileInfo = await b2.uploadFile({
-        uploadUrl: uploadUrl,
-        uploadAuthToken: authorizationToken,
-        fileName: fileName,
-        data: file.buffer,
-        mime: file.mimetype,
-      });
-    }
+        const fileInfo = await b2.uploadFile({
+          uploadUrl: uploadUrl,
+          uploadAuthToken: authorizationToken,
+          fileName: fileName,
+          data: file.buffer,
+          mime: file.mimetype,
+        });
+      }
+    } else throw new UnexpectedError();
+  }
 
-    res.status(202).send();
-  } else throw new UnexpectedError();
+  const filenames: string[] = [];
+
+  for (const file of req.files as Express.Multer.File[]) {
+    filenames.push(file.originalname);
+  }
+
+  res.status(201).json({
+    errors: false,
+    message: lang.uploaded,
+    uploadedFiles: filenames,
+  });
 };
 
 export default upload;
