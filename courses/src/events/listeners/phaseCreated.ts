@@ -9,6 +9,7 @@ import { queueGroupName } from './queueGroupName';
 import Course from '../../models/course';
 import logger from '../../utils/logger';
 
+// REVIEW: This might not be neccessary
 export class PhaseCreatedListener extends Listener<PhaseCreatedEvent> {
   subject: Subjects.PhaseCreated = Subjects.PhaseCreated;
   queueGroupName = queueGroupName;
@@ -23,9 +24,6 @@ export class PhaseCreatedListener extends Listener<PhaseCreatedEvent> {
       logger.debug('No course found');
       return msg.ack();
     }
-
-    logger.debug('Pushing phase to course page');
-    course.coursePage?.phases?.push(phaseId);
 
     logger.debug('Saving course page');
     await course.coursePage.save();

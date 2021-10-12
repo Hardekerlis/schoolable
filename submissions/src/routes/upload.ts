@@ -123,10 +123,6 @@ const upload = async (req: Request, res: Response) => {
 
         const fileName = `${phaseItemId}/${currentUser?.name.first}-${currentUser?.name.last}/${file.originalname}`;
 
-        console.log(uploadUrl);
-        console.log(authorizationToken);
-        console.log(fileName);
-
         const { data } = await b2.uploadFile({
           uploadUrl: uploadUrl,
           uploadAuthToken: authorizationToken,

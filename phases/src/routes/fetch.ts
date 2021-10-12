@@ -82,8 +82,6 @@ export const fetchMany = async (req: Request, res: Response) => {
     message: lang.foundPhases,
     phases,
   });
-
-  res.status(500).send();
 };
 
 export const fetchOne = async (req: Request, res: Response) => {
