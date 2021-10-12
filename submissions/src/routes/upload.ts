@@ -23,7 +23,8 @@ const upload = async (req: Request, res: Response) => {
   const _lang = req.lang;
   const lang = LANG[_lang];
 
-  if (!(req.files[0]! as Express.Multer.File)) {
+  // @ts-ignore
+  if (!(req.files[0] as Express.Multer.File)) {
     throw new BadRequestError(lang.needFile);
   }
 
@@ -86,16 +87,26 @@ const upload = async (req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
+  logger.debug('Parent phase found');
+
   const phaseItem = await PhaseItem.findOne({
     phaseItemId,
-    parentPhase,
-    parentCourse,
+    // parentPhase,
+    // parentCourse,
   });
 
   if (!phaseItem) {
     throw new NotFoundError();
   }
 
+  interface ReturnData {
+    fileName?: string;
+    contentType?: string;
+    parentPhaseItemId?: string;
+    uploadTimestamp?: string;
+  }
+
+  let returnData: ReturnData[] = [];
   if (process.env.NODE_ENV !== 'test') {
     await b2.authorize();
     let {
@@ -116,27 +127,28 @@ const upload = async (req: Request, res: Response) => {
         console.log(authorizationToken);
         console.log(fileName);
 
-        const fileInfo = await b2.uploadFile({
+        const { data } = await b2.uploadFile({
           uploadUrl: uploadUrl,
           uploadAuthToken: authorizationToken,
           fileName: fileName,
           data: file.buffer,
           mime: file.mimetype,
         });
+
+        returnData.push({
+          fileName: file.originalname,
+          contentType: data.contentType,
+          parentPhaseItemId: phaseItemId,
+          uploadTimestamp: data.uploadTimestamp,
+        });
       }
     } else throw new UnexpectedError();
-  }
-
-  const filenames: string[] = [];
-
-  for (const file of req.files as Express.Multer.File[]) {
-    filenames.push(file.originalname);
   }
 
   res.status(201).json({
     errors: false,
     message: lang.uploaded,
-    uploadedFiles: filenames,
+    data: returnData,
   });
 };
 

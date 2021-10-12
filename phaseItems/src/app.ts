@@ -54,7 +54,7 @@ app.use(
 app.use(cookieParser(process.env.JWT_KEY as string));
 
 import router from './routes';
-app.use('/api/phaseitems', router);
+app.use('/api/phaseitem', router);
 
 app.all('*', async () => {
   throw new NotFoundError();

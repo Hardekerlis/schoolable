@@ -72,7 +72,7 @@ const fetchOne = async (req: Request, res: Response) => {
       ],
     };
   } else if (currentUser.userType === UserTypes.Admin) {
-    query = courseId;
+    query = { courseId: courseId };
   } else {
     throw new NotAuthorizedError();
   }

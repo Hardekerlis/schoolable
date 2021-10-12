@@ -4,7 +4,6 @@ import { CourseMenuItem } from '@gustafdahl/schoolable-interfaces';
 import { ActionTypes } from '@gustafdahl/schoolable-enums';
 
 interface CoursePageAttributes {
-  phases?: string[]; // Ids to phases
   menu?: CourseMenuItem[];
   description?: string;
   upForDeletion?: boolean;
@@ -15,7 +14,6 @@ interface CoursePageModel extends mongoose.Model<CoursePageDoc> {
 }
 
 export interface CoursePageDoc extends mongoose.Document {
-  phases?: string[]; // Ids to phases
   menu?: CourseMenuItem[];
   description?: string;
   upForDeletion?: boolean;
@@ -23,16 +21,6 @@ export interface CoursePageDoc extends mongoose.Document {
 
 const coursePageSchema = new mongoose.Schema(
   {
-    phases: [
-      {
-        phaseId: { type: String, default: '' },
-        name: String,
-        parentCourse: String,
-        locked: { type: Boolean, default: true },
-        hidden: { type: Boolean, default: true },
-        upForDeletion: { type: Boolean, default: false },
-      },
-    ],
     menu: [
       {
         icon: String,
