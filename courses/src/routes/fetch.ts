@@ -6,6 +6,8 @@ import Course from '../models/course';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
+import logger from '../utils/logger';
+
 // TODO: Add logger and comments
 const fetchMany = async (req: Request, res: Response) => {
   const { currentUser } = req;
@@ -15,24 +17,38 @@ const fetchMany = async (req: Request, res: Response) => {
   // REVIEW: Might need to set limit to fetch courses.
   if (!currentUser) throw new NotAuthorizedError();
 
+  logger.info(
+    `Attempting to fetch courses for user with id: ${currentUser.id}`,
+  );
+
+  logger.debug('Looking up user');
   const user = await User.findOne({ userId: currentUser.id });
 
-  if (!user) throw new NotAuthorizedError();
+  if (!user) {
+    logger.info('No user found');
+    throw new NotAuthorizedError();
+  }
 
   let query;
+  logger.debug('Checking user access');
   if (currentUser.userType !== UserTypes.Admin) {
+    logger.debug('User is not application admin');
     query = {
       $or: [{ owner: user.id }, { students: user.id }, { admins: user.id }],
     };
   } else if (currentUser.userType === UserTypes.Admin) {
+    logger.debug('User is application admin');
     query = {};
   } else {
+    logger.warn('Unexpected user type found');
     throw new NotAuthorizedError();
   }
 
+  logger.debug('Looking up courses associated with user');
   const courses = await Course.find(query).populate('owner');
 
   if (courses.length === 0) {
+    logger.info('No courses found');
     return res.status(404).json({
       errors: false,
       message: lang.noCourses,
@@ -40,6 +56,7 @@ const fetchMany = async (req: Request, res: Response) => {
     });
   }
 
+  logger.info('Found courses');
   res.status(200).json({
     errors: false,
     message: lang.foundCourses,
@@ -57,48 +74,57 @@ const fetchOne = async (req: Request, res: Response) => {
 
   if (!currentUser) throw new NotAuthorizedError();
 
+  logger.info(
+    `User with id ${currentUser.id} is attempting to fetch course with id ${courseId}`,
+  );
+
+  logger.debug('Looking up user');
   const user = await User.findOne({ userId: currentUser.id });
 
-  if (!user) throw new NotAuthorizedError();
+  if (!user) {
+    logger.info('No user found');
+    throw new NotAuthorizedError();
+  }
 
   let query = {};
+  logger.debug('Checking user access');
   if (currentUser.userType !== UserTypes.Admin) {
+    logger.debug('User is not application admin');
     query = {
       $and: [
-        { id: courseId },
+        { _id: courseId },
         {
           $or: [{ owner: user.id }, { students: user.id }, { admins: user.id }],
         },
       ],
     };
   } else if (currentUser.userType === UserTypes.Admin) {
-    query = { courseId: courseId };
+    logger.debug('User is application admin');
+    query = { _id: courseId };
   } else {
+    logger.warn('Unexpected user type found');
     throw new NotAuthorizedError();
   }
 
-  console.log(courseId);
-
+  logger.debug('Looking up course');
   const course = await Course.findOne(query)
     .populate('coursePage')
     .populate('owner');
 
   if (!course) {
+    logger.info('No course found');
     return res.status(404).json({
       errors: false,
       message: lang.noCourse,
     });
   }
 
-  if (course.coursePage.menu) {
-    return res.status(200).json({
-      errors: false,
-      message: lang.foundCourse,
-      course,
-    });
-  }
-
-  res.status(500).send();
+  logger.info('Found course');
+  res.status(200).json({
+    errors: false,
+    message: lang.foundCourse,
+    course,
+  });
 };
 
 export { fetchMany, fetchOne };
