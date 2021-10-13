@@ -17,6 +17,7 @@
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
   "dependencies": {
+    "@gustafdahl/schoolable-enums": "^1.1.0",
     "@gustafdahl/schoolable-errors": "^1.0.1",
     "@gustafdahl/schoolable-events": "^1.6.4",
     "@gustafdahl/schoolable-loadlanguages": "^1.0.0",

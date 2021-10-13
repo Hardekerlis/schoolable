@@ -13,6 +13,7 @@ import { CONFIG } from '@gustafdahl/schoolable-utils';
 import Course from '../models/course';
 import Phase from '../models/phase';
 import PhaseItem from '../models/phaseItem';
+import File from '../models/file';
 
 import logger from '../utils/logger';
 import b2 from '../utils/b2';
@@ -23,8 +24,10 @@ const upload = async (req: Request, res: Response) => {
   const _lang = req.lang;
   const lang = LANG[_lang];
 
+  logger.info('Starting upload of file(s)');
   // @ts-ignore
   if (!(req.files[0] as Express.Multer.File)) {
+    logger.debug('No files found in request');
     throw new BadRequestError(lang.needFile);
   }
 
@@ -53,27 +56,29 @@ const upload = async (req: Request, res: Response) => {
     });
   }
 
+  logger.debug('Looking up paren course');
   const course = await Course.findOne({ courseId: parentCourse });
 
   if (!course) {
-    logger.debug('No course parent course found');
+    logger.debug('No parent course found');
     throw new NotFoundError();
   }
+  logger.debug('Parent course found');
 
   logger.debug('Checking if user is application admin');
   if (currentUser?.userType !== UserTypes.Admin) {
     logger.debug('User is not application admin');
-    logger.debug('Checking if user is allowed to update phase item');
+    logger.debug('Checking if user is allowed to upload files to phase item');
 
     if (
       course.owner !== currentUser?.id &&
       !course.admins?.includes(currentUser?.id as string) &&
       !course.students?.includes(currentUser?.id as string)
     ) {
-      logger.debug('User is not allowed to update phase item');
+      logger.debug('User is not allowed to upload files to phase item');
       throw new NotAuthorizedError();
     }
-    logger.debug('User is allowed to update phase item');
+    logger.debug('User is allowed to upload files to phase item');
   } else
     logger.debug(
       'User is application admin. Procceding without checking permissions',
@@ -89,15 +94,16 @@ const upload = async (req: Request, res: Response) => {
 
   logger.debug('Parent phase found');
 
+  logger.debug('Looking up phase item');
   const phaseItem = await PhaseItem.findOne({
     phaseItemId,
-    // parentPhase,
-    // parentCourse,
   });
 
   if (!phaseItem) {
+    logger.debug('No phase item found');
     throw new NotFoundError();
   }
+  logger.debug('Phase item found');
 
   interface ReturnData {
     fileName?: string;
@@ -108,21 +114,37 @@ const upload = async (req: Request, res: Response) => {
 
   let returnData: ReturnData[] = [];
   if (process.env.NODE_ENV !== 'test') {
+    logger.debug('Authorizing for backblaze b2');
     await b2.authorize();
+
+    logger.debug('Authorized!');
+
+    logger.debug('Getting backblaze storage bucket');
     let {
       data: { buckets },
     } = await b2.getBucket({ bucketName: CONFIG.bucket.name });
 
     if (buckets[0]) {
+      logger.debug('Found storage bucket');
+
+      logger.debug('Looping through uploaded files and uploading them');
+      logger.debug(`Will loop ${req.files!.length} time(s)`);
+      const uploadStartTs = +new Date();
       for (const file of req.files as Express.Multer.File[]) {
+        const { originalname } = file;
+
+        logger.debug('Getting upload URL to backblaze bucket');
         let {
           data: { uploadUrl, authorizationToken },
         } = await b2.getUploadUrl({
           bucketId: buckets[0].bucketId,
         });
 
-        const fileName = `${phaseItemId}/${currentUser?.name.first}-${currentUser?.name.last}/${file.originalname}`;
+        logger.debug('Retrieved upload URL');
 
+        const fileName = `${phaseItemId}/${currentUser?.name.first}-${currentUser?.name.last}/${originalname}`;
+
+        logger.debug(`Uploading file with name ${originalname} to backblaze`);
         const { data } = await b2.uploadFile({
           uploadUrl: uploadUrl,
           uploadAuthToken: authorizationToken,
@@ -131,15 +153,41 @@ const upload = async (req: Request, res: Response) => {
           mime: file.mimetype,
         });
 
+        logger.debug('Uploaded files to backblaze');
+
+        logger.debug('Building database reference to file');
+        const newFileDbRef = File.build({
+          fileName: originalname,
+          b2FileId: data.fileId,
+          b2BucketId: data.bucketId,
+          contentType: data.contentType,
+          uploadTimestamp: data.uploadTimestamp,
+          phaseItem: phaseItem,
+          grader: course.owner,
+          uploader: currentUser?.id as string,
+        });
+
+        logger.debug('Saving file reference');
+        await newFileDbRef.save();
+        logger.debug('Saved reference');
+
         returnData.push({
-          fileName: file.originalname,
+          fileName: originalname,
           contentType: data.contentType,
           parentPhaseItemId: phaseItemId,
           uploadTimestamp: data.uploadTimestamp,
         });
       }
-    } else throw new UnexpectedError();
+      logger.info(
+        `Upload(s) finished. It took ${+new Date() - uploadStartTs} ms`,
+      );
+    } else {
+      logger.error('No Backblaze B2 storage bucket found');
+      throw new UnexpectedError();
+    }
   }
+
+  logger.info('Successfully uploaded file(s). Returning to user');
 
   res.status(201).json({
     errors: false,

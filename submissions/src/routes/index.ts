@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, NextFunction, Request, Response } from 'express';
 import { body } from 'express-validator';
 import {
   currentUser,
@@ -8,6 +8,11 @@ import {
 } from '@gustafdahl/schoolable-middlewares';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+import { CONFIG } from '@gustafdahl/schoolable-utils';
+import {
+  UnexpectedError,
+  BadRequestError,
+} from '@gustafdahl/schoolable-errors';
 
 const router = Router();
 
@@ -15,6 +20,12 @@ import multer from 'multer';
 const storage = multer.memoryStorage();
 
 import fileFilter from '../utils/fileFilter';
+
+const uploadHandler = multer({
+  storage: storage,
+  limits: { fileSize: CONFIG.maxFileSize },
+  fileFilter,
+}).array('files', 5);
 
 import upload from './upload';
 router.post(
@@ -27,7 +38,16 @@ router.post(
     UserTypes.TempTeacher,
     UserTypes.Student,
   ]),
-  multer({ storage: storage, fileFilter }).array('files', 5),
+  (req: Request, res: Response, next: NextFunction) => {
+    uploadHandler(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        next(new BadRequestError(LANG[`${req.lang}`][`${err.code}`]));
+      } else if (err) {
+        next(new UnexpectedError());
+      }
+      next();
+    });
+  },
   [
     body('parentCourse')
       .exists()
