@@ -25,13 +25,13 @@ const lang = language.handleErrorsServer;
 //
 // }
 
-const handleErrors = (successStatus, response) => {
+const handleErrors = (successStatus, response, ignoreStatuses) => {
 
   const status = (response._isJSON) ? response._response.status : response.status;
 
-  let errors;
+  let errors = false;
 
-  if(status !== successStatus && status !== 404) {
+  if(status !== successStatus && ignoreStatuses.includes(status) === false) {
 
     //handle specific status code
 
@@ -44,8 +44,6 @@ const handleErrors = (successStatus, response) => {
       }else {
         errors = [lang.unexpected];
       }
-
-      console.log("ERRORS:", errors)
 
     }
 

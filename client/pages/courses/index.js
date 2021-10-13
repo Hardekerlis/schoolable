@@ -13,13 +13,11 @@ import { Prompt } from 'helpers/prompt';
 
 import Layout from 'layouts/default/';
 
-import { Sidebar, SampleCreationSystem, Dropdown } from 'components'
+import { Sidebar, CoursePreview, SampleCreationSystem, Dropdown } from 'components'
 
 import getUserData from 'helpers/getUserData.js';
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
-
-import { firstLetterToUpperCase } from 'helpers/misc.js';
 
 import lang from 'helpers/lang';
 
@@ -39,15 +37,11 @@ export const getServerSideProps = async(ctx) => {
 
   let courses = [];
 
-  const serverErrors = handleErrors(200, res);
-  // if(serverErrors.isProps) return serverErrors.propsContainer;
-
+  const serverErrors = handleErrors(200, res, [404]);
 
   if(serverErrors === false) {
     courses = res.courses;
   }
-
-  // console.log("serverErrors", serverErrors)
 
   return {
     props: {
@@ -74,43 +68,12 @@ const Courses = ({ courses, serverErrors }) => {
   let [currentCourses, setCurrentCourses] = useState(courses);
   let [coursesForRender, setCoursesForRender] = useState([]);
 
-  const fetchCourses = async() => {
-
-    let request = new Request('/api/course/fetch').post().json();
-    let response = await request.send();
-
-    // console.log(response)
-
-    if(response.errors === false) {
-
-      courses = response.courses;
-
-      setCurrentCourses(courses)
-
-    }else {
-      Prompt.error(response.errors);
-    }
-
-  }
-
   useEffect(() => {
 
     setCoursesForRender(currentCourses.map((course, index) => {
 
-      let courseName = firstLetterToUpperCase(course.name);
-
-      const courseClick = () => router.push(`/courses/page?id=${course.id}&sub=overview`);
-
       return (
-        <div onClick={courseClick} className={styles.course} key={index}>
-          <div className={styles.image}>
-            <p className={styles.hoverText}>{courseName}</p>
-          </div>
-          <div className={styles.textContainer}>
-            <p className={styles.name}>{courseName}</p>
-            <p className={styles.author}>{lang.courses.authorPrefix} {`${course.owner.name.first} ${course.owner.name.last}`}</p>
-          </div>
-        </div>
+        <CoursePreview course={course} key={index} />
       )
 
     }))
@@ -140,7 +103,9 @@ const Courses = ({ courses, serverErrors }) => {
 
     if(response.errors === false) {
 
-      await fetchCourses();
+      let newCourses = courses.concat([response.course]);
+
+      setCurrentCourses(newCourses)
 
       Prompt.success(lang.courses.courseCreated);
 
@@ -161,8 +126,6 @@ const Courses = ({ courses, serverErrors }) => {
       <div className={styles.wrapper}>
 
         <Sidebar />
-
-
 
         { coursesForRender.length !== 0 &&
 

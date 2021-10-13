@@ -1,0 +1,92 @@
+@import "styles/variables"
+
+$courseImageWidth: 150px
+$coursePadding: 20px
+
+.course
+  display: inline-block
+  // margin-top: 40px
+  margin-bottom: 40px
+
+  padding: $coursePadding
+
+  padding-left: calc(#{$courseImageWidth} + #{$coursePadding})
+
+  position: relative
+
+  background-color: $white
+  border-radius: 5px
+
+  height: 150px
+  width: 300px
+
+  margin-right: 40px
+
+  cursor: pointer
+
+  p
+    margin: 0px
+    text-align: center
+    font-size: 1.5rem
+    font-weight: 600
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+    width: 100%
+
+  .author
+    font-size: 1rem
+    font-weight: 300
+    margin-top: 10px
+
+  .textContainer
+    height: 100%
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    user-select: none
+
+  .image
+
+    position: absolute
+    left: 0px
+    top: 0px
+
+    display: flex
+    justify-content: center
+    align-items: center
+    color: $white
+
+    border-top-left-radius: 4px
+    border-bottom-left-radius: 4px
+
+    background-color: $lightGrey
+
+    width: $courseImageWidth
+    height: 100%
+
+    overflow: hidden
+
+
+    @include transition(0.2s, ease-out)
+
+
+    .hoverText
+      user-select: none
+      opacity: 0
+      white-space: nowrap
+      padding: 20px
+      overflow: hidden
+      pointer-events: none
+      @include transitionProp(0.4s, ease-out, opacity)
+
+.course:hover
+
+  .image
+    width: 100%
+    border-radius: 4px
+
+
+    .hoverText
+      opacity: 1

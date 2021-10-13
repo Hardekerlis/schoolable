@@ -120,7 +120,11 @@ class Prompt_ {
 
       if(Object.keys(msg).length === 1) {
 
-        msg = msg[0].message;
+        if(!msg[0].message) {
+          msg = msg[0];
+        }else {
+          msg = msg[0].message;
+        }
 
       }else {
 
@@ -140,6 +144,8 @@ class Prompt_ {
       }
 
     }
+
+    console.log("final msg", msg)
 
     this.box.children[1].innerHTML = msg;
 

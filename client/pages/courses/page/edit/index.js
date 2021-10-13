@@ -17,25 +17,21 @@ import styles from './edit.module.sass';
 
 export const getServerSideProps = async(ctx) => {
 
-  const { sessionId } = getCookies(ctx);
-
   const userData = getUserDataServer(ctx);
 
-  let request = new Request(`/api/course/${ctx.query.id}`).get().json().cookie({sessionId});
+  let request = new Request(`/api/course/fetch/${ctx.query.id}`).get().json().ctx(ctx);
   let res = await request.send();
 
   //200 is the expected status code
-  let serverErrors = handleErrors(200, res);
-  if(serverErrors.isProps) return serverErrors.propsContainer;
+  let serverErrors = handleErrors(200, res, [404]);
 
   let course = null;
-
-  console.log(serverErrors, 33)
+  let phases = [];
 
   if(!serverErrors) {
     course = res.course;
 
-    if(course.owner.id !== userData.id) {
+    if(course.owner.userId !== userData.id) {
 
       return (
         {
@@ -48,6 +44,17 @@ export const getServerSideProps = async(ctx) => {
 
     }
 
+    //Get phases
+    let response = await (new Request(`/api/phase/fetch`, {
+      parentCourse: ctx.query.id
+    }).post().json().ctx(ctx)).send();
+
+    serverErrors = handleErrors(200, response, [404]);
+
+    if(!serverErrors) {
+      phases = response.phases;
+    }
+
   }
 
   if(!ctx.query.hasOwnProperty('sub')) {
@@ -57,6 +64,7 @@ export const getServerSideProps = async(ctx) => {
   return {
     props: {
       course,
+      phases,
       sub: ctx.query.sub,
       serverErrors
     }
@@ -64,7 +72,7 @@ export const getServerSideProps = async(ctx) => {
 
 }
 
-const EditCourse = ({ serverErrors, course, sub }) => {
+const EditCourse = ({ serverErrors, phases, course, sub }) => {
 
   if(serverErrors !== false) {
     Prompt.error(serverErrors);
@@ -81,7 +89,7 @@ const EditCourse = ({ serverErrors, course, sub }) => {
   console.log(sub, 81)
 
   return(
-    <CoursePageRender isEditing={true} course={course} sub={sub} />
+    <CoursePageRender isEditing={true} coursePhases={phases} course={course} sub={sub} />
   )
 
 }

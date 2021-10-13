@@ -15,7 +15,7 @@ import styles from './sampleCreationSystem.module.sass';
 
 
 
-const SampleCreationSystem = ({ creationContainerClassName, firstWrapperClassName, requestCallback, currentItems, itemApiPath, itemName, noCurrentItemText }) => {
+const SampleCreationSystem = ({ body, creationContainerClassName, firstWrapperClassName, requestCallback, currentItems, itemApiPath, itemName, noCurrentItemText }) => {
 
   let itemCreationRef = React.useRef();
 
@@ -56,7 +56,14 @@ const SampleCreationSystem = ({ creationContainerClassName, firstWrapperClassNam
 
     setIsCreatingItem(true);
 
-    let request = new Request(itemApiPath, { name: newItemName }).post().json();
+    let reqBody = {
+      name: newItemName
+    }
+
+    if(body) reqBody = Object.assign(reqBody, body);
+
+    let request = new Request(itemApiPath, reqBody).post().json();
+
     let response = await request.send();
 
     //send response to caller

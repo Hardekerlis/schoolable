@@ -7,6 +7,7 @@ import CoursePageRender from './coursePageRender'
 import SampleCreationSystem from './sampleCreationSystem';
 import Phase from './phase';
 import PhaseEditMenu from './phaseEditMenu';
+import CoursePreview from './coursePreview';
 //import pos
 
 
@@ -28,6 +29,7 @@ export {
   MultipleDaySchedule,
   Month,
   Timeline,
-  CalendarTypeSelector
+  CalendarTypeSelector,
+  CoursePreview,
   //export pos
 }
