@@ -8,6 +8,7 @@ import SampleCreationSystem from './sampleCreationSystem';
 import Phase from './phase';
 import PhaseEditMenu from './phaseEditMenu';
 import CoursePreview from './coursePreview';
+import RightClickMenu from './rightClickMenu';
 //import pos
 
 
@@ -31,5 +32,6 @@ export {
   Timeline,
   CalendarTypeSelector,
   CoursePreview,
+  RightClickMenu,
   //export pos
 }

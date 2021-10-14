@@ -10,10 +10,11 @@ import { nanoid } from 'nanoid';
 import language from 'helpers/lang';
 const lang = language.courseMenu;
 
+import { RightClickMenu } from 'components';
 
-import { RightClickIcon } from 'cssIcons'
+import { RightClickIcon } from 'cssIcons';
 
-import styles from './courseMenuItems.module.sass'
+import styles from './courseMenuItems.module.sass';
 
 const CourseMenuItems = ({ course, sub, isEditing }) => {
 
@@ -195,7 +196,7 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
           { isCreatingItem &&
             <div className={styles.creatingMenuItem}>
               <div className={styles.container}>
-
+                <RightClickMenu />
               </div>
             </div>
           }
