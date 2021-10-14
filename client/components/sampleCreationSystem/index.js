@@ -15,7 +15,7 @@ import styles from './sampleCreationSystem.module.sass';
 
 
 
-const SampleCreationSystem = ({ body, creationContainerClassName, firstWrapperClassName, requestCallback, currentItems, itemApiPath, itemName, noCurrentItemText }) => {
+const SampleCreationSystem = ({ body, createItemButtonClassName, creationContainerClassName, firstWrapperClassName, requestCallback, currentItems, itemApiPath, itemName, noCurrentItemText }) => {
 
   let itemCreationRef = React.useRef();
 
@@ -81,6 +81,7 @@ const SampleCreationSystem = ({ body, creationContainerClassName, firstWrapperCl
 
   const _firstWrapperClassName = (firstWrapperClassName) ? `${styles.createFirstItemWrapper} ${firstWrapperClassName}` : styles.createFirstItemWrapper;
   const _creationContainerClassName = (creationContainerClassName) ? `${styles.newItemCreation} ${creationContainerClassName}` : styles.newItemCreation;
+  const _createItemButtonClassName = (createItemButtonClassName) ? `${styles.createItem} ${createItemButtonClassName}` : styles.createItem;
 
   return (
     <>
@@ -102,7 +103,7 @@ const SampleCreationSystem = ({ body, creationContainerClassName, firstWrapperCl
         :
         <>
 
-          <div onClick={openNewItemCreation} className={styles.createItem}>
+          <div onClick={openNewItemCreation} className={_createItemButtonClassName}>
             <FontAwesomeIcon className={styles.plus} icon={faPlus} />
             <p>{lang.create} {lowerFirstLetter(itemName)}</p>
           </div>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { nanoid } from 'nanoid';
 
@@ -13,11 +15,13 @@ import { RightClickIcon } from 'cssIcons'
 
 import styles from './courseMenuItems.module.sass'
 
-const CourseMenuItems = ({ course, sub }) => {
+const CourseMenuItems = ({ course, sub, isEditing }) => {
 
   const router = useRouter();
 
   let [menuItems, setMenuItems] = useState([]);
+  let [editingItems, setEditingItems] = useState([]);
+  let [isCreatingItem, setIsCreatingItem] = useState(null);
   let [menuElemInfo, setMenuElemInfo] = useState([])
   let [menuItemsActions, setMenuItemsActions] = useState([]);
 
@@ -166,8 +170,42 @@ const CourseMenuItems = ({ course, sub }) => {
 
   }, [menuItemsActions])
 
+  useEffect(() => {
+
+    if(isCreatingItem) {
+
+
+
+    }
+
+  }, [isCreatingItem])
+
+  const onCreateItemClick = () => {
+    if(!isCreatingItem) setIsCreatingItem(true);
+  }
+
   return(
-    menuItems
+    <>
+      {isEditing ?
+        <>
+          { menuItems }
+          <div onClick={onCreateItemClick} className={`${styles.menuOption} ${styles.plusOption}`} key={'createNewItem'}>
+            <FontAwesomeIcon className={styles.plusIcon} icon={faPlus} />
+          </div>
+          { isCreatingItem &&
+            <div className={styles.creatingMenuItem}>
+              <div className={styles.container}>
+
+              </div>
+            </div>
+          }
+        </>
+        :
+        <>
+          {menuItems}
+        </>
+      }
+    </>
   )
 
 }
