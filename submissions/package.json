@@ -19,7 +19,7 @@
   "dependencies": {
     "@gustafdahl/schoolable-enums": "^1.1.0",
     "@gustafdahl/schoolable-errors": "^1.0.1",
-    "@gustafdahl/schoolable-events": "^1.6.4",
+    "@gustafdahl/schoolable-events": "^1.7.0",
     "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
     "@gustafdahl/schoolable-middlewares": "^1.1.0",
     "@gustafdahl/schoolable-utils": "^1.0.1",

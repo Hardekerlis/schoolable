@@ -7,3 +7,4 @@ export * from './courses';
 export * from './remove';
 export * from './phases';
 export * from './phaseItems';
+export * from './submissions';

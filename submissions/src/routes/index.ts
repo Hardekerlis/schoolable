@@ -6,7 +6,7 @@ import {
   requireAuth,
   validateResult,
 } from '@gustafdahl/schoolable-middlewares';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserTypes, Grades } from '@gustafdahl/schoolable-enums';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import { CONFIG } from '@gustafdahl/schoolable-utils';
 import {
@@ -67,6 +67,65 @@ router.post(
   ],
   validateResult,
   upload,
+);
+
+import fetch from './fetch';
+router.post(
+  '/fetch',
+  currentUser,
+  getLanguage,
+  requireAuth([
+    UserTypes.Admin,
+    UserTypes.Teacher,
+    UserTypes.TempTeacher,
+    UserTypes.Student,
+  ]),
+  [
+    body('phaseItemId')
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseItemId;
+      }),
+  ],
+  validateResult,
+  fetch,
+);
+
+import download from './download';
+router.get(
+  '/download/:fileId',
+  currentUser,
+  getLanguage,
+  requireAuth([
+    UserTypes.Admin,
+    UserTypes.Teacher,
+    UserTypes.TempTeacher,
+    UserTypes.Student,
+  ]),
+  download,
+);
+
+import grade from './grade';
+router.post(
+  '/grade',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  [
+    body('fileId')
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needFileId;
+      }),
+    body('grade').custom((value, { req }) => {
+      if (!Object.values(Grades).includes(value)) {
+        return LANG[`${req.lang}`].invalidGrade;
+      }
+      return value;
+    }),
+  ],
+  validateResult,
+  grade,
 );
 
 export default router;

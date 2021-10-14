@@ -1,6 +1,6 @@
 {
   "name": "@gustafdahl/schoolable-events",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "description": "Events library for schoolable",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -15,7 +15,7 @@
     "major": "npm run build && npm version major && npm publish"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-enums": "^1.0.3",
+    "@gustafdahl/schoolable-enums": "^1.1.0",
     "@types/node": "^15.12.5",
     "node-nats-streaming": "^0.3.2"
   },

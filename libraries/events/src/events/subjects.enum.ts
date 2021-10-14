@@ -23,6 +23,8 @@ export enum Subjects {
   PhaseItemRemoved = 'phaseItem:removed',
   PhaseItemQueueRemove = 'phaseItem:queueRemove',
 
+  SubmissionGraded = 'submission:graded',
+
   RemoveCourse = 'remove:course',
   RemoveUser = 'remove:user',
   RemovePhase = 'remove:phase',

@@ -1,7 +1,11 @@
 import mongoose from 'mongoose';
 import { Grades } from '@gustafdahl/schoolable-enums';
 
-import { PhaseItemDoc } from './phaseItem';
+export interface Comment {
+  text: string;
+  startIndex: string;
+  endIndex: string;
+}
 
 interface FileAttributes {
   fileName: string;
@@ -9,10 +13,11 @@ interface FileAttributes {
   b2BucketId: string; // The id of the bucket file is stored in
   contentType: string;
   uploadTimestamp: string;
-  phaseItem: PhaseItemDoc;
+  phaseItemId: string;
   grader: string; // Grader will be the course owner
   uploader: string;
   grade?: Grades;
+  comments?: Comment[];
 }
 
 interface FileModel extends mongoose.Model<FileDoc> {
@@ -25,10 +30,11 @@ export interface FileDoc extends mongoose.Document {
   b2BucketId: string; // The id of the bucket file is stored in
   contentType: string;
   uploadTimestamp: string;
-  phaseItem: PhaseItemDoc;
+  phaseItemId: string;
   grader: string; // Grader will be the course owner
   uploader: string;
   grade?: Grades;
+  comments?: Comment[];
 }
 
 const fileSchema = new mongoose.Schema(
@@ -50,9 +56,8 @@ const fileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phaseItem: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'phaseItems',
+    phaseItemId: {
+      type: String,
       required: true,
     },
     grader: {
@@ -66,6 +71,11 @@ const fileSchema = new mongoose.Schema(
     grade: {
       type: String,
       enum: Object.values(Grades),
+    },
+    comments: {
+      text: String,
+      startIndex: Number,
+      endIndex: Number,
     },
   },
   {

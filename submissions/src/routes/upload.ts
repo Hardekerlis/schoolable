@@ -162,7 +162,7 @@ const upload = async (req: Request, res: Response) => {
           b2BucketId: data.bucketId,
           contentType: data.contentType,
           uploadTimestamp: data.uploadTimestamp,
-          phaseItem: phaseItem,
+          phaseItemId: phaseItem.phaseItemId,
           grader: course.owner,
           uploader: currentUser?.id as string,
         });

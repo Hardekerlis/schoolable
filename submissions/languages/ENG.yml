@@ -10,6 +10,13 @@ upForDeletion: 'Queued phase item %name% for deletion'
 needFile: 'Need file(s)'
 uploaded: 'Upload was successful'
 notSupportedFileType: 'Not supported file type'
+noFilesFound: 'No files found'
+foundFiles: 'Found files'
+noFileFound: 'No file found'
+foundFile: 'Found file'
+submissionGraded: 'Successfully graded'
+needFileId: 'Please supply a file id'
+invalidGrade: 'The supplied grade is not a valid grade'
 
 # CUSTOM MULTER ERRORS
 LIMIT_PART_COUNT: 'Too many parts'
