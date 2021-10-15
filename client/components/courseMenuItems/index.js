@@ -14,6 +14,9 @@ import { RightClickMenu } from 'components';
 
 import { RightClickIcon } from 'cssIcons';
 
+import { Prompt } from 'helpers/prompt';
+import Request from 'helpers/request.js'
+
 import styles from './courseMenuItems.module.sass';
 
 const CourseMenuItems = ({ course, sub, isEditing }) => {
@@ -191,8 +194,12 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
     {
       name: 'Create new subpage',
       // prompt: ['title'] //every menuItem requires a title
-      dependencies: [
-        ["actions[0].goTo", 'value']
+      dependencies: [ //only for actions
+        {
+          actionIndex: 0,
+          prop: 'goTo',
+          neededValue: 'value'
+        }
       ],
       actions: [
         {
@@ -203,10 +210,21 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
     }
   ]
 
+  let [choosenPreset, setChoosenPreset] = useState(-1);
+
   let [newItem, setNewItem] = useState({
     title: '',
     actions: []
   })
+
+  const closeItemMenu = () => {
+    setNewItem({
+      title: '',
+      actions: ''
+    })
+    setChoosenPreset(-1)
+    setIsCreatingItem(false)
+  }
 
   const updateTitle = (e) => {
     setNewItem({
@@ -215,21 +233,69 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
     })
   }
 
-  const createMenuItem = (e) => {
+  const createMenuItem = async(e) => {
     e.preventDefault();
+    let titleFormat = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
+    if(titleFormat.test(newItem.title)) {
+      Prompt.error("Title cannot contain any special characters.");
+      return;
+    }
 
+    let value = newItem.title.toLowerCase().split(' ').join('_');
+
+    //TODO: Enable the user to specify access
+
+    let item = {
+      value,
+      title: newItem.title,
+      actions: newItem.actions,
+      access: ['all'],
+    }
+
+    if(choosenPreset !== -1) {
+      //preset choosen
+      let preset = Object.assign(menuPresets[choosenPreset], {});
+
+      for(let dep of preset.dependencies) {
+        let val = '';
+        if(dep.neededValue === "value") val = value;
+        preset.actions[dep.actionIndex][dep.prop] = preset.actions[dep.actionIndex][dep.prop].replace(`{${dep.neededValue}}`, val);
+      }
+
+      item.actions = preset.actions;
+
+    }
+
+    //TODO: remove return
+    return;
+
+    let res = await (new Request('/api/course/update', {
+      courseId: router.query.id,
+      course: {
+        coursePage: {
+          menu: [item]
+        }
+      }
+    }).put().json()).send();
+
+    if(res.errors !== false) {
+      Prompt.error(res.errors)
+      return;
+    }
+
+    // console.log(res);
 
   }
 
   const choosePreset = (index) => {
-    console.log("index", index)
+    setChoosenPreset(index);
   }
 
   const menuPresetsRender = menuPresets.map((obj, index) => {
 
     return (
-      <div onClick={() => choosePreset(index)} key={index} className={styles.preset}>
+      <div onClick={() => choosePreset(index)} key={index} className={(index === choosenPreset) ? `${styles.preset} ${styles.selected}` : styles.preset}>
         <p>{obj.name}</p>
       </div>
     )
@@ -261,10 +327,10 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
                     </form>
                   </div>
                 </div>
-                <div className={`${styles.close} ${styles.btn}`}>
+                <div onClick={closeItemMenu} className={`${styles.close} ${styles.btn}`}>
                   <p>Close</p>
                 </div>
-                <div className={`${styles.create} ${styles.btn}`}>
+                <div onClick={createMenuItem} className={`${styles.create} ${styles.btn}`}>
                   <p>Create</p>
                 </div>
               </div>

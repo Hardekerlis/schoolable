@@ -44,7 +44,7 @@ const Login = () => {
 
   let [credentials, setCredentials] = useState({
     email: 'teacherEmail@myTeacherEmail.teach',
-    password: 'JygENjcRcHY1Z5a6CaJVT'
+    password: 'k2xzUl5lVQD5M_HhCEnk7'
   })
 
   const submit = async(evt) => {

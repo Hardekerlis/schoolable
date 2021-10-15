@@ -152,6 +152,12 @@
         p
           margin: 0px
 
+      .preset.selected
+        background-color: rgba($purple, 0.8)
+
+      .preset.selected:hover
+        background-color: rgba($purple, 0.8)
+
       .wrapper
         background-color: $blacker
         padding: 15px 10px
@@ -180,6 +186,10 @@
           padding: 5px
           color: $white
 
+          @include transitionProp(0.2s, ease-out, background-color)
+
+        input:focus
+          background-color: rgba($white, 0.1)
 
 
 
