@@ -1,0 +1,15 @@
+debug: true
+dev: true
+port: 3000
+logs:
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
+database:
+  uri: utilities-mongo-srv
+  localIp: 127.0.0.1
+  useMemoryLocal: true
+  port: 27017
+  name: utilities
+nats:
+  url: http://nats-srv:4222
+  clusterId: schoolable
