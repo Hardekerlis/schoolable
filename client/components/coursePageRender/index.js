@@ -168,7 +168,7 @@ const CoursePageRender = ({ isEditing, coursePhases, course, isUserOwnerOfPage, 
           <div className={`hoz_line ${styles.hoz_line}`}></div>
 
           <div className={styles.courseMenu}>
-            <CourseMenuItems styles={styles} course={course} sub={sub} />
+            <CourseMenuItems isEditing={isEditing} styles={styles} course={course} sub={sub} />
           </div>
 
 
@@ -218,7 +218,7 @@ const CoursePageRender = ({ isEditing, coursePhases, course, isUserOwnerOfPage, 
 
                               <SampleCreationSystem creationContainerClassName={styles.creationContainer} body={{
                                 parentCourse: course.id
-                              }} requestCallback={onPhaseCreation} itemApiPath={`/api/phase/create`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
+                              }} createItemButtonClassName={styles.createPhaseButton} requestCallback={onPhaseCreation} itemApiPath={`/api/phase/create`} currentItems={phases} itemName={lang.phaseItemName} noCurrentItemText={lang.courseMissingPhases} />
 
                             </>
 

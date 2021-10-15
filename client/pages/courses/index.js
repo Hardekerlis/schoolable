@@ -109,6 +109,8 @@ const Courses = ({ courses, serverErrors }) => {
 
       Prompt.success(lang.courses.courseCreated);
 
+      router.push(`/courses/page/edit?id=${response.course.id}`)
+
       return true;
 
     }else {

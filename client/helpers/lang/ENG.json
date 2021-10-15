@@ -29,7 +29,10 @@
     "phaseItemName": "Phase"
   },
   "courseMenu": {
-    "overview": "Overview"
+    "overview": "Overview",
+    "newItemPlaceholder": "New item name",
+    "createItemBtnText": "Create item",
+    "exitItemCreationText": "Exit"
   },
   "sidebar": {
     "user": "User",
