@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calendar-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calendar
+  template:
+    metadata:
+      labels:
+        app: calendar
+    spec:
+      containers:
+        - name: calendar
+          image: eu.gcr.io/schoolable-platform/calendar
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # this is refering to the pods name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: calendar-srv
+spec:
+  selector:
+    app: calendar
+  ports:
+    - name: calendar
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
