@@ -185,6 +185,57 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
     if(!isCreatingItem) setIsCreatingItem(true);
   }
 
+  //TODO: Remove the unnecessary options when a preset is selected.
+
+  const menuPresets = [
+    {
+      name: 'Create new subpage',
+      // prompt: ['title'] //every menuItem requires a title
+      dependencies: [
+        ["actions[0].goTo", 'value']
+      ],
+      actions: [
+        {
+          actionType: 'leftClick',
+          goTo: 'this.{value}'
+        }
+      ]
+    }
+  ]
+
+  let [newItem, setNewItem] = useState({
+    title: '',
+    actions: []
+  })
+
+  const updateTitle = (e) => {
+    setNewItem({
+      ...newItem,
+      title: e.target.value
+    })
+  }
+
+  const createMenuItem = (e) => {
+    e.preventDefault();
+
+
+
+  }
+
+  const choosePreset = (index) => {
+    console.log("index", index)
+  }
+
+  const menuPresetsRender = menuPresets.map((obj, index) => {
+
+    return (
+      <div onClick={() => choosePreset(index)} key={index} className={styles.preset}>
+        <p>{obj.name}</p>
+      </div>
+    )
+
+  })
+
   return(
     <>
       {isEditing ?
@@ -196,7 +247,26 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
           { isCreatingItem &&
             <div className={styles.creatingMenuItem}>
               <div className={styles.container}>
-                <RightClickMenu />
+                <p className={styles.headline}>Create new menu item</p>
+                <div className={styles.inner}>
+                  <p className={styles.title}>Presets</p>
+                  <div className={styles.wrapper}>
+                    {menuPresetsRender}
+                  </div>
+                  <p className={styles.title}>Information</p>
+                  <div className={styles.wrapper}>
+                    <form onSubmit={createMenuItem}>
+                      <p className={styles.text}>Title</p>
+                      <input placeholder="Enter title..." onChange={updateTitle} value={newItem.title} />
+                    </form>
+                  </div>
+                </div>
+                <div className={`${styles.close} ${styles.btn}`}>
+                  <p>Close</p>
+                </div>
+                <div className={`${styles.create} ${styles.btn}`}>
+                  <p>Create</p>
+                </div>
               </div>
             </div>
           }

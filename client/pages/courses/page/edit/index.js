@@ -86,8 +86,6 @@ const EditCourse = ({ serverErrors, phases, course, sub }) => {
     )
   }
 
-  console.log(sub, 81)
-
   return(
     <CoursePageRender isEditing={true} coursePhases={phases} course={course} sub={sub} />
   )
