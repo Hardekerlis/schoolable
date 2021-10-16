@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 
-const path = '/api/phaseitems/update';
+const path = '/api/phaseitem/update';
 
 import Course from '../../models/course';
 import Phase from '../../models/phase';
@@ -52,7 +52,7 @@ const createPhaseItem = async () => {
   const name = faker.company.companyName();
 
   const res = await request(app)
-    .post('/api/phaseitems/create')
+    .post('/api/phaseitem/create')
     .set('Cookie', cookie)
     .send({
       phaseId,

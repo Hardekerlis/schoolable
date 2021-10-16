@@ -14,7 +14,7 @@ nats:
   url: http://nats-srv:4222
   clusterId: schoolable
 bucket:
-  name: 'schoolable'
+  name: 'schoolable2'
 maxFileSize: 50000000 # This is in bytes
 allowedFileTypes:
   - ext: .doc

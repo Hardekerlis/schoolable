@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 
-const path = '/api/phaseitems/create';
+const path = '/api/phaseitem/create';
 
 import Course from '../../models/course';
 import Phase from '../../models/phase';
@@ -34,6 +34,7 @@ const createPhase = async (ownerId?: string) => {
   const phase = Phase.build({
     phaseId: phaseId as string,
     parentCourse: courseId,
+    name: faker.company.companyName(),
   });
 
   await phase.save();

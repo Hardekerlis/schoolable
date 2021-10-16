@@ -14,8 +14,10 @@ import CourseQueueRemovePublisher from '../events/publishers/courseQueueRemove';
 import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
-// TODO: Add logger
-// TODO: Comment
+/*
+This function queues courses for deletion. It sends out a NATS event telling
+removeQueue service to queue course for deletion
+*/
 const remove = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const { courseId } = req.body;
@@ -24,12 +26,16 @@ const remove = async (req: Request, res: Response) => {
 
   logger.info(`Starting removal of course with id ${courseId}`);
 
-  logger.debug('Looking up course');
-  const course = await Course.findById(courseId);
-
+  logger.debug('Looking up user');
   const user = await User.findOne({ userId: currentUser!.id });
 
-  if (!user) throw new NotAuthorizedError();
+  if (!user) {
+    logger.debug('No user found');
+    throw new NotAuthorizedError();
+  }
+
+  logger.debug('Looking up course');
+  const course = await Course.findById(courseId);
 
   if (!course) {
     logger.debug('No course found');

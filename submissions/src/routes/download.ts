@@ -6,6 +6,7 @@ import File from '../models/file';
 import b2 from '../utils/b2';
 import logger from '../utils/logger';
 
+// TODO: Add logger
 const download = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const _lang = req.lang;

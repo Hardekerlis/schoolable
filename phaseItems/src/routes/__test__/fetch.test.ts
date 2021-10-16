@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 
-const path = '/api/phaseitems/fetch';
+const path = '/api/phaseitem/fetch';
 
 import Course from '../../models/course';
 import Phase from '../../models/phase';
@@ -34,6 +34,7 @@ const createPhase = async (ownerId?: string) => {
   const phase = Phase.build({
     phaseId: phaseId as string,
     parentCourse: courseId,
+    name: faker.company.companyName(),
   });
 
   await phase.save();
@@ -51,7 +52,7 @@ const createPhaseItem = async () => {
   const name = faker.company.companyName();
 
   const res = await request(app)
-    .post('/api/phaseitems/create')
+    .post('/api/phaseitem/create')
     .set('Cookie', cookie)
     .send({
       phaseId,

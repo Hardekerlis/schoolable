@@ -5,11 +5,11 @@ logs:
   newLogFileFrequency: 24h
   maxFileSize: 50m
 database:
-  uri: utilities-mongo-srv
+  uri: calendar-mongo-srv
   localIp: 127.0.0.1
   useMemoryLocal: true
   port: 27017
-  name: utilities
+  name: calendar
 nats:
   url: http://nats-srv:4222
   clusterId: schoolable

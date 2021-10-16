@@ -115,6 +115,7 @@ const upload = async (req: Request, res: Response) => {
   let returnData: ReturnData[] = [];
   if (process.env.NODE_ENV !== 'test') {
     logger.debug('Authorizing for backblaze b2');
+    // TODO: Don't run this every upload. Tokens are valid for 24 hours
     await b2.authorize();
 
     logger.debug('Authorized!');

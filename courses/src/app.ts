@@ -32,8 +32,6 @@ loadLanguages(languagePath);
 
 const app = express();
 
-// const whitelist = ["http://localhost:3500"]
-
 app.use(
   cors({
     credentials: true,
@@ -43,15 +41,14 @@ app.use(
 
 app.set('trust proxy', true);
 
-// app.use(urlencoded({ extended: false }));
+app.use(urlencoded({ extended: false }));
 
 app.use(
   json({
     limit: '5mb',
   }),
 );
-// TODO
-// Add maxAge calculation
+// TODO: Add maxAge calculation
 app.use(cookieParser(process.env.JWT_KEY as string));
 
 import router from './routes';

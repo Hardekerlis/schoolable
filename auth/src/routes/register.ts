@@ -3,6 +3,7 @@ import { UserTypes } from '@gustafdahl/schoolable-enums';
 import {
   NotAuthorizedError,
   UnexpectedError,
+  BadRequestError,
 } from '@gustafdahl/schoolable-errors';
 import { CONFIG } from '@gustafdahl/schoolable-utils';
 import { nanoid } from 'nanoid';
@@ -17,7 +18,6 @@ const register = async (req: Request, res: Response) => {
   const { email, userType, name } = req.body;
   const { currentUser } = req;
 
-  // BUG: does this block of code makes it possible for any user who isnt authenticated to make accounts? Need to be fixed!
   logger.info('Starting user registration');
   // This check can only be true if an admin user exists
   if (currentUser && currentUser?.userType !== UserTypes.Admin) {
@@ -25,6 +25,15 @@ const register = async (req: Request, res: Response) => {
     throw new NotAuthorizedError();
   }
 
+  if (!process.env.ADMIN_EXISTS && userType === UserTypes.Admin) {
+    logger.debug('Creating first admin account');
+    process.env.ADMIN_EXISTS = 'true';
+  } else if (
+    process.env.ADMIN_EXISTS === 'true' &&
+    currentUser?.userType !== UserTypes.Admin
+  ) {
+    throw new NotAuthorizedError();
+  }
   // Creating tempPassword for users first login
   // An email should be sent from email service with temp password to user
   const tempPassword = nanoid();
