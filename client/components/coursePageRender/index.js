@@ -25,8 +25,6 @@ const CoursePageRender = ({ isEditing, coursePhases, course, isUserOwnerOfPage, 
 
   const router = useRouter();
 
-  console.log(course)
-
   const { coursePage } = course;
 
   if(!coursePhases) coursePhases = [];

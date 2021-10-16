@@ -14,6 +14,9 @@ import { RightClickMenu } from 'components';
 
 import { RightClickIcon } from 'cssIcons';
 
+import { Prompt } from 'helpers/prompt';
+import Request from 'helpers/request.js'
+
 import styles from './courseMenuItems.module.sass';
 
 const CourseMenuItems = ({ course, sub, isEditing }) => {
@@ -185,6 +188,120 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
     if(!isCreatingItem) setIsCreatingItem(true);
   }
 
+  //TODO: Remove the unnecessary options when a preset is selected.
+
+  const menuPresets = [
+    {
+      name: 'Create new subpage',
+      // prompt: ['title'] //every menuItem requires a title
+      dependencies: [ //only for actions
+        {
+          actionIndex: 0,
+          prop: 'goTo',
+          neededValue: 'value'
+        }
+      ],
+      actions: [
+        {
+          actionType: 'leftClick',
+          goTo: 'this.{value}'
+        }
+      ]
+    }
+  ]
+
+  let [choosenPreset, setChoosenPreset] = useState(-1);
+
+  let [newItem, setNewItem] = useState({
+    title: '',
+    actions: []
+  })
+
+  const closeItemMenu = () => {
+    setNewItem({
+      title: '',
+      actions: ''
+    })
+    setChoosenPreset(-1)
+    setIsCreatingItem(false)
+  }
+
+  const updateTitle = (e) => {
+    setNewItem({
+      ...newItem,
+      title: e.target.value
+    })
+  }
+
+  const createMenuItem = async(e) => {
+    e.preventDefault();
+    let titleFormat = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+    if(titleFormat.test(newItem.title)) {
+      Prompt.error("Title cannot contain any special characters.");
+      return;
+    }
+
+    let value = newItem.title.toLowerCase().split(' ').join('_');
+
+    //TODO: Enable the user to specify access
+
+    let item = {
+      value,
+      title: newItem.title,
+      actions: newItem.actions,
+      access: ['all'],
+    }
+
+    if(choosenPreset !== -1) {
+      //preset choosen
+      let preset = Object.assign(menuPresets[choosenPreset], {});
+
+      for(let dep of preset.dependencies) {
+        let val = '';
+        if(dep.neededValue === "value") val = value;
+        preset.actions[dep.actionIndex][dep.prop] = preset.actions[dep.actionIndex][dep.prop].replace(`{${dep.neededValue}}`, val);
+      }
+
+      item.actions = preset.actions;
+
+    }
+
+    //TODO: remove return
+    return;
+
+    let res = await (new Request('/api/course/update', {
+      courseId: router.query.id,
+      course: {
+        coursePage: {
+          menu: [item]
+        }
+      }
+    }).put().json()).send();
+
+    if(res.errors !== false) {
+      Prompt.error(res.errors)
+      return;
+    }
+
+    // console.log(res);
+
+  }
+
+  const choosePreset = (index) => {
+    setChoosenPreset(index);
+  }
+
+  const menuPresetsRender = menuPresets.map((obj, index) => {
+
+    return (
+      <div onClick={() => choosePreset(index)} key={index} className={(index === choosenPreset) ? `${styles.preset} ${styles.selected}` : styles.preset}>
+        <p>{obj.name}</p>
+      </div>
+    )
+
+  })
+
   return(
     <>
       {isEditing ?
@@ -196,7 +313,26 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
           { isCreatingItem &&
             <div className={styles.creatingMenuItem}>
               <div className={styles.container}>
-                <RightClickMenu />
+                <p className={styles.headline}>Create new menu item</p>
+                <div className={styles.inner}>
+                  <p className={styles.title}>Presets</p>
+                  <div className={styles.wrapper}>
+                    {menuPresetsRender}
+                  </div>
+                  <p className={styles.title}>Information</p>
+                  <div className={styles.wrapper}>
+                    <form onSubmit={createMenuItem}>
+                      <p className={styles.text}>Title</p>
+                      <input placeholder="Enter title..." onChange={updateTitle} value={newItem.title} />
+                    </form>
+                  </div>
+                </div>
+                <div onClick={closeItemMenu} className={`${styles.close} ${styles.btn}`}>
+                  <p>Close</p>
+                </div>
+                <div onClick={createMenuItem} className={`${styles.create} ${styles.btn}`}>
+                  <p>Create</p>
+                </div>
               </div>
             </div>
           }

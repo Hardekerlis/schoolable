@@ -25,8 +25,6 @@ const RightClickMenu = ({  }) => {
 
   return(
     <div className={styles.wrapper}>
-      <p className={styles.headline}>Menu</p>
-      <div className={styles.line}></div>
       {renderers}
     </div>
   )

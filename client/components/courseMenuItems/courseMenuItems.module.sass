@@ -74,14 +74,122 @@
   align-items: center
 
   .container
-    background-color: $black
-    width: 400px
-    height: 500px
-    border-radius: 5px
+    width: 500px
+    height: auto
+    display: flex
+    flex-direction: column
+    align-items: flex-start
+    position: relative
+    padding: 0px
 
+    .headline
+      font-size: 1.5rem
+      margin: 0px
+      margin-left: 8px
+      margin-bottom: 8px
 
+    .btn
+      padding: 10px
+      margin-top: 10px
+      border-radius: 5px
+      color: $white
+      font-size: 1.2rem
+      font-weight: 500
+      cursor: pointer
+      user-select: none
+      @include transitionProp(0.2s, ease-out, background-color)
 
+      p
+        margin: 0px
 
+    .close
+      background-color: rgba($red, 0.6)
+
+    .create
+      background-color: rgba($green, 0.6)
+      position: absolute
+      right: 0px
+      bottom: 0px
+
+    .close:hover
+      background-color: $red
+
+    .create:hover
+      background-color: $green
+
+    .inner
+      background-color: $black
+      border-radius: 5px
+      height: auto
+      padding: 15px
+      width: 100%
+
+      .title:first-of-type
+        margin: 0px !important
+
+      .title
+        font-size: 1.3rem
+        color: $white
+        margin: 10px 0px
+        font-weight: 600
+
+      .preset:hover
+        background-color: rgba($purple, 0.4)
+
+      .preset
+        border: 2px solid $purple
+        color: $white
+        padding: 5px 10px
+        border-radius: 50px
+        font-weight: 300
+        font-size: 1.1rem
+        user-select: none
+        // background-color: $black
+        cursor: pointer
+
+        @include transitionProp(0.2s, ease-out, background-color)
+
+        p
+          margin: 0px
+
+      .preset.selected
+        background-color: rgba($purple, 0.8)
+
+      .preset.selected:hover
+        background-color: rgba($purple, 0.8)
+
+      .wrapper
+        background-color: $blacker
+        padding: 15px 10px
+        border-radius: 5px
+        margin-top: 10px
+        position: relative
+
+        .text
+          color: $white
+          margin-top: 0px
+          margin-bottom: 8px
+          font-size: 1.2rem
+
+        form
+          display: flex
+          flex-direction: column
+          align-items: flex-start
+
+        input
+          margin-top: 2px
+          font-size: 1.1rem
+          background: none
+          border: none
+          border-bottom: 1px solid $purple
+          outline: none
+          padding: 5px
+          color: $white
+
+          @include transitionProp(0.2s, ease-out, background-color)
+
+        input:focus
+          background-color: rgba($white, 0.1)
 
 
 
