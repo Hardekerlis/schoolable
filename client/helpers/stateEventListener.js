@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
+import {nanoid} from 'nanoid';
+
+const listeners = {}
+
 const createStateListener = (stateValue, element, eventType, method) => {
 
   let [ state, _setState ] = useState(stateValue);
   let [ listenerCreated, setListenerCreated ] = useState(false);
 
   let stateRef = React.useRef(state);
+
+  let id = nanoid(8);
 
   const setState = (value) => {
     stateRef.current = value;
@@ -16,7 +22,15 @@ const createStateListener = (stateValue, element, eventType, method) => {
     if(element === '*') {
       if(typeof window !== 'undefined') {
 
-        window.addEventListener(eventType, (event) => method(event, stateRef), false);
+        const listMethod = (event) => method(event, stateRef);
+
+        window.addEventListener(eventType, listMethod, false);
+
+        listeners[id] = {
+          method: listMethod,
+          type: eventType,
+          element,
+        };
 
       }
     }
@@ -24,11 +38,25 @@ const createStateListener = (stateValue, element, eventType, method) => {
 
   return [
     state,
-    setState
+    setState,
+    id
   ]
 
 }
 
+const removeStateListener = (id) => {
+  console.log(id)
+  console.log(listeners[id])
+  console.log(listeners)
+  const listener = listeners[id];
+
+  if(listeners.element === '*') {
+    window.removeEventListener(listener.type, listener.method);
+  }
+
+}
+
 export {
-  createStateListener
+  createStateListener,
+  removeStateListener
 }

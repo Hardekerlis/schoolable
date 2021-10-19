@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { createStateListener } from 'helpers/stateEventListener.js';
+import { GlobalEventHandler } from 'helpers';
 
 
 import styles from './calendarTypeSelector.module.sass';
@@ -43,8 +43,7 @@ const CalendarTypeSelector = ({ isFullDesktop, types, scheduleType, setScheduleT
 
   //handling open and closing of dots menu
   //when not in full-desktop mode
-  const subDesktopTypesListener = (evt, linkedState) => {
-    if(linkedState.current === false) return;
+  const subDesktopTypesListener = (evt) => {
 
     //TODO: probably more cross browser compatibility
     let evtPath = evt.path || evt.composedPath();
@@ -64,7 +63,18 @@ const CalendarTypeSelector = ({ isFullDesktop, types, scheduleType, setScheduleT
 
   }
 
-  let [ subDesktopTypes, setSubDesktopTypes ] = createStateListener(false, '*', 'click', subDesktopTypesListener);
+  let [subDesktopTypes, setSubDesktopTypes] = useState(false);
+
+  let [listener, setListener] = useState();
+
+  useEffect(() => {
+    setListener(GlobalEventHandler.subscribe('windowClick', subDesktopTypesListener).active(false));
+
+    return () => {
+      listener?.unsubscribe();
+    }
+
+  }, [])
 
   let [subDesktopTypesClass, setSubDesktopTypesClass] = useState(styles.typeSelectorWrapper);
 
@@ -79,6 +89,8 @@ const CalendarTypeSelector = ({ isFullDesktop, types, scheduleType, setScheduleT
     }else if(subDesktopTypes && subDesktopTypesClass !== `${styles.typeSelectorWrapper} ${styles.open}`) {
       setSubDesktopTypesClass(`${styles.typeSelectorWrapper} ${styles.open}`);
     }
+
+    listener?.active(subDesktopTypes);
 
   }, [subDesktopTypes])
 

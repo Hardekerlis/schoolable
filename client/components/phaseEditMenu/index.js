@@ -13,6 +13,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import language from 'helpers/lang';
 const lang = language.phaseEditMenu;
 
+import { createStateListener, removeStateListener, GlobalEventHandler } from 'helpers';
+
 import styles from './phaseEditMenu.module.sass';
 
 const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
@@ -30,13 +32,52 @@ const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
 
   }, [info])
 
+  let listener;
+
+  const windowListenerMethod = (evt) => {
+    //TODO: probably more cross browser compatibility
+    let evtPath = evt.path || evt.composedPath();
+
+    let foundWrapper = false;
+
+    for(let elem of evtPath) {
+      try {
+        if(elem?.getAttribute('id') === "sidebar") {
+          foundWrapper = true;
+          break;
+        }
+      }catch(e) {}
+      if(elem.classList?.contains(styles.bars)) {
+        foundWrapper = true;
+        break;
+      }
+    }
+
+    if(!foundWrapper) {
+      exitMenu()
+    }
+
+  }
+
+
+
   const exitMenu = () => {
+    listener.unsubscribe();
     wrapperRef.current.classList.remove(styles.open);
     setTimeout(() => {
       closeMenu();
     }, 200)
   }
 
+
+  useEffect(() => {
+    listener = GlobalEventHandler.subscribe('windowClick', windowListenerMethod).active(true);
+
+    return () => {
+      listener?.unsubscribe();
+    }
+
+  }, [])
 
   const onNameChange = (evt) => {
 

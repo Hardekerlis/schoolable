@@ -25,7 +25,7 @@ const Phase = ({ index, name, editing, id, setPhaseEditMenuOpen, className, clic
   const editableClick = () => {
     //open edit menu
 
-    console.log("clicked an editable phase")
+    // console.log("clicked an editable phase")
 
     setPhaseEditMenuOpen(index, name, id)
 

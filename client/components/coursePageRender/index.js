@@ -46,7 +46,7 @@ const CoursePageRender = ({ isEditing, coursePhases, course, isUserOwnerOfPage, 
 
   const setPhaseEditMenuOpenInPhase = (index, name, id) => {
 
-    console.log("setPhaseEditMenuOpenInPhase")
+    // console.log("setPhaseEditMenuOpenInPhase")
 
     setPhaseEditMenuOpen(true);
     setPhaseEditMenuInfo({
@@ -58,7 +58,6 @@ const CoursePageRender = ({ isEditing, coursePhases, course, isUserOwnerOfPage, 
   }
 
   const closePhaseEditMenu = () => {
-    console.log("closing phaseeditmenu")
     setPhaseEditMenuOpen(false);
   }
 

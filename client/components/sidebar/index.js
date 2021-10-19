@@ -31,7 +31,7 @@ const SidebarOption = ({name, path, icon, onClick, iconSize, current, arrowEnabl
   if(arrowEnabled === undefined) arrowEnabled = true
 
   return (
-    <div onClick={onClick} className={myClassName}>
+    <div onClick={onClick} className={myClassName} id="sidebar">
       <FontAwesomeIcon style={{width: iconSize, height: iconSize}} className={styles.icon} icon={icon} />
 
         {arrowEnabled &&
