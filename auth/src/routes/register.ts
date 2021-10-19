@@ -29,7 +29,8 @@ const register = async (req: Request, res: Response) => {
     logger.debug('Creating first admin account');
     process.env.ADMIN_EXISTS = 'true';
   } else if (
-    process.env.ADMIN_EXISTS === 'true' &&
+    (process.env.ADMIN_EXISTS === 'true' &&
+      currentUser?.userType !== UserTypes.Admin) ||
     currentUser?.userType !== UserTypes.Admin
   ) {
     throw new NotAuthorizedError();

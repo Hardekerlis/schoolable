@@ -5,6 +5,7 @@ import { CONFIG } from '@gustafdahl/schoolable-utils';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import mongoose from 'mongoose';
+import { UserTypes } from '@gustafdahl/schoolable-enums';
 
 import User from './models/user';
 
@@ -48,7 +49,7 @@ const startServer = async () => {
     logger.warn(`Failed to connect to MongoDB. Error message: ${err}`);
   }
 
-  const user = await User.findOne({});
+  const user = await User.findOne({ userType: UserTypes.Admin });
   if (user) {
     env.ADMIN_EXISTS = 'true';
   }
