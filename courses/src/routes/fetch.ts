@@ -8,7 +8,6 @@ import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
 import logger from '../utils/logger';
 
-// TODO: Add logger and comments
 const fetchMany = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const _lang = req.lang;
@@ -31,6 +30,7 @@ const fetchMany = async (req: Request, res: Response) => {
 
   let query;
   logger.debug('Checking user access');
+  // Check to see what type of query to run
   if (currentUser.userType !== UserTypes.Admin) {
     logger.debug('User is not application admin');
     query = {
@@ -64,7 +64,6 @@ const fetchMany = async (req: Request, res: Response) => {
   });
 };
 
-// TODO: Add logger and comments
 const fetchOne = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const { courseId } = req.params;

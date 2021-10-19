@@ -63,7 +63,6 @@ const create = async (req: Request, res: Response) => {
             goTo: 'this.example_1',
           },
         ],
-        removeable: false,
       },
       {
         title: 'Example 2',
@@ -75,7 +74,6 @@ const create = async (req: Request, res: Response) => {
             goTo: 'this.example_2',
           },
         ],
-        removeable: false,
       },
       {
         title: 'Example 3',
@@ -87,7 +85,6 @@ const create = async (req: Request, res: Response) => {
             goTo: 'this.example_3',
           },
         ],
-        removeable: false,
       },
     ],
   });

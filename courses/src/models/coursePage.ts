@@ -27,7 +27,7 @@ const coursePageSchema = new mongoose.Schema(
         access: [String],
         title: String,
         value: String,
-        removeable: Boolean,
+        removeable: { type: Boolean, default: true },
         actions: [
           {
             actionType: {

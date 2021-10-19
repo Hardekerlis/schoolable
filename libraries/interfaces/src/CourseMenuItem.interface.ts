@@ -8,5 +8,5 @@ export interface CourseMenuItem {
   actions: Action[]; // What actions are possible for this MenuItem
   title: string;
   value: string;
-  removeable: boolean;
+  removeable?: boolean;
 }

@@ -20,7 +20,7 @@
     "@gustafdahl/schoolable-enums": "^1.0.3",
     "@gustafdahl/schoolable-errors": "^1.0.1",
     "@gustafdahl/schoolable-events": "^1.5.5",
-    "@gustafdahl/schoolable-interfaces": "^1.0.5",
+    "@gustafdahl/schoolable-interfaces": "^1.0.6",
     "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
     "@gustafdahl/schoolable-middlewares": "^1.1.0",
     "@gustafdahl/schoolable-utils": "^1.0.0",
