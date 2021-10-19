@@ -5,8 +5,9 @@ import {
 } from '@gustafdahl/schoolable-errors';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import jwt from 'jsonwebtoken';
+import { nanoid } from 'nanoid';
 
-import UserLoginPublisher from '../events/userLogin';
+import UserLoginPublisher from '../events/publishers/userLogin';
 import { natsWrapper } from '../utils/natsWrapper';
 import Password from '../utils/password';
 import User from '../models/user';
@@ -16,40 +17,31 @@ const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const _lang = req.lang;
 
+  logger.info('Starting login');
+
   const lang = LANG[_lang];
-  logger.info('Looking up user');
+  logger.debug('Looking up user');
   const user = await User.findOne({ email }).populate('settings');
 
   // If no use is found
   if (!user) {
-    logger.info('No user found');
+    logger.debug('No user found');
     // Wrong credentials becuase hackers doesnt need to know if they got password or email wrong
     throw new BadRequestError(lang.wrongCredentials);
   }
 
-  logger.info('User found');
-  logger.info('Comparing passwords');
+  logger.debug('User found');
+  logger.debug('Comparing passwords');
 
   // Checking if password is coorect
   if (await Password.compare(user.password, password)) {
-    logger.info('Passwords matched');
+    logger.debug('Passwords matched');
     try {
-      logger.info('Creating token');
-      // Creating token to be stored in cookie
-      const token = jwt.sign(
-        {
-          email: user.email,
-          id: user.id,
-          userType: user.userType,
-          name: user.name,
-          lang: user.settings.language,
-        },
-        process.env.JWT_KEY as string,
-      );
+      logger.debug('Creating login id');
+      const loginId = nanoid();
 
-      logger.debug('Setting token in cookie');
-      // Setting token as token in cookie
-      res.cookie('token', token);
+      logger.debug('Creating login id cookie');
+      res.cookie('loginId', loginId);
 
       // Couldnt get nats mock to work
       // Code is only ran if its not test environment
@@ -60,16 +52,16 @@ const login = async (req: Request, res: Response) => {
           ip: req.socket.remoteAddress || req.ip,
           headers: req.headers,
           lang: req.lang,
+          loginId,
         });
-        logger.info('Sent Nats login event');
+        logger.debug('Sent Nats login event');
       }
 
-      logger.debug('Responding success to user');
+      logger.info('Responding success to user');
       res.status(200).json({
         errors: false,
         message: lang.successfulLogin,
         firstTime: !user.setupComplete,
-        user,
       });
     } catch (err) {
       logger.error(`Ran into an unexpected error. Error message: ${err}`);

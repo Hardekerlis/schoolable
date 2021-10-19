@@ -1,0 +1,11 @@
+FROM node:alpine
+
+WORKDIR /app
+COPY .npmrc .
+COPY package.json .
+RUN npm install
+COPY . .
+
+RUN cd node_modules/geoip-lite && npm run-script updatedb license_key=5ivUXeaG736Kv2SE
+
+CMD ["npm", "run", "dev"]

@@ -29,4 +29,9 @@ export enum Subjects {
   RemoveUser = 'remove:user',
   RemovePhase = 'remove:phase',
   RemovePhaseItem = 'remove:phaseItem',
+
+  // ##### Below this line should all subjects be which shouldn't exist in Remove* #####
+
+  SessionCreated = 'session:created',
+  SessionRemoved = 'session:removed',
 }

@@ -136,14 +136,3 @@ it('Sets a cookie if login is successful', async () => {
 
   expect(res.get('Set-Cookie')).toBeDefined();
 });
-
-it('Expect the users settings to be returned on login', async () => {
-  const { email, password } = await registerUser(UserTypes.Teacher);
-
-  const res = await request(app)
-    .post(path)
-    .send({ email, password })
-    .expect(200);
-
-  expect(res.body.user.settings).toBeDefined();
-});

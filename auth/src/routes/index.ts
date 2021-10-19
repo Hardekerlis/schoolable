@@ -91,8 +91,8 @@ router.delete(
   remove,
 );
 
-import logout from './logout';
-router.get('/logout', currentUser, getLanguage, logout);
+// import logout from './logout';
+// router.get('/logout', currentUser, getLanguage, logout);
 
 import check from './check';
 router.get('/check', currentUser, getLanguage, check);

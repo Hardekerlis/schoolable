@@ -1,0 +1,21 @@
+debug: true
+dev: true
+port: 3000
+cookies:
+  signed: true
+  httpOnly: true
+  maxAge: -1
+logs:
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
+database:
+  uri: session-mongo-srv
+  localIp: 127.0.0.1
+  useMemoryLocal: true
+  port: 27017
+  name: session
+nats:
+  url: http://nats-srv:4222
+  clusterId: schoolable
+redis:
+  host: session-redis-srv

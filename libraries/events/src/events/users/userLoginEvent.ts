@@ -9,5 +9,6 @@ export interface UserLoginEvent {
     ip: string;
     headers: object;
     lang: string;
+    loginId: string;
   };
 }

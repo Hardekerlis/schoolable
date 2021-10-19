@@ -8,7 +8,7 @@ import {
 import { CONFIG } from '@gustafdahl/schoolable-utils';
 import { nanoid } from 'nanoid';
 
-import UserCreatedPublisher from '../events/userCreated';
+import UserCreatedPublisher from '../events/publishers/userCreated';
 import { natsWrapper } from '../utils/natsWrapper';
 import User from '../models/user';
 import UserSettings from '../models/userSettings';

@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import { UserTypes } from '@gustafdahl/schoolable-enums';
 import {
-  NotAuthorizedError,
   UnexpectedError,
   BadRequestError,
 } from '@gustafdahl/schoolable-errors';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
-import UserRemovedPublisher from '../events/userRemoved';
+import UserRemovedPublisher from '../events/publishers/userRemoved';
 import { natsWrapper } from '../utils/natsWrapper';
 import User from '../models/user';
 import logger from '../utils/logger';
