@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session
+  template:
+    metadata:
+      labels:
+        app: session
+    spec:
+      containers:
+        - name: session
+          image: eu.gcr.io/schoolable-platform/session
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # this is refering to the pods name
+            - name: MAXWIND_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: maxwind-api-token
+                  key: MAXMIND_LICENSE_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-srv
+spec:
+  selector:
+    app: session
+  ports:
+    - name: session
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

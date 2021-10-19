@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session-mongo
+  template:
+    metadata:
+      labels:
+        app: session-mongo
+    spec:
+      containers:
+        - name: session-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-mongo-srv
+spec:
+  selector:
+    app: session-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
