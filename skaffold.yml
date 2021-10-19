@@ -21,6 +21,8 @@ build:
             dest: .
           - src: "**/*.sass"
             dest: .
+          - src: "**/*.module.sass"
+            dest: .
     - image: eu.gcr.io/schoolable-platform/auth
       context: auth
       kaniko:
