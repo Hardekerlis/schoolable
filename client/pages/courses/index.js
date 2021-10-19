@@ -15,7 +15,10 @@ import Layout from 'layouts/default/';
 
 import { Sidebar, CoursePreview, SampleCreationSystem, Dropdown } from 'components'
 
-import getUserData from 'helpers/getUserData.js';
+// import getUserData from 'helpers/getUserData.js';
+
+import { Permission, getUserData } from 'helpers';
+
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
 
@@ -103,13 +106,13 @@ const Courses = ({ courses, serverErrors }) => {
 
     if(response.errors === false) {
 
-      let newCourses = courses.concat([response.course]);
+      router.push(`/courses/page/edit?id=${response.course.id}`)
 
-      setCurrentCourses(newCourses)
+      // let newCourses = courses.concat([response.course]);
+      //
+      // setCurrentCourses(newCourses)
 
       Prompt.success(lang.courses.courseCreated);
-
-      router.push(`/courses/page/edit?id=${response.course.id}`)
 
       return true;
 
@@ -160,13 +163,13 @@ const Courses = ({ courses, serverErrors }) => {
 
         }
 
-        { userData.userType === "teacher" &&
+        { Permission().atLeast('teacher') &&
 
           <SampleCreationSystem firstWrapperClassName={styles.firstWrapperCourseCreation} requestCallback={onCourseCreation} itemApiPath={`/api/course/create`} currentItems={currentCourses} itemName={lang.courses.courseItemName} noCurrentItemText={lang.courses.noCoursesOwned} />
 
         }
 
-        { (userData.userType === "student" && coursesForRender.length === 0) &&
+        { (Permission().max('tempTeacher') && coursesForRender.length === 0) &&
 
           <div className={styles.noCoursesStudent}>
 
