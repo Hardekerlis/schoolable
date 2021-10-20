@@ -25,11 +25,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name # this is refering to the pods name
-            - name: MAXWIND_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: maxwind-api-token
-                  key: MAXMIND_LICENSE_KEY
+            # - name: MAXWIND_LICENSE_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: maxwind-api-token
+            #       key: MAXMIND_LICENSE_KEY
 ---
 apiVersion: v1
 kind: Service
