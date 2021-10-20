@@ -9,10 +9,12 @@ build:
   #   push: false
   googleCloudBuild:
     projectId: schoolable-platform
+    kanikoImage: gcr.io/kaniko-project/executor:v1.6.0
   artifacts:
     - image: eu.gcr.io/schoolable-platform/client
       context: client
       kaniko:
+        timeout: "60m"
         dockerfile: Dockerfile.dev
         cache: {}
       sync:

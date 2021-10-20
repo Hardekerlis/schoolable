@@ -29,7 +29,7 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
     logger.debug('Saving user');
     await user.save();
 
-    console.log(user, userId);
+    logger.info('User reference created');
     msg.ack();
   }
 }
