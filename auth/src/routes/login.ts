@@ -38,10 +38,21 @@ const login = async (req: Request, res: Response) => {
     logger.debug('Passwords matched');
     try {
       logger.debug('Creating login id');
+      const token = jwt.sign(
+        {
+          email: user.email,
+          id: user.id,
+          userType: user.userType,
+          name: user.name,
+          lang: user.settings.language,
+        },
+        process.env.JWT_KEY as string,
+      );
+
       const loginId = nanoid();
 
       logger.debug('Creating login id cookie');
-      res.cookie('loginId', loginId);
+      res.cookie('token', token);
 
       // Couldnt get nats mock to work
       // Code is only ran if its not test environment
@@ -49,8 +60,8 @@ const login = async (req: Request, res: Response) => {
         // Publishes event to nats service
         new UserLoginPublisher(natsWrapper.client, logger).publish({
           userId: user.id,
-          ip: req.socket.remoteAddress || req.ip,
-          headers: req.headers,
+          ip: req.headers['x-real-ip'] as string,
+          userAgent: req.headers['user-agent'] as string,
           lang: req.lang,
           loginId,
         });

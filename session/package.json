@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@gustafdahl/schoolable-errors": "^1.0.1",
-    "@gustafdahl/schoolable-events": "^1.8.0",
+    "@gustafdahl/schoolable-events": "^1.8.1",
     "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
     "@gustafdahl/schoolable-middlewares": "^1.1.0",
     "@gustafdahl/schoolable-utils": "^1.0.1",

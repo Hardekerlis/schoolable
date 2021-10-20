@@ -5,7 +5,7 @@ import { CONFIG } from '@gustafdahl/schoolable-utils';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import mongoose from 'mongoose';
-import { UserCreatedListener } from './events/listeners';
+import { UserCreatedListener, UserLoginListener } from './events/listeners';
 
 (async () => {
   const { env } = process;
@@ -51,6 +51,9 @@ import { UserCreatedListener } from './events/listeners';
 
     logger.debug('Registering UserCreatedListener for nats');
     new UserCreatedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registering UserLoginListener for nats');
+    new UserLoginListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

@@ -7,7 +7,7 @@ export interface UserLoginEvent {
   data: {
     userId: string;
     ip: string;
-    headers: object;
+    userAgent: string;
     lang: string;
     loginId: string;
   };

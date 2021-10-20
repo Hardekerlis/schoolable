@@ -22,13 +22,22 @@ interface SessionAttributes {
   sessionId: string;
   location: Location;
   creationTimestamp: string;
+  loginId: string;
+  userAgent: string;
 }
 
 interface SessionModel extends mongoose.Model<SessionDoc> {
   build(attributes: SessionAttributes): SessionDoc;
 }
 
-export interface SessionDoc extends mongoose.Document {}
+export interface SessionDoc extends mongoose.Document {
+  user: UserDoc;
+  sessionId: string;
+  location: Location;
+  creationTimestamp: string;
+  loginId: string;
+  userAgent: string;
+}
 
 const sessionSchema = new mongoose.Schema(
   {
@@ -42,6 +51,14 @@ const sessionSchema = new mongoose.Schema(
       required: true,
     },
     creationTimestamp: {
+      type: String,
+      required: true,
+    },
+    loginId: {
+      type: String,
+      required: true,
+    },
+    userAgent: {
       type: String,
       required: true,
     },

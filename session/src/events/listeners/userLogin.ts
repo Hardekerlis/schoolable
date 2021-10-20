@@ -15,11 +15,11 @@ export class UserLoginListener extends Listener<UserLoginEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: UserLoginEvent['data'], msg: Message) {
-    const { userId, ip, headers, loginId } = data;
+    const { userId, ip, userAgent, loginId } = data;
 
     logger.info(`User with id ${userId} logged in. Creating session`);
 
     console.log(data);
-    // msg.ack();
+    msg.ack();
   }
 }
