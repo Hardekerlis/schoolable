@@ -1,4 +1,4 @@
-import Request from 'helpers/request.js'
+import Request from 'helpers/request.js';
 
 //dont forget language
 
@@ -44,15 +44,14 @@ import Request from 'helpers/request.js'
 //FIX ME :)
 
 const SetupForBuild = () => {
-  return ("hej")
-}
+  return 'hej';
+};
 
-SetupForBuild.displayName = "SetupForBuild";
+SetupForBuild.displayName = 'SetupForBuild';
 
 // const forBuild = [
 //   password,
 //   // password1
 // ]
-
 
 export default SetupForBuild;

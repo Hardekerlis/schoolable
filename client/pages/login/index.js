@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -8,7 +8,6 @@ import Layout from 'layouts/default/';
 
 import styles from './login.module.sass';
 
-
 import Request from 'helpers/request.js';
 
 import { Prompt } from 'helpers/prompt';
@@ -16,38 +15,34 @@ import { Prompt } from 'helpers/prompt';
 import language from 'helpers/lang';
 const lang = language.login;
 
-
 import redirectAuth from 'helpers/redirectAuth.js';
 
 export async function getServerSideProps(ctx) {
-
   const { props } = await redirectAuth(ctx);
 
   if(props?.tokenVerified === true) {
     return {
       redirect: {
         destination: '/',
-        permanent: false
-      }
-    }
+        permanent: false,
+      },
+    };
   }
 
   return {
-    props: {}
-  }
+    props: {},
+  };
 }
 
-
 const Login = () => {
-
   const router = useRouter();
 
   const [credentials, setCredentials] = useState({
     email: 'teacherEmail@myTeacherEmail.teach',
-    password: '0oCBAYLidGY9PkHPPhNAE'
-  })
+    password: 'wOmTAy4WsLJX3VwZJJCww',
+  });
 
-  const submit = async(evt) => {
+  const submit = async evt => {
     evt.preventDefault();
 
     let request = new Request('/api/auth/login', credentials).post().json();
@@ -57,21 +52,22 @@ const Login = () => {
 
     let user;
 
+    //TODO: user cookie can be undefined.
+    //this shouldnt be possible
+
     try {
       user = JSON.stringify(res.user);
       Cookies.set('user', user);
-    }catch(e) {
+    }catch (e) {
       return Prompt.error(lang.unexpected);
     }
 
     if(res.errors) return Prompt.error(res.errors);
 
     router.push('/');
-
-  }
+  };
 
   const credentialsChange = (evt, prop) => {
-
     let val = evt?.target?.value;
 
     if(!evt.target) {
@@ -80,33 +76,34 @@ const Login = () => {
 
     setCredentials({
       ...credentials,
-      [prop]: val
-    })
-
-  }
-
+      [prop]: val,
+    });
+  };
 
   return (
-
     <Layout mainClass={styles.positioning}>
-
       <form onSubmit={submit} className={styles.form}>
-
         <p className={styles.title}>{lang.pageTitle}</p>
 
-        <input value={credentials.email} onChange={(event) => credentialsChange(event, "email")} type="text" placeholder={lang.email} />
-        <input value={credentials.password} onChange={(event) => credentialsChange(event, "password")} type="password" placeholder={lang.password} />
+        <input
+          value={credentials.email}
+          onChange={event => credentialsChange(event, 'email')}
+          type='text'
+          placeholder={lang.email}
+        />
+        <input
+          value={credentials.password}
+          onChange={event => credentialsChange(event, 'password')}
+          type='password'
+          placeholder={lang.password}
+        />
 
-
-        <button className={styles.submitButton} type="submit">{lang.loginBtn}</button>
-
+        <button className={styles.submitButton} type='submit'>
+          {lang.loginBtn}
+        </button>
       </form>
-
     </Layout>
-
-  )
-
-
-}
+  );
+};
 
 export default Login;

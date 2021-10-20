@@ -1,24 +1,19 @@
 const tempUser = {
   username: 'e',
   password: 'e',
-  type: 'teacher'
-}
+  type: 'teacher',
+};
 
-let token = ''
+let token = '';
 
-const setToken = (tok) => {
+const setToken = tok => {
   token = tok;
-}
+};
 
 const getToken = () => {
   return token;
-}
+};
 
-const keys = ['secret phrase']
+const keys = ['secret phrase'];
 
-export {
-  tempUser,
-  keys,
-  setToken,
-  getToken
-}
+export { tempUser, keys, setToken, getToken };

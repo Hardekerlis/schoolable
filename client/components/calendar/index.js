@@ -15,5 +15,5 @@ export {
   MultipleDaySchedule,
   Month,
   Timeline,
-  CalendarTypeSelector
-}
+  CalendarTypeSelector,
+};

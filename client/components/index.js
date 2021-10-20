@@ -1,9 +1,9 @@
-import FirstTimeSetup from './firstTimeSetup'
-import Grid from './grid'
-import Sidebar from './sidebar'
-import Dropdown from './dropdown'
-import CourseMenuItems from './courseMenuItems'
-import CoursePageRender from './coursePageRender'
+import FirstTimeSetup from './firstTimeSetup';
+import Grid from './grid';
+import Sidebar from './sidebar';
+import Dropdown from './dropdown';
+import CourseMenuItems from './courseMenuItems';
+import CoursePageRender from './coursePageRender';
 import SampleCreationSystem from './sampleCreationSystem';
 import Phase from './phase';
 import PhaseEditMenu from './phaseEditMenu';
@@ -11,9 +11,14 @@ import CoursePreview from './coursePreview';
 import RightClickMenu from './rightClickMenu';
 //import pos
 
-
 import { CourseCreation } from './teacher';
-import { OneDaySchedule, MultipleDaySchedule, Month, Timeline, CalendarTypeSelector } from './calendar'
+import {
+  OneDaySchedule,
+  MultipleDaySchedule,
+  Month,
+  Timeline,
+  CalendarTypeSelector,
+} from './calendar';
 
 export {
   FirstTimeSetup,
@@ -34,4 +39,4 @@ export {
   CoursePreview,
   RightClickMenu,
   //export pos
-}
+};

@@ -1,31 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
-
-
-
 import Layout from 'layouts/default';
 
-import { Sidebar } from 'components'
+import { Sidebar } from 'components';
 
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
 
-import Request from 'helpers/request.js'
+import Request from 'helpers/request.js';
 
 import styles from './phases.module.sass';
 
-
-export const getServerSideProps = async(ctx) => {
-
+export const getServerSideProps = async ctx => {
   const { sessionId } = getCookies(ctx);
 
-  let res = await (new Request('/api/course').get().json().cookie({sessionId})).send();
+  let res = await new Request('/api/course').get().json().ctx(ctx).send();
 
-  console.log(res)
+  console.log(res);
 
-  const serverErrors = handleErrors(200, res, [404]);
-  if(serverErrors.isProps) return serverErrors.propsContainer;
-
+  let serverErrors = handleErrors(200, res, [404]);
 
   if(serverErrors === false) {
     // courses = res.courses;
@@ -35,27 +28,21 @@ export const getServerSideProps = async(ctx) => {
 
   return {
     props: {
-      serverErrors
-    }
-  }
-
-}
+      serverErrors,
+    },
+  };
+};
 
 const Phases = () => {
-
+  console.log('gpihae');
 
   return (
     <Layout>
-
       <div className={styles.wrapper}>
-
         <Sidebar />
-
       </div>
-
     </Layout>
-  )
-
-}
+  );
+};
 
 export default Phases;

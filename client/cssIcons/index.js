@@ -1,5 +1,3 @@
-import RightClickIcon from './rightClickIcon'
+import RightClickIcon from './rightClickIcon';
 
-export {
-  RightClickIcon
-}
+export { RightClickIcon };
