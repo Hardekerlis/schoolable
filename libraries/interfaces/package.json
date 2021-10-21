@@ -1,6 +1,6 @@
 {
   "name": "@gustafdahl/schoolable-interfaces",
-  "version": "1.0.6",
+  "version": "1.1.2",
   "description": "Interface library for schoolable",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

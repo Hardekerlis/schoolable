@@ -3,11 +3,13 @@ import { UserTypes } from '@gustafdahl/schoolable-enums';
 
 interface UserAttributes {
   userId: string;
+  email: string;
   name: {
     first: string;
     last: string;
   };
   userType: UserTypes;
+  lang: string;
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -16,16 +18,19 @@ interface UserModel extends mongoose.Model<UserDoc> {
 
 export interface UserDoc extends mongoose.Document {
   userId: string;
+  email: string;
   name: {
     first: string;
     last: string;
   };
   userType: UserTypes;
+  lang: string;
 }
 
 const userSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
+    email: { type: String, required: true },
     name: {
       first: {
         type: String,
@@ -39,6 +44,10 @@ const userSchema = new mongoose.Schema(
     userType: {
       type: String,
       enum: Object.values(UserTypes),
+      required: true,
+    },
+    lang: {
+      type: String,
       required: true,
     },
   },

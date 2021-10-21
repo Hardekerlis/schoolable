@@ -15,15 +15,17 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: UserCreatedEvent['data'], msg: Message) {
-    const { userType, name, userId } = data;
+    const { userType, name, userId, email, lang } = data;
 
     logger.info('Creating user reference');
 
     logger.debug('Building user');
     const user = User.build({
       userType,
+      email,
       name,
       userId,
+      lang,
     });
 
     logger.debug('Saving user');

@@ -38,20 +38,11 @@ const login = async (req: Request, res: Response) => {
     logger.debug('Passwords matched');
     try {
       logger.debug('Creating login id');
-      const token = jwt.sign(
-        {
-          email: user.email,
-          id: user.id,
-          userType: user.userType,
-          name: user.name,
-          lang: user.settings.language,
-        },
-        process.env.JWT_KEY as string,
-      );
+
       const loginId = nanoid();
 
       logger.debug('Creating login id cookie');
-      res.cookie('token', token);
+      res.cookie('loginId', loginId);
 
       // Couldnt get nats mock to work
       // Code is only ran if its not test environment
@@ -72,7 +63,6 @@ const login = async (req: Request, res: Response) => {
         errors: false,
         message: lang.successfulLogin,
         firstTime: !user.setupComplete,
-        user,
       });
     } catch (err) {
       logger.error(`Ran into an unexpected error. Error message: ${err}`);
