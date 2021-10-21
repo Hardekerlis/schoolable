@@ -1,5 +1,3 @@
 import CourseCreation from './courseCreation';
 
-export {
-  CourseCreation
-}
+export { CourseCreation };

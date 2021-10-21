@@ -2,19 +2,18 @@ import React, { useEffect, useState } from 'react';
 
 import { DateTime, Interval } from 'luxon';
 
-import isHoliday from '../holiday.js'
+import isHoliday from '../holiday.js';
 
 import styles from './month.module.sass';
 
 const Month = ({ date }) => {
-
   const firstDayOfMonth = date.startOf('month');
 
   let firstDay = firstDayOfMonth.startOf('day');
 
   const weekday = parseFloat(firstDay.toFormat('c'));
 
-  if(weekday != 7) {
+  if(weekday !== 7) {
     firstDay = firstDay.minus({ day: weekday }).startOf('day');
   }
 
@@ -40,13 +39,16 @@ const Month = ({ date }) => {
       <div key={key} className={className}>
         <p className={styles.date}>{workingDay.toFormat('d')}</p>
       </div>
-    )
-  }
+    );
+  };
 
   //generating JSX for each day
   const addMonthDay = (i, addMonthText) => {
     let className = styles.monthDay;
-    if(workingDay.startOf('day').toISO() === DateTime.now().startOf('day').toISO()) {
+    if(
+      workingDay.startOf('day').toISO() ===
+      DateTime.now().startOf('day').toISO()
+    ) {
       className = `${styles.monthDay} ${styles.current}`;
     }
 
@@ -54,37 +56,33 @@ const Month = ({ date }) => {
       addMonthText = true;
     }
 
-
     if(isHoliday(workingDay)) {
       //is holiday
       className += ` ${styles.holiday}`;
     }
-
 
     if(addMonthText) {
       dayRenders.push(
         <div key={i} className={className}>
           <p className={styles.monthInDay}>{workingDay.toFormat('LLL')}</p>
           <p className={styles.date}>{workingDay.toFormat('d')}</p>
-        </div>
-      )
-    }else {
-      dayRenders.push(
-        dayJSX(className, i)
+        </div>,
       );
+    }else {
+      dayRenders.push(dayJSX(className, i));
     }
 
-    workingDay = workingDay.plus({day: 1})
-  }
+    workingDay = workingDay.plus({ day: 1 });
+  };
 
   //adding prefix days
-  for(let i = 0; i < prefixDays; i++) {
+  for (let i = 0; i < prefixDays; i++) {
     if(i === 0) addMonthDay(i, true);
     else addMonthDay(i);
   }
 
   //adding all days from the current month
-  for(let i = 0; i <= firstDayOfMonth.daysInMonth; i++) {
+  for (let i = 0; i <= firstDayOfMonth.daysInMonth; i++) {
     addMonthDay(prefixDays + i);
   }
 
@@ -93,9 +91,15 @@ const Month = ({ date }) => {
 
   //fixing an edge case where a whole week from the next
   //month would show up
-  if(workingDay.minus({day: 1}).toObject().month !== firstDayOfMonth.toObject().month) {
-    if(workingDay.minus({day: 2}).toObject().day === firstDayOfMonth.daysInMonth) {
-      if(parseFloat(workingDay.minus({day: 2}).toFormat('c')) === 6) {
+  if(
+    workingDay.minus({ day: 1 }).toObject().month !==
+    firstDayOfMonth.toObject().month
+  ) {
+    if(
+      workingDay.minus({ day: 2 }).toObject().day ===
+      firstDayOfMonth.daysInMonth
+    ) {
+      if(parseFloat(workingDay.minus({ day: 2 }).toFormat('c')) === 6) {
         dayRenders.pop();
         suffixDays = -1;
       }
@@ -112,39 +116,32 @@ const Month = ({ date }) => {
     }else if(suffixWeekday > 6) {
       suffixDays = -1;
     }
-
   }
 
-  for(let i = 0; i <= suffixDays; i++) {
+  for (let i = 0; i <= suffixDays; i++) {
     addMonthDay(totalDays + i + 1);
   }
 
   //generating week day texts
   let dayIdentifiers = [];
-  let dayBuildHelper = workingDay.set({weekDay: 0});
+  let dayBuildHelper = workingDay.set({ weekDay: 0 });
 
-  for(let i = 0; i < 7; i++) {
+  for (let i = 0; i < 7; i++) {
     dayIdentifiers.push(
-      <div key={"id" + i} className={styles.monthDayIdentifier}>
+      <div key={'id' + i} className={styles.monthDayIdentifier}>
         {dayBuildHelper.toFormat('cccc')}
-      </div>
-    )
-    dayBuildHelper = dayBuildHelper.plus({day: 1})
+      </div>,
+    );
+    dayBuildHelper = dayBuildHelper.plus({ day: 1 });
   }
 
   //updating the render
-  return(
+  return (
     <div className={styles.monthContainer}>
-      <div className={styles.dayIds}>
-        {dayIdentifiers}
-      </div>
-      <div className={styles.month}>
-        {dayRenders}
-      </div>
+      <div className={styles.dayIds}>{dayIdentifiers}</div>
+      <div className={styles.month}>{dayRenders}</div>
     </div>
-  )
-
-
-}
+  );
+};
 
 export default Month;

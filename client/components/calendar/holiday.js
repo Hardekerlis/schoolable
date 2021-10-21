@@ -6,8 +6,7 @@ let hd = new Holidays();
 //initialize holidays for the users contry
 hd.init('SE');
 
-const isHoliday = (date) => {
-
+const isHoliday = date => {
   let holiday = false;
 
   let _weekday = parseFloat(date.toFormat('c'));
@@ -21,8 +20,6 @@ const isHoliday = (date) => {
   }
 
   return holiday;
-
-}
-
+};
 
 export default isHoliday;

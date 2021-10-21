@@ -1,14 +1,11 @@
-import { OneDay, DayIdentifier, DayDividers } from 'components/calendar'
+import { OneDay, DayIdentifier, DayDividers } from 'components/calendar';
 
 import { DateTime, Interval } from 'luxon';
 
-
 import styles from './daySchedules.module.sass';
-
 
 //generate multiple days.
 const MultipleDaySchedule = (data, firstHour) => {
-
   //used as a reference to find out which is the earliest
   //event
   let firstEvt = null;
@@ -17,17 +14,17 @@ const MultipleDaySchedule = (data, firstHour) => {
   //events as props
   let master = {};
 
-  for(let evt of data) {
+  for (let evt of data) {
     let formatted = evt.start.toFormat('dd:MM:yyyy');
 
     //calculate the earliest event
     //by comparing all events with eachother
-    let comp = (evt.start.get('hour') + (evt.start.get('minute') / 100));
+    let comp = evt.start.get('hour') + evt.start.get('minute') / 100;
     if(firstEvt === null || comp < firstEvt.comparer) {
       firstEvt = {
         comparer: comp,
-        evt: evt
-      }
+        evt: evt,
+      };
     }
 
     //calculate a number (sum) which is used for
@@ -35,10 +32,10 @@ const MultipleDaySchedule = (data, firstHour) => {
     let nums = formatted.split(':');
     let sum = 0;
 
-    for(let t = 0; t < nums.length; t++) {
+    for (let t = 0; t < nums.length; t++) {
       let num = nums[t];
       //MIGHT HAVE TO BE TWEAKED
-      sum += parseFloat(num) * (Math.pow(t+1, 5));
+      sum += parseFloat(num) * Math.pow(t + 1, 5);
     }
 
     if(!master.hasOwnProperty(sum)) {
@@ -46,7 +43,6 @@ const MultipleDaySchedule = (data, firstHour) => {
     }
 
     master[sum].push(evt);
-
   }
 
   let isSevenDay = false;
@@ -58,23 +54,30 @@ const MultipleDaySchedule = (data, firstHour) => {
   let completeRenderPreparer = [];
 
   //actually generate the renders for the events
-  for(let i = 0; i < Object.keys(master).length; i++) {
-
+  for (let i = 0; i < Object.keys(master).length; i++) {
     const dayData = master[Object.keys(master)[i]];
 
     const dayDate = dayData[0].start.startOf('day');
 
     completeRenderPreparer.push(
-      <div key={i} className={(isSevenDay) ? styles.completeSevenEventDay : styles.completeThreeEventDay}>
+      <div
+        key={i}
+        className={isSevenDay
+            ? styles.completeSevenEventDay
+            : styles.completeThreeEventDay}
+      >
         <DayIdentifier date={dayDate} />
-        <OneDay day={dayDate} data={dayData} options={{
-          extraClass: styles.multipleDaySchedule,
-          eventsClass: styles.multipleDayEvents,
-          sevenDaySchedule: isSevenDay
-        }} />
-      </div>
-    )
-
+        <OneDay
+          day={dayDate}
+          data={dayData}
+          options={{
+            extraClass: styles.multipleDaySchedule,
+            eventsClass: styles.multipleDayEvents,
+            sevenDaySchedule: isSevenDay,
+          }}
+        />
+      </div>,
+    );
   }
 
   firstHour.current = firstEvt.evt.start.toObject().hour;
@@ -84,26 +87,28 @@ const MultipleDaySchedule = (data, firstHour) => {
       {completeRenderPreparer}
       <DayDividers amount={Object.keys(master).length} />
     </div>
-  )
-}
+  );
+};
 
 const OneDaySchedule = (data, firstHour) => {
   let d = data[0].start.startOf('day');
 
   return (
     <div className={styles.oneDayContainer}>
-      <div className={styles.oneDayTitle}><DayIdentifier date={d}/></div>
-      <OneDay day={d} data={data} options={{
-        extraClass: styles.oneDaySchedule,
-        fullDayClass: styles.fullDayContainer
-      }} firstHour={firstHour} />
+      <div className={styles.oneDayTitle}>
+        <DayIdentifier date={d} />
+      </div>
+      <OneDay
+        day={d}
+        data={data}
+        options={{
+          extraClass: styles.oneDaySchedule,
+          fullDayClass: styles.fullDayContainer,
+        }}
+        firstHour={firstHour}
+      />
     </div>
-  )
+  );
+};
 
-}
-
-
-export {
-  MultipleDaySchedule,
-  OneDaySchedule
-}
+export { MultipleDaySchedule, OneDaySchedule };

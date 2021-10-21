@@ -8,14 +8,14 @@ let cookieValue = Cookies.get('selectedLang');
 const setDefaultCookie = () => {
   Cookies.set('selectedLang', 'ENG');
   cookieValue = 'ENG';
-}
+};
 
 if(!cookieValue) setDefaultCookie();
 
 const langs = {
   ENG,
-  SWE
-}
+  SWE,
+};
 
 if(!langs.hasOwnProperty(cookieValue)) setDefaultCookie();
 

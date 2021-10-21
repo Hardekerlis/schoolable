@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 import dynamic from 'next/dynamic';
 
-
 import { nanoid } from 'nanoid';
 
-
-import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { DateTime, Interval } from 'luxon';
 
@@ -16,18 +13,17 @@ import { hourHeight as HourHeight } from '../misc.js';
 
 import { DayDividers, DayIdentifier } from 'components/calendar';
 
-
 import styles from './oneDay.module.sass';
 
 const _OneDayExtra = (day, data, options, firstHour) => {
+  const hourHeight = options.hourHeight ? options.hourHeight : HourHeight;
 
-  const hourHeight = (options.hourHeight) ? options.hourHeight : HourHeight;
-
-  data = data.concat([])
+  data = data.concat([]);
 
   if(!options) options = {};
 
-  if(options.ghostLeft === undefined || options.ghostLeft === null) options.ghostLeft = 0;
+  if(options.ghostLeft === undefined || options.ghostLeft === null)
+    options.ghostLeft = 0;
 
   // console.log("Generating day:", day.setLocale('en-US').toLocaleString({
   //   month: 'long',
@@ -37,29 +33,25 @@ const _OneDayExtra = (day, data, options, firstHour) => {
 
   let fullDayEvents = [];
 
-  for(let o = 0; o < data.length; o++) {
-
+  for (let o = 0; o < data.length; o++) {
     if(data[o].fullDay) {
-      fullDayEvents.push({evt: data[o], index: o});
+      fullDayEvents.push({ evt: data[o], index: o });
     }
-
   }
 
   let _offset = 0;
   fullDayEvents = fullDayEvents.map(obj => {
-
     data.splice(obj.index + _offset, 1);
     _offset++;
 
-    return (obj.evt);
-
-  })
+    return obj.evt;
+  });
 
   //sort every event. So the one that starts earliest
   //is on top.
   const sorted = data.sort((d1, d2) => {
-    return d1.start.toSeconds() - d2.start.toSeconds()
-  })
+    return d1.start.toSeconds() - d2.start.toSeconds();
+  });
 
   //create the necessary information for each event
   //this will be used for event- positioning and sizing
@@ -68,7 +60,7 @@ const _OneDayExtra = (day, data, options, firstHour) => {
   const eventInfos = [];
   let heightOfAllPrevEvents = 0;
 
-  for(let j = 0; j < sorted.length; j++) {
+  for (let j = 0; j < sorted.length; j++) {
     const obj = sorted[j];
 
     //handling timestamp
@@ -83,12 +75,14 @@ const _OneDayExtra = (day, data, options, firstHour) => {
     //the lesson start times does not need to factor
     //in DST for calculation.
     // const topHours = timeInterval.length('hour');
-    const topHours = day.toObject().hour + obj.start.toObject().hour + ((day.toObject().minute + obj.start.toObject().minute) / 60);
+    const topHours =
+      day.toObject().hour +
+      obj.start.toObject().hour +
+      (day.toObject().minute + obj.start.toObject().minute) / 60;
 
     //generating size and position
     const height = hours * hourHeight;
-    let top = (topHours * hourHeight);
-
+    let top = topHours * hourHeight;
 
     //these are used for calculating overlapping
     //some are hardcoded because it's only one day
@@ -102,17 +96,21 @@ const _OneDayExtra = (day, data, options, firstHour) => {
     let collidedWith = [];
 
     //checking overlapping
-    for(let key in eventInfos) {
+    for (let key in eventInfos) {
       const checkInfo = eventInfos[key];
 
-      if(bottom <= checkInfo.top || top >= checkInfo.bottom || right <= checkInfo.left || left >= checkInfo.right) {
+      if(
+        bottom <= checkInfo.top ||
+        top >= checkInfo.bottom ||
+        right <= checkInfo.left ||
+        left >= checkInfo.right
+      ) {
         //no collision
       }else {
         //collision
-        collidedWith.push(checkInfo.index)
-        eventInfos[checkInfo.index].collidedWith.push(j)
+        collidedWith.push(checkInfo.index);
+        eventInfos[checkInfo.index].collidedWith.push(j);
       }
-
     }
 
     top -= heightOfAllPrevEvents;
@@ -125,19 +123,16 @@ const _OneDayExtra = (day, data, options, firstHour) => {
       left,
       right,
       index: j,
-      collidedWith
-    })
+      collidedWith,
+    });
 
     heightOfAllPrevEvents += height;
-
-
   }
 
   //create the actual event elements
   //to be used for rendering
 
   let eventRenderers = sorted.map((obj, index) => {
-
     const info = eventInfos[index];
 
     let width = 100;
@@ -151,7 +146,6 @@ const _OneDayExtra = (day, data, options, firstHour) => {
 
     //resizing if overlapping
     if(info?.collidedWith.length !== 0) {
-
       enableLocation = false;
 
       let cols = info.collidedWith;
@@ -164,8 +158,7 @@ const _OneDayExtra = (day, data, options, firstHour) => {
       titleWidth = 100;
       // timeTextTop = 35;
 
-      timeTextClass = `${styles.time} ${styles.timeSmall}`
-
+      timeTextClass = `${styles.time} ${styles.timeSmall}`;
     }
 
     left = `${left}%`;
@@ -174,89 +167,98 @@ const _OneDayExtra = (day, data, options, firstHour) => {
 
     let eventNameStyle = {
       width: titleWidth,
-    }
+    };
 
     if(options.sevenDaySchedule === true) {
-
       if(info.height < 90) {
         //remove location
         enableLocation = false;
       }
 
       eventNameStyle.width = '100%';
-
     }
 
-    let className = (options.extraClass) ? `${styles.ghostEventContainer} ${options.extraClass}` : styles.ghostEventContainer;
+    let className = options.extraClass
+      ? `${styles.ghostEventContainer} ${options.extraClass}`
+      : styles.ghostEventContainer;
 
     const ghostStyle = {
       top: `${info?.top}px`,
-      height: `${info?.height}px`
-    }
+      height: `${info?.height}px`,
+    };
 
     if(options.ghostLeft) ghostStyle.left = `${options.ghostLeft}px`;
     if(options.eventWidth) ghostStyle.width = `${options.eventWidth}px`;
 
     const eventStyle = {
       width: width,
-      left: left
-    }
+      left: left,
+    };
 
     if(obj.color) eventStyle.backgroundColor = obj.color;
 
     return (
       <div style={ghostStyle} className={className} key={index + nanoid(6)}>
         <div data-index={index} style={eventStyle} className={styles.event}>
-          <p style={eventNameStyle} className={styles.eventName}>{obj.title}</p>
+          <p style={eventNameStyle} className={styles.eventName}>
+            {obj.title}
+          </p>
 
-          { options.sevenDaySchedule ?
-              <>
-
-                <p style={{position: 'relative', top: 'unset', left: 'unset', marginLeft: '10px'}} className={timeTextClass}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
-
-                { enableLocation &&
-                  <div className={styles.locationWrapper}>
-                    <FontAwesomeIcon className={styles.mapIcon} icon={faMapMarkerAlt} />
-                    <p>{obj.location}</p>
-                  </div>
-                }
-
-              </>
-
-            :
-
+          {options.sevenDaySchedule ? (
             <>
+              <p
+                style={{
+                  position: 'relative',
+                  top: 'unset',
+                  left: 'unset',
+                  marginLeft: '10px',
+                }}
+                className={timeTextClass}
+              >{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat(
+                'HH:mm',
+              )}`}</p>
 
-              { enableLocation &&
+              {enableLocation && (
                 <div className={styles.locationWrapper}>
-                  <FontAwesomeIcon className={styles.mapIcon} icon={faMapMarkerAlt} />
+                  <FontAwesomeIcon
+                    className={styles.mapIcon}
+                    icon={faMapMarkerAlt}
+                  />
                   <p>{obj.location}</p>
                 </div>
-              }
-
-              <p className={timeTextClass}>{`${obj.start.toFormat('HH:mm')} - ${obj.end.toFormat('HH:mm')}`}</p>
-
+              )}
             </>
+          ) : (
+            <>
+              {enableLocation && (
+                <div className={styles.locationWrapper}>
+                  <FontAwesomeIcon
+                    className={styles.mapIcon}
+                    icon={faMapMarkerAlt}
+                  />
+                  <p>{obj.location}</p>
+                </div>
+              )}
 
-          }
-
-
+              <p className={timeTextClass}>{`${obj.start.toFormat(
+                'HH:mm',
+              )} - ${obj.end.toFormat('HH:mm')}`}</p>
+            </>
+          )}
         </div>
       </div>
-    )
-
-  })
+    );
+  });
 
   let fullDayEventsWidth = 100 / fullDayEvents.length;
   let fullDayEventRenderers = [];
 
   //generate full day events
-  for(let i = 0; i < fullDayEvents.length; i++) {
-
+  for (let i = 0; i < fullDayEvents.length; i++) {
     const evt = fullDayEvents[i];
 
     const evtStyle = {
-      width: `${fullDayEventsWidth}%`
+      width: `${fullDayEventsWidth}%`,
     };
 
     if(evt.color) evtStyle.backgroundColor = evt.color;
@@ -264,49 +266,49 @@ const _OneDayExtra = (day, data, options, firstHour) => {
     fullDayEventRenderers.push(
       <div key={i} style={evtStyle} className={styles.fullDayEvent}>
         <p>{evt.title}</p>
-      </div>
-    )
-
+      </div>,
+    );
   }
 
   let fullDayEventContainer = (
-    <div key={"fullDayEventContainer"} className={(options.fullDayClass) ? `${styles.fullDayContainer} ${options.fullDayClass}` : styles.fullDayContainer}>
+    <div
+      key={'fullDayEventContainer'}
+      className={options.fullDayClass
+          ? `${styles.fullDayContainer} ${options.fullDayClass}`
+          : styles.fullDayContainer}
+    >
       {fullDayEventRenderers}
     </div>
-  )
+  );
 
+  eventRenderers = eventRenderers.concat([fullDayEventContainer]);
 
-  eventRenderers = eventRenderers.concat([fullDayEventContainer])
-
-
-  const evtsClass = (options.eventsClass) ? `${styles.events} ${options.eventsClass}` : styles.events;
+  const evtsClass = options.eventsClass
+    ? `${styles.events} ${options.eventsClass}`
+    : styles.events;
 
   if(firstHour) firstHour.current = sorted[0].start.toObject().hour;
 
   return {
     jsx: (
-      <div style={{minHeight: `${(hourHeight * 24)}px`}} className={evtsClass}>
+      <div style={{ minHeight: `${hourHeight * 24}px` }} className={evtsClass}>
         {eventRenderers}
       </div>
     ),
     eventRenderers,
-    eventInfos
-  }
-
-}
+    eventInfos,
+  };
+};
 
 const _OneDay = ({ day, data, options, firstHour }) => {
   return _OneDayExtra(day, data, options, firstHour).jsx;
-}
+};
 
 //TODO: Investigate SSR
 const OneDay = dynamic(() => Promise.resolve(_OneDay), {
-  ssr: false
-})
+  ssr: false,
+});
 
 const OneDayExtra = _OneDayExtra;
 
-export {
-  OneDay,
-  OneDayExtra
-}
+export { OneDay, OneDayExtra };

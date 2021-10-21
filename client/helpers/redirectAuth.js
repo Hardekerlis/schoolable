@@ -3,7 +3,6 @@ import cookies from 'next-cookies';
 import Request from 'helpers/request.js';
 
 export default async function redirectAuth(ctx) {
-
   const { req } = ctx;
 
   // console.log(req.headers)
@@ -12,7 +11,10 @@ export default async function redirectAuth(ctx) {
   //
   // console.log(token)
 
-  let request = new Request('/api/auth/check').get().json().headers(req.headers);
+  let request = new Request('/api/auth/check')
+    .get()
+    .json()
+    .headers(req.headers);
   let response = await request.send();
 
   // console.log(response.headers)
@@ -22,14 +24,13 @@ export default async function redirectAuth(ctx) {
       redirect: {
         destination: '/login',
         permanent: false,
-      }
-    }
+      },
+    };
   }
 
   return {
     props: {
-      tokenVerified: true
+      tokenVerified: true,
     }, // will be passed to the page component as props
-  }
-
+  };
 }

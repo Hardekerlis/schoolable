@@ -4,7 +4,11 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "next/core-web-vitals"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "next/core-web-vitals"
+  ],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -15,12 +19,12 @@
   "root": true,
   "plugins": ["react", "react-hooks"],
   "rules": {
-    "indent": ["error", "tab"],
+    "index": ["off"],
     "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
     "semi": ["error", "always"],
     "eqeqeq": ["error", "always"],
-    "curly": ["error", "all"],
+    "curly": ["off"],
     "no-unused-vars": ["warn"],
     "react/boolean-prop-naming": [
       "off",
@@ -29,13 +33,37 @@
     "react/jsx-curly-spacing": [
       "error",
       {
-        "when": "always",
-        "children": { "when": "always" },
+        "when": "never",
+        "children": { "when": "never" },
         "attributes": { "allowMultiline": false }
       }
     ],
     "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "keyword-spacing": [
+      "error",
+      {
+        "after": true,
+        "before": false,
+        "overrides": {
+          "from": {
+            "before": true
+          },
+          "continue": {
+            "before": true
+          },
+          "if": {
+            "after": false
+          },
+          "return": {
+            "before": true
+          },
+          "else": {
+            "before": false
+          }
+        }
+      }
+    ]
   }
 }

@@ -1,4 +1,3 @@
-
 import language from 'helpers/lang';
 const lang = language.handleErrorsServer;
 
@@ -26,33 +25,27 @@ const lang = language.handleErrorsServer;
 // }
 
 const handleErrors = (successStatus, response, ignoreStatuses) => {
-
-  const status = (response._isJSON) ? response._response.status : response.status;
+  const status = response._isJSON ? response._response.status : response.status;
 
   let errors = false;
 
   if(status !== successStatus && ignoreStatuses.includes(status) === false) {
-
     //handle specific status code
 
-    console.log("ERRORS:", errors)
+    console.log('ERRORS:', errors);
 
     if(errors === false) {
-
-      if(response.hasOwnProperty("errors")) {
+      if(response.hasOwnProperty('errors')) {
         errors = response.errors;
       }else {
         errors = [lang.unexpected];
       }
-
     }
-
   }else {
     errors = false;
   }
 
   return errors;
-
-}
+};
 
 export default handleErrors;

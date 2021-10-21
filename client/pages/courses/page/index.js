@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Request from 'helpers/request.js';
 
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
 
-import getUserData from 'helpers/getUserData.js'
-
+import getUserData from 'helpers/getUserData.js';
 
 import { Prompt } from 'helpers/prompt';
 
@@ -20,16 +18,16 @@ import Layout from 'layouts/default/';
 
 import { CoursePageRender, Sidebar } from 'components';
 
-
 import styles from './coursePage.module.sass';
 
-
-export const getServerSideProps = async(ctx) => {
-
-  console.log(ctx.query.id)
+export const getServerSideProps = async ctx => {
+  console.log(ctx.query.id);
 
   //Get course data. Not phases.
-  let request = new Request(`/api/course/fetch/${ctx.query.id}`).get().json().ctx(ctx);
+  let request = new Request(`/api/course/fetch/${ctx.query.id}`)
+    .get()
+    .json()
+    .ctx(ctx);
   let res = await request.send();
 
   // console.log(res)
@@ -44,19 +42,20 @@ export const getServerSideProps = async(ctx) => {
     course = res.course;
 
     //Get phases
-    let response = await (new Request(`/api/phase/fetch`, {
-      parentCourse: ctx.query.id
-    }).post().json().ctx(ctx)).send();
+    let response = await new Request(`/api/phase/fetch`, {
+      parentCourse: ctx.query.id,
+    })
+      .post()
+      .json()
+      .ctx(ctx)
+      .send();
 
     serverErrors = handleErrors(200, response, [404]);
 
     if(!serverErrors) {
       phases = response.phases;
     }
-
   }
-
-
 
   if(!ctx.query.hasOwnProperty('sub')) {
     ctx.query.sub = 'overview';
@@ -67,14 +66,12 @@ export const getServerSideProps = async(ctx) => {
       serverErrors,
       course,
       phases,
-      sub: ctx.query.sub
-    }
-  }
-
-}
+      sub: ctx.query.sub,
+    },
+  };
+};
 
 const CoursePage = ({ serverErrors, course, phases, sub }) => {
-
   const router = useRouter();
 
   if(serverErrors !== false) {
@@ -83,36 +80,24 @@ const CoursePage = ({ serverErrors, course, phases, sub }) => {
       <Layout>
         <Sidebar />
       </Layout>
-    )
+    );
   }
 
   const userData = getUserData();
 
-  const isUserOwnerOfPage = (userData.id === course.owner.userId) ? true : false;
+  const isUserOwnerOfPage = userData.id === course.owner.userId ? true : false;
 
   console.log(phases);
 
   return (
-    <CoursePageRender isEditing={false} coursePhases={phases} course={course} isUserOwnerOfPage={isUserOwnerOfPage} sub={sub} />
-  )
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <CoursePageRender
+      isEditing={false}
+      coursePhases={phases}
+      course={course}
+      isUserOwnerOfPage={isUserOwnerOfPage}
+      sub={sub}
+    />
+  );
+};
 
 export default CoursePage;

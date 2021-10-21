@@ -1,12 +1,17 @@
 import Permission from './permission.js';
 import getUserData from './getUserData.js';
-import { createStateListener, removeStateListener } from './stateEventListener.js';
+import {
+  createStateListener,
+  removeStateListener,
+} from './stateEventListener.js';
 import GlobalEventHandler from './globalEventListeners.js';
+import Icons from './systemIcons.js';
 
 export {
   Permission,
   getUserData,
   createStateListener,
   removeStateListener,
-  GlobalEventHandler
-}
+  GlobalEventHandler,
+  Icons
+};

@@ -2,18 +2,22 @@
 
 import React, { useState, useEffect } from 'react';
 
-
 import { useRouter } from 'next/router';
 
 //custom imports
 
-import Request from 'helpers/request.js'
+import Request from 'helpers/request.js';
 
 import { Prompt } from 'helpers/prompt';
 
 import Layout from 'layouts/default/';
 
-import { Sidebar, CoursePreview, SampleCreationSystem, Dropdown } from 'components'
+import {
+  Sidebar,
+  CoursePreview,
+  SampleCreationSystem,
+  Dropdown,
+} from 'components';
 
 // import getUserData from 'helpers/getUserData.js';
 
@@ -28,11 +32,9 @@ import lang from 'helpers/lang';
 
 import styles from './courses.module.sass';
 
-
 //!imports
 
-export const getServerSideProps = async(ctx) => {
-
+export const getServerSideProps = async ctx => {
   let request = new Request('/api/course/fetch').post().json().ctx(ctx);
   let res = await request.send();
 
@@ -49,15 +51,12 @@ export const getServerSideProps = async(ctx) => {
   return {
     props: {
       courses,
-      serverErrors
-    }
-  }
-
-}
-
+      serverErrors,
+    },
+  };
+};
 
 const Courses = ({ courses, serverErrors }) => {
-
   const userData = getUserData();
 
   // userData.userType = "student"
@@ -72,41 +71,35 @@ const Courses = ({ courses, serverErrors }) => {
   let [coursesForRender, setCoursesForRender] = useState([]);
 
   useEffect(() => {
-
-    setCoursesForRender(currentCourses.map((course, index) => {
-
-      return (
-        <CoursePreview course={course} key={index} />
-      )
-
-    }))
-
-  }, [currentCourses])
+    setCoursesForRender(
+      currentCourses.map((course, index) => {
+        return <CoursePreview course={course} key={index} />;
+      }),
+    );
+  }, [currentCourses]);
 
   let [sortMethod, setSortMethod] = useState('default');
 
   const sortOptions = [
     {
       value: 'az',
-      name: 'A-Z'
+      name: 'A-Z',
     },
     {
       value: 'za',
-      name: 'Z-A'
+      name: 'Z-A',
     },
     {
       value: 'default',
-      name: lang.courses.sortDefaultName
-    }
-  ]
+      name: lang.courses.sortDefaultName,
+    },
+  ];
 
-  const onSortMethodChange = (val) => setSortMethod(val.value);
+  const onSortMethodChange = val => setSortMethod(val.value);
 
-  const onCourseCreation = async(response) => {
-
+  const onCourseCreation = async response => {
     if(response.errors === false) {
-
-      router.push(`/courses/page/edit?id=${response.course.id}`)
+      router.push(`/courses/page/edit?id=${response.course.id}`);
 
       // let newCourses = courses.concat([response.course]);
       //
@@ -115,27 +108,20 @@ const Courses = ({ courses, serverErrors }) => {
       Prompt.success(lang.courses.courseCreated);
 
       return true;
-
     }else {
-
       Prompt.error(response.errors);
 
       return false;
     }
-
-  }
+  };
 
   return (
     <Layout>
-
       <div className={styles.wrapper}>
-
         <Sidebar />
 
-        { coursesForRender.length !== 0 &&
-
+        {coursesForRender.length !== 0 && (
           <div className={styles.container}>
-
             <p className={styles.pageTitle}>Courses</p>
 
             <div className={styles.sortBy}>
@@ -148,42 +134,34 @@ const Courses = ({ courses, serverErrors }) => {
                 menuClassName={styles.dropdownMenu}
                 defaultValue={sortOptions[2].value}
                 onChange={onSortMethodChange}
-                height={"35px"}
+                height={'35px'}
               />
-
             </div>
 
-            <div className={styles.courses}>
-
-              {coursesForRender}
-
-            </div>
-
+            <div className={styles.courses}>{coursesForRender}</div>
           </div>
+        )}
 
-        }
+        {Permission().atLeast('teacher') && (
+          <SampleCreationSystem
+            firstWrapperClassName={styles.firstWrapperCourseCreation}
+            requestCallback={onCourseCreation}
+            itemApiPath={`/api/course/create`}
+            currentItems={currentCourses}
+            itemName={lang.courses.courseItemName}
+            noCurrentItemText={lang.courses.noCoursesOwned}
+          />
+        )}
 
-        { Permission().atLeast('teacher') &&
-
-          <SampleCreationSystem firstWrapperClassName={styles.firstWrapperCourseCreation} requestCallback={onCourseCreation} itemApiPath={`/api/course/create`} currentItems={currentCourses} itemName={lang.courses.courseItemName} noCurrentItemText={lang.courses.noCoursesOwned} />
-
-        }
-
-        { (Permission().max('tempTeacher') && coursesForRender.length === 0) &&
-
+        {Permission().max('tempTeacher') && coursesForRender.length === 0 && (
           <div className={styles.noCoursesStudent}>
-
             <p>{lang.courses.noCoursesFound}</p>
             <p>{lang.courses.noCoursesFoundHelper}</p>
-
           </div>
-
-        }
-
+        )}
       </div>
-
     </Layout>
-  )
-}
+  );
+};
 
 export default Courses;

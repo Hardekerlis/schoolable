@@ -5,7 +5,7 @@ import Request from 'helpers/request.js';
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
 
-import getUserDataServer from 'helpers/getUserDataServer.js'
+import getUserDataServer from 'helpers/getUserDataServer.js';
 
 import Layout from 'layouts/default';
 
@@ -15,11 +15,13 @@ import { CoursePageRender, Sidebar } from 'components';
 
 import styles from './edit.module.sass';
 
-export const getServerSideProps = async(ctx) => {
-
+export const getServerSideProps = async ctx => {
   const userData = getUserDataServer(ctx);
 
-  let request = new Request(`/api/course/fetch/${ctx.query.id}`).get().json().ctx(ctx);
+  let request = new Request(`/api/course/fetch/${ctx.query.id}`)
+    .get()
+    .json()
+    .ctx(ctx);
   let res = await request.send();
 
   //200 is the expected status code
@@ -32,29 +34,28 @@ export const getServerSideProps = async(ctx) => {
     course = res.course;
 
     if(course.owner.userId !== userData.id) {
-
-      return (
-        {
-          redirect: {
-            destination: '/pageNotFound',
-            permanent: false,
-          }
-        }
-      )
-
+      return {
+        redirect: {
+          destination: '/pageNotFound',
+          permanent: false,
+        },
+      };
     }
 
     //Get phases
-    let response = await (new Request(`/api/phase/fetch`, {
-      parentCourse: ctx.query.id
-    }).post().json().ctx(ctx)).send();
+    let response = await new Request(`/api/phase/fetch`, {
+      parentCourse: ctx.query.id,
+    })
+      .post()
+      .json()
+      .ctx(ctx)
+      .send();
 
     serverErrors = handleErrors(200, response, [404]);
 
     if(!serverErrors) {
       phases = response.phases;
     }
-
   }
 
   if(!ctx.query.hasOwnProperty('sub')) {
@@ -66,30 +67,30 @@ export const getServerSideProps = async(ctx) => {
       course,
       phases,
       sub: ctx.query.sub,
-      serverErrors
-    }
-  }
-
-}
+      serverErrors,
+    },
+  };
+};
 
 const EditCourse = ({ serverErrors, phases, course, sub }) => {
-
   if(serverErrors !== false) {
     Prompt.error(serverErrors);
     //maybe add another render (return) if serverErrors
     return (
       <Layout>
         <Sidebar />
-
-
       </Layout>
-    )
+    );
   }
 
-  return(
-    <CoursePageRender isEditing={true} coursePhases={phases} course={course} sub={sub} />
-  )
-
-}
+  return (
+    <CoursePageRender
+      isEditing={true}
+      coursePhases={phases}
+      course={course}
+      sub={sub}
+    />
+  );
+};
 
 export default EditCourse;

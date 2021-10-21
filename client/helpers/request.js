@@ -1,9 +1,8 @@
 class Request {
-
   constructor(url, body) {
-
-    if((typeof window) == "undefined" || (typeof window) == undefined) {
-      this.url = 'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' + url;
+    if(typeof window === 'undefined' || typeof window === undefined) {
+      this.url =
+        'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' + url;
       this.isServer = true;
     }else {
       this.isServer = false;
@@ -21,7 +20,6 @@ class Request {
     this.cookies = '';
 
     this.extraHeaders = {};
-
   }
 
   post() {
@@ -68,30 +66,24 @@ class Request {
   }
 
   cookie(obj) {
+    let text = '';
 
-    let text = "";
-
-    for(let key in obj) {
-
-      text += key + "=" + obj[key] + ';';
-
+    for (let key in obj) {
+      text += key + '=' + obj[key] + ';';
     }
 
     this.cookies = text;
 
     return this;
-
   }
 
   async send() {
-
     let response;
 
     let headers = {
       'Content-Type': this.contentType,
-      'Cookie': this.cookies,
-    }
-
+      Cookie: this.cookies,
+    };
 
     if(this.isServer) headers.Host = 'dev.schoolable.se';
 
@@ -99,18 +91,16 @@ class Request {
 
     // console.log(headers);
 
-
     // for(let head in this.extraHeaders) {
     //   headers[head] = this.extraHeaders[head];
     // }
-
 
     const res = await fetch(this.url, {
       method: this.method,
       body: this.body,
       headers,
-      credentials: "include"
-    })
+      credentials: 'include',
+    });
 
     response = res;
 
@@ -119,7 +109,7 @@ class Request {
         response = await res.json();
         response._response = res;
         response._isJSON = true;
-      }catch(err) {
+      }catch (err) {
         response._isJSON = false;
       }
     }else {
@@ -127,10 +117,7 @@ class Request {
     }
 
     return response;
-
   }
-
-
 }
 
 export default Request;
