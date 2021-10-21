@@ -63,6 +63,7 @@ const login = async (req: Request, res: Response) => {
         errors: false,
         message: lang.successfulLogin,
         firstTime: !user.setupComplete,
+        user,
       });
     } catch (err) {
       logger.error(`Ran into an unexpected error. Error message: ${err}`);

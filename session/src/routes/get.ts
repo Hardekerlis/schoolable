@@ -41,7 +41,7 @@ const get = async (req: Request, res: Response) => {
 
   res.clearCookie('loginId');
   res.cookie('sesstok', token);
-  res.redirect(200, '/');
+  res.redirect('/');
 };
 
 export default get;
