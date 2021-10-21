@@ -1,0 +1,5 @@
+noSessionFound: "Couldn't find a session"
+killedCurrentSession: 'Killed current session'
+noSessionsFound: "Couldn't find any sessions"
+killedAllSessions: 'Killed all sessions'
+killedSessionById: 'Killed session'

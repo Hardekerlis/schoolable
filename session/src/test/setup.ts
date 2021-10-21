@@ -3,7 +3,6 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import { nanoid } from 'nanoid';
 import {
   CONFIG,
   ConfigHandler,
@@ -52,7 +51,7 @@ declare global {
         userType?: UserTypes,
         email?: string,
         id?: string,
-      ): Promise<string[]>;
+      ): Promise<[string, SessionDoc, UserDoc]>;
       getLoginIdCookie(id?: string): Promise<string[]>;
       createUser(userData?: User): Promise<UserDoc>;
       createSession(sessionData?: Session): Promise<CreateSessionReturn>;
@@ -98,7 +97,7 @@ afterAll(async () => {
 });
 
 global.getLoginIdCookie = async (id?: string) => {
-  if (!id) id = nanoid();
+  if (!id) id = new mongoose.Types.ObjectId().toHexString();
 
   return [`loginId=${id}; path=/`];
 };
@@ -152,7 +151,7 @@ global.createSession = async (sessionData: Session) => {
   if (!ip) ip = '78.73.146.89';
   if (!location) location = geoip.lookup(ip)!;
   if (!creationTimestamp) creationTimestamp = `${+new Date()}`;
-  if (!loginId) loginId = nanoid();
+  if (!loginId) loginId = new mongoose.Types.ObjectId().toHexString();
   if (!userAgent)
     userAgent =
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36';
@@ -178,14 +177,14 @@ global.getFaultyAuthCookie = async () => {
     id: user.userId,
     email: user.email,
     userType: user.userType,
-    sessionId: nanoid(),
+    sessionId: new mongoose.Types.ObjectId().toHexString(),
     lang: user.lang,
     name: user.name,
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
 
-  return [`sesstok=${token}; path=/`];
+  return [`token=${token}; path=/`];
 };
 
 global.getAuthCookie = async (
@@ -194,25 +193,18 @@ global.getAuthCookie = async (
   email?: string,
   id?: string,
 ): Promise<string[]> => {
-  if (!userType) userType = UserTypes.Teacher;
-  if (!email) email = faker.internet.email();
-  if (!id) id = new mongoose.Types.ObjectId().toHexString();
-
-  const { session } = await global.createSession(sessionData);
+  const { session, user } = await global.createSession(sessionData);
 
   const payload: UserPayload = {
-    id,
-    email,
-    userType,
+    id: user.userId,
+    email: user.email,
+    userType: user.userType,
     sessionId: session.id,
     lang: 'ENG',
-    name: {
-      first: faker.name.firstName(),
-      last: faker.name.lastName(),
-    },
+    name: user.name,
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
 
-  return [`sesstok=${token}; path=/`];
+  return [`token=${token}; path=/`, session, user];
 };

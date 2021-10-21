@@ -41,7 +41,7 @@ const get = async (req: Request, res: Response) => {
 
   res.clearCookie('loginId');
   res.cookie('token', token);
-  res.redirect(301, '/');
+  res.send();
 };
 
 export default get;

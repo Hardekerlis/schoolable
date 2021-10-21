@@ -1,5 +1,4 @@
 import request from 'supertest';
-import faker from 'faker';
 import mongoose from 'mongoose';
 import { app } from '../../app';
 
@@ -39,7 +38,7 @@ describe('Functionality for path ending with "current"', () => {
       .expect(404);
 
     expect(res.get('Set-Cookie')).toContain(
-      'sesstok=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+      'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
     );
   });
 
@@ -49,7 +48,7 @@ describe('Functionality for path ending with "current"', () => {
     await request(app).get(path).set('Cookie', cookie).send().expect(200);
   });
 
-  it('Removes sesstok cookie if session is found and killed', async () => {
+  it('Removes token cookie if session is found and killed', async () => {
     const [cookie] = await global.getAuthCookie();
 
     const res = await request(app)
@@ -59,7 +58,7 @@ describe('Functionality for path ending with "current"', () => {
       .expect(200);
 
     expect(res.get('Set-Cookie')).toContain(
-      'sesstok=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+      'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
     );
   });
 });
@@ -84,11 +83,41 @@ describe('Functionality for path ending with "all"', () => {
     await request(app).get(path).set('Cookie', cookie).send().expect(404);
   });
 
-  it('Removes cookie if session is not found in database', async () => {});
+  it('Removes cookie if session is not found in database', async () => {
+    await global.createSession();
 
-  it('Returns a 200 if sessions are found and killed', async () => {});
+    const [cookie] = await global.getFaultyAuthCookie();
 
-  it('Removes sesstok cookie if sessions are found and killed', async () => {});
+    const res = await request(app)
+      .get(path)
+      .set('Cookie', cookie)
+      .send()
+      .expect(404);
+
+    expect(res.get('Set-Cookie')).toContain(
+      'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+    );
+  });
+
+  it('Returns a 200 if sessions are found and killed', async () => {
+    const [cookie] = await global.getAuthCookie();
+
+    await request(app).get(path).set('Cookie', cookie).send().expect(200);
+  });
+
+  it('Removes token cookie if sessions are found and killed', async () => {
+    const [cookie] = await global.getAuthCookie();
+
+    const res = await request(app)
+      .get(path)
+      .set('Cookie', cookie)
+      .send()
+      .expect(200);
+
+    expect(res.get('Set-Cookie')).toContain(
+      'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+    );
+  });
 });
 
 describe(`Functionality for path ending with "${new mongoose.Types.ObjectId()}" (Random ObjectId)`, () => {
@@ -100,9 +129,27 @@ describe(`Functionality for path ending with "${new mongoose.Types.ObjectId()}" 
     expect(res.status).not.toEqual(404);
   });
 
-  it.todo('Returns a 401 if user is not authenticated');
+  it('Returns a 401 if user is not authenticated', async () => {
+    const { session } = await global.createSession();
 
-  it.todo('Returns a 404 if no session is found in database');
+    await request(app).get(getPath(session.id)).send().expect(401);
+  });
 
-  it.todo('Removes a 200 if session is found and killed');
+  it('Returns a 404 if no session is found in database', async () => {
+    const [cookie] = await global.getAuthCookie();
+
+    await request(app)
+      .get(getPath(new mongoose.Types.ObjectId().toHexString()))
+      .set('Cookie', cookie)
+      .expect(404);
+  });
+
+  it('Removes a 200 if session is found and killed', async () => {
+    const [cookie, session] = await global.getAuthCookie();
+
+    await request(app)
+      .get(getPath(session.id))
+      .set('Cookie', cookie)
+      .expect(200);
+  });
 });
