@@ -17,6 +17,7 @@ import styles from './home.module.sass';
 //!imports
 
 const Home = ({ doFirstTimeSetup }) => {
+
   useEffect(() => {
     return () => {
       console.log('page: home; re-rendering and/or un-mounting');

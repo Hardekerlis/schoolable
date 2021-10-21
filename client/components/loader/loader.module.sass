@@ -1,0 +1,44 @@
+@import "styles/variables"
+
+.wrapper
+  position: fixed
+  top: 0px
+  left: 0px
+  right: 0px
+  bottom: 0px
+
+  //TODO: static color. maybe change?
+  background-color: rgba(0,0,0,0.5)
+
+  z-index: 999999
+
+  display: none
+  justify-content: center
+  align-items: center
+
+
+  svg
+    color: $white
+    width: 100px
+    height: 100px
+
+.wrapper.open
+  display: flex
+
+  svg
+    -webkit-animation: spin 4s linear infinite
+    -moz-animation: spin 4s linear infinite
+    animation: spin 4s linear infinite
+
+  @-moz-keyframes spin
+    100%
+      -moz-transform: rotate(360deg)
+
+  @-webkit-keyframes spin
+      100%
+        -webkit-transform: rotate(360deg)
+
+  @keyframes spin
+      100%
+        -webkit-transform: rotate(360deg)
+        transform: rotate(360deg)

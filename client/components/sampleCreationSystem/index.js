@@ -10,6 +10,8 @@ const lang = language.sampleCreationSystem;
 
 import { lowerFirstLetter } from 'helpers/misc.js';
 
+import { Loader } from 'components'
+
 import styles from './sampleCreationSystem.module.sass';
 
 const SampleCreationSystem = ({
@@ -27,6 +29,8 @@ const SampleCreationSystem = ({
 
   let [newItemCreation, setNewItemCreation] = useState(false);
   let [newItemName, setNewItemName] = useState('');
+
+  let [loaderActive, setLoaderActive] = useState(false);
 
   const openNewItemCreation = () => {
     setNewItemCreation(true);
@@ -56,6 +60,7 @@ const SampleCreationSystem = ({
     if(isCreatingItem) return;
 
     setIsCreatingItem(true);
+    setLoaderActive(true);
 
     let reqBody = {
       name: newItemName,
@@ -66,6 +71,8 @@ const SampleCreationSystem = ({
     let request = new Request(itemApiPath, reqBody).post().json();
 
     let response = await request.send();
+
+    setLoaderActive(false)
 
     //send response to caller
 
@@ -91,6 +98,7 @@ const SampleCreationSystem = ({
 
   return (
     <>
+      <Loader active={loaderActive} />
       {currentItems.length === 0 ? (
         <>
           <div className={_firstWrapperClassName}>

@@ -1,5 +1,7 @@
 @import "styles/variables"
 
+$informationWidth: 420px
+
 .wrapper
   display: flex
   flex-direction: row
@@ -14,34 +16,118 @@
   background-color: $blacker
   border-top-left-radius: 10px
   border-top-right-radius: 10px
-
   color: $white
+  position: relative
 
-  .breadcrumbs
-    display: flex
-    flex-direction: row
-    align-items: center
-    padding-left: 20px
-    padding-top: 14px
+  .hozLine
+    width: 99%
+    margin: 0 auto
+    height: 2px
+    background-color: $purple
+    margin-top: 12px
 
-    p
-      text-transform: capitalize
-      font-size: 2rem
+  .verLine
+    width: 2px
+    height: 40%
+    background-color: rgba($purple, 0.6)
+    position: absolute
+    top: 78px
+    right: $informationWidth
+
+  .ownerName
+    position: absolute
+    top: 25px
+    right: 26px
+    margin: 0px
+    font-size: 1.3rem
+
+.inner
+  width: 100%
+  height: 100%
+  position: relative
+
+.content
+  width: calc(100% - #{$informationWidth} - 2px)
+  height: 100%
+  padding: 20px
+  // overflow-y: scroll
+
+  .item
+    width: 350px
+    height: 210px
+    background-color: $black
+    padding: 10px
+    margin-right: 20px
+    margin-bottom: 20px
+    display: inline-block
+    cursor: pointer
+
+    .hozLine
+      width: 99%
+      height: 2px
+      background-color: $purple
+
+
+    .title
+      font-size: 1.5rem
+      font-weight: 600
       margin: 0px
+      margin-bottom: 10px
+      margin-left: 8px
+      user-select: none
 
-    .course
-      font-weight: 800
+    .desc
+      max-height: 120px
+      padding: 10px
+      padding-top: 0px
+      margin-left: 10px
+      // white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+      font-size: 1.1rem
+      cursor: text
 
-    .name
-      font-weight: 6  00
 
-    svg
-      fill: $white
-      width: 50px
-      height: 50px
+.information
+  position: absolute
+  top: 0px
+  right: 0px
+  width: $informationWidth
+  height: 100%
+
+  .descTitle
+    font-size: 1.5rem
+    margin: 12px
+    font-weight: 600
+
+  .desc
+    font-size: 1.2rem
+    padding: 12px
+    padding-top: 0px
+    max-height: 290px
+    overflow-y: scroll
+    margin: 0px
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //
 
 
 

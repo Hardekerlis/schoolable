@@ -9,7 +9,10 @@ import Phase from './phase';
 import PhaseEditMenu from './phaseEditMenu';
 import CoursePreview from './coursePreview';
 import RightClickMenu from './rightClickMenu';
+import Breadcrumbs from './breadcrumbs';
+import Loader from './loader';
 //import pos
+
 
 import { CourseCreation } from './teacher';
 import {
@@ -38,5 +41,7 @@ export {
   CalendarTypeSelector,
   CoursePreview,
   RightClickMenu,
+  Breadcrumbs,
+  Loader,
   //export pos
 };

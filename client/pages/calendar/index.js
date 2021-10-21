@@ -15,6 +15,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 //custom imports
 
+import { authCheck, redirectToLogin } from 'helpers/auth.js';
+
+
 import Request from 'helpers/request.js';
 
 import { Prompt } from 'helpers/prompt';
@@ -45,6 +48,9 @@ import generateDayData from './modules/temp.js';
 import styles from './calendar.module.sass';
 
 export const getServerSideProps = async ctx => {
+
+  if(!(await authCheck(ctx))) return redirectToLogin;
+
   let type = ctx.query?.type;
   if(!type) type = null;
 

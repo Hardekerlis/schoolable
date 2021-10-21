@@ -17,6 +17,7 @@ import {
   CoursePreview,
   SampleCreationSystem,
   Dropdown,
+  Loader
 } from 'components';
 
 // import getUserData from 'helpers/getUserData.js';
@@ -25,6 +26,8 @@ import { Permission, getUserData } from 'helpers';
 
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
+
+import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
 import lang from 'helpers/lang';
 
@@ -35,6 +38,9 @@ import styles from './courses.module.sass';
 //!imports
 
 export const getServerSideProps = async ctx => {
+
+  if(!(await authCheck(ctx))) return redirectToLogin;
+
   let request = new Request('/api/course/fetch').post().json().ctx(ctx);
   let res = await request.send();
 
@@ -67,13 +73,15 @@ const Courses = ({ courses, serverErrors }) => {
     Prompt.error(serverErrors);
   }
 
+  let [loaderActive, setLoaderActive] = useState(false);
+
   let [currentCourses, setCurrentCourses] = useState(courses);
   let [coursesForRender, setCoursesForRender] = useState([]);
 
   useEffect(() => {
     setCoursesForRender(
       currentCourses.map((course, index) => {
-        return <CoursePreview course={course} key={index} />;
+        return <CoursePreview setLoaderActive={setLoaderActive} course={course} key={index} />;
       }),
     );
   }, [currentCourses]);
@@ -98,7 +106,11 @@ const Courses = ({ courses, serverErrors }) => {
   const onSortMethodChange = val => setSortMethod(val.value);
 
   const onCourseCreation = async response => {
+
     if(response.errors === false) {
+
+      setLoaderActive(true)
+
       router.push(`/courses/page/edit?id=${response.course.id}`);
 
       // let newCourses = courses.concat([response.course]);
@@ -118,6 +130,7 @@ const Courses = ({ courses, serverErrors }) => {
   return (
     <Layout>
       <div className={styles.wrapper}>
+        <Loader active={loaderActive} />
         <Sidebar />
 
         {coursesForRender.length !== 0 && (

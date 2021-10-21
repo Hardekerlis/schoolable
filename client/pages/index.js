@@ -1,9 +1,17 @@
 import Home from './home/';
 
-import redirectAuth from 'helpers/redirectAuth.js';
+import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
 export async function getServerSideProps(ctx) {
-  return redirectAuth(ctx);
+
+  if(!(await authCheck(ctx))) return redirectToLogin;
+
+  return {
+    props: {
+
+    }
+  }
+
 }
 
 export default Home;

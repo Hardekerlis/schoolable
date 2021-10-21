@@ -18,9 +18,15 @@ import Layout from 'layouts/default/';
 
 import { CoursePageRender, Sidebar } from 'components';
 
+import { authCheck, redirectToLogin } from 'helpers/auth.js';
+
 import styles from './coursePage.module.sass';
 
 export const getServerSideProps = async ctx => {
+
+  if(!(await authCheck(ctx))) return redirectToLogin;
+  
+
   console.log(ctx.query.id);
 
   //Get course data. Not phases.

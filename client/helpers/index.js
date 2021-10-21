@@ -5,7 +5,6 @@ import {
   removeStateListener,
 } from './stateEventListener.js';
 import GlobalEventHandler from './globalEventListeners.js';
-import Icons from './systemIcons.js';
 
 export {
   Permission,
@@ -13,5 +12,4 @@ export {
   createStateListener,
   removeStateListener,
   GlobalEventHandler,
-  Icons
 };

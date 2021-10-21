@@ -13,9 +13,15 @@ import { Prompt } from 'helpers/prompt';
 
 import { CoursePageRender, Sidebar } from 'components';
 
+import { authCheck, redirectToLogin } from 'helpers/auth.js';
+
 import styles from './edit.module.sass';
 
 export const getServerSideProps = async ctx => {
+
+  if(!(await authCheck(ctx))) return redirectToLogin;
+
+
   const userData = getUserDataServer(ctx);
 
   let request = new Request(`/api/course/fetch/${ctx.query.id}`)

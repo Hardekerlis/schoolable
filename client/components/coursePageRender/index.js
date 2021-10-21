@@ -22,6 +22,7 @@ import {
   SampleCreationSystem,
   Phase,
   PhaseEditMenu,
+  Loader
 } from 'components';
 
 import { firstLetterToUpperCase } from 'helpers/misc.js';
@@ -50,9 +51,13 @@ const CoursePageRender = ({
   let [phaseEditMenuOpen, setPhaseEditMenuOpen] = useState(false);
   let [phaseEditMenuInfo, setPhaseEditMenuInfo] = useState({});
 
+
+  let [loaderActive, setLoaderActive] = useState(false);
+
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
   const editCourseClick = () => {
+    setLoaderActive(true)
     router.push(`/courses/page/edit?id=${router.query.id}`);
   };
 
@@ -137,7 +142,7 @@ const CoursePageRender = ({
       setPhasesRender(
         phases.map((obj, index) => {
           return (
-            <Phase editing={false} key={index} id={obj.id} name={obj.name} />
+            <Phase setLoaderActive={setLoaderActive} editing={false} key={index} id={obj.id} name={obj.name} />
           );
         }),
       );
@@ -146,6 +151,7 @@ const CoursePageRender = ({
 
   return (
     <Layout>
+    <Loader active={loaderActive} />
       <div className={styles.wrapper}>
         <Sidebar />
 

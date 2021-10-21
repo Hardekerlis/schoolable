@@ -15,12 +15,12 @@ import { Prompt } from 'helpers/prompt';
 import language from 'helpers/lang';
 const lang = language.login;
 
-import redirectAuth from 'helpers/redirectAuth.js';
+import { authCheck } from 'helpers/auth.js';
 
 export async function getServerSideProps(ctx) {
-  const { props } = await redirectAuth(ctx);
+  const authed = await authCheck(ctx);
 
-  if(props?.tokenVerified === true) {
+  if(authed === true) {
     return {
       redirect: {
         destination: '/',
@@ -35,11 +35,12 @@ export async function getServerSideProps(ctx) {
 }
 
 const Login = () => {
+
   const router = useRouter();
 
   const [credentials, setCredentials] = useState({
-    email: 'teacherEmail@myTeacherEmail.teach',
-    password: 'wOmTAy4WsLJX3VwZJJCww',
+    email: 'teacher1@myTeacherEmail.teach',
+    password: 'GT7FSJyzuz0zxQUW04RAB',
   });
 
   const submit = async evt => {
@@ -47,8 +48,6 @@ const Login = () => {
 
     let request = new Request('/api/auth/login', credentials).post().json();
     let res = await request.send();
-
-    // console.log(res)
 
     let user;
 
@@ -64,7 +63,12 @@ const Login = () => {
 
     if(res.errors) return Prompt.error(res.errors);
 
+    let response = await (new Request('/api/session').get().json()).send();
+
+    if(res.errors) return Prompt.error(res.errors);
+
     router.push('/');
+
   };
 
   const credentialsChange = (evt, prop) => {

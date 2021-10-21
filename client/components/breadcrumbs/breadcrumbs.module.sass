@@ -1,0 +1,30 @@
+@import "styles/variables"
+
+.wrapper
+  display: flex
+  flex-direction: row
+  align-items: center
+  padding-left: 20px
+  padding-top: 14px
+
+  .selected
+    font-weight: 800 !important
+
+  div
+    display: flex
+    flex-direction: row-reverse
+    cursor: pointer
+
+  p
+    text-transform: capitalize
+    font-size: 2rem
+    margin: 0px
+    font-weight: 300
+    display: flex
+    align-items: center
+    user-select: none
+
+  svg
+    fill: $white
+    width: 50px
+    height: 50px

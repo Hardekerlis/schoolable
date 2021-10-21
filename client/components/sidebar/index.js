@@ -4,14 +4,20 @@ import { useRouter } from 'next/router';
 import styles from './sidebar.module.sass';
 
 import {
-  faUser,
-  faHome,
-  faLandmark,
-  faBook,
-  faCalendar,
   faCaretLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import {
+  Calendar,
+  Home,
+  Book,
+  Bookmark,
+  Avatar
+} from 'helpers/systemIcons.js';
+
+import { Loader } from 'components';
+
 
 import language from 'helpers/lang';
 const lang = language.sidebar;
@@ -46,13 +52,24 @@ const SidebarOption = ({
 
   if(arrowEnabled === undefined) arrowEnabled = true;
 
+  // <FontAwesomeIcon
+  //   style={{ width: iconSize, height: iconSize }}
+  //   className={styles.icon}
+  //   icon={icon}
+  // />
+
+
   return (
     <div onClick={onClick} className={myClassName} id='sidebar'>
-      <FontAwesomeIcon
-        style={{ width: iconSize, height: iconSize }}
-        className={styles.icon}
-        icon={icon}
-      />
+
+    <div
+      style={{ width: iconSize, height: iconSize }}
+      className={styles.icon}
+    >
+      { icon !== null &&
+        <>{icon}</>
+      }
+    </div>
 
       {arrowEnabled && (
         <div className={styles.select}>
@@ -72,59 +89,102 @@ const Sidebar = () => {
   //!!
 
   let [userMenuOpen, setUserMenuOpen] = useState(false);
+  let [loaderActive, setLoaderActive] = useState(false);
 
   const navTo = href => {
     if(current === href) return;
+
+    setLoaderActive(true);
 
     //is this necessary? !!
     setCurrent(href);
     //!!
 
+
     router.push(href);
   };
 
+
+  // svg = React.createElement(svg)
   //arrowEnabled on userMenu must be dependent on UserMenu
   //component
   return (
     <>
+      <Loader active={loaderActive} />
       <div className={styles.wrapper}>
         <SidebarOption
           arrowEnabled={!userMenuOpen}
           onClick={() => setUserMenuOpen(!userMenuOpen)}
-          iconSize={'40%'}
+          iconSize={'50%'}
           name={lang.user}
-          icon={faUser}
+          icon={Avatar}
         />
         <SidebarOption
           path={['/', '/home']}
           onClick={() => navTo('/')}
           current={current}
           name={lang.home}
-          icon={faHome}
+          icon={Home}
+          iconSize={'50%'}
         />
         <SidebarOption
           onClick={() => navTo('/courses')}
           current={current}
           name={lang.courses}
-          icon={faLandmark}
+          icon={Book}
+          iconSize={'50%'}
         />
         <SidebarOption
           current={current}
-          iconSize={'40%'}
+          iconSize={'50%'}
           name={lang.assignments}
-          icon={faBook}
+          icon={Bookmark}
         />
         <SidebarOption
           onClick={() => navTo('/calendar')}
           current={current}
-          iconSize={'40%'}
+          iconSize={'50%'}
           name={lang.schedule}
-          icon={faCalendar}
+          icon={Calendar}
         />
       </div>
       <UserMenu setUserMenuOpen={setUserMenuOpen} open={userMenuOpen} />
     </>
   );
 };
+
+// <SidebarOption
+//   arrowEnabled={!userMenuOpen}
+//   onClick={() => setUserMenuOpen(!userMenuOpen)}
+//   iconSize={'40%'}
+//   name={lang.user}
+//   icon={faUser}
+// />
+// <SidebarOption
+//   path={['/', '/home']}
+//   onClick={() => navTo('/')}
+//   current={current}
+//   name={lang.home}
+//   icon={faHome}
+// />
+// <SidebarOption
+//   onClick={() => navTo('/courses')}
+//   current={current}
+//   name={lang.courses}
+//   icon={faLandmark}
+// />
+// <SidebarOption
+//   current={current}
+//   iconSize={'40%'}
+//   name={lang.assignments}
+//   icon={faBook}
+// />
+// <SidebarOption
+//   onClick={() => navTo('/calendar')}
+//   current={current}
+//   iconSize={'40%'}
+//   name={lang.schedule}
+//   icon={faCalendar}
+// />
 
 export default Sidebar;

@@ -19,6 +19,7 @@ const Phase = ({
   setPhaseEditMenuOpen,
   className,
   clickable,
+  setLoaderActive
 }) => {
   const router = useRouter();
 
@@ -26,6 +27,8 @@ const Phase = ({
 
   const nonEditableClick = () => {
     if(!clickable) return;
+
+    setLoaderActive(true)
 
     router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
   };

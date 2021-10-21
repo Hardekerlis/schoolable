@@ -7,13 +7,16 @@ const lang = language.courses;
 
 import styles from './coursePreview.module.sass';
 
-const CoursePreview = ({ course }) => {
+const CoursePreview = ({ course, setLoaderActive }) => {
   const router = useRouter();
 
   let courseName = firstLetterToUpperCase(course.name);
 
-  const courseClick = () =>
+  const courseClick = () => {
+    setLoaderActive(true)
     router.push(`/courses/page?id=${course.id}&sub=overview`);
+  }
+
 
   return (
     <div onClick={courseClick} className={styles.course}>
