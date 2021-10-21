@@ -10,6 +10,7 @@ export interface UserCreatedEvent {
     email: string;
     userType: UserTypes;
     tempPassword: string;
+    lang: string;
     name: {
       first: string;
       last: string;

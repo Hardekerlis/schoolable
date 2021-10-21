@@ -1,5 +1,4 @@
 import request from 'supertest';
-import faker from 'faker';
 import { app } from '../../app';
 
 const path = '/api/session/';

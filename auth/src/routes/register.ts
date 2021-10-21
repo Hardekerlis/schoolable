@@ -78,6 +78,7 @@ const register = async (req: Request, res: Response) => {
         tempPassword, // Temp password to be included in email
         userType: userType,
         name: name,
+        lang: newUser.settings.language,
       });
 
       logger.info('Sent Nats user registered event');

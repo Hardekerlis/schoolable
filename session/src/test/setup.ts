@@ -56,6 +56,7 @@ declare global {
       getLoginIdCookie(id?: string): Promise<string[]>;
       createUser(userData?: User): Promise<UserDoc>;
       createSession(sessionData?: Session): Promise<CreateSessionReturn>;
+      getFaultyAuthCookie(): Promise<string[]>;
     }
   }
 }
@@ -170,6 +171,23 @@ global.createSession = async (sessionData: Session) => {
   return { session, user: actualUser };
 };
 
+global.getFaultyAuthCookie = async () => {
+  const user = await global.createUser();
+
+  const payload: UserPayload = {
+    id: user.userId,
+    email: user.email,
+    userType: user.userType,
+    sessionId: nanoid(),
+    lang: user.lang,
+    name: user.name,
+  };
+
+  const token = jwt.sign(payload, process.env.JWT_KEY as string);
+
+  return [`sesstok=${token}; path=/`];
+};
+
 global.getAuthCookie = async (
   sessionData: Session,
   userType?: UserTypes,
@@ -180,7 +198,7 @@ global.getAuthCookie = async (
   if (!email) email = faker.internet.email();
   if (!id) id = new mongoose.Types.ObjectId().toHexString();
 
-  const session = await global.createSession(sessionData);
+  const { session } = await global.createSession(sessionData);
 
   const payload: UserPayload = {
     id,

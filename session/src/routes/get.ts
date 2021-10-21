@@ -28,17 +28,16 @@ const get = async (req: Request, res: Response) => {
     throw new NotAuthorizedError();
   }
 
-  const token = jwt.sign(
-    {
-      email: session.user.email,
-      sessionId: session.id,
-      id: session.user.userId,
-      userType: session.user.userType,
-      name: session.user.name,
-      lang: session.user.lang,
-    } as UserPayload,
-    process.env.JWT_KEY as string,
-  );
+  const payload: UserPayload = {
+    email: session.user.email,
+    sessionId: session.id,
+    id: session.user.userId,
+    userType: session.user.userType,
+    name: session.user.name,
+    lang: session.user.lang,
+  };
+
+  const token = jwt.sign(payload, process.env.JWT_KEY as string);
 
   res.clearCookie('loginId');
   res.cookie('sesstok', token);
