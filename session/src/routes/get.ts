@@ -40,7 +40,7 @@ const get = async (req: Request, res: Response) => {
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
 
   res.clearCookie('loginId');
-  res.cookie('sesstok', token);
+  res.cookie('token', token);
   res.redirect('/');
 };
 
