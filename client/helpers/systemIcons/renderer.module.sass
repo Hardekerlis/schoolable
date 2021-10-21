@@ -1,0 +1,67 @@
+@import "styles/variables"
+
+.icon
+  width: 50px
+  height: 50px
+  position: relative
+  display: flex
+  flex-direction: row
+  align-items: center
+
+  svg
+    width: 100%
+    height: 100%
+
+.select
+  width: 0px
+  height: 50px
+  background-color: $darkPurple2
+  position: absolute
+  left: calc(100% + 20px)
+  padding: 0px
+
+  border-radius: 5px
+
+  font-size: 1.4rem
+
+  display: flex
+  justify-content: center
+  align-items: center
+
+  opacity: 0
+
+  pointer-events: none
+
+  user-select: none
+
+  @include transition(0.2s, ease-out)
+
+  p
+    margin: 0px
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: clip
+    padding: 0px 15px
+    width: 100%
+
+
+
+  .arrow
+    position: absolute
+    width: 50px
+    height: 100%
+    left: -30px
+    color: $darkPurple2
+
+
+.select.left
+  left: unset
+  right: calc(100% + 20px)
+
+  .arrow
+    left: unset
+    right: -30px
+    @include rotate(180)
+
+.icon:hover .select
+  opacity: 1

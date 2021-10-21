@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { RightArrow } from 'helpers/systemIcons.js';
+import { RightArrow } from 'helpers/systemIcons';
 
 import styles from './breadcrumbs.module.sass';
 

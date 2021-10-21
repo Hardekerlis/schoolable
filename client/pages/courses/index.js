@@ -44,7 +44,7 @@ export const getServerSideProps = async ctx => {
   let request = new Request('/api/course/fetch').post().json().ctx(ctx);
   let res = await request.send();
 
-  // console.log(res)
+  console.log(res)
 
   let courses = [];
 
@@ -52,6 +52,7 @@ export const getServerSideProps = async ctx => {
 
   if(serverErrors === false) {
     courses = res.courses;
+    console.log(courses, "no error")
   }
 
   return {

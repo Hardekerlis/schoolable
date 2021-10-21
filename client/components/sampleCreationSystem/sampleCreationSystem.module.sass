@@ -47,10 +47,44 @@
   .createFirstItem:hover
     background-color: $darkPurple2
 
+//createItem with text:
+// .createItem
+//   position: fixed
+//   bottom: 10px
+//   right: 10px
+//   z-index: 100
+//
+//   user-select: none
+//
+//   display: flex
+//   flex-direction: row
+//   align-items: center
+//
+//   color: $white
+//   font-size: 1.5rem
+//
+//   font-weight: 400
+//
+//   cursor: pointer
+//
+//   border-radius: 5px
+//   background-color: $purple
+//
+//   padding: 0px 20px
+//
+//   @include transition(0.2s, ease-out)
+//
+  // .plus
+  //   width: 50px
+  //   height: 50px
+  //   margin-right: 20px
+  //
+  //   color: $white
+
 .createItem
   position: fixed
   bottom: 10px
-  right: 10px
+  left: calc(#{$sidebarWidth} + 10px)
   z-index: 100
 
   user-select: none
@@ -66,19 +100,19 @@
 
   cursor: pointer
 
-  border-radius: 5px
-  background-color: $purple
+  border-radius: 20px
+  // background-color: $purple
 
-  padding: 0px 20px
+  padding: 0px
 
   @include transition(0.2s, ease-out)
 
   .plus
-    width: 50px
-    height: 50px
-    margin-right: 20px
+    width: 75px
+    height: 75px
+    margin: 0px
 
-    color: rgba($white, 0.8)
+    color: $white
 
 .createItem:hover
   background-color: $darkPurple2

@@ -14,7 +14,7 @@ import {
   Book,
   Bookmark,
   Avatar
-} from 'helpers/systemIcons.js';
+} from 'helpers/systemIcons';
 
 import { Loader } from 'components';
 

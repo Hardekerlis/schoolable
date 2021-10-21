@@ -39,8 +39,8 @@ const Login = () => {
   const router = useRouter();
 
   const [credentials, setCredentials] = useState({
-    email: 'teacher1@myTeacherEmail.teach',
-    password: 'GT7FSJyzuz0zxQUW04RAB',
+    email: 'teacher@myTeacherEmail.teach',
+    password: 'gbUuakd3NlIgYWglK4ALH',
   });
 
   const submit = async evt => {

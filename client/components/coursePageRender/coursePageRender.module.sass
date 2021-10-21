@@ -136,16 +136,16 @@ $mainContainerMargin: 30px
   // border: 1px solid $purple
   // border-radius: 5px
 
-
-.editCourse
-  position: absolute
-  right: 10px
+.editCourse, .goBackEditing
+  position: fixed
+  left: calc(#{$sidebarWidth} + 10px)
+  // right: 50px
   bottom: 10px
-  background-color: $purple
+  // background-color: $purple
 
-  border-radius: 5px
+  border-radius: 20px
   color: $white
-  padding: 20px 20px
+  padding: 0px
   cursor: pointer
 
   z-index: 100
@@ -157,17 +157,21 @@ $mainContainerMargin: 30px
 
   @include transitionProp(0.2s, ease-out, background-color)
 
-  .icon
-    width: 48px
-    height: 48px
-    margin-right: 10px
+.editIcon, .goBackIcon
+  width: 75px
+  height: 75px
 
-  p
-    font-weight: 500
-    font-size: 1.5rem
-    margin: 0px
+  // .icon
+  //   width: 48px
+  //   height: 48px
+  //   margin-right: 10px
+  //
+  // p
+  //   font-weight: 500
+  //   font-size: 1.5rem
+  //   margin: 0px
 
-.editCourse:hover
+.editCourse:hover, .goBackEditing:hover
   background-color: $darkPurple2
 
 
@@ -185,8 +189,11 @@ $mainContainerMargin: 30px
   height: 100% !important
 
 .createPhaseButton
-  bottom: 30px !important
-  right: 30px !important
+  bottom: 95px !important
+
+// .createPhaseButton
+//   bottom: 30px !important
+//   left: calc(#{$sidebarWidth} + 30px) !important
 
 
 

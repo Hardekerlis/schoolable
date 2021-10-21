@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Loader as LoaderIcon } from 'helpers/systemIcons.js';
+import { Loader as LoaderIcon } from 'helpers/systemIcons';
 
 import styles from './loader.module.sass';
 

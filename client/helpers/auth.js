@@ -17,9 +17,8 @@ const authCheck = async (ctx) => {
     .headers(req.headers);
   let response = await request.send();
 
-  if(response._response.status !== 200) {
-    return false;
-  }else return true;
+  if(response._response?.status === 200) return true;
+  return false;
 
 }
 

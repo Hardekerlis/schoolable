@@ -5,6 +5,8 @@ import Request from 'helpers/request.js';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { IconRenderer, PlusCircle } from 'helpers/systemIcons';
+
 import language from 'helpers/lang';
 const lang = language.sampleCreationSystem;
 
@@ -24,6 +26,7 @@ const SampleCreationSystem = ({
   itemApiPath,
   itemName,
   noCurrentItemText,
+  createAdditionalItemIcon
 }) => {
   let itemCreationRef = React.useRef();
 
@@ -121,10 +124,10 @@ const SampleCreationSystem = ({
             onClick={openNewItemCreation}
             className={_createItemButtonClassName}
           >
-            <FontAwesomeIcon className={styles.plus} icon={faPlus} />
-            <p>
-              {lang.create} {lowerFirstLetter(itemName)}
-            </p>
+            <IconRenderer onHover={{
+              text: `${lang.create} ${lowerFirstLetter(itemName)}`,
+              direction: 'right'
+            }} className={styles.plus} icon={(createAdditionalItemIcon) ? createAdditionalItemIcon : PlusCircle} />
           </div>
         </>
       )}
@@ -148,5 +151,19 @@ const SampleCreationSystem = ({
     </>
   );
 };
+
+//small create box with text:
+// <div
+//   onClick={openNewItemCreation}
+//   className={_createItemButtonClassName}
+// >
+//   <IconRenderer className={styles.plus} icon={PlusCircle} />
+//   <p>
+//     {lang.create} {lowerFirstLetter(itemName)}
+//   </p>
+// </div>
+
+
+
 
 export default SampleCreationSystem;

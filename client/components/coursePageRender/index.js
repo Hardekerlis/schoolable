@@ -10,6 +10,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { IconRenderer, PlusClipboard, Edit, WarpBack } from 'helpers/systemIcons';
+
 import Layout from 'layouts/default';
 
 import Request from 'helpers/request.js';
@@ -60,6 +62,11 @@ const CoursePageRender = ({
     setLoaderActive(true)
     router.push(`/courses/page/edit?id=${router.query.id}`);
   };
+
+  const goToCourseWhileEditing = () => {
+    setLoaderActive(true);
+    router.push(`/courses/page?id=${router.query.id}`);
+  }
 
   const setPhaseEditMenuOpenInPhase = (index, name, id) => {
     // console.log("setPhaseEditMenuOpenInPhase")
@@ -151,7 +158,7 @@ const CoursePageRender = ({
 
   return (
     <Layout>
-    <Loader active={loaderActive} />
+      <Loader active={loaderActive} />
       <div className={styles.wrapper}>
         <Sidebar />
 
@@ -202,15 +209,25 @@ const CoursePageRender = ({
             </div>
           )}
 
-          {isUserOwnerOfPage && isEditing === false && (
+          {(isUserOwnerOfPage && isEditing === false) && (
             <div onClick={editCourseClick} className={styles.editCourse}>
-              <FontAwesomeIcon icon={faEdit} className={styles.icon} />
-              <p>{lang.editCourse}</p>
+              <IconRenderer onHover={{
+                text: lang.editCourse,
+                direction: 'right'
+              }} className={styles.editIcon} icon={Edit} />
             </div>
           )}
 
           <div className={styles.mainContainer}>
             <div className={styles.content}>
+              { isEditing &&
+                <div onClick={goToCourseWhileEditing} className={styles.goBackEditing}>
+                  <IconRenderer onHover={{
+                    text: lang.goBack,
+                    direction: 'right'
+                  }} className={styles.goBackIcon} icon={WarpBack} />
+                </div>
+              }
               {sub === 'overview' && (
                 <>
                   {phasesRender?.length === 0 ? (
@@ -233,7 +250,11 @@ const CoursePageRender = ({
                               currentItems={phases}
                               itemName={lang.phaseItemName}
                               noCurrentItemText={lang.courseMissingPhases}
+                              createAdditionalItemIcon={PlusClipboard}
                             />
+
+
+
                           </>
                         )}
 
@@ -250,6 +271,11 @@ const CoursePageRender = ({
     </Layout>
   );
 };
+
+// <div onClick={editCourseClick} className={styles.editCourse}>
+//   <FontAwesomeIcon icon={faEdit} className={styles.icon} />
+//   <p>{lang.editCourse}</p>
+// </div>
 
 // { isEditing === false &&
 //   <div className={styles.phaseDivider}></div>

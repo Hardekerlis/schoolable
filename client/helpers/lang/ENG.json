@@ -26,7 +26,8 @@
     "phases": "Course phases",
     "coursePageTitleEditing": "Editing: ",
     "noPhasesText": "No phases found",
-    "phaseItemName": "Phase"
+    "phaseItemName": "Phase",
+    "goBack": "Back to course"
   },
   "courseMenu": {
     "overview": "Overview",

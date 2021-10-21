@@ -188,7 +188,7 @@ const Phases = ({ serverErrors, phase, courseInfo }) => {
     }
   ]
 
-  const phasesRender = phase.phaseItems.map((obj, index) => {
+  const phasesRender = phase.phaseItems?.map((obj, index) => {
 
     return(
       <div key={index} className={styles.item}>
