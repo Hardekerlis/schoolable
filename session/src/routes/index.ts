@@ -8,18 +8,21 @@ import {
 const router = Router();
 
 import get from './get';
-router.get('/', get);
+router.get('/', getLanguage, get);
+
+import fetch from './fetch';
+router.get('/active', currentUser, getLanguage, requireAuth('all'), fetch);
 
 import { killCurrent, killAll, killById } from './kill';
-router.get(
+router.delete(
   '/current',
   currentUser,
   getLanguage,
   requireAuth('all'),
   killCurrent,
 );
-router.get('/all', currentUser, getLanguage, requireAuth('all'), killAll);
-router.get(
+router.delete('/all', currentUser, getLanguage, requireAuth('all'), killAll);
+router.delete(
   '/:sessionId',
   currentUser,
   getLanguage,

@@ -18,7 +18,7 @@ export const currentUser = (
   res: Response,
   next: NextFunction,
 ) => {
-  let { token } = req.cookies.token ? req.cookies : req.signedCookies;
+  let { token } = req.signedCookies;
 
   if (!token) token = req.body.token;
 

@@ -12,6 +12,9 @@ import { UserTypes } from '@gustafdahl/schoolable-enums';
 import { UserPayload, Location } from '@gustafdahl/schoolable-interfaces';
 import jwt from 'jsonwebtoken';
 import geoip from 'geoip-lite';
+import { sign } from 'cookie-signature';
+
+process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import User, { UserDoc } from '../models/user';
 import Session, { SessionDoc } from '../models/session';
@@ -68,8 +71,6 @@ winstonTestSetup();
 jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
-
-process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 beforeAll(async () => {
   process.env.MONGOMS_DOWNLOAD_URL =
@@ -183,8 +184,9 @@ global.getFaultyAuthCookie = async () => {
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
+  const cookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${token}; path=/`];
+  return [`token=${cookie}; path=/`];
 };
 
 global.getAuthCookie = async (
@@ -192,7 +194,7 @@ global.getAuthCookie = async (
   userType?: UserTypes,
   email?: string,
   id?: string,
-): Promise<string[]> => {
+): Promise<[string, SessionDoc, UserDoc]> => {
   const { session, user } = await global.createSession(sessionData);
 
   const payload: UserPayload = {
@@ -205,6 +207,7 @@ global.getAuthCookie = async (
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
+  const cookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${token}; path=/`, session, user];
+  return [`token=${cookie}; path=/`, session, user];
 };

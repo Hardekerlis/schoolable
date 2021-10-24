@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
 import { Location } from '@gustafdahl/schoolable-interfaces';
 import { UserDoc } from './user';
 

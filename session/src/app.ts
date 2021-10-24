@@ -11,7 +11,7 @@ import path from 'path';
 
 import { loadLanguages } from '@gustafdahl/schoolable-loadlanguages';
 import { NotFoundError } from '@gustafdahl/schoolable-errors';
-import { ConfigHandler } from '@gustafdahl/schoolable-utils';
+import { ConfigHandler, CONFIG } from '@gustafdahl/schoolable-utils';
 import { errorHandler } from '@gustafdahl/schoolable-middlewares';
 
 // Get parent folder to check if it is in dev or in prod folder
@@ -51,7 +51,7 @@ app.use(
 );
 // TODO
 // Add maxAge calculation
-app.use(cookieParser(process.env.JWT_KEY as string));
+app.use(cookieParser(process.env.JWT_KEY as string, CONFIG.cookies));
 
 import router from './routes';
 app.use('/api/session', router);

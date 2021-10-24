@@ -4,6 +4,7 @@ import {
   UnexpectedError,
 } from '@gustafdahl/schoolable-errors';
 import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+import { CONFIG } from '@gustafdahl/schoolable-utils';
 import jwt from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 
@@ -42,7 +43,7 @@ const login = async (req: Request, res: Response) => {
       const loginId = nanoid();
 
       logger.debug('Creating login id cookie');
-      res.cookie('loginId', loginId);
+      res.cookie('loginId', loginId, CONFIG.cookies);
 
       // Couldnt get nats mock to work
       // Code is only ran if its not test environment

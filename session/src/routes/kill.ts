@@ -3,7 +3,9 @@ import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import {
   UnexpectedError,
   NotAuthorizedError,
+  NotFoundError,
 } from '@gustafdahl/schoolable-errors';
+import { isValidObjectId } from 'mongoose';
 
 import Session from '../models/session';
 import User from '../models/user';
@@ -90,6 +92,10 @@ export const killById = async (req: Request, res: Response) => {
   const sessId = req.params.sessionId;
   const { currentUser } = req;
   const lang = LANG[`${req.lang}`];
+
+  if (!isValidObjectId(sessId)) {
+    throw new NotFoundError();
+  }
 
   logger.info('Attempting to kill session by id');
 

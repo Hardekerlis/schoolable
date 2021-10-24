@@ -11,8 +11,7 @@
     "build": "npm run clean && tsc",
     "start": "npm ci && npm run build && npm install --only=production && node build/index.js",
     "clean": "del ./build/*",
-    "dev": "npm run clean && npm ci && nodemon ./src/index.ts",
-    "devK8s": "nodemon ./src/index.ts",
+    "dev": "nodemon ./src/index.ts --watch src config languages",
     "test": "npm run clean && npm ci && jest --watchAll --no-cache --runInBand",
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
@@ -22,7 +21,7 @@
     "@gustafdahl/schoolable-events": "^1.8.2",
     "@gustafdahl/schoolable-interfaces": "^1.0.2",
     "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
-    "@gustafdahl/schoolable-middlewares": "^1.0.11",
+    "@gustafdahl/schoolable-middlewares": "^1.1.1",
     "@gustafdahl/schoolable-utils": "^1.0.1",
     "cookie-parser": "^1.4.5",
     "cookie-signature": "^1.0.6",

@@ -3,3 +3,5 @@ killedCurrentSession: 'Killed current session'
 noSessionsFound: "Couldn't find any sessions"
 killedAllSessions: 'Killed all sessions'
 killedSessionById: 'Killed session'
+foundSessions: 'Found sessions'
+gotSession: 'Successfully fetched session'
