@@ -12,6 +12,8 @@ import Request from 'helpers/request.js';
 
 import { Prompt } from 'helpers/prompt';
 
+import { Loader } from 'components';
+
 import language from 'helpers/lang';
 const lang = language.login;
 
@@ -38,13 +40,17 @@ const Login = () => {
 
   const router = useRouter();
 
+  const [loaderActive, setLoaderActive] = useState(false);
+
   const [credentials, setCredentials] = useState({
     email: 'teacher@myTeacherEmail.teach',
-    password: 'gbUuakd3NlIgYWglK4ALH',
+    password: '3Hm74WHaJZqjlqqmePYVd',
   });
 
   const submit = async evt => {
     evt.preventDefault();
+
+    setLoaderActive(true);
 
     let request = new Request('/api/auth/login', credentials).post().json();
     let res = await request.send();
@@ -58,14 +64,21 @@ const Login = () => {
       user = JSON.stringify(res.user);
       Cookies.set('user', user);
     }catch (e) {
+      setLoaderActive(false);
       return Prompt.error(lang.unexpected);
     }
 
-    if(res.errors) return Prompt.error(res.errors);
+    if(res.errors) {
+      setLoaderActive(false);
+      return Prompt.error(res.errors);
+    }
 
     let response = await (new Request('/api/session').get().json()).send();
 
-    if(res.errors) return Prompt.error(res.errors);
+    if(response.errors) {
+      setLoaderActive(false);
+      return Prompt.error(response.errors);
+    }
 
     router.push('/');
 
@@ -86,6 +99,7 @@ const Login = () => {
 
   return (
     <Layout mainClass={styles.positioning}>
+      <Loader active={loaderActive} />
       <form onSubmit={submit} className={styles.form}>
         <p className={styles.title}>{lang.pageTitle}</p>
 

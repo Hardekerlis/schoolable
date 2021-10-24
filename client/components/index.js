@@ -11,6 +11,7 @@ import CoursePreview from './coursePreview';
 import RightClickMenu from './rightClickMenu';
 import Breadcrumbs from './breadcrumbs';
 import Loader from './loader';
+import CourseNavigation from './courseNavigation';
 //import pos
 
 
@@ -22,6 +23,7 @@ import {
   Timeline,
   CalendarTypeSelector,
 } from './calendar';
+
 
 export {
   FirstTimeSetup,
@@ -43,5 +45,6 @@ export {
   RightClickMenu,
   Breadcrumbs,
   Loader,
+  CourseNavigation,
   //export pos
 };

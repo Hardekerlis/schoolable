@@ -49,7 +49,7 @@ const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
       }catch (e) {
         ('');
       }
-      if(elem.classList?.contains(styles.bars)) {
+      if(elem.classList?.contains(styles.container)) {
         foundWrapper = true;
         break;
       }
@@ -115,7 +115,7 @@ const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
   };
 
   const goToPhasePageEdit = () => {
-    //go to phase edit page
+    //TODO: go to phase edit page
     // router.push()
   };
 

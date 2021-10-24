@@ -16,18 +16,19 @@
     "sortDefaultName": "Default"
   },
   "coursePage": {
-    "phaseCreated": "Phase created!",
     "descriptionTitle": "Course description",
     "editCourse": "Edit course",
-    "phaseItemNcoursesame": "Phase",
-    "courseMissingPhases": "This course does currently not have any phases.",
-    "editPhaseText": "Edit this phase",
-    "phaseNameEdit": "Edit phase name:",
     "phases": "Course phases",
+    "noPhasesText": "No phases found"
+  },
+  "coursePageEdit": {
     "coursePageTitleEditing": "Editing: ",
-    "noPhasesText": "No phases found",
     "phaseItemName": "Phase",
-    "goBack": "Back to course"
+    "courseMissingPhases": "This course does currently not have any phases.",
+    "goBack": "Back to course",
+    "editPhaseText": "Edit this phase",
+    "phaseCreated": "Phase created!",
+    "phaseNameEdit": "Edit phase name:"
   },
   "courseMenu": {
     "overview": "Overview",

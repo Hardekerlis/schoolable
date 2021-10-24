@@ -136,44 +136,6 @@ $mainContainerMargin: 30px
   // border: 1px solid $purple
   // border-radius: 5px
 
-.editCourse, .goBackEditing
-  position: fixed
-  left: calc(#{$sidebarWidth} + 10px)
-  // right: 50px
-  bottom: 10px
-  // background-color: $purple
-
-  border-radius: 20px
-  color: $white
-  padding: 0px
-  cursor: pointer
-
-  z-index: 100
-
-  display: flex
-  flex-direction: row
-  align-items: center
-  justify-content: center
-
-  @include transitionProp(0.2s, ease-out, background-color)
-
-.editIcon, .goBackIcon
-  width: 75px
-  height: 75px
-
-  // .icon
-  //   width: 48px
-  //   height: 48px
-  //   margin-right: 10px
-  //
-  // p
-  //   font-weight: 500
-  //   font-size: 1.5rem
-  //   margin: 0px
-
-.editCourse:hover, .goBackEditing:hover
-  background-color: $darkPurple2
-
 
 .changesSaveStatus
   margin-left: 20px
@@ -185,8 +147,9 @@ $mainContainerMargin: 30px
 
 .creationContainer
   position: absolute
-  width: 100% !important
+  width: calc(100% + 20px) !important
   height: 100% !important
+  left: -20px
 
 .createPhaseButton
   bottom: 95px !important
