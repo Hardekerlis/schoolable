@@ -1,3 +1,137 @@
+@import "styles/variables"
+
+$pagePadding: 30px
+
+$headerHeight: 100px
+$courseMenuHeight: 51px
+$mainContainerMargin: 30px
+
 .wrapper
   display: flex
   flex-direction: row
+
+.container
+  width: 100%
+  padding-left: $pagePadding
+  padding-right: $pagePadding
+
+  .hoz_line
+    margin: 0px !important
+    width: 100%
+
+.header
+  display: flex
+  flex-direction: row
+  align-items: center
+  height: $headerHeight
+
+.headline
+  font-size: 3rem
+  color: $white
+  margin: 20px 0px 20px 0px
+  font-weight: 700
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  width: 70%
+
+.authorText
+  color: $white
+  position: absolute
+  right: $pagePadding
+
+  font-size: 1.4rem
+  font-weight: 200
+
+.descDivider
+  width: 100%
+  height: auto
+  display: inline-block
+
+.descContainer
+  width: auto
+  height: auto
+  padding: 10px 20px
+  margin: 0px
+  margin-top: 30px
+
+  border-radius: 5px
+  font-size: 1.5rem
+
+  font-weight: 300
+
+  display: inline-block
+
+  background-color: $white
+
+  p
+    width: auto
+
+.descTitle
+  font-weight: 500
+  margin: 0px
+  margin-top: 5px
+
+.mainContainer
+  margin-top: $mainContainerMargin
+  width: 100%
+
+  //remove (maybe)
+  // min-height: 50%
+
+  display: flex
+  flex-direction: column
+
+.content
+  width: 100%
+  height: calc(100vh - #{$headerHeight} - #{$courseMenuHeight} - #{$mainContainerMargin} - 20px)
+  position: relative
+
+.noPhasesText
+  color: $white
+  font-size: 1.2rem
+
+.phasesContainer
+  height: 100%
+  width: 100%
+  overflow-y: scroll
+  padding-bottom: 60px
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  align-content: flex-start
+  padding-left: 100px
+  padding-top: 20px
+
+.phaseDivider
+  position: absolute
+  height: 100%
+  width: 2px
+  background-color: $lightGrey
+  margin-left: 50%
+  left: -2px
+
+.phasesText
+  font-size: 2rem
+  color: $white
+  font-weight: 600
+  margin: 0px
+  margin-left: 100px
+  margin-bottom: 10px
+
+.courseMenu
+  display: flex
+  flex-direction: row
+  width: auto
+  height: auto
+  height: $courseMenuHeight
+  position: relative
+
+.creationContainer
+  position: absolute
+  width: calc(100% + 20px) !important
+  height: 100% !important
+  left: -20px
+
+.createPhaseButton
+  bottom: 95px !important

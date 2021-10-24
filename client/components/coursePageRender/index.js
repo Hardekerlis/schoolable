@@ -24,7 +24,8 @@ import {
   SampleCreationSystem,
   Phase,
   PhaseEditMenu,
-  Loader
+  Loader,
+  CourseNavigation
 } from 'components';
 
 import { firstLetterToUpperCase } from 'helpers/misc.js';
@@ -134,7 +135,6 @@ const CoursePageRender = ({
     );
   }, [phaseTitles]);
 
-  //make spinning thingy that tells the user when all their changes have saved
 
   useEffect(() => {
     if(isEditing) {
@@ -210,23 +210,25 @@ const CoursePageRender = ({
           )}
 
           {(isUserOwnerOfPage && isEditing === false) && (
-            <div onClick={editCourseClick} className={styles.editCourse}>
-              <IconRenderer onHover={{
+            <CourseNavigation options={[
+              {
                 text: lang.editCourse,
-                direction: 'right'
-              }} className={styles.editIcon} icon={Edit} />
-            </div>
+                onClick: editCourseClick,
+                icon: Edit
+              },
+            ]} />
           )}
 
           <div className={styles.mainContainer}>
             <div className={styles.content}>
               { isEditing &&
-                <div onClick={goToCourseWhileEditing} className={styles.goBackEditing}>
-                  <IconRenderer onHover={{
+                <CourseNavigation options={[
+                  {
                     text: lang.goBack,
-                    direction: 'right'
-                  }} className={styles.goBackIcon} icon={WarpBack} />
-                </div>
+                    onClick: goToCourseWhileEditing,
+                    icon: WarpBack
+                  },
+                ]} />
               }
               {sub === 'overview' && (
                 <>
@@ -252,9 +254,6 @@ const CoursePageRender = ({
                               noCurrentItemText={lang.courseMissingPhases}
                               createAdditionalItemIcon={PlusClipboard}
                             />
-
-
-
                           </>
                         )}
 
