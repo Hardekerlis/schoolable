@@ -6,11 +6,10 @@ import {
   validateResult,
   getLanguage,
   requireAuth,
-} from '@gustafdahl/schoolable-middlewares';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+  LANG,
+  UserTypes,
+} from '@gustafdahl/schoolable-common';
 import { body } from 'express-validator';
-
-import { UserTypes } from '@gustafdahl/schoolable-enums';
 
 const router = Router();
 

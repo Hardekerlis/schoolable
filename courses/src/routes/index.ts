@@ -5,9 +5,9 @@ import {
   requireAuth,
   validateResult,
   getLanguage,
-} from '@gustafdahl/schoolable-middlewares';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+  LANG,
+  UserTypes,
+} from '@gustafdahl/schoolable-common';
 
 const router = Router();
 

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import {
   UnexpectedError,
   NotAuthorizedError,
   NotFoundError,
-} from '@gustafdahl/schoolable-errors';
+  LANG,
+} from '@gustafdahl/schoolable-common';
 import { isValidObjectId } from 'mongoose';
 
 import Session from '../models/session';

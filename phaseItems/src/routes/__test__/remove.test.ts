@@ -4,7 +4,7 @@ import { app } from '../../app';
 import mongoose from 'mongoose';
 import { DateTime } from 'luxon';
 
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/phaseitem/remove';
 

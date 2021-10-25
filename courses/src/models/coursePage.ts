@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-import { CourseMenuItem } from '@gustafdahl/schoolable-interfaces';
-import { ActionTypes } from '@gustafdahl/schoolable-enums';
+import { CourseMenuItem, ActionTypes } from '@gustafdahl/schoolable-common';
 
 interface CoursePageAttributes {
   menu?: CourseMenuItem[];

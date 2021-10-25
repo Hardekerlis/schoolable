@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserTypes } from '@gustafdahl/schoolable-common';
 
 interface UserAttributes {
   userId: string;

@@ -1,10 +1,6 @@
-/** @format */
-
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
-import { CONFIG } from '@gustafdahl/schoolable-utils';
-
-/** @format */
+import { CONFIG } from '@gustafdahl/schoolable-common';
 
 // declare global {
 //   namespace NodeJS {

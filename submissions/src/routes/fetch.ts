@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+import { LANG } from '@gustafdahl/schoolable-common';
 
 import File from '../models/file';
 

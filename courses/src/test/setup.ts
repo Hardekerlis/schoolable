@@ -3,9 +3,12 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import { CONFIG, winstonTestSetup } from '@gustafdahl/schoolable-utils';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { UserPayload } from '@gustafdahl/schoolable-interfaces';
+import {
+  CONFIG,
+  winstonTestSetup,
+  UserPayload,
+  UserTypes,
+} from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 
@@ -90,6 +93,7 @@ global.getAuthCookie = async (
   const user = await createUser(userType, email, userId);
 
   const payload: UserPayload = {
+    sessionId: 'adasdagafag',
     id: user.userId,
     email: user.email,
     userType: user.userType,

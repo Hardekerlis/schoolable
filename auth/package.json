@@ -16,13 +16,7 @@
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-enums": "^1.0.0",
-    "@gustafdahl/schoolable-errors": "^1.0.1",
-    "@gustafdahl/schoolable-events": "^1.8.2",
-    "@gustafdahl/schoolable-interfaces": "^1.0.2",
-    "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
-    "@gustafdahl/schoolable-middlewares": "^1.1.1",
-    "@gustafdahl/schoolable-utils": "^1.0.1",
+    "@gustafdahl/schoolable-common": "^0.0.1",
     "cookie-parser": "^1.4.5",
     "cookie-signature": "^1.0.6",
     "cors": "^2.8.5",

@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import {
   BadRequestError,
   UnexpectedError,
-} from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+  CONFIG,
+  LANG,
+} from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 

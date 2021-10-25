@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
-import { NotAuthorizedError } from '@gustafdahl/schoolable-errors';
+import {
+  UserTypes,
+  LANG,
+  NotAuthorizedError,
+} from '@gustafdahl/schoolable-common';
 
 import User from '../models/user';
 import Course from '../models/course';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 
 import logger from '../utils/logger';
 

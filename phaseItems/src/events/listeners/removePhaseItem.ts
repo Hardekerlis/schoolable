@@ -2,7 +2,7 @@ import {
   Listener,
   Subjects,
   RemovePhaseItemEvent,
-} from '@gustafdahl/schoolable-events';
+} from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
 import PhaseItemRemovedPublisher from '../publishers/phaseItemRemoved';

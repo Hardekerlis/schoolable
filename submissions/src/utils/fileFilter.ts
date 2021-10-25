@@ -1,8 +1,6 @@
 import { Request, Express } from 'express';
 import { FileFilterCallback } from 'multer';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { BadRequestError } from '@gustafdahl/schoolable-errors';
+import { CONFIG, BadRequestError, LANG } from '@gustafdahl/schoolable-common';
 
 interface FileType {
   ext: string;

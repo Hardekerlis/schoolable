@@ -4,7 +4,7 @@ import { app } from '../../app';
 import mongoose from 'mongoose';
 import fs from 'fs';
 
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserTypes } from '@gustafdahl/schoolable-common';
 
 import Course from '../../models/course';
 import Phase from '../../models/phase';

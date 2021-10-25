@@ -2,7 +2,7 @@ import {
   Subjects,
   PhaseCreatedEvent,
   Listener,
-} from '@gustafdahl/schoolable-events';
+} from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
 import { queueGroupName } from './queueGroupName';

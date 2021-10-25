@@ -1,4 +1,4 @@
-import { ConfigHandler, CONFIG } from '@gustafdahl/schoolable-utils';
+import { ConfigHandler, CONFIG } from '@gustafdahl/schoolable-common';
 import path from 'path';
 
 // Get parent folder to check if it is in dev or in prod folder
@@ -46,8 +46,13 @@ const start = async () => {
       process.exit();
     });
 
+    logger.debug('Registered CourseQueueRemoveListener for nats');
     new CourseQueueRemoveListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered PhaseQueueRemoveListener for nats');
     new PhaseQueueRemoveListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered PhaseItemQueueRemoveListener for nats');
     new PhaseItemQueueRemoveListener(natsWrapper.client, logger).listen();
 
     process.on('SIGINT', () => natsWrapper.client.close());

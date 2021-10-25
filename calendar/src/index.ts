@@ -1,5 +1,5 @@
 import { app } from './app';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 
@@ -35,6 +35,8 @@ const startServer = async () => {
     });
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
+
+    // Add loggers for registered listeners
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

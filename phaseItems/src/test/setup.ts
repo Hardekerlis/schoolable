@@ -1,16 +1,13 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import request from 'supertest';
 import faker from 'faker';
-import path from 'path';
 import {
   CONFIG,
-  ConfigHandler,
   winstonTestSetup,
-} from '@gustafdahl/schoolable-utils';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { UserPayload } from '@gustafdahl/schoolable-interfaces';
+  UserTypes,
+  UserPayload,
+} from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 
 import { app } from '../app';
@@ -74,6 +71,7 @@ global.getAuthCookie = async (
   if (!id) id = new mongoose.Types.ObjectId().toHexString();
 
   const payload: UserPayload = {
+    sessionId: 'ihasdkaskdjasda',
     id,
     email,
     userType,

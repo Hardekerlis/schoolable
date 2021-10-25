@@ -7,9 +7,10 @@ import {
   CONFIG,
   ConfigHandler,
   winstonTestSetup,
-} from '@gustafdahl/schoolable-utils';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { UserPayload, Location } from '@gustafdahl/schoolable-interfaces';
+  UserTypes,
+  UserPayload,
+  Location,
+} from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import geoip from 'geoip-lite';
 import { sign } from 'cookie-signature';

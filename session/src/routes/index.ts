@@ -3,7 +3,7 @@ import {
   currentUser,
   getLanguage,
   requireAuth,
-} from '@gustafdahl/schoolable-middlewares';
+} from '@gustafdahl/schoolable-common';
 
 const router = Router();
 

@@ -1,14 +1,14 @@
 import { Request, Response, Express } from 'express';
 import { isValidObjectId } from 'mongoose';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
 import {
   NotFoundError,
   NotAuthorizedError,
   BadRequestError,
   UnexpectedError,
-} from '@gustafdahl/schoolable-errors';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+  CONFIG,
+  LANG,
+  UserTypes,
+} from '@gustafdahl/schoolable-common';
 
 import Course from '../models/course';
 import Phase from '../models/phase';

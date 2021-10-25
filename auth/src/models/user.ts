@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose';
 import Password from '../utils/password';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserTypes } from '@gustafdahl/schoolable-common';
 
 import { UserSettingsDoc } from './userSettings';
 

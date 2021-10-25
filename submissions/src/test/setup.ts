@@ -8,9 +8,9 @@ import {
   CONFIG,
   ConfigHandler,
   winstonTestSetup,
-} from '@gustafdahl/schoolable-utils';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { UserPayload } from '@gustafdahl/schoolable-interfaces';
+  UserTypes,
+  UserPayload,
+} from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 jest.mock('backblaze-b2');

@@ -1,10 +1,8 @@
-/** @format */
-
 import mongoose from 'mongoose';
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
-import { ConfigHandler, CONFIG } from '@gustafdahl/schoolable-utils';
+import { ConfigHandler, CONFIG } from '@gustafdahl/schoolable-common';
 
 const configPath =
   __dirname.substring(0, __dirname.indexOf('/src')) + '/config/config.yml';

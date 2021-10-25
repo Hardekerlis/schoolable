@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { BadRequestError } from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+import { BadRequestError, LANG } from '@gustafdahl/schoolable-common';
 
 const check = async (req: Request, res: Response) => {
   const { currentUser } = req;

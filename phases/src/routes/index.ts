@@ -4,9 +4,9 @@ import {
   getLanguage,
   requireAuth,
   validateResult,
-} from '@gustafdahl/schoolable-middlewares';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+  UserTypes,
+  LANG,
+} from '@gustafdahl/schoolable-common';
 import { body } from 'express-validator';
 
 const router = Router();

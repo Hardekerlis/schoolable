@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { NotAuthorizedError } from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+import { NotAuthorizedError, LANG } from '@gustafdahl/schoolable-common';
 
 import User from '../models/user';
 import Course from '../models/course';

@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
-import { NotAuthorizedError } from '@gustafdahl/schoolable-errors';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { UserPayload } from '@gustafdahl/schoolable-interfaces';
+import {
+  LANG,
+  NotAuthorizedError,
+  CONFIG,
+  UserPayload,
+} from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 
 import Session from '../models/session';

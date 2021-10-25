@@ -3,8 +3,11 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import { CONFIG, winstonTestSetup } from '@gustafdahl/schoolable-utils';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import {
+  CONFIG,
+  winstonTestSetup,
+  UserTypes,
+} from '@gustafdahl/schoolable-common';
 
 import { app } from '../app';
 

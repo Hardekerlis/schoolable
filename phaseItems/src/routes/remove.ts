@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import { isValidObjectId } from 'mongoose';
 import {
   NotFoundError,
   NotAuthorizedError,
-} from '@gustafdahl/schoolable-errors';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+  LANG,
+  UserTypes,
+  CONFIG,
+} from '@gustafdahl/schoolable-common';
 import { DateTime } from 'luxon';
 
 import Course from '../models/course';

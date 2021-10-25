@@ -4,11 +4,10 @@ import {
   getLanguage,
   requireAuth,
   validateResult,
-} from '@gustafdahl/schoolable-middlewares';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+  LANG,
+  UserTypes,
+} from '@gustafdahl/schoolable-common';
 import { body } from 'express-validator';
-import mongoose from 'mongoose';
 
 const router = Router();
 

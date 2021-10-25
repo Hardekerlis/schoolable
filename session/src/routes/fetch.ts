@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import {
   BadRequestError,
   UnexpectedError,
-} from '@gustafdahl/schoolable-errors';
+  LANG,
+} from '@gustafdahl/schoolable-common';
 
 import Session from '../models/session';
 import User from '../models/user';

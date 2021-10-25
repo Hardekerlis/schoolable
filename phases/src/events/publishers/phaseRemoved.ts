@@ -2,7 +2,7 @@ import {
   Publisher,
   PhaseRemovedEvent,
   Subjects,
-} from '@gustafdahl/schoolable-events';
+} from '@gustafdahl/schoolable-common';
 
 export default class PhaseRemovedPublisher extends Publisher<PhaseRemovedEvent> {
   subject: Subjects.PhaseRemoved = Subjects.PhaseRemoved;

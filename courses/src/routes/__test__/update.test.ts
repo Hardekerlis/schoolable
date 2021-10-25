@@ -2,7 +2,7 @@ import request from 'supertest';
 import faker from 'faker';
 import { app } from '../../app';
 
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/course/update';
 
@@ -23,14 +23,6 @@ it(`Has a route handler listening on ${path} for put requests`, async () => {
   const res = await request(app).put(path).send({});
 
   expect(res.status).not.toEqual(404);
-});
-
-it('Returns a 401 if user is not logged in', async () => {
-  const { course } = await createCourse();
-  await request(app)
-    .put(path)
-    .send({ name: 'name name', courseId: course.id })
-    .expect(401);
 });
 
 it('Returns a 401 if user is not authenticated', async () => {

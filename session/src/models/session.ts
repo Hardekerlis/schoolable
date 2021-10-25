@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Location } from '@gustafdahl/schoolable-interfaces';
+import { Location } from '@gustafdahl/schoolable-common';
 import { UserDoc } from './user';
 
 interface SessionAttributes {

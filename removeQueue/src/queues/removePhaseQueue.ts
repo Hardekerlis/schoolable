@@ -1,5 +1,5 @@
 import Queue from 'bull';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+import { CONFIG } from '@gustafdahl/schoolable-common';
 
 import { RemovePhasePublisher } from '../events/publishers/removePhase';
 import { natsWrapper } from '../utils/natsWrapper';

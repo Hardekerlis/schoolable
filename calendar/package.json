@@ -16,11 +16,7 @@
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-errors": "^1.0.1",
-    "@gustafdahl/schoolable-events": "^1.7.0",
-    "@gustafdahl/schoolable-loadlanguages": "^1.0.0",
-    "@gustafdahl/schoolable-middlewares": "^1.1.1",
-    "@gustafdahl/schoolable-utils": "^1.0.1",
+    "@gustafdahl/schoolable-common": "^0.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",

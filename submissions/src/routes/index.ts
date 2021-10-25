@@ -5,14 +5,13 @@ import {
   getLanguage,
   requireAuth,
   validateResult,
-} from '@gustafdahl/schoolable-middlewares';
-import { UserTypes, Grades } from '@gustafdahl/schoolable-enums';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
-import {
+  UserTypes,
+  Grades,
+  LANG,
+  CONFIG,
   UnexpectedError,
   BadRequestError,
-} from '@gustafdahl/schoolable-errors';
+} from '@gustafdahl/schoolable-common';
 
 const router = Router();
 

@@ -2,7 +2,7 @@ import request from 'supertest';
 import faker from 'faker';
 import { app } from '../../app';
 
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/auth/login';
 

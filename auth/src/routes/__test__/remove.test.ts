@@ -1,7 +1,6 @@
 import request from 'supertest';
 import faker from 'faker';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
-import { UserPayload } from '@gustafdahl/schoolable-interfaces';
+import { UserTypes, UserPayload } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 

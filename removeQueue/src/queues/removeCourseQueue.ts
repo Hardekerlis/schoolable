@@ -1,5 +1,5 @@
 import Queue from 'bull';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+import { CONFIG } from '@gustafdahl/schoolable-common';
 
 import { RemoveCoursePublisher } from '../events/publishers/removeCourse';
 import { natsWrapper } from '../utils/natsWrapper';

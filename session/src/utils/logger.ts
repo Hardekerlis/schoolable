@@ -1,6 +1,6 @@
 /** @format */
 
-import { Logger, CONFIG, ConfigHandler } from '@gustafdahl/schoolable-utils';
+import { Logger, CONFIG, ConfigHandler } from '@gustafdahl/schoolable-common';
 
 const logsFolder = `${process.env.ROOT_FOLDER}/logs/`;
 

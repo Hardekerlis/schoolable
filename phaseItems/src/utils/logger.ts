@@ -1,6 +1,6 @@
 /** @format */
 
-import { Logger, CONFIG, ConfigHandler } from '@gustafdahl/schoolable-utils';
+import { Logger, CONFIG, ConfigHandler } from '@gustafdahl/schoolable-common';
 
 const logsFolder =
   __dirname.substring(0, __dirname.indexOf(`/${process.env.PARENT_FOLDER}`)) +

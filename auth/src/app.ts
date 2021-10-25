@@ -9,10 +9,14 @@ import { json, urlencoded } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
-import { loadLanguages } from '@gustafdahl/schoolable-loadlanguages';
-import { NotFoundError } from '@gustafdahl/schoolable-errors';
-import { ConfigHandler, Secrets, CONFIG } from '@gustafdahl/schoolable-utils';
-import { errorHandler } from '@gustafdahl/schoolable-middlewares';
+import {
+  loadLanguages,
+  NotFoundError,
+  ConfigHandler,
+  Secrets,
+  CONFIG,
+  errorHandler,
+} from '@gustafdahl/schoolable-common';
 
 // Get parent folder to check if it is in dev or in prod folder
 process.env.PARENT_FOLDER = path.basename(path.dirname(__filename));

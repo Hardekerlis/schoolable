@@ -2,10 +2,10 @@ import {
   Listener,
   Subjects,
   UserLoginEvent,
-} from '@gustafdahl/schoolable-events';
+  Location,
+} from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 import geoip from 'geoip-lite';
-import { Location } from '@gustafdahl/schoolable-interfaces';
 
 import { queueGroupName } from './queueGroupName';
 import logger from '../../utils/logger';

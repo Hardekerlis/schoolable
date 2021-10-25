@@ -1,7 +1,7 @@
 /** @format */
 
 import { app } from './app';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 
@@ -56,14 +56,21 @@ const startServer = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
+    logger.debug('Registered PhaseItemCreatedListener for nats');
     new PhaseItemCreatedListener(natsWrapper.client, logger).listen();
+    logger.debug('Registered PhaseItemRemovedListener for nats');
     new PhaseItemRemovedListener(natsWrapper.client, logger).listen();
 
+    logger.debug('Registered PhaseCreatedListener for nats');
     new PhaseCreatedListener(natsWrapper.client, logger).listen();
+    logger.debug('Registered PhaseRemovedListener for nats');
     new PhaseRemovedListener(natsWrapper.client, logger).listen();
 
+    logger.debug('Registered CourseCreatedListener for nats');
     new CourseCreatedListener(natsWrapper.client, logger).listen();
+    logger.debug('Registered CourseRemovedListener for nats');
     new CourseRemovedListener(natsWrapper.client, logger).listen();
+    logger.debug('Registered CourseUpdatedListener for nats');
     new CourseUpdatedListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');

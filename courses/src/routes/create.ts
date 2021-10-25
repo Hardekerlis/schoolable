@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { ActionTypes } from '@gustafdahl/schoolable-enums';
 import {
   UnexpectedError,
   NotAuthorizedError,
-} from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-// import { CONFIG } from '@gustafdahl/schoolable-utils';
+  ActionTypes,
+  LANG,
+} from '@gustafdahl/schoolable-common';
 
 import CoursePage from '../models/coursePage';
 import Course from '../models/course';

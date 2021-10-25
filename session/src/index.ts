@@ -1,7 +1,7 @@
 /** @format */
 
 import { app } from './app';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import mongoose from 'mongoose';

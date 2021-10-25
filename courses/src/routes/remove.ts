@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import {
   BadRequestError,
   NotAuthorizedError,
-} from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+  LANG,
+  CONFIG,
+} from '@gustafdahl/schoolable-common';
 import { DateTime } from 'luxon';
 
 import Course from '../models/course';

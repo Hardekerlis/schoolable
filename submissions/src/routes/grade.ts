@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { NotAuthorizedError } from '@gustafdahl/schoolable-errors';
+import { LANG, NotAuthorizedError } from '@gustafdahl/schoolable-common';
 
 import File, { Comment } from '../models/file';
 

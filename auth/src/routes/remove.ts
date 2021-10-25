@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
 import {
   UnexpectedError,
   BadRequestError,
-} from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+  UserTypes,
+  LANG,
+} from '@gustafdahl/schoolable-common';
 
 import UserRemovedPublisher from '../events/publishers/userRemoved';
 import { natsWrapper } from '../utils/natsWrapper';

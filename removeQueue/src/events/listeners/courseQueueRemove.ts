@@ -2,7 +2,7 @@ import {
   Listener,
   CourseQueueRemoveEvent,
   Subjects,
-} from '@gustafdahl/schoolable-events';
+} from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
 import logger from '../../utils/logger';

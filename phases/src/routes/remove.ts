@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
 import {
   BadRequestError,
   NotAuthorizedError,
-} from '@gustafdahl/schoolable-errors';
+  LANG,
+  CONFIG,
+} from '@gustafdahl/schoolable-common';
 import { DateTime } from 'luxon';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
 
 import Phase from '../models/phase';
 import Course from '../models/course';

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Grades } from '@gustafdahl/schoolable-enums';
+import { Grades } from '@gustafdahl/schoolable-common';
 
 export interface Comment {
   text: string;

@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import {
   BadRequestError,
   NotAuthorizedError,
-} from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
+  UserTypes,
+  LANG,
+} from '@gustafdahl/schoolable-common';
 import mongoose from 'mongoose';
 
 import Phase from '../models/phase';

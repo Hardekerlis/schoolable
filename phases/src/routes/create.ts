@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import {
   BadRequestError,
   NotAuthorizedError,
-} from '@gustafdahl/schoolable-errors';
-import { LANG } from '@gustafdahl/schoolable-loadlanguages';
+  LANG,
+} from '@gustafdahl/schoolable-common';
 
 import Phase from '../models/phase';
 import Course from '../models/course';

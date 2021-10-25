@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { UserTypes } from '@gustafdahl/schoolable-enums';
 import {
   NotAuthorizedError,
   UnexpectedError,
-  BadRequestError,
-} from '@gustafdahl/schoolable-errors';
-import { CONFIG } from '@gustafdahl/schoolable-utils';
+  UserTypes,
+  CONFIG,
+} from '@gustafdahl/schoolable-common';
 import { nanoid } from 'nanoid';
 
 import UserCreatedPublisher from '../events/publishers/userCreated';
