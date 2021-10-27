@@ -3,11 +3,11 @@
 export enum Subjects {
   UserCreated = 'user:created',
   UserUpdated = 'user:updated',
-  UserLogout = 'user:logout',
   UserRemoved = 'user:removed',
   UserQueueRemove = 'user:queueRemove',
 
   AuthLogin = 'auth:login',
+  AuthLogout = 'auth:logout',
 
   CourseCreated = 'course:created',
   CourseUpdated = 'course:updated',
@@ -31,7 +31,7 @@ export enum Subjects {
   RemovePhase = 'remove:phase',
   RemovePhaseItem = 'remove:phaseItem',
 
-  // ##### Below this line should all subjects be which shouldn't exist in Remove* #####
+  // ##### Below this line should all subjects be which shouldn't exist in Remove #####
 
   SessionCreated = 'session:created',
   SessionRemoved = 'session:removed',
