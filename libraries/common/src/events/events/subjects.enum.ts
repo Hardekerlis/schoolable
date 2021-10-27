@@ -3,10 +3,11 @@
 export enum Subjects {
   UserCreated = 'user:created',
   UserUpdated = 'user:updated',
-  UserLogin = 'user:login',
   UserLogout = 'user:logout',
   UserRemoved = 'user:removed',
   UserQueueRemove = 'user:queueRemove',
+
+  AuthLogin = 'auth:login',
 
   CourseCreated = 'course:created',
   CourseUpdated = 'course:updated',
