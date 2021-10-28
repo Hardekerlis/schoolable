@@ -5,8 +5,7 @@ import { UserDoc } from './user';
 interface SessionAttributes {
   user: UserDoc;
   location: Location;
-  creationTimestamp: string;
-  loginId: string;
+  creationTimestamp?: string;
   userAgent: string;
   ip: string;
 }
@@ -18,8 +17,7 @@ interface SessionModel extends mongoose.Model<SessionDoc> {
 export interface SessionDoc extends mongoose.Document {
   user: UserDoc;
   location: Location;
-  creationTimestamp: string;
-  loginId: string;
+  creationTimestamp?: string;
   userAgent: string;
   ip: string;
 }
@@ -37,11 +35,7 @@ const sessionSchema = new mongoose.Schema(
     },
     creationTimestamp: {
       type: String,
-      required: true,
-    },
-    loginId: {
-      type: String,
-      required: true,
+      default: (+new Date()).toString(),
     },
     userAgent: {
       type: String,

@@ -1,14 +1,42 @@
 import { Router } from 'express';
+import { body } from 'express-validator';
 import {
   currentUser,
   getLanguage,
   requireAuth,
+  validateResult,
+  LANG,
 } from '@gustafdahl/schoolable-common';
 
 const router = Router();
 
-import get from './get';
-router.get('/', getLanguage, get);
+import login from './login';
+router.post(
+  '/',
+  getLanguage,
+  [
+    body('email')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].noEmail;
+      })
+      .isEmail()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needValidEmail;
+      }),
+    body('password')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].noPassword;
+      })
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].passwordMustBeString;
+      }),
+  ],
+  validateResult,
+  login,
+);
 
 import fetch from './fetch';
 router.get('/active', currentUser, getLanguage, requireAuth('all'), fetch);

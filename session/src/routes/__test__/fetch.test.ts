@@ -34,21 +34,19 @@ it('Removes token cookie if no session is found', async () => {
 });
 
 it('Returns a 200 if sessions are found', async () => {
-  const [cookie, session] = await global.getAuthCookie();
+  const [cookie] = await global.getAuthCookie();
 
   await request(app).get(path).set('Cookie', cookie).send({}).expect(200);
 });
 
 it('Returns a an array with sessions if sessions are found', async () => {
-  const [cookie, session] = await global.getAuthCookie();
+  const [cookie] = await global.getAuthCookie();
 
   const res = await request(app)
     .get(path)
     .set('Cookie', cookie)
     .send({})
     .expect(200);
-
-  console.log(res.body.sessions);
 
   expect(res.body.sessions.length).toBeGreaterThanOrEqual(1);
 });

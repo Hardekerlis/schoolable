@@ -1,11 +1,9 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import request from 'supertest';
 import faker from 'faker';
 import {
   CONFIG,
-  ConfigHandler,
   winstonTestSetup,
   UserTypes,
   UserPayload,
@@ -14,6 +12,7 @@ import {
 import jwt from 'jsonwebtoken';
 import geoip from 'geoip-lite';
 import { sign } from 'cookie-signature';
+import { nanoid } from 'nanoid';
 
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
@@ -31,13 +30,13 @@ interface User {
   };
   userType?: UserTypes;
   lang?: string;
+  password?: string;
 }
 
 interface Session {
   user?: User;
   location?: Location;
   creationTimestamp?: string;
-  loginId?: string;
   userAgent?: string;
   ip?: string;
 }
@@ -47,17 +46,19 @@ interface CreateSessionReturn {
   user: UserDoc;
 }
 
+interface CreatedUserReturn {
+  user: UserDoc;
+  password: string;
+}
+
 declare global {
   namespace NodeJS {
     interface Global {
       getAuthCookie(
         sessionData?: Session,
-        userType?: UserTypes,
-        email?: string,
-        id?: string,
       ): Promise<[string, SessionDoc, UserDoc]>;
       getLoginIdCookie(id?: string): Promise<string[]>;
-      createUser(userData?: User): Promise<UserDoc>;
+      createUser(userData?: User): Promise<CreatedUserReturn>;
       createSession(sessionData?: Session): Promise<CreateSessionReturn>;
       getFaultyAuthCookie(): Promise<string[]>;
     }
@@ -67,7 +68,7 @@ declare global {
 import logger from '../utils/logger';
 
 logger.debug('Setting up tests...');
-winstonTestSetup();
+winstonTestSetup(); // Disables all winston logs
 
 jest.mock('../utils/natsWrapper');
 
@@ -105,13 +106,14 @@ global.getLoginIdCookie = async (id?: string) => {
 };
 
 global.createUser = async (userData?: User) => {
-  let userId, email, name, userType, lang;
+  let userId, email, name, userType, lang, password;
   if (userData) {
     userId = userData.userId;
     email = userData.email;
     name = userData.name;
     userType = userData.userType;
     lang = userData.lang;
+    password = userData.password;
   }
   // let { userId, email, name, userType } = userData!;
   // let userId = userData.userId;
@@ -122,10 +124,12 @@ global.createUser = async (userData?: User) => {
     name = { first: faker.name.firstName(), last: faker.name.lastName() };
   if (!userType) userType = UserTypes.Teacher;
   if (!lang) lang = 'ENG';
+  if (!password) password = nanoid();
 
   const user = User.build({
     userId,
     email,
+    password,
     // @ts-ignore
     name,
     userType,
@@ -134,7 +138,7 @@ global.createUser = async (userData?: User) => {
 
   await user.save();
 
-  return user;
+  return { user, password };
 };
 
 global.createSession = async (sessionData: Session) => {
@@ -144,16 +148,15 @@ global.createSession = async (sessionData: Session) => {
     user = sessionData.user;
     location = sessionData.location;
     creationTimestamp = sessionData.creationTimestamp;
-    loginId = sessionData.loginId;
     userAgent = sessionData.userAgent;
     ip = sessionData.ip;
   }
 
-  let actualUser = await global.createUser(user);
+  let userData = await global.createUser(user);
+  const actualUser = userData.user;
   if (!ip) ip = '78.73.146.89';
   if (!location) location = geoip.lookup(ip)!;
   if (!creationTimestamp) creationTimestamp = `${+new Date()}`;
-  if (!loginId) loginId = new mongoose.Types.ObjectId().toHexString();
   if (!userAgent)
     userAgent =
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36';
@@ -162,7 +165,6 @@ global.createSession = async (sessionData: Session) => {
     user: actualUser,
     location,
     creationTimestamp,
-    loginId,
     userAgent,
     ip,
   });
@@ -173,7 +175,7 @@ global.createSession = async (sessionData: Session) => {
 };
 
 global.getFaultyAuthCookie = async () => {
-  const user = await global.createUser();
+  const { user } = await global.createUser();
 
   const payload: UserPayload = {
     id: user.userId,
@@ -192,9 +194,6 @@ global.getFaultyAuthCookie = async () => {
 
 global.getAuthCookie = async (
   sessionData: Session,
-  userType?: UserTypes,
-  email?: string,
-  id?: string,
 ): Promise<[string, SessionDoc, UserDoc]> => {
   const { session, user } = await global.createSession(sessionData);
 
