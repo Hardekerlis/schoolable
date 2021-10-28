@@ -1,10 +1,12 @@
 /** @format */
 
 import { app } from './app';
-import { CONFIG } from '@gustafdahl/schoolable-common';
+import { CONFIG, UserTypes } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import mongoose from 'mongoose';
+
+import User from './models/user';
 
 (async () => {
   const { env } = process;
@@ -57,6 +59,11 @@ import mongoose from 'mongoose';
     logger.info('Successfully connected to MongoDB');
   } catch (err) {
     logger.warn(`Failed to connect to MongoDB. Error message: ${err}`);
+  }
+
+  const user = await User.findOne({ userType: UserTypes.Admin });
+  if (user) {
+    env.ADMIN_EXISTS = 'true';
   }
 
   env.NODE_ENV = !env.NODE_ENV ? 'dev' : env.NODE_ENV;

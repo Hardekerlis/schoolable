@@ -52,10 +52,10 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  global.adminCookie = undefined;
-
   try {
     await mongoose.connection.dropDatabase();
+    process.env.ADMIN_EXISTS = undefined;
+    global.adminCookie = undefined;
   } catch (err) {
     console.error(err);
   }
@@ -93,41 +93,56 @@ global.getAuthCookie = async (
   if (!global.adminCookie) {
     const { email, name } = global.getUserData(userType);
     const adminRes = await request(app)
-      .post('/api/auth/register')
+      .post('/api/users/register')
       .send({ email, userType: UserTypes.Admin, name })
       .expect(201);
 
-    const adminLoginRes = await request(app).post('/api/auth/login').send({
-      email: email,
-      password: adminRes.body.tempPassword,
-    });
+    const adminPayload: UserPayload = {
+      userType: adminRes.body.user.userType,
+      email,
+      name,
+      sessionId: new mongoose.Types.ObjectId().toHexString(),
+      id: adminRes.body.user.id,
+      lang: 'ENG',
+    };
 
-    const [adminCookie] = adminLoginRes.get('Set-Cookie');
+    const token = jwt.sign(adminPayload, process.env.JWT_KEY as string);
+    // Cookie signature
+    const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
+    const adminCookie = `token=${signedCookie}; path=/`;
+
     global.adminCookie = adminCookie;
   }
 
-  if (!userType) return [global.adminCookie];
+  if (!userType || userType === UserTypes.Admin) return [global.adminCookie];
 
   const userData = global.getUserData(userType);
 
   const createRes = await request(app)
-    .post('/api/auth/register')
+    .post('/api/users/register')
+    .set('Cookie', global.adminCookie)
     .send({
       email: email ? email : userData.email,
       userType,
       name: userData.name,
     })
-    .set('Cookie', global.adminCookie)
     .expect(201);
 
-  const res = await request(app)
-    .post('/api/auth/login')
-    .send({
-      email: email ? email : userData.email,
-      password: createRes.body.tempPassword,
-    });
+  const { user } = createRes.body;
 
-  const cookie = res.get('Set-Cookie');
+  const userPayload: UserPayload = {
+    userType: user.userType,
+    email: user.email,
+    name: user.name,
+    sessionId: new mongoose.Types.ObjectId().toHexString(),
+    id: user.id,
+    lang: user.lang,
+  };
 
-  return cookie;
+  const token = jwt.sign(userPayload, process.env.JWT_KEY as string);
+  // Cookie signature
+  const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
+  const cookie = `token=${signedCookie}; path=/`;
+
+  return [cookie];
 };

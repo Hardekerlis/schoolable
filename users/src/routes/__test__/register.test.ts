@@ -63,7 +63,7 @@ describe('Registration of first account', () => {
   it('Returns a 400 if user type is not of type admin', async () => {
     let userData = global.getUserData(UserTypes.Teacher);
 
-    await request(app).post(path).send(userData).expect(400);
+    const res = await request(app).post(path).send(userData).expect(400);
   });
 
   it('Returns a 400 if name.first is not present in body', async () => {
@@ -83,7 +83,7 @@ describe('Registration of first account', () => {
   it('Returns a 201 if user is created', async () => {
     let userData = global.getUserData(UserTypes.Admin);
 
-    await request(app).post(path).send(userData).expect(201);
+    const res = await request(app).post(path).send(userData).expect(201);
   });
 
   it('Returns the user object in response body', async () => {
@@ -96,23 +96,117 @@ describe('Registration of first account', () => {
 });
 
 describe('Registration of all accounts except first', () => {
-  it.todo('Returns a 401 if registrator is not authenticated');
+  it('Returns a 401 if registrator is not authenticated', async () => {
+    await global.getAuthCookie(UserTypes.Admin);
 
-  it.todo('Returns a 401 if registrator is not user type admin');
+    let userData = global.getUserData(UserTypes.Admin);
 
-  it.todo('Returns a 400 if email is not present in body');
+    await request(app).post(path).send(userData).expect(401);
+  });
 
-  it.todo('Returns a 400 if email is invalid');
+  it('Returns a 401 if registrator is not user type admin', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
 
-  it.todo('Returns a 400 if user type is not present in body');
+    let userData = global.getUserData(UserTypes.Admin);
 
-  it.todo('Returns a 400 if user type is not of type admin');
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(401);
+  });
 
-  it.todo('Returns a 400 if name.first is not present in body');
+  it('Returns a 400 if email is not present in body', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
 
-  it.todo('Returns a 400 if name.last is not present in body');
+    let userData = global.getUserData(UserTypes.Admin);
+    delete (userData as any).email;
 
-  it.todo('Returns a 201 if user is created');
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(400);
+  });
 
-  it.todo('Returns the user object in response body');
+  it('Returns a 400 if email is invalid', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = getInvalidUserData({
+      userType: UserTypes.Admin,
+      field: 'email',
+      newValue: 'invalidemail',
+    });
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(400);
+  });
+
+  it('Returns a 400 if user type is not present in body', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = global.getUserData(UserTypes.Admin);
+    delete (userData as any).userType;
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(400);
+  });
+
+  it('Returns a 400 if name.first is not present in body', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = global.getUserData(UserTypes.Admin);
+    delete (userData as any).name.first;
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(400);
+  });
+
+  it('Returns a 400 if name.last is not present in body', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = global.getUserData(UserTypes.Admin);
+    delete (userData as any).name.last;
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(400);
+  });
+
+  it('Returns a 201 if user is created', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = global.getUserData(UserTypes.Admin);
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(201);
+  });
+
+  it('Returns the user object in response body', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = global.getUserData(UserTypes.Admin);
+
+    const res = await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(201);
+
+    expect(res.body.user).toBeDefined();
+  });
 });
