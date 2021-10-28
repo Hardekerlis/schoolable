@@ -6,7 +6,6 @@ import {
   CONFIG,
   BadRequestError,
 } from '@gustafdahl/schoolable-common';
-import { nanoid } from 'nanoid';
 
 import User from '../models/user';
 import UserSettings from '../models/userSettings';
@@ -22,30 +21,6 @@ const register = async (req: Request, res: Response) => {
   const { userType, email, name } = req.body;
 
   logger.info('Starting user registration');
-
-  // First checking if user is logged in, if so, then checks if user is not admin
-  // if (currentUser && currentUser?.userType !== UserTypes.Admin) {
-  //   logger.debug('User is not allowed to create accounts');
-  //   throw new NotAuthorizedError();
-  // }
-
-  // if (!process.env.ADMIN_EXISTS && userType === UserTypes.Admin) {
-  //   logger.debug('Creating first account');
-  //   process.env.ADMIN_EXISTS = 'true';
-  // } else if (!process.env.ADMIN_EXISTS && userType !== UserTypes.Admin) {
-  //   logger.debug(
-  //     'Failed creating first account. The first account must be an admin',
-  //   );
-  //
-  //   throw new BadRequestError(lang.firstAccMustBeAdmin);
-  // } else if (
-  //   (process.env.ADMIN_EXISTS === 'true' &&
-  //     currentUser?.userType !== UserTypes.Admin) ||
-  //   currentUser?.userType !== UserTypes.Admin
-  // ) {
-  //   console.log('?????');
-  //   throw new NotAuthorizedError();
-  // }
 
   logger.debug('Checking if an admin account exists');
   // Check if admin user has been registered
@@ -84,13 +59,14 @@ const register = async (req: Request, res: Response) => {
     }
   }
 
-  // The temp password will be emailed to the user
-  const tempPassword = nanoid();
-  logger.debug(
-    `Creating temp password. ${
-      CONFIG.dev ? `TempPassword: ${tempPassword}` : '' // This is for development. It should never be logged in production
-    }`,
-  );
+  logger.debug('Checking if the supplied email is in use');
+  const isEmailInUse = !!(await User.findOne({ email }));
+
+  if (isEmailInUse) {
+    logger.debug('Email is in use');
+    throw new BadRequestError(lang.emailInUse);
+  }
+  logger.debug('Email is not in use');
 
   logger.debug('Building new user settings');
   const userSettings = UserSettings.build({
@@ -107,7 +83,6 @@ const register = async (req: Request, res: Response) => {
     email,
     userType,
     name,
-    password: tempPassword,
     settings: userSettings, // user settings is built above
   });
 
@@ -121,7 +96,6 @@ const register = async (req: Request, res: Response) => {
     new UserCreatedPublisher(natsWrapper.client, logger).publish({
       userId: newUser.id,
       email: newUser.email, // To send email to the user registered
-      tempPassword, // Temp password to be included in email
       userType: userType,
       name: name,
       lang: newUser.settings.language,
@@ -135,7 +109,6 @@ const register = async (req: Request, res: Response) => {
     errors: false,
     message: lang.registeredUser,
     user: newUser,
-    tempPassword: CONFIG.dev ? tempPassword : undefined, // Temp password is only included in body if application is in dev mode
   });
 };
 

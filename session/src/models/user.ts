@@ -1,9 +1,12 @@
 import mongoose from 'mongoose';
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
+import Password from '../utils/password';
+
 interface UserAttributes {
   userId: string;
   email: string;
+  password: string;
   name: {
     first: string;
     last: string;
@@ -19,6 +22,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
 export interface UserDoc extends mongoose.Document {
   userId: string;
   email: string;
+  password: string;
   name: {
     first: string;
     last: string;
@@ -31,6 +35,7 @@ const userSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
     email: { type: String, required: true },
+    password: { type: String, requried: true },
     name: {
       first: {
         type: String,
@@ -72,6 +77,15 @@ const userSchema = new mongoose.Schema(
     },
   },
 );
+
+userSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
+  }
+
+  done();
+});
 
 userSchema.statics.build = (attributes: UserAttributes) => {
   return new User(attributes);

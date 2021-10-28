@@ -1,5 +1,3 @@
-/** @format */
-
 import { app } from './app';
 import { CONFIG, UserTypes } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';

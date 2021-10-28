@@ -184,6 +184,24 @@ describe('Registration of all accounts except first', () => {
       .expect(400);
   });
 
+  it('Returns a 400 if the supplied email already is in use', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = global.getUserData(UserTypes.Admin);
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(201);
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(400);
+  });
+
   it('Returns a 201 if user is created', async () => {
     const [cookie] = await global.getAuthCookie(UserTypes.Admin);
 

@@ -7,16 +7,14 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 import { UserSettingsDoc } from './userSettings';
 
 interface UserAttributes {
+  userId: string;
   email: string;
-  password: string;
   name: {
     first: string;
     last: string;
   };
   userType: UserTypes;
-  settings: UserSettingsDoc;
-  passwordChoosen?: boolean;
-  setupComplete?: boolean;
+  lang: string;
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -24,16 +22,14 @@ interface UserModel extends mongoose.Model<UserDoc> {
 }
 
 export interface UserDoc extends mongoose.Document {
+  userId: string;
   email: string;
-  password: string;
   name: {
     first: string;
     last: string;
   };
   userType: UserTypes;
-  settings: UserSettingsDoc;
-  passwordChoosen?: boolean;
-  setupComplete?: boolean;
+  lang: string;
 }
 
 const userSchema = new mongoose.Schema(

@@ -1,2 +1,2 @@
 export * from './userCreated';
-export * from './userLogin';
+export * from './queueGroupName';

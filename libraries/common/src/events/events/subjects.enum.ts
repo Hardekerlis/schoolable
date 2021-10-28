@@ -33,6 +33,7 @@ export enum Subjects {
 
   // ##### Below this line should all subjects be which shouldn't exist in Remove #####
 
+  SessionContext = 'session:context',
   SessionCreated = 'session:created',
   SessionRemoved = 'session:removed',
 }
