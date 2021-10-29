@@ -8,3 +8,5 @@ noCourses: 'No courses found'
 foundCourses: 'Found courses'
 foundCourse: 'Found course and populated course page'
 updatedCourse: 'Successfully updated course'
+noUserFound: "Couln't find a user"
+addedStudent: 'Successfully added student to course'

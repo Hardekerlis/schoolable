@@ -7,6 +7,7 @@ import {
   getLanguage,
   LANG,
   UserTypes,
+  CONFIG,
 } from '@gustafdahl/schoolable-common';
 
 const router = Router();
@@ -64,6 +65,15 @@ router.put(
   getLanguage,
   requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
   update,
+);
+
+import students from './students';
+router.post(
+  '/add/student',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  students,
 );
 
 export default router;

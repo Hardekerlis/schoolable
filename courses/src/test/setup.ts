@@ -10,15 +10,30 @@ import {
   UserTypes,
 } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
-import User from '../models/user';
+import { sign } from 'cookie-signature';
+
+import User, { UserDoc } from '../models/user';
+
+process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import { app } from '../app';
 app; // Load env variables in app
+
+interface CreateCourse {
+  course: object;
+  cookie: string;
+}
 
 declare global {
   namespace NodeJS {
     interface Global {
       getAuthCookie(userType?: UserTypes, email?: string): Promise<string[]>;
+      createCourse(): Promise<CreateCourse>;
+      createUser(
+        userType: UserTypes,
+        email: string,
+        userId: string,
+      ): Promise<UserDoc>;
     }
   }
 }
@@ -31,8 +46,6 @@ winstonTestSetup();
 jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
-
-process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 beforeAll(async () => {
   process.env.MONGOMS_DOWNLOAD_URL =
@@ -59,7 +72,7 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-const createUser = async (
+global.createUser = async (
   userType: UserTypes,
   email: string,
   userId: string,
@@ -90,7 +103,7 @@ global.getAuthCookie = async (
   if (!email) email = faker.internet.email();
   if (!userId) userId = new mongoose.Types.ObjectId().toHexString();
 
-  const user = await createUser(userType, email, userId);
+  const user = await global.createUser(userType, email, userId);
 
   const payload: UserPayload = {
     sessionId: 'adasdagafag',
@@ -102,6 +115,18 @@ global.getAuthCookie = async (
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
+  const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${token}; path=/`];
+  return [`token=${signedCookie}; path=/`];
+};
+
+global.createCourse = async () => {
+  const [cookie] = await global.getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: faker.company.companyName() });
+
+  return { course: res.body.course, cookie };
 };

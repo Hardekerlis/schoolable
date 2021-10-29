@@ -4,6 +4,7 @@ import {
   LANG,
   NotAuthorizedError,
 } from '@gustafdahl/schoolable-common';
+import { isValidObjectId } from 'mongoose';
 
 import User from '../models/user';
 import Course from '../models/course';
@@ -78,6 +79,14 @@ const fetchOne = async (req: Request, res: Response) => {
   logger.info(
     `User with id ${currentUser.id} is attempting to fetch course with id ${courseId}`,
   );
+
+  if (!isValidObjectId(courseId)) {
+    logger.debug('Course id is not an ObjectId');
+    return res.status(404).json({
+      errors: false,
+      message: lang.noCourse,
+    });
+  }
 
   logger.debug('Looking up user');
   const user = await User.findOne({ userId: currentUser.id });
