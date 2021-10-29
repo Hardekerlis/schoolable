@@ -5,8 +5,9 @@ import {
   validateResult,
   LANG,
   UserTypes,
+  requireAuth,
 } from '@gustafdahl/schoolable-common';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 
 const router = Router();
 
@@ -47,6 +48,29 @@ router.post(
   ],
   validateResult,
   register,
+);
+
+import fetch from './fetch';
+router.get(
+  '/fetch',
+  currentUser,
+  getLanguage,
+  requireAuth('all'),
+  [
+    query('usertype')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needUserType;
+      })
+      .custom((value, { req }) => {
+        if (!Object.values(UserTypes).includes(value)) {
+          return LANG[`${req.lang}`].needValidUserType;
+        }
+        return value;
+      }),
+  ],
+  validateResult,
+  fetch,
 );
 
 export default router;
