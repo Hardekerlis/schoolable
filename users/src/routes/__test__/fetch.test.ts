@@ -44,6 +44,16 @@ it('Returns a 400 if user type is not present in query', async () => {
   await request(app).get(path).set('Cookie', cookie).send().expect(400);
 });
 
+it('Returns a 400 if an invalid user type is supplied', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
+
+  await request(app)
+    .get(path + '?usertype=unknown')
+    .set('Cookie', cookie)
+    .send()
+    .expect(400);
+});
+
 it('Returns a 200 if users are successfully fetched', async () => {
   const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
   await global.getAuthCookie(UserTypes.Student);
