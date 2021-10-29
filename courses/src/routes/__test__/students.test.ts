@@ -23,7 +23,11 @@ it(`Has a route handler listening on ${path} for delete requests`, async () => {
   expect(res.status).not.toEqual(404);
 });
 
-it('Returns a 401 if user is not authenticated', async () => {});
+it('Returns a 401 if user is not authenticated', async () => {
+  // const {}
+
+  await request(app).post(path).send({});
+});
 
 it('Returns a 401 if user is not course admin or owner', async () => {});
 
@@ -32,7 +36,9 @@ it('Returns a 400 if student is not found', async () => {});
 // Student class is refering to a group of students.
 it('Returns a 4oo if student class is not found', async () => {});
 
-it('Returns a 200 if student is successfully updated', async () => {});
+it('Returns a 200 if student is successfully added', async () => {});
 
 // Student class is refering to a group of students.
 it('Returns a 200 if student class is found', async () => {});
+
+it('Returns a 200 if students in class are added', async () => {});
