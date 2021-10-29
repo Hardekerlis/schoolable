@@ -10,6 +10,8 @@ import handleErrors from './handleErrorsServer.js';
 import { Prompt } from './prompt';
 import { firstLetterToUpperCase } from './misc.js';
 import getUserDataServer from './getUserDataServer.js';
+import ErrorHandler from './errorHandler.js';
+import PathWatcher from './pathWatcher.js';
 
 export {
   Permission,
@@ -21,5 +23,7 @@ export {
   handleErrors,
   Prompt,
   firstLetterToUpperCase,
-  getUserDataServer
+  getUserDataServer,
+  ErrorHandler,
+  PathWatcher
 };

@@ -22,7 +22,7 @@ import {
 
 // import getUserData from 'helpers/getUserData.js';
 
-import { Permission, getUserData } from 'helpers';
+import { Permission, getUserData, ErrorHandler } from 'helpers';
 
 import getCookies from 'helpers/getCookiesServer.js';
 import handleErrors from 'helpers/handleErrorsServer.js';
@@ -66,13 +66,10 @@ export const getServerSideProps = async ctx => {
 const Courses = ({ courses, serverErrors }) => {
   const userData = getUserData();
 
-  // userData.userType = "student"
-
   const router = useRouter();
 
-  if(serverErrors !== false) {
-    Prompt.error(serverErrors);
-  }
+  //TODO: maybe pass loader to ErrorHandler
+  ErrorHandler(serverErrors);
 
   let [loaderActive, setLoaderActive] = useState(false);
 

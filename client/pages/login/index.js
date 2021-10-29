@@ -44,7 +44,7 @@ const Login = () => {
 
   const [credentials, setCredentials] = useState({
     email: 'teacher@myTeacherEmail.teach',
-    password: '3Hm74WHaJZqjlqqmePYVd',
+    password: 'fPXMXhi-VmPFH50GbW197',
   });
 
   const submit = async evt => {
@@ -52,33 +52,28 @@ const Login = () => {
 
     setLoaderActive(true);
 
-    let request = new Request('/api/auth/login', credentials).post().json();
+    let request = new Request('/api/sessions', credentials).post().json();
     let res = await request.send();
-
-    let user;
 
     //TODO: user cookie can be undefined.
     //this shouldnt be possible
 
-    try {
-      user = JSON.stringify(res.user);
-      Cookies.set('user', user);
-    }catch (e) {
-      setLoaderActive(false);
-      return Prompt.error(lang.unexpected);
-    }
+    console.log(res)
 
     if(res.errors) {
       setLoaderActive(false);
       return Prompt.error(res.errors);
     }
 
-    let response = await (new Request('/api/session').get().json()).send();
-
-    if(response.errors) {
+    try {
+      if(!res.user) throw 'error';
+      Cookies.set('user', JSON.stringify(res.user));
+    }catch (e) {
       setLoaderActive(false);
-      return Prompt.error(response.errors);
+      return Prompt.error(lang.unexpected);
     }
+
+
 
     router.push('/');
 

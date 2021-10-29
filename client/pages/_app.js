@@ -6,8 +6,17 @@ import '../styles/global.sass';
 
 import { PromptRender } from '/helpers/prompt/';
 
+import { PathWatcher } from 'helpers';
+
 function App({ Component, pageProps }) {
+
   const router = useRouter();
+
+  useEffect(() => {
+
+    PathWatcher.update(router.asPath);
+
+  }, [router.asPath])
 
   useEffect(() => {
     return () => {

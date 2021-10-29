@@ -69,7 +69,7 @@ const UserMenu = ({ open, setUserMenuOpen }) => {
   }, []);
 
   const logout = async () => {
-    let req = new Request('/api/auth/logout').get().json();
+    let req = new Request('/api/sessions/current').delete();
     let res = await req.send();
 
     router.push('/login');

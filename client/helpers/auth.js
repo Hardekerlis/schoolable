@@ -11,7 +11,7 @@ const authCheck = async (ctx) => {
   //
   // console.log(token)
 
-  let request = new Request('/api/auth/check')
+  let request = new Request('/api/sessions/check')
     .get()
     .json()
     .headers(req.headers);

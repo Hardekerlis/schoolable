@@ -3,7 +3,7 @@ const lang = language.handleErrorsServer;
 
 // const checkSpecificStatuses = (code) => {
 //
-//   if(code === 404) {
+//   if(code === 401) {
 //
 //     //will make the getServerSideProps caller to return
 //     //propsContainer. Therefore redirect.
@@ -27,25 +27,35 @@ const lang = language.handleErrorsServer;
 const handleErrors = (successStatus, response, ignoreStatuses) => {
   const status = response._isJSON ? response._response.status : response.status;
 
-  let errors = false;
+  let error = false;
 
   if(status !== successStatus && ignoreStatuses.includes(status) === false) {
     //handle specific status code
+    // errors = checkSpecificStatuses(status);
 
-    console.log('ERRORS:', errors);
+    // console.log('ERRORS:', error);
 
-    if(errors === false) {
+    if(error === false) {
       if(response.hasOwnProperty('errors')) {
-        errors = response.errors;
+        error = response.errors;
       }else {
-        errors = [lang.unexpected];
+        error = [lang.unexpected];
       }
     }
+
+    error = {
+      status,
+      messages: error
+    }
+
   }else {
-    errors = false;
+    error = false;
   }
 
-  return errors;
+  // error.status = status;
+  // error
+
+  return error;
 };
 
 export default handleErrors;
