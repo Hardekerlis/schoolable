@@ -66,7 +66,7 @@ const login = async (req: Request, res: Response) => {
     const payload: UserPayload = {
       email: user.email,
       sessionId: session.id,
-      id: user.id,
+      id: user.userId,
       userType: user.userType,
       name: user.name,
       lang: user.lang,

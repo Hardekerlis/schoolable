@@ -56,7 +56,7 @@ it('Returns a 400 if student is not found', async () => {
 });
 
 // Student class is refering to a group of students.
-it.todo('Returns a 4oo if student class is not found');
+it.todo('Returns a 400 if student class is not found');
 
 it('Returns a 200 if student is successfully added', async () => {
   const { course, cookie } = await createCourse();
