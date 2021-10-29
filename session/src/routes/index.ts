@@ -38,8 +38,11 @@ router.post(
   login,
 );
 
+import check from './check';
+router.get('/check', currentUser, getLanguage, check);
+
 import fetch from './fetch';
-router.get('/active', currentUser, getLanguage, requireAuth('all'), fetch);
+router.get('/all', currentUser, getLanguage, requireAuth('all'), fetch);
 
 import { killCurrent, killAll, killById } from './kill';
 router.delete(

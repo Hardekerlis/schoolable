@@ -19,7 +19,7 @@ spec:
                 port:
                   number: 3000
           - pathType: Prefix
-            path: /api/session/*
+            path: /api/sessions/*
             backend:
               service:
                 name: session-srv

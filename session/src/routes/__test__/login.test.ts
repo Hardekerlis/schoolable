@@ -3,7 +3,7 @@ import faker from 'faker';
 import { nanoid } from 'nanoid';
 import { app } from '../../app';
 
-const path = '/api/session/';
+const path = '/api/sessions/';
 
 it(`Has a route handler listening on ${path} for post requests`, async () => {
   const res = await request(app).post(path).send({});

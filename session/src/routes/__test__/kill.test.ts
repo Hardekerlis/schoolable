@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { app } from '../../app';
 
 const getPath = (id: string) => {
-  return '/api/session/' + id;
+  return '/api/sessions/' + id;
 };
 
 describe('Functionality for path ending with "current"', () => {

@@ -57,7 +57,7 @@ app.use(
 app.use(cookieParser(process.env.JWT_KEY as string, CONFIG.cookies));
 
 import router from './routes';
-app.use('/api/session', router);
+app.use('/api/sessions', router);
 
 app.all('*', async () => {
   throw new NotFoundError();

@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 
-const path = '/api/session/active';
+const path = '/api/sessions/all';
 
 it(`Has a route handler listening on ${path} for get requests`, async () => {
   const res = await request(app).get(path).send({});

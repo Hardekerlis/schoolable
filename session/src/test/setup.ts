@@ -57,10 +57,10 @@ declare global {
       getAuthCookie(
         sessionData?: Session,
       ): Promise<[string, SessionDoc, UserDoc]>;
-      getLoginIdCookie(id?: string): Promise<string[]>;
       createUser(userData?: User): Promise<CreatedUserReturn>;
       createSession(sessionData?: Session): Promise<CreateSessionReturn>;
       getFaultyAuthCookie(): Promise<string[]>;
+      getUnsignedAuthCookie(): Promise<string[]>;
     }
   }
 }
@@ -99,12 +99,6 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-global.getLoginIdCookie = async (id?: string) => {
-  if (!id) id = new mongoose.Types.ObjectId().toHexString();
-
-  return [`loginId=${id}; path=/`];
-};
-
 global.createUser = async (userData?: User) => {
   let userId, email, name, userType, lang, password;
   if (userData) {
@@ -142,7 +136,7 @@ global.createUser = async (userData?: User) => {
 };
 
 global.createSession = async (sessionData: Session) => {
-  let user, location, creationTimestamp, loginId, userAgent, ip;
+  let user, location, creationTimestamp, userAgent, ip;
 
   if (sessionData) {
     user = sessionData.user;
@@ -190,6 +184,24 @@ global.getFaultyAuthCookie = async () => {
   const cookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
   return [`token=${cookie}; path=/`];
+};
+
+global.getUnsignedAuthCookie = async () => {
+  const { user } = await global.createUser();
+
+  const payload: UserPayload = {
+    id: user.userId,
+    email: user.email,
+    userType: user.userType,
+    sessionId: new mongoose.Types.ObjectId().toHexString(),
+    lang: user.lang,
+    name: user.name,
+  };
+
+  const token = jwt.sign(payload, process.env.JWT_KEY as string);
+  const cookie = `token=${token}; path=/`;
+
+  return [cookie];
 };
 
 global.getAuthCookie = async (
