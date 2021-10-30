@@ -64,6 +64,8 @@ router.get(
       })
       .custom((value, { req }) => {
         if (!Object.values(UserTypes).includes(value)) {
+          console.log(value);
+          // Why doesn't this error out to a 400???
           return LANG[`${req.lang}`].needValidUserType;
         }
         return value;
