@@ -7,7 +7,8 @@ import {
   handleErrors,
   getUserData,
   Prompt,
-  firstLetterToUpperCase
+  firstLetterToUpperCase,
+  ErrorHandler
 } from 'helpers';
 
 import Layout from 'layouts/default/';
@@ -51,7 +52,7 @@ export const getServerSideProps = async ctx => {
   let phases = [];
 
   if(!serverErrors) {
-    course = res.course;
+    if(res.course) course = res.course;
 
     //Get phases
     let response = await new Request(`/api/phase/fetch`, {
@@ -88,13 +89,14 @@ export const getServerSideProps = async ctx => {
 const CoursePage = ({ serverErrors, course, _phases, sub }) => {
   const router = useRouter();
 
-  if(serverErrors !== false) {
-    Prompt.error(serverErrors);
+  ErrorHandler(serverErrors);
+
+  //TODO: FIX THIS ERROR HANDLING
+  //to replicate: try to go to course page without an id for course
+  if(serverErrors) {
     return (
-      <Layout>
-        <Sidebar />
-      </Layout>
-    );
+      <div></div>
+    )
   }
 
   const userData = getUserData();
@@ -113,10 +115,9 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
     router.push(`/courses/page/edit?id=${router.query.id}`);
   };
 
+
   //TODO: implement permissions check as well
-  const canUserEditPage = (userData.id === course.owner.userId) ? true : false;
-
-
+  const canUserEditPage = (userData.userId === course.owner.userId) ? true : false;
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 

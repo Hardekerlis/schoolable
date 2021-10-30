@@ -10,7 +10,9 @@ import {
   PlusCircle,
   PlusClipboard,
   Edit,
-  WarpBack
+  LightEdit,
+  WarpBack,
+  Document
 } from './icons.js';
 import IconRenderer from './renderer.js';
 
@@ -27,5 +29,7 @@ export {
   PlusCircle,
   PlusClipboard,
   Edit,
-  WarpBack
+  LightEdit,
+  WarpBack,
+  Document
 }

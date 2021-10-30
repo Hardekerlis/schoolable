@@ -115,8 +115,6 @@ $nonEditablePhaseBgColor: rgba(0,0,0, 0.4)
   background-color: $darkPurple2
 
 .phaseEdit
-  margin-bottom: 40px
-  margin-right: 40px
   width: 470px
 
   //static color
@@ -186,3 +184,70 @@ $nonEditablePhaseBgColor: rgba(0,0,0, 0.4)
 
     margin-top: 50%
     top: -15px
+
+
+.phaseEditWrapper
+  position: relative
+  height: 136px
+  margin-bottom: 40px
+  margin-right: 40px
+
+.toolbar
+  width: 100%
+  display: flex
+  flex-direction: row
+  align-items: center
+  position: absolute
+  bottom: 0px
+
+  .option:hover
+    background-color: rgba($white, 0.6)
+
+  .option
+    display: flex
+    flex-direction: row
+    align-items: center
+    color: $white
+    padding: 8px
+    margin-left: 10px
+    user-select: none
+    cursor: pointer
+
+    @include transitionProp(0.2s, ease-out, background-color)
+
+    p
+      margin: 0px
+      margin-left: 12px
+      font-size: 1.1rem
+
+    .icon
+      width: 30px
+      height: 30px
+      color: $white
+      border: 1px solid $white
+      border-radius: 100px
+      padding: 3px
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

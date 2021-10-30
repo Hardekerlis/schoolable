@@ -9,7 +9,24 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import {
+  IconRenderer,
+  LightEdit,
+  Document
+} from 'helpers/systemIcons';
+
 import styles from './phase.module.sass';
+
+const PhaseToolbarOption = ({ text, onClick, icon }) => {
+
+  return (
+    <div onClick={onClick} className={styles.option}>
+      <IconRenderer className={styles.icon} icon={icon} />
+      <p>{text}</p>
+    </div>
+  )
+
+}
 
 const Phase = ({
   index,
@@ -41,6 +58,16 @@ const Phase = ({
     setPhaseEditMenuOpen(index, name, id);
   };
 
+  const goToPhaseEdit = () => {
+    //TODO: go to phase edit page
+    // router.push()
+  }
+
+  const goToPhasePage = () => {
+    setLoaderActive(true)
+    router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
+  }
+
   let containerClassName = className
     ? `${styles.wrapper} ${className}`
     : styles.wrapper;
@@ -53,17 +80,26 @@ const Phase = ({
     //Editable phase
 
     return (
-      <div onClick={editableClick} className={styles.phaseEdit}>
-        <div className={styles.iconContainer}>
-          <FontAwesomeIcon
-            icon={faPenSquare}
-            className={`${styles.fileIcon} ${styles.icon}`}
-          />
+      <div className={styles.phaseEditWrapper}>
+
+        <div onClick={editableClick} className={styles.phaseEdit}>
+          <div className={styles.iconContainer}>
+            <FontAwesomeIcon
+              icon={faPenSquare}
+              className={`${styles.fileIcon} ${styles.icon}`}
+            />
+          </div>
+          <p className={styles.name}>{name}</p>
+          <div className={styles.editBtn}>
+            <p>Edit</p>
+          </div>
         </div>
-        <p className={styles.name}>{name}</p>
-        <div className={styles.editBtn}>
-          <p>Edit</p>
+
+        <div className={styles.toolbar}>
+          <PhaseToolbarOption text={"Edit phase page"} icon={LightEdit} onClick={goToPhaseEdit} />
+          <PhaseToolbarOption text={"Go to phase page"} icon={Document} onClick={goToPhasePage} />
         </div>
+
       </div>
     );
   }else {

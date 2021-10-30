@@ -12,6 +12,7 @@ import { firstLetterToUpperCase } from './misc.js';
 import getUserDataServer from './getUserDataServer.js';
 import ErrorHandler from './errorHandler.js';
 import PathWatcher from './pathWatcher.js';
+import { IconRenderer } from './systemIcons'
 
 export {
   Permission,
@@ -25,5 +26,6 @@ export {
   firstLetterToUpperCase,
   getUserDataServer,
   ErrorHandler,
-  PathWatcher
+  PathWatcher,
+  IconRenderer
 };

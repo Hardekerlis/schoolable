@@ -12,6 +12,8 @@ import RightClickMenu from './rightClickMenu';
 import Breadcrumbs from './breadcrumbs';
 import Loader from './loader';
 import CourseNavigation from './courseNavigation';
+import PhaseItem from './phaseItem';
+import PhaseItemShowcase from './phaseItemShowcase';
 //import pos
 
 
@@ -46,5 +48,7 @@ export {
   Breadcrumbs,
   Loader,
   CourseNavigation,
+  PhaseItem,
+  PhaseItemShowcase,
   //export pos
 };

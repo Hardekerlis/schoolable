@@ -53,7 +53,7 @@ export const getServerSideProps = async ctx => {
   if(!serverErrors) {
     course = res.course;
 
-    if(course.owner.userId !== userData.id) {
+    if(course.owner.userId !== userData.userId) {
       return {
         redirect: {
           destination: '/pageNotFound',
@@ -188,6 +188,7 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
             key={index}
             id={obj.id}
             name={phaseTitles[index]}
+            setLoaderActive={setLoaderActive}
           />
         );
       }),
