@@ -108,7 +108,7 @@ const BuildRequest = () => {
             meta: res
           }
         }catch(err) {
-          this.meta.isJSON = true;
+          this.meta.isJSON = false;
         }
       }else {
         this.meta.response = {
