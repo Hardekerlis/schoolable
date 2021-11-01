@@ -3,10 +3,14 @@ import React, { useEffect, useState } from 'react';
 import styles from './phaseItem.module.sass';
 
 import {
+  Request
+} from 'helpers';
+
+import {
   Loader
 } from 'components';
 
-const PhaseItem = ({  }) => {
+const PhaseItem = ({ id }) => {
 
   //TODO: remove all data props from initial state
   const [data, setData] = useState({
@@ -19,6 +23,12 @@ const PhaseItem = ({  }) => {
   useEffect(() => {
 
     //make api call to gather data
+
+    // let request = new Request(`/api/phaseItems/fetch/`)
+    //   .get()
+    //   .json()
+    //   .ctx(ctx);
+    // let res = await request.send();
 
     // setLoaderActive(true);
 

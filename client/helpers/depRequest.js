@@ -1,4 +1,4 @@
-class Request {
+class DepRequest {
   constructor(url, body) {
     if(typeof window === 'undefined' || typeof window === undefined) {
       this.url =
@@ -120,4 +120,4 @@ class Request {
   }
 }
 
-export default Request;
+export default DepRequest;

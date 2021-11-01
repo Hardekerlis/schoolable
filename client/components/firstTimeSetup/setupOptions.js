@@ -1,4 +1,4 @@
-import Request from 'helpers/request.js';
+// import Request from 'helpers/request.js';
 
 //dont forget language
 

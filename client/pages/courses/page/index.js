@@ -35,38 +35,56 @@ export const getServerSideProps = async ctx => {
   if(!(await authCheck(ctx))) return redirectToLogin;
 
   //Get course data. Not phases.
-  let request = new Request(`/api/course/fetch/${ctx.query.id}`)
-    .get()
-    .json()
-    .ctx(ctx);
-  let res = await request.send();
+  // let request = new Request(`/api/course/fetch/${ctx.query.id}`)
+  //   .get()
+  //   .json()
+  //   .ctx(ctx);
+  // let res = await request.send();
 
-  console.log("course fetch", res)
+  let { data, meta } = await Request().server
+    .course.add(`fetch/${ctx.query.id}`)
+    .get
+    .json
+    .c(ctx)
+    .result;
+
+  console.log("course fetch", data)
 
   console.log("gjeapgjeaigjaep")
 
   //200 is the expected status code
-  let serverErrors = handleErrors(200, res, [404]);
+  let serverErrors = handleErrors(200, [404], data, meta);
 
   let course = null;
   let phases = [];
 
   if(!serverErrors) {
-    if(res.course) course = res.course;
+    if(data.course) course = data.course;
 
     //Get phases
-    let response = await new Request(`/api/phase/fetch`, {
-      parentCourse: ctx.query.id,
-    })
-      .post()
-      .json()
-      .ctx(ctx)
-      .send();
+    let result = await Request().server
+      .phase.add('fetch')
+      .body({
+        parentCourse: ctx.query.id
+      })
+      .post
+      .json
+      .c(ctx)
+      .result;
 
-    serverErrors = handleErrors(200, response, [404]);
+
+    // let response = await new Request(`/api/phase/fetch`, {
+    //   parentCourse: ctx.query.id,
+    // })
+    //   .post()
+    //   .json()
+    //   .ctx(ctx)
+    //   .send();
+
+    serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
-      phases = response.phases;
+      phases = result.data.phases;
     }
   }
 

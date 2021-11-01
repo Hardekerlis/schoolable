@@ -8,11 +8,13 @@ import Layout from 'layouts/default/';
 
 import styles from './login.module.sass';
 
-import Request from 'helpers/request.js';
+// import Request from 'helpers/request.js';
 
 import { Prompt } from 'helpers/prompt';
 
 import { Loader } from 'components';
+
+import Request from 'helpers/request/index.js';
 
 import language from 'helpers/lang';
 const lang = language.login;
@@ -44,7 +46,7 @@ const Login = () => {
 
   const [credentials, setCredentials] = useState({
     email: 'teacher@myTeacherEmail.teach',
-    password: 'f63E-5Dsv3NLepmP4nu82',
+    password: 'EJK3vBYMk_e2lYfm039VH',
   });
 
   const submit = async evt => {
@@ -52,28 +54,23 @@ const Login = () => {
 
     setLoaderActive(true);
 
-    let request = new Request('/api/sessions', credentials).post().json();
-    let res = await request.send();
+    const { data, meta } = await Request().sessions.post.json.body(credentials).result;
 
     //TODO: user cookie can be undefined.
     //this shouldnt be possible
 
-    console.log(res)
-
-    if(res.errors) {
+    if(data.errors) {
       setLoaderActive(false);
-      return Prompt.error(res.errors);
+      return Prompt.error(data.errors);
     }
 
     try {
-      if(!res.user) throw 'error';
-      Cookies.set('user', JSON.stringify(res.user));
+      if(!data.user) throw 'error';
+      Cookies.set('user', JSON.stringify(data.user));
     }catch (e) {
       setLoaderActive(false);
       return Prompt.error(lang.unexpected);
     }
-
-
 
     router.push('/');
 

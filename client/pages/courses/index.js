@@ -6,9 +6,12 @@ import { useRouter } from 'next/router';
 
 //custom imports
 
-import Request from 'helpers/request.js';
+// import { Prompt } from 'helpers/prompt';
 
-import { Prompt } from 'helpers/prompt';
+import {
+  Request,
+  Prompt
+} from 'helpers';
 
 import Layout from 'layouts/default/';
 
@@ -41,17 +44,15 @@ export const getServerSideProps = async ctx => {
 
   if(!(await authCheck(ctx))) return redirectToLogin;
 
-  let request = new Request('/api/course/fetch').post().json().ctx(ctx);
-  let res = await request.send();
 
-  console.log(res)
+  const { data, meta } = await Request().server.course.add('fetch').post.json.c(ctx).result;
 
   let courses = [];
 
-  const serverErrors = handleErrors(200, res, [404]);
+  const serverErrors = handleErrors(200, [404], data, meta);
 
   if(serverErrors === false) {
-    courses = res.courses;
+    courses = data.courses;
     console.log(courses, "no error")
   }
 

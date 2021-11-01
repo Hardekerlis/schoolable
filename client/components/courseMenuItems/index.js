@@ -14,8 +14,13 @@ import { RightClickMenu } from 'components';
 
 import { RightClickIcon } from 'cssIcons';
 
-import { Prompt } from 'helpers/prompt';
-import Request from 'helpers/request.js';
+// import { Prompt } from 'helpers/prompt';
+// import Request from 'helpers/depRequest.js';
+
+import {
+  DepRequest as Request,
+  Prompt
+} from 'helpers'
 
 import styles from './courseMenuItems.module.sass';
 
