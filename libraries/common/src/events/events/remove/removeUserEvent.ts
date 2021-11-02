@@ -6,5 +6,6 @@ export interface RemoveUserEvent {
   subject: Subjects.RemoveUser;
   data: {
     userId: string;
+    removingAdmin: string;
   };
 }

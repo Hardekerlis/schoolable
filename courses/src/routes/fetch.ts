@@ -24,7 +24,7 @@ const fetchMany = async (req: Request, res: Response) => {
   );
 
   logger.debug('Looking up user');
-  const user = await User.findOne({ userId: currentUser.id });
+  const user = await User.findById(currentUser.id);
 
   if (!user) {
     logger.info('No user found');
@@ -89,7 +89,7 @@ const fetchOne = async (req: Request, res: Response) => {
   }
 
   logger.debug('Looking up user');
-  const user = await User.findOne({ userId: currentUser.id });
+  const user = await User.findOne({ id: currentUser.id });
 
   if (!user) {
     logger.info('No user found');

@@ -46,19 +46,20 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    students: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
-        default: '',
-      },
-    ],
+
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
       required: true,
     },
     admins: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        default: '',
+      },
+    ],
+    students: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',

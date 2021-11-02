@@ -8,3 +8,9 @@ registeredUser: 'Successfully registered user'
 emailInUse: 'The supplied email is already in use'
 foundUsers: 'Found users'
 noUsersFound: "Coulnd't find any users"
+needUserId: 'Need a user id'
+invalidId: 'The supplied id is not valid'
+noUserFound: "Couldn't find user"
+lastAdmin: "Can't remove the last admin account"
+alreadyUpForDeletion: 'User is already up for deletion'
+upForDeletion: 'User is up for deletion'

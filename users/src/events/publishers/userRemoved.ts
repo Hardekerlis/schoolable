@@ -4,6 +4,6 @@ import {
   Subjects,
 } from '@gustafdahl/schoolable-common';
 
-export default class UserRemovedPublisher extends Publisher<UserRemovedEvent> {
+export class UserRemovedPublisher extends Publisher<UserRemovedEvent> {
   subject: Subjects.UserRemoved = Subjects.UserRemoved;
 }

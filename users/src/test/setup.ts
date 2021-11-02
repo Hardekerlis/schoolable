@@ -8,14 +8,13 @@ import {
   winstonTestSetup,
   UserTypes,
   UserPayload,
-  Location,
 } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import { sign } from 'cookie-signature';
 
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
-// import User, { UserDoc } from '../models/user';
+import { UserDoc } from '../models/user';
 
 import { app } from '../app';
 app; // Load env variables in app
@@ -23,7 +22,10 @@ app; // Load env variables in app
 declare global {
   namespace NodeJS {
     interface Global {
-      getAuthCookie(userType: UserTypes, email?: string): Promise<string[]>;
+      getAuthCookie(
+        userType: UserTypes,
+        email?: string,
+      ): Promise<[string, UserDoc]>;
       getUserData(userType: UserTypes): ValidUser;
       adminCookie?: string;
     }
@@ -89,10 +91,11 @@ global.getUserData = (userType: UserTypes): ValidUser => {
 global.getAuthCookie = async (
   userType: UserTypes,
   email?: string,
-): Promise<string[]> => {
+): Promise<[string, UserDoc]> => {
+  let adminRes;
   if (!global.adminCookie) {
     const { email, name } = global.getUserData(userType);
-    const adminRes = await request(app)
+    adminRes = await request(app)
       .post('/api/users/register')
       .send({ email, userType: UserTypes.Admin, name })
       .expect(201);
@@ -114,7 +117,8 @@ global.getAuthCookie = async (
     global.adminCookie = adminCookie;
   }
 
-  if (!userType || userType === UserTypes.Admin) return [global.adminCookie];
+  if (!userType || userType === UserTypes.Admin)
+    return [global.adminCookie, adminRes?.body.user];
 
   const userData = global.getUserData(userType);
 
@@ -144,5 +148,5 @@ global.getAuthCookie = async (
   const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
   const cookie = `token=${signedCookie}; path=/`;
 
-  return [cookie];
+  return [cookie, createRes.body.user];
 };

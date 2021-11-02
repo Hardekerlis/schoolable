@@ -21,7 +21,7 @@ const admins = {
     logger.info('Attempting to add course admin');
 
     logger.debug('Looking up course owner');
-    const owner = await User.findOne({ userId: currentUser?.id });
+    const owner = await User.findOne({ id: currentUser?.id });
 
     if (!owner) {
       logger.error('No owner found. Why is there no owner');
@@ -53,7 +53,7 @@ const admins = {
     } else logger.debug('Current user is an application admin');
 
     logger.debug('Looking up user whom is going to be course admin');
-    const courseAdmin = await User.findOne({ userId: adminId });
+    const courseAdmin = await User.findById(adminId);
 
     if (!courseAdmin) {
       logger.debug('No user found');
@@ -72,7 +72,7 @@ const admins = {
     logger.debug('User is not a course admin');
 
     logger.debug('Adding user to course admins');
-    course.admins?.push(courseAdmin);
+    course.admins?.push(courseAdmin.id);
 
     logger.debug('Saving course');
     await course.save();

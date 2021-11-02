@@ -4,6 +4,7 @@ import {
   UserCreatedEvent,
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
+import mongoose, { ObjectId } from 'mongoose';
 
 import { queueGroupName } from './queueGroupName';
 import User from '../../models/user';
@@ -18,7 +19,17 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
 
     logger.info('Creating user reference');
 
-    const user = User.build({ userId, email, name, userType });
+    // console.log(new mongoose.Types.ObjectId(userId), userId);
+
+    const user = User.build({
+      // @ts-ignore
+      _id: new mongoose.Types.ObjectId(userId),
+      email,
+      name,
+      userType,
+    });
+
+    console.log(user, userId);
 
     logger.debug('Saving user to database');
     await user.save();

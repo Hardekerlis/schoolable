@@ -23,7 +23,7 @@ const students = {
     logger.info('Attempting to add student to course');
 
     logger.debug('Looking up user who is attempting to edit course');
-    const editorUser = await User.findOne({ userId: currentUser?.id });
+    const editorUser = await User.findById(currentUser?.id);
 
     if (!editorUser) {
       logger.debug('No editor user found');
@@ -57,7 +57,7 @@ const students = {
     } else logger.debug('Editor is an application admin');
 
     logger.debug('Looking up student to be added to course');
-    const student = await User.findOne({ userId: studentId });
+    const student = await User.findById(studentId);
 
     if (!student) {
       logger.debug('No student found');
@@ -76,7 +76,7 @@ const students = {
     logger.debug('Student is not a course student');
 
     logger.debug('Pushing student to course');
-    course.students?.push(student);
+    course.students?.push(student.id);
 
     logger.debug('Saving user');
     await course.save();

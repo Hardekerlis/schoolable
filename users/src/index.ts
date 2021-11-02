@@ -5,6 +5,7 @@ import { natsWrapper } from './utils/natsWrapper';
 import mongoose from 'mongoose';
 
 import User from './models/user';
+import { RemoveUserListener } from './events/listeners';
 
 (async () => {
   const { env } = process;
@@ -48,7 +49,9 @@ import User from './models/user';
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    // Register listeners here!
+    // Register listeners here
+    logger.debug('registered RemoveUserListener for nats');
+    new RemoveUserListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

@@ -5,12 +5,15 @@ import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 
-import { CourseCreatedListener } from './events/listeners/courseCreated';
-import { CourseRemovedListener } from './events/listeners/courseRemoved';
-import { CourseUpdatedListener } from './events/listeners/courseUpdated';
-import { PhaseRemovedListener } from './events/listeners/phaseRemoved';
-import { PhaseCreatedListener } from './events/listeners/phaseCreated';
-import { RemovePhaseItemListener } from './events/listeners/removePhaseItem';
+import {
+  RemovePhaseItemListener,
+  CourseCreatedListener,
+  CourseRemovedListener,
+  CourseUpdatedListener,
+  PhaseCreatedListener,
+  PhaseRemovedListener,
+  UserRemovedListener,
+} from './events/listeners/';
 
 import mongoose from 'mongoose';
 
@@ -62,6 +65,9 @@ const startServer = async () => {
 
     logger.debug('Registered RemovePhaseItemListener for nats');
     new RemovePhaseItemListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered RemovePhaseItemListener for nats');
+    new UserRemovedListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(
