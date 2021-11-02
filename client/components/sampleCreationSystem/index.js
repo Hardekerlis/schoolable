@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import Request from 'helpers/request.js';
+// import Request from 'helpers/request.js';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +10,12 @@ import { IconRenderer, PlusCircle } from 'helpers/systemIcons';
 import language from 'helpers/lang';
 const lang = language.sampleCreationSystem;
 
-import { lowerFirstLetter } from 'helpers/misc.js';
+// import { lowerFirstLetter } from 'helpers/misc.js';
+
+import {
+  DepRequest as Request,
+  lowerFirstLetter
+} from 'helpers';
 
 import { Loader } from 'components'
 

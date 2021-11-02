@@ -4,7 +4,11 @@ import { useRouter } from 'next/router';
 
 import getUserData from 'helpers/getUserData.js';
 
-import Request from 'helpers/request.js';
+// import Request from 'helpers/request.js';
+
+import {
+  DepRequest as Request
+} from 'helpers';
 
 import language from 'helpers/lang';
 const lang = language.sidebar;

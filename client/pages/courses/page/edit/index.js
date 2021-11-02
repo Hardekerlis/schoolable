@@ -38,22 +38,29 @@ export const getServerSideProps = async ctx => {
 
   const userData = getUserDataServer(ctx);
 
-  let request = new Request(`/api/course/fetch/${ctx.query.id}`)
-    .get()
-    .json()
-    .ctx(ctx);
-  let res = await request.send();
+  let { data, meta } = await Request().server
+    .course.add(`fetch/${ctx.query.id}`)
+    .get
+    .json
+    .c(ctx)
+    .result;
+
+  // let request = new Request(`/api/course/fetch/${ctx.query.id}`)
+  //   .get()
+  //   .json()
+  //   .ctx(ctx);
+  // let res = await request.send();
 
   //200 is the expected status code
-  let serverErrors = handleErrors(200, res, [404]);
+  let serverErrors = handleErrors(200, [404], data, meta);
 
   let course = null;
   let phases = [];
 
   if(!serverErrors) {
-    course = res.course;
+    course = data.course;
 
-    if(course.owner.userId !== userData.id) {
+    if(course.owner.userId !== userData.userId) {
       return {
         redirect: {
           destination: '/pageNotFound',
@@ -63,18 +70,21 @@ export const getServerSideProps = async ctx => {
     }
 
     //Get phases
-    let response = await new Request(`/api/phase/fetch`, {
-      parentCourse: ctx.query.id,
-    })
-      .post()
-      .json()
-      .ctx(ctx)
-      .send();
 
-    serverErrors = handleErrors(200, response, [404]);
+    let result = await Request().server
+      .phase.add('fetch')
+      .post
+      .json
+      .c(ctx)
+      .body({
+        parentCourse: ctx.query.id
+      })
+      .result;
+
+    serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
-      phases = response.phases;
+      phases = result.data.phases;
     }
   }
 
@@ -188,6 +198,7 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
             key={index}
             id={obj.id}
             name={phaseTitles[index]}
+            setLoaderActive={setLoaderActive}
           />
         );
       }),
@@ -265,33 +276,27 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
               ]} />
               {sub === 'overview' && (
                 <>
-                  {phasesRender?.length === 0 ? (
-                    <p className={styles.noPhasesText}>{lang.noPhasesText}</p>
-                  ) : (
+                  <p className={styles.phasesText}>{lang.phases}</p>
+
+                  <div className={styles.phasesContainer}>
                     <>
-                      <p className={styles.phasesText}>{lang.phases}</p>
-
-                      <div className={styles.phasesContainer}>
-                        <>
-                          <SampleCreationSystem
-                            creationContainerClassName={styles.creationContainer}
-                            body={{
-                              parentCourse: course.id,
-                            }}
-                            createItemButtonClassName={styles.createPhaseButton}
-                            requestCallback={onPhaseCreation}
-                            itemApiPath={`/api/phase/create`}
-                            currentItems={phases}
-                            itemName={lang.phaseItemName}
-                            noCurrentItemText={lang.courseMissingPhases}
-                            createAdditionalItemIcon={PlusClipboard}
-                          />
-                        </>
-
-                        {phasesRender}
-                      </div>
+                      <SampleCreationSystem
+                        creationContainerClassName={styles.creationContainer}
+                        body={{
+                          parentCourse: course.id,
+                        }}
+                        createItemButtonClassName={styles.createPhaseButton}
+                        requestCallback={onPhaseCreation}
+                        itemApiPath={`/api/phase/create`}
+                        currentItems={phases}
+                        itemName={lang.phaseItemName}
+                        noCurrentItemText={lang.courseMissingPhases}
+                        createAdditionalItemIcon={PlusClipboard}
+                      />
                     </>
-                  )}
+
+                    {phasesRender}
+                  </div>
                 </>
               )}
             </div>
@@ -301,5 +306,33 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
     </Layout>
   );
 };
+
+// {phasesRender?.length === 0 ? (
+//   <p className={styles.noPhasesText}>{lang.noPhasesText}</p>
+// ) : (
+//   <>
+//     <p className={styles.phasesText}>{lang.phases}</p>
+//
+//     <div className={styles.phasesContainer}>
+//       <>
+//         <SampleCreationSystem
+//           creationContainerClassName={styles.creationContainer}
+//           body={{
+//             parentCourse: course.id,
+//           }}
+//           createItemButtonClassName={styles.createPhaseButton}
+//           requestCallback={onPhaseCreation}
+//           itemApiPath={`/api/phase/create`}
+//           currentItems={phases}
+//           itemName={lang.phaseItemName}
+//           noCurrentItemText={lang.courseMissingPhases}
+//           createAdditionalItemIcon={PlusClipboard}
+//         />
+//       </>
+//
+//       {phasesRender}
+//     </div>
+//   </>
+// )}
 
 export default EditCourse;

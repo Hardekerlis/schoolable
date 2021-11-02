@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 import { Phase } from 'components';
 
-import Request from 'helpers/request.js';
+// import Request from 'helpers/request.js';
 
 import { faPenSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +16,7 @@ import {
   createStateListener,
   removeStateListener,
   GlobalEventHandler,
+  DepRequest as Request
 } from 'helpers';
 
 import styles from './phaseEditMenu.module.sass';

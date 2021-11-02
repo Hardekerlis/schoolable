@@ -18,9 +18,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
 
-import Request from 'helpers/request.js';
-
-import { Prompt } from 'helpers/prompt';
+import {
+  Request,
+  Prompt
+} from 'helpers';
 
 import Layout from 'layouts/default/';
 

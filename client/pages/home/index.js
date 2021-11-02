@@ -4,7 +4,11 @@ import { useState, useEffect } from 'react';
 
 //custom imports
 
-import Request from 'helpers/request.js';
+// import Request from 'helpers/request.js';
+
+import {
+  DepRequest as Request
+} from 'helpers';
 
 import Layout from 'layouts/default/';
 

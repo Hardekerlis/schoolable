@@ -5,13 +5,15 @@ import {
   removeStateListener,
 } from './stateEventListener.js';
 import GlobalEventHandler from './globalEventListeners.js';
-import Request from './request.js';
+import DepRequest from './depRequest.js';
+import Request from './request'
 import handleErrors from './handleErrorsServer.js';
 import { Prompt } from './prompt';
-import { firstLetterToUpperCase } from './misc.js';
+import { firstLetterToUpperCase, lowerFirstLetter } from './misc.js';
 import getUserDataServer from './getUserDataServer.js';
 import ErrorHandler from './errorHandler.js';
 import PathWatcher from './pathWatcher.js';
+import { IconRenderer } from './systemIcons'
 
 export {
   Permission,
@@ -19,11 +21,14 @@ export {
   createStateListener,
   removeStateListener,
   GlobalEventHandler,
+  DepRequest,
   Request,
   handleErrors,
   Prompt,
   firstLetterToUpperCase,
+  lowerFirstLetter,
   getUserDataServer,
   ErrorHandler,
-  PathWatcher
+  PathWatcher,
+  IconRenderer
 };

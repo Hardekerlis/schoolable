@@ -1,0 +1,58 @@
+@import "styles/variables"
+
+.wrapper:hover
+  background-color: $black
+
+.wrapper.selected
+  background-color: rgba($purple, 0.7)
+
+.listWrapper
+  padding: 20px !important
+  display: flex !important
+  width: 450px !important
+  height: 80px !important
+  border-radius: 5px
+  border: 1px solid rgba($white, 0.2)
+
+  align-items: center
+
+  .title
+    margin: 0px !important
+
+.wrapper
+  width: 350px
+  height: 210px
+  background-color: $blacker
+  padding: 10px
+  margin-right: 50px
+  margin-bottom: 20px
+  display: inline-block
+  cursor: pointer
+
+  //TODO: static color
+  box-shadow: 2px 2px 50px 0px rgba(0,0,0,0.2)
+
+  @include transitionProp(0.2s, ease-out, background-color)
+
+  .hozLine
+    width: 99%
+    height: 2px
+    background-color: $purple
+
+
+  .title
+    font-size: 1.5rem
+    font-weight: 400
+    margin: 0px
+    margin-bottom: 10px
+    margin-left: 8px
+    user-select: none
+
+  .desc
+    max-height: 120px
+    padding: 10px
+    padding-top: 0px
+    margin-left: 10px
+    overflow: hidden
+    text-overflow: ellipsis
+    font-size: 1.1rem

@@ -7,7 +7,8 @@ import {
   handleErrors,
   getUserData,
   Prompt,
-  firstLetterToUpperCase
+  firstLetterToUpperCase,
+  ErrorHandler
 } from 'helpers';
 
 import Layout from 'layouts/default/';
@@ -34,38 +35,56 @@ export const getServerSideProps = async ctx => {
   if(!(await authCheck(ctx))) return redirectToLogin;
 
   //Get course data. Not phases.
-  let request = new Request(`/api/course/fetch/${ctx.query.id}`)
-    .get()
-    .json()
-    .ctx(ctx);
-  let res = await request.send();
+  // let request = new Request(`/api/course/fetch/${ctx.query.id}`)
+  //   .get()
+  //   .json()
+  //   .ctx(ctx);
+  // let res = await request.send();
 
-  console.log("course fetch", res)
+  let { data, meta } = await Request().server
+    .course.add(`fetch/${ctx.query.id}`)
+    .get
+    .json
+    .c(ctx)
+    .result;
+
+  console.log("course fetch", data)
 
   console.log("gjeapgjeaigjaep")
 
   //200 is the expected status code
-  let serverErrors = handleErrors(200, res, [404]);
+  let serverErrors = handleErrors(200, [404], data, meta);
 
   let course = null;
   let phases = [];
 
   if(!serverErrors) {
-    course = res.course;
+    if(data.course) course = data.course;
 
     //Get phases
-    let response = await new Request(`/api/phase/fetch`, {
-      parentCourse: ctx.query.id,
-    })
-      .post()
-      .json()
-      .ctx(ctx)
-      .send();
+    let result = await Request().server
+      .phase.add('fetch')
+      .body({
+        parentCourse: ctx.query.id
+      })
+      .post
+      .json
+      .c(ctx)
+      .result;
 
-    serverErrors = handleErrors(200, response, [404]);
+
+    // let response = await new Request(`/api/phase/fetch`, {
+    //   parentCourse: ctx.query.id,
+    // })
+    //   .post()
+    //   .json()
+    //   .ctx(ctx)
+    //   .send();
+
+    serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
-      phases = response.phases;
+      phases = result.data.phases;
     }
   }
 
@@ -88,13 +107,14 @@ export const getServerSideProps = async ctx => {
 const CoursePage = ({ serverErrors, course, _phases, sub }) => {
   const router = useRouter();
 
-  if(serverErrors !== false) {
-    Prompt.error(serverErrors);
+  ErrorHandler(serverErrors);
+
+  //TODO: FIX THIS ERROR HANDLING
+  //to replicate: try to go to course page without an id for course
+  if(serverErrors) {
     return (
-      <Layout>
-        <Sidebar />
-      </Layout>
-    );
+      <div></div>
+    )
   }
 
   const userData = getUserData();
@@ -113,10 +133,9 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
     router.push(`/courses/page/edit?id=${router.query.id}`);
   };
 
+
   //TODO: implement permissions check as well
-  const canUserEditPage = (userData.id === course.owner.userId) ? true : false;
-
-
+  const canUserEditPage = (userData.userId === course.owner.userId) ? true : false;
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 

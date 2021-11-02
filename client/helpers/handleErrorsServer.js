@@ -24,8 +24,10 @@ const lang = language.handleErrorsServer;
 //
 // }
 
-const handleErrors = (successStatus, response, ignoreStatuses) => {
-  const status = response._isJSON ? response._response.status : response.status;
+const handleErrors = (successStatus, ignoreStatuses, data, meta) => {
+  // const status = response._isJSON ? response._response.status : response.status;
+
+  const status = meta.status;
 
   let error = false;
 
@@ -36,8 +38,8 @@ const handleErrors = (successStatus, response, ignoreStatuses) => {
     // console.log('ERRORS:', error);
 
     if(error === false) {
-      if(response.hasOwnProperty('errors')) {
-        error = response.errors;
+      if(data.hasOwnProperty('errors')) {
+        error = data.errors;
       }else {
         error = [lang.unexpected];
       }

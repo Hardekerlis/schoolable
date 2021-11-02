@@ -1,0 +1,26 @@
+{
+  "methods": [
+    "post",
+    "get",
+    "put",
+    "delete",
+    "patch"
+  ],
+  "services": [
+    "course",
+    "phase",
+    "phaseitems",
+    "sessions"
+  ],
+  "contentTypes": {
+    "html": "text/html",
+    "json": {
+      "type": "application/json",
+      "isJSON": true
+    }
+  },
+  "senders": [
+    "client",
+    "server"
+  ]
+}

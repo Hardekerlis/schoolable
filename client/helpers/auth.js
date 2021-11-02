@@ -1,23 +1,13 @@
 import cookies from 'next-cookies';
 
-import Request from 'helpers/request.js';
+// import Request from 'helpers/request.js';
+import { Request } from 'helpers';
 
 const authCheck = async (ctx) => {
-  const { req } = ctx;
 
-  // console.log(req.headers)
+  const { meta } = await Request().server.sessions.add('check').get.json.c(ctx).result;
 
-  // const { token } = cookies(ctx);
-  //
-  // console.log(token)
-
-  let request = new Request('/api/sessions/check')
-    .get()
-    .json()
-    .headers(req.headers);
-  let response = await request.send();
-
-  if(response._response?.status === 200) return true;
+  if(meta?.status === 200) return true;
   return false;
 
 }
