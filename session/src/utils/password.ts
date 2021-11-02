@@ -31,6 +31,13 @@ export default class Password {
 
     const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
 
-    return timingSafeEqual(buf, Buffer.from(hash));
+    try {
+      return timingSafeEqual(
+        Buffer.from(buf.toString('hex')),
+        Buffer.from(hash),
+      );
+    } catch (err) {
+      return false;
+    }
   }
 }
