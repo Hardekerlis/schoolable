@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -89,6 +89,135 @@ const Login = () => {
     });
   };
 
+  const [testingInput, setTestingInput] = useState('');
+
+  const testingRef = React.useRef();
+  const testingFnRef = React.useRef();
+
+  const onTestingChange = (evt) => {
+    setTestingInput(evt.target.value);
+    testingRef.current = evt.target.value;
+  }
+
+  const generateTestingData = async() => {
+
+    console.log('registering admin')
+    let { data, meta } = await Request().client
+      .users.add('register')
+      .post
+      .json
+      .body({
+        email: "elo12881288@gmail.com",
+        name: {
+            first: "Ole",
+            last: "Sund"
+        },
+        userType: "admin"
+      })
+      .result;
+
+    console.log(data);
+    console.log("registered admin user. waiting for temp password")
+
+    let pass;
+
+    await new Promise((resolve, reject) => {
+      testingFnRef.current = () => {
+        pass = testingRef.current;
+        testingFnRef.current = () => console.log("unset");
+        resolve();
+      }
+    })
+
+    console.log("logging in admin")
+    let result = await Request().client
+      .sessions
+      .post
+      .json
+      .body({
+        email: "elo12881288@gmail.com",
+        password: pass
+      })
+      .result;
+
+    console.log(result.data)
+
+    console.log("registering teacher")
+    result = await Request().client
+      .users.add('register')
+      .post
+      .json
+      .body({
+        email: "teacher@myTeacherEmail.teach",
+        name: {
+            first: "Mr",
+            last: "Teacher"
+        },
+        userType: "teacher"
+      })
+      .result;
+
+    console.log(result.data);
+
+    console.log("registered teacher user. waiting for teacher temp password")
+
+    await new Promise((resolve, reject) => {
+      testingFnRef.current = () => {
+        pass = testingRef.current;
+        testingFnRef.current = () => console.log("unset");
+        resolve();
+      }
+    })
+
+    console.log("logging in teacher")
+    result = await Request().client
+      .sessions
+      .post
+      .json
+      .body({
+        email: "teacher@myTeacherEmail.teach",
+        password: pass
+      })
+      .result;
+
+    console.log(result.data)
+
+    console.log("updating login credentials")
+    setCredentials({
+      ...credentials,
+      password: pass,
+    });
+
+    console.log('creating course')
+    result = await Request().client
+      .course.add('create')
+      .post
+      .json
+      .body({
+        name: 'Svenska'
+      })
+      .result
+
+    console.log(result.data)
+
+
+    console.log('creating phase')
+    result = await Request().client
+      .phase.add('create')
+      .post
+      .json
+      .body({
+        name: 'Lektion 1',
+        parentCourse: result.data.course.id
+      })
+      .result
+
+    console.log(result.data)
+
+    console.log('done')
+
+  }
+
   return (
     <Layout mainClass={styles.positioning}>
       <Loader active={loaderActive} />
@@ -112,6 +241,9 @@ const Login = () => {
           {lang.loginBtn}
         </button>
       </form>
+      <button onClick={generateTestingData}>Generate testing data</button>
+      <input onChange={onTestingChange} value={testingInput} />
+      <button onClick={() => testingFnRef.current()}>Done</button>
     </Layout>
   );
 };

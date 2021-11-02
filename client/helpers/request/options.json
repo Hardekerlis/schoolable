@@ -9,8 +9,9 @@
   "services": [
     "course",
     "phase",
-    "phaseitems",
-    "sessions"
+    "phaseitem",
+    "sessions",
+    "users"
   ],
   "contentTypes": {
     "html": "text/html",
