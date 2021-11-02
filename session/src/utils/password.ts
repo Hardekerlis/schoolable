@@ -1,6 +1,6 @@
 /** @format */
 
-import { scrypt, randomBytes } from 'crypto';
+import { scrypt, randomBytes, timingSafeEqual } from 'crypto';
 import { promisify } from 'util';
 
 const scryptAsync = promisify(scrypt);
@@ -31,6 +31,6 @@ export default class Password {
 
     const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
 
-    return buf.toString('hex') === hash;
+    return timingSafeEqual(buf, Buffer.from(hash));
   }
 }
