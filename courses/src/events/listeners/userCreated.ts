@@ -22,14 +22,11 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
     // console.log(new mongoose.Types.ObjectId(userId), userId);
 
     const user = User.build({
-      // @ts-ignore
-      _id: new mongoose.Types.ObjectId(userId),
+      _id: userId,
       email,
       name,
       userType,
     });
-
-    console.log(user, userId);
 
     logger.debug('Saving user to database');
     await user.save();

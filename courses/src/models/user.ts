@@ -2,7 +2,7 @@ import mongoose, { ObjectId } from 'mongoose';
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
 interface UserAttributes {
-  _id: ObjectId;
+  _id: string;
   email: string;
   userType: UserTypes;
   name: {
@@ -16,7 +16,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
 }
 
 export interface UserDoc extends mongoose.Document {
-  _id: ObjectId;
+  _id: string;
   email: string;
   userType: UserTypes;
   name: {

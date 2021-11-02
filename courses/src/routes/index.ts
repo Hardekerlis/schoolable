@@ -105,8 +105,44 @@ router.post(
   students.add,
 );
 
-import admins from './admins';
+router.post(
+  '/remove/student',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  [
+    body('studentId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needStudentId;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        if (!isValidObjectId(value)) {
+          throw new Error(LANG[`${req.lang}`].invalidStudentId);
+        }
 
+        return value;
+      }),
+    body('courseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needCourseId;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        if (!isValidObjectId(value)) {
+          throw new Error(LANG[`${req.lang}`].invalidCourseId);
+        }
+
+        return value;
+      }),
+  ],
+  validateResult,
+  students.remove,
+);
+
+import admins from './admins';
 router.post(
   '/add/admin',
   currentUser,

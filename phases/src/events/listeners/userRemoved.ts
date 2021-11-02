@@ -51,7 +51,7 @@ export class UserRemovedListener extends Listener<UserRemovedEvent> {
         const studentIndex = course.students?.indexOf(userId)!;
 
         logger.debug('Removing student from students array');
-        course.students?.splice(studentIndex, studentIndex - 1);
+        course.students?.splice(studentIndex, 1);
       } else if (course.students?.includes(userId)) {
         logger.debug('User was a course admin');
         logger.debug('Getting index of removed user in admin array');
@@ -59,7 +59,7 @@ export class UserRemovedListener extends Listener<UserRemovedEvent> {
 
         logger.debug('Removing admin from students array');
 
-        course.admins?.splice(adminIndex, adminIndex - 1);
+        course.admins?.splice(adminIndex, 1);
       }
 
       await course.save();

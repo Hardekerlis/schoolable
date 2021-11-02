@@ -5,3 +5,7 @@ export * from './phaseCreated';
 export * from './phaseRemoved';
 export * from './removePhaseItem';
 export * from './userRemoved';
+export * from './courseAddedAdmin';
+export * from './courseAddedStudent';
+export * from './courseRemovedAdmin';
+export * from './courseRemovedStudent';

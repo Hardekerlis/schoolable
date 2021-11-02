@@ -32,13 +32,18 @@ describe('Add admin', () => {
   it('Returns a 401 if user is not course owner', async () => {
     const { course } = await createCourse();
     const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
+    const user = await global.createUser(
+      UserTypes.Teacher,
+      faker.internet.email(),
+      new mongoose.Types.ObjectId().toHexString(),
+    );
 
     await request(app)
       .post(path)
       .set('Cookie', cookie)
       .send({
         courseId: course.id,
-        adminId: new mongoose.Types.ObjectId().toHexString(),
+        adminId: user.id,
       })
       .expect(401);
   });
@@ -79,7 +84,7 @@ describe('Add admin', () => {
 
     await request(app).post(path).set('Cookie', cookie).send({
       courseId: course.id,
-      adminId: user.userId,
+      adminId: user.id,
     });
 
     await request(app)
@@ -87,7 +92,7 @@ describe('Add admin', () => {
       .set('Cookie', cookie)
       .send({
         courseId: course.id,
-        adminId: user.userId,
+        adminId: user.id,
       })
       .expect(400);
   });
@@ -131,7 +136,7 @@ describe('Add admin', () => {
       .set('Cookie', cookie)
       .send({
         courseId: course.id,
-        adminId: user.userId,
+        adminId: user.id,
       })
       .expect(200);
   });

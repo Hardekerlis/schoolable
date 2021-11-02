@@ -81,7 +81,7 @@ export const fetchMany = async (req: Request, res: Response) => {
   logger.debug('Found parent phase');
 
   let query = {
-    parentPhase: phase.phaseId,
+    parentPhase: phase.id,
     parentCourse: phase.parentCourse,
   };
 
@@ -196,7 +196,7 @@ export const fetchOne = async (req: Request, res: Response) => {
 
   let query = {
     id: phaseItemId,
-    parentPhase: phase.phaseId,
+    parentPhase: phase.id,
     parentCourse: phase.parentCourse,
   };
 

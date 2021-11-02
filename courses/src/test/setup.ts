@@ -83,7 +83,8 @@ global.createUser = async (
   };
 
   const user = User.build({
-    userId,
+    // @ts-ignore
+    _id: userId,
     email,
     userType,
     name,
@@ -107,7 +108,7 @@ global.getAuthCookie = async (
 
   const payload: UserPayload = {
     sessionId: 'adasdagafag',
-    id: user.userId,
+    id: user.id,
     email: user.email,
     userType: user.userType,
     lang: 'ENG',

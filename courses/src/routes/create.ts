@@ -115,7 +115,7 @@ const create = async (req: Request, res: Response) => {
         owner: course.owner.id,
       });
 
-      logger.info('Sent Nats course created event');
+      logger.verbose('Sent Nats course created event');
     }
 
     logger.info('Course successfully created. Responding user');

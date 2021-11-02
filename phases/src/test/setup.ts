@@ -77,6 +77,7 @@ global.getAuthCookie = async (
     id,
     email,
     userType,
+    sessionId: 'asdasdsad',
     lang: 'ENG',
     name: {
       first: faker.name.firstName(),

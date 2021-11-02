@@ -21,7 +21,7 @@ const create = async (req: Request, res: Response) => {
   logger.info('Starting creation of phase');
   logger.debug('Looking up course');
   // Find course to make sure the phase has a course to exist in
-  const course = await Course.findOne({ courseId: parentCourse });
+  const course = await Course.findById(parentCourse);
 
   // Logger check if course exists
   if (!course) {

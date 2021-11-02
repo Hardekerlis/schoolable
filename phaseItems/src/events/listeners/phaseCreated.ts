@@ -19,7 +19,7 @@ export class PhaseCreatedListener extends Listener<PhaseCreatedEvent> {
     logger.info('Creating phase');
 
     logger.debug('Building phase');
-    const phase = Phase.build({ phaseId, parentCourse, name });
+    const phase = Phase.build({ id: phaseId, parentCourse, name });
 
     logger.debug('Saving phase');
     await phase.save();

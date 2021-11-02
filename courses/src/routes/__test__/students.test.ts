@@ -16,6 +16,29 @@ const createCourse = async () => {
   return { course: res.body.course, cookie };
 };
 
+const addStudent = async (amount?: number) => {
+  const { course, cookie } = await createCourse();
+
+  if (!amount) amount = 2;
+
+  const user = await global.createUser(
+    UserTypes.Student,
+    faker.internet.email(),
+    new mongoose.Types.ObjectId().toHexString(),
+  );
+
+  await request(app)
+    .post('/api/course/add/student')
+    .set('Cookie', cookie)
+    .send({
+      courseId: course.id,
+      studentId: user.id,
+    })
+    .expect(200);
+
+  return { course, cookie, student: user };
+};
+
 describe('Add students', () => {
   const path = '/api/course/add/student';
 
@@ -79,7 +102,7 @@ describe('Add students', () => {
 
     await request(app).post(path).set('Cookie', cookie).send({
       courseId: course.id,
-      studentId: user.userId,
+      studentId: user.id,
     });
 
     await request(app)
@@ -87,7 +110,7 @@ describe('Add students', () => {
       .set('Cookie', cookie)
       .send({
         courseId: course.id,
-        studentId: user.userId,
+        studentId: user.id,
       })
       .expect(400);
   });
@@ -134,7 +157,7 @@ describe('Add students', () => {
       .set('Cookie', cookie)
       .send({
         courseId: course.id,
-        studentId: user.userId,
+        studentId: user.id,
       })
       .expect(200);
   });
@@ -150,5 +173,134 @@ describe('Remove students', () => {
     const res = await request(app).post(path).send({});
 
     expect(res.status).not.toEqual(404);
+  });
+
+  it('Returns a 401 if user is not authenticated', async () => {
+    const { student, course } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .send({
+        courseId: course.id,
+        studentId: student.id,
+      })
+      .expect(401);
+  });
+
+  it('Returns a 401 if user is not owner or admin of course', async () => {
+    const { student, course } = await addStudent();
+    const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        studentId: student.id,
+      })
+      .expect(401);
+  });
+
+  it('Returns a 400 if studentId is not in request body', async () => {
+    const { student, course, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+      })
+      .expect(400);
+  });
+
+  it('Returns a 400 if studentId is not a valid ObjectId', async () => {
+    const { course, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        studentId: 'Not valid object id',
+      })
+      .expect(400);
+  });
+
+  it('Returns a 400 if courseId is not in request body', async () => {
+    const { student, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        studentId: student.id,
+      })
+      .expect(400);
+  });
+
+  it('Returns a 400 if courseId is not a valid ObjectId', async () => {
+    const { student, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: 'Not valid object id',
+        studentId: student.id,
+      })
+      .expect(400);
+  });
+
+  it('Returns a 404 if no course is found', async () => {
+    const { student, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: new mongoose.Types.ObjectId().toHexString(),
+        studentId: student.id,
+      })
+      .expect(404);
+  });
+
+  it('Returns a 404 if no student is found', async () => {
+    const { course, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        studentId: new mongoose.Types.ObjectId().toHexString(),
+      })
+      .expect(404);
+  });
+
+  it('Returns a 200 if user is application admin and not course owner or admin', async () => {
+    const { course, student } = await addStudent();
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        studentId: student.id,
+      })
+      .expect(200);
+  });
+
+  it('Returns a 200 if user is successfully added to students array', async () => {
+    const { course, student, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        studentId: student.id,
+      })
+      .expect(200);
   });
 });

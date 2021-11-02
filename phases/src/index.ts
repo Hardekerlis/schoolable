@@ -11,6 +11,10 @@ import {
   CourseUpdatedListener,
   CourseRemovedListener,
   UserRemovedListener,
+  CourseAddedAdminListener,
+  CourseAddedStudentListener,
+  CourseRemovedStudentListener,
+  CourseRemovedAdminListener,
 } from './events/listeners/';
 
 import mongoose from 'mongoose';
@@ -60,6 +64,18 @@ const startServer = async () => {
 
     logger.debug('Registered UserRemovedListener for nats');
     new UserRemovedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseAddedAdminListener for nats');
+    new CourseAddedAdminListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseAddedStudentListener for nats');
+    new CourseAddedStudentListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedStudentListener for nats');
+    new CourseRemovedStudentListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedStudentListener for nats');
+    new CourseRemovedAdminListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

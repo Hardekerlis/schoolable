@@ -18,8 +18,10 @@ export class CourseCreatedListener extends Listener<CourseCreatedEvent> {
 
     logger.info('Creating course references');
 
+    console.log(courseId);
+
     const course = Course.build({
-      courseId,
+      id: courseId,
       name,
       owner,
     });

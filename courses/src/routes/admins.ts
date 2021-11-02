@@ -11,6 +11,9 @@ import User from '../models/user';
 import Course from '../models/course';
 
 import logger from '../utils/logger';
+import { natsWrapper } from '../utils/natsWrapper';
+
+import CourseAddedAdminPublisher from '../events/publishers/courseAddedAdmin';
 
 const admins = {
   add: async (req: Request, res: Response) => {
@@ -21,7 +24,7 @@ const admins = {
     logger.info('Attempting to add course admin');
 
     logger.debug('Looking up course owner');
-    const owner = await User.findOne({ id: currentUser?.id });
+    const owner = await User.findById(currentUser?.id);
 
     if (!owner) {
       logger.error('No owner found. Why is there no owner');
@@ -76,6 +79,18 @@ const admins = {
 
     logger.debug('Saving course');
     await course.save();
+
+    // Couldnt get nats mock to work
+    // Code is only ran if its not test environment
+    if (process.env.NODE_ENV !== 'test') {
+      // Publishes event to nats service
+      new CourseAddedAdminPublisher(natsWrapper.client, logger).publish({
+        adminId: courseAdmin.id,
+        courseId: course.id,
+      });
+
+      logger.verbose('Sent Nats course added admin event');
+    }
 
     logger.info('Successfully added course admin');
     res.status(200).json({

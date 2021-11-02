@@ -33,7 +33,7 @@ export class CourseRemovedListener extends Listener<CourseRemovedEvent> {
 
     logger.debug('Removed phases');
 
-    await Course.findOneAndRemove({ courseId });
+    await Course.findByIdAndRemove(courseId);
 
     logger.info('Removed course and its children');
 

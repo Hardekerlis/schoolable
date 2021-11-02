@@ -3,3 +3,7 @@ export * from './courseRemoved';
 export * from './courseUpdated';
 export * from './removePhase';
 export * from './userRemoved';
+export * from './courseAddedAdmin';
+export * from './courseAddedStudent';
+export * from './courseRemovedAdmin';
+export * from './courseRemovedStudent';

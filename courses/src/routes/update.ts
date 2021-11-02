@@ -25,7 +25,7 @@ const update = async (req: Request, res: Response) => {
   // Current user is always defined here
   if (!currentUser) throw new NotAuthorizedError();
 
-  const user = await User.findOne({ id: currentUser.id });
+  const user = await User.findById(currentUser.id);
 
   if (!user) throw new NotAuthorizedError();
 
