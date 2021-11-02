@@ -255,6 +255,7 @@ const Phases = ({ serverErrors, phase, courseInfo }) => {
     // let res = await request.send();
 
     // console.log(res)
+    
 
     const { data, meta } = await Request().client
       .phaseitems.add('create')
@@ -267,7 +268,7 @@ const Phases = ({ serverErrors, phase, courseInfo }) => {
       .json
       .result;
 
-    console.log(data) 
+    console.log(data)
 
   }, [])
 
