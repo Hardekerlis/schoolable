@@ -7,3 +7,4 @@ needUserType: 'Need a user type'
 registeredUser: 'Successfully registered user'
 emailInUse: 'The supplied email is already in use'
 foundUsers: 'Found users'
+noUsersFound: "Coulnd't find any users"

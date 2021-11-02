@@ -29,7 +29,7 @@ router.post(
       })
       .custom((value, { req }) => {
         if (!Object.values(UserTypes).includes(value)) {
-          return LANG[`${req.lang}`].needValidUserType;
+          throw new Error(LANG[`${req.lang}`].needValidUserType);
         }
         return value;
       }),
@@ -62,11 +62,10 @@ router.get(
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needUserType;
       })
+      .bail()
       .custom((value, { req }) => {
         if (!Object.values(UserTypes).includes(value)) {
-          console.log(value);
-          // Why doesn't this error out to a 400???
-          return LANG[`${req.lang}`].needValidUserType;
+          throw new Error(LANG[`${req.lang}`].needValidUserType);
         }
         return value;
       }),
