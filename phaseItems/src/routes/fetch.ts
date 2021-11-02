@@ -96,7 +96,7 @@ export const fetchMany = async (req: Request, res: Response) => {
 
   logger.debug('Fetching phase items');
   const phaseItems = await PhaseItem.find(query).select(
-    '-parentCourse -parentPhase -paragraphs',
+    '-parentCourse -parentPhase',
   );
 
   if (!phaseItems[0]) {
