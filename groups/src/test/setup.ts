@@ -25,6 +25,12 @@ interface CreateGroup {
   cookie: string;
 }
 
+interface AddedUsersToGroup {
+  group: GroupDoc;
+  cookie: string;
+  users: string[];
+}
+
 declare global {
   namespace NodeJS {
     interface Global {
@@ -35,6 +41,7 @@ declare global {
         email: string,
         userId: string,
       ): Promise<UserDoc>;
+      addToGroup(amount?: number): Promise<AddedUsersToGroup>;
     }
   }
 }
@@ -122,17 +129,6 @@ global.getAuthCookie = async (
   return [`token=${signedCookie}; path=/`];
 };
 
-global.createCourse = async () => {
-  const [cookie] = await global.getAuthCookie();
-
-  const res = await request(app)
-    .post('/api/course/create')
-    .set('Cookie', cookie)
-    .send({ name: faker.company.companyName() });
-
-  return { course: res.body.course, cookie };
-};
-
 global.createGroup = async () => {
   const [cookie] = await global.getAuthCookie();
 
@@ -143,4 +139,29 @@ global.createGroup = async () => {
     .expect(201);
 
   return { group: res.body.group, cookie };
+};
+
+global.addToGroup = async (amount?: number) => {
+  if (!amount) amount = 1;
+
+  const { cookie, group } = await global.createGroup();
+
+  const users: string[] = [];
+
+  for (let i = 0; i < amount; i++) {
+    const user = await global.createUser(
+      UserTypes.Student,
+      faker.internet.email(),
+      new mongoose.Types.ObjectId().toHexString(),
+    );
+
+    users.push(user.id);
+  }
+
+  await request(app).post('/api/groups/add').set('Cookie', cookie).send({
+    groupId: group.id,
+    users,
+  });
+
+  return { group, cookie, users };
 };

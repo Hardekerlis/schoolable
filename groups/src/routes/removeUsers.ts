@@ -7,13 +7,13 @@ import Group from '../models/group';
 import logger from '../utils/logger';
 import { natsWrapper } from '../utils/natsWrapper';
 
-import { GroupAddedUserPublisher } from '../events/publishers';
+import { GroupRemovedUserPublisher } from '../events/publishers';
 
-const addUsers = async (req: Request, res: Response) => {
+const removeUsers = async (req: Request, res: Response) => {
   const lang = LANG[`${req.lang}`];
   const { groupId, users } = req.body;
 
-  logger.info('Attempting to add users to group');
+  logger.info('Attempting to remove users from group');
 
   logger.debug('Looking up group');
   const group = await Group.findById(groupId);
@@ -42,8 +42,11 @@ const addUsers = async (req: Request, res: Response) => {
     }
     logger.debug('User exists');
 
-    logger.debug('Adding user to user group');
-    group.users?.push(userId);
+    logger.debug('Getting the user index');
+    const userIndex = group.users?.indexOf(userId)!;
+
+    logger.debug('Removing user from user group');
+    group.users?.splice(userIndex, 1);
   }
 
   logger.debug('Saving group');
@@ -51,13 +54,13 @@ const addUsers = async (req: Request, res: Response) => {
 
   if (process.env.NODE_ENV !== 'test') {
     // Publishes event to nats service
-    new GroupAddedUserPublisher(natsWrapper.client, logger).publish({
+    new GroupRemovedUserPublisher(natsWrapper.client, logger).publish({
       name: group.name,
       groupId: group.id,
       users: group.users as string[],
     });
 
-    logger.verbose('Sent Nats group added user event');
+    logger.verbose('Sent Nats group removed user event');
   }
 
   logger.info('Succesfully added users to group');
@@ -69,4 +72,4 @@ const addUsers = async (req: Request, res: Response) => {
   });
 };
 
-export default addUsers;
+export default removeUsers;
