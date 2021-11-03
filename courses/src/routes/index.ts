@@ -180,4 +180,41 @@ router.post(
   admins.add,
 );
 
+router.post(
+  '/remove/admin',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher]),
+  [
+    body('adminId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needAdminId;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        if (!isValidObjectId(value)) {
+          throw new Error(LANG[`${req.lang}`].invalidAdminId);
+        }
+
+        return value;
+      }),
+    body('courseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needCourseId;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        if (!isValidObjectId(value)) {
+          throw new Error(LANG[`${req.lang}`].invalidCourseId);
+        }
+
+        return value;
+      }),
+  ],
+  validateResult,
+  admins.remove,
+);
+
 export default router;

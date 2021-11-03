@@ -6,7 +6,6 @@ import {
   UnexpectedError,
   UserTypes,
 } from '@gustafdahl/schoolable-common';
-import { ObjectId } from 'mongoose';
 
 import Course from '../models/course';
 import User, { UserDoc } from '../models/user';

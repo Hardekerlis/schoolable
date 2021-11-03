@@ -202,7 +202,7 @@ describe('Remove students', () => {
   });
 
   it('Returns a 400 if studentId is not in request body', async () => {
-    const { student, course, cookie } = await addStudent();
+    const { course, cookie } = await addStudent();
 
     await request(app)
       .post(path)
