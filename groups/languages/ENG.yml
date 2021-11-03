@@ -1,0 +1,6 @@
+needName: 'Need a name'
+allowedCharacters: 'Not allowed characters. Only a-öA-Ö0-9 are supported'
+mustArray: 'Must be an array'
+noUserFound: "Couldn't find user"
+invalidUserId: 'Invalid user id'
+createdGroup: 'Successfully created group'

@@ -40,4 +40,9 @@ export enum Subjects {
   SessionContext = 'session:context',
   SessionCreated = 'session:created',
   SessionRemoved = 'session:removed',
+
+  GroupCreated = 'group:created',
+  GroupRemoved = 'group:removed',
+  GroupAddedUser = 'group:addedUser',
+  GroupRemovedUser = 'group:removedUser',
 }

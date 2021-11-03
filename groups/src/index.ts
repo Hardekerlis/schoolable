@@ -1,9 +1,10 @@
 import { app } from './app';
-import { CONFIG, UserTypes } from '@gustafdahl/schoolable-common';
+import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import mongoose from 'mongoose';
 
+import { UserCreatedListener } from './events/listeners';
 
 (async () => {
   const { env } = process;
@@ -48,6 +49,8 @@ import mongoose from 'mongoose';
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     // Register listeners here
+    logger.debug('registered RemoveUserListener for nats');
+    new UserCreatedListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

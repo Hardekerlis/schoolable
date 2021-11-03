@@ -6,28 +6,34 @@ import faker from 'faker';
 import {
   CONFIG,
   winstonTestSetup,
-  UserTypes,
   UserPayload,
+  UserTypes,
 } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import { sign } from 'cookie-signature';
 
-process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
+import User, { UserDoc } from '../models/user';
 
-import { UserDoc } from '../models/user';
+process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import { app } from '../app';
 app; // Load env variables in app
 
+interface CreateCourse {
+  course: object;
+  cookie: string;
+}
+
 declare global {
   namespace NodeJS {
     interface Global {
-      getAuthCookie(
+      getAuthCookie(userType?: UserTypes, email?: string): Promise<string[]>;
+      createCourse(): Promise<CreateCourse>;
+      createUser(
         userType: UserTypes,
-        email?: string,
-      ): Promise<[string, UserDoc]>;
-      getUserData(userType: UserTypes): ValidUser;
-      adminCookie?: string;
+        email: string,
+        userId: string,
+      ): Promise<UserDoc>;
     }
   }
 }
@@ -56,8 +62,6 @@ beforeAll(async () => {
 beforeEach(async () => {
   try {
     await mongoose.connection.dropDatabase();
-    process.env.ADMIN_EXISTS = undefined;
-    global.adminCookie = undefined;
   } catch (err) {
     console.error(err);
   }
@@ -68,85 +72,62 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-interface ValidUser {
-  email: string;
-  userType: UserTypes;
-  name: {
-    first: string;
-    last: string;
+global.createUser = async (
+  userType: UserTypes,
+  email: string,
+  userId: string,
+) => {
+  const name = {
+    first: faker.name.firstName(),
+    last: faker.name.lastName(),
   };
-}
 
-global.getUserData = (userType: UserTypes): ValidUser => {
-  return {
-    email: faker.internet.email(),
-    userType: userType,
-    name: {
-      first: faker.name.firstName(),
-      last: faker.name.lastName(),
-    },
-  };
+  const user = User.build({
+    // @ts-ignore
+    _id: userId,
+    email,
+    userType,
+    name,
+  });
+
+  await user.save();
+
+  return user;
 };
 
 global.getAuthCookie = async (
-  userType: UserTypes,
+  userType?: UserTypes,
   email?: string,
-): Promise<[string, UserDoc]> => {
-  let adminRes;
-  if (!global.adminCookie) {
-    const { email, name } = global.getUserData(userType);
-    adminRes = await request(app)
-      .post('/api/users/register')
-      .send({ email, userType: UserTypes.Admin, name })
-      .expect(201);
+  userId?: string,
+): Promise<string[]> => {
+  if (!userType) userType = UserTypes.Teacher;
+  if (!email) email = faker.internet.email();
+  if (!userId) userId = new mongoose.Types.ObjectId().toHexString();
 
-    const adminPayload: UserPayload = {
-      userType: adminRes.body.user.userType,
-      email,
-      name,
-      sessionId: new mongoose.Types.ObjectId().toHexString(),
-      id: adminRes.body.user.id,
-      lang: 'ENG',
-    };
+  const user = await global.createUser(userType, email, userId);
 
-    const token = jwt.sign(adminPayload, process.env.JWT_KEY as string);
-    // Cookie signature
-    const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
-    const adminCookie = `token=${signedCookie}; path=/`;
-
-    global.adminCookie = adminCookie;
-  }
-
-  if (!userType || userType === UserTypes.Admin)
-    return [global.adminCookie, adminRes?.body.user];
-
-  const userData = global.getUserData(userType);
-
-  const createRes = await request(app)
-    .post('/api/users/register')
-    .set('Cookie', global.adminCookie)
-    .send({
-      email: email ? email : userData.email,
-      userType,
-      name: userData.name,
-    })
-    .expect(201);
-
-  const { user } = createRes.body;
-
-  const userPayload: UserPayload = {
-    userType: user.userType,
-    email: user.email,
-    name: user.name,
-    sessionId: new mongoose.Types.ObjectId().toHexString(),
+  const payload: UserPayload = {
+    sessionId: 'adasdagafag',
     id: user.id,
-    lang: user.lang,
+    email: user.email,
+    userType: user.userType,
+    lang: 'ENG',
+    name: user.name,
   };
 
-  const token = jwt.sign(userPayload, process.env.JWT_KEY as string);
-  // Cookie signature
+  const token = jwt.sign(payload, process.env.JWT_KEY as string);
   const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
-  const cookie = `token=${signedCookie}; path=/`;
 
-  return [cookie, createRes.body.user];
+  return [`token=${signedCookie}; path=/`];
+};
+
+global.createCourse = async () => {
+  const [cookie] = await global.getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/course/create')
+    .set('Cookie', cookie)
+    .send({ name: faker.company.companyName() });
+
+  return { course: res.body.course, cookie };
 };

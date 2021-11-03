@@ -15,6 +15,7 @@ interface UserAttributes {
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
   setupComplete?: boolean;
+  groups?: string[];
   deletion?: {
     isUpForDeletion: boolean; // If the course is up for deletion
     removeAt: Date; // When it is going to be deleted
@@ -35,6 +36,7 @@ export interface UserDoc extends mongoose.Document {
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
   setupComplete?: boolean;
+  groups?: string[];
   deletion?: {
     isUpForDeletion: boolean; // If the course is up for deletion
     removeAt: Date; // When it is going to be deleted
@@ -74,6 +76,12 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'userSettings',
     },
+    groups: [
+      {
+        type: String,
+        default: '',
+      },
+    ],
     deletion: {
       isUpForDeletion: { type: Boolean, default: false },
       removeAt: { type: Date, default: null },

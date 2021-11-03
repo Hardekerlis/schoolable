@@ -12,10 +12,6 @@ import Course from '../../models/course';
 
 import logger from '../../utils/logger';
 
-const randomNum = (endIndex: number): number => {
-  return Math.floor(Math.random() * endIndex);
-};
-
 export class UserRemovedListener extends Listener<UserRemovedEvent> {
   subject: Subjects.UserRemoved = Subjects.UserRemoved;
   queueGroupName = queueGroupName;
