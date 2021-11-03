@@ -4,3 +4,7 @@ mustArray: 'Must be an array'
 noUserFound: "Couldn't find user"
 invalidUserId: 'Invalid user id'
 createdGroup: 'Successfully created group'
+needGroupId: 'Need a group id'
+invalidGroupId: 'Invalid group id'
+noGroupFound: "Couldn't find a group"
+removedGroup: 'Successfully removed group'

@@ -13,14 +13,15 @@ import jwt from 'jsonwebtoken';
 import { sign } from 'cookie-signature';
 
 import User, { UserDoc } from '../models/user';
+import { GroupDoc } from '../models/group';
 
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import { app } from '../app';
 app; // Load env variables in app
 
-interface CreateCourse {
-  course: object;
+interface CreateGroup {
+  group: GroupDoc;
   cookie: string;
 }
 
@@ -28,7 +29,7 @@ declare global {
   namespace NodeJS {
     interface Global {
       getAuthCookie(userType?: UserTypes, email?: string): Promise<string[]>;
-      createCourse(): Promise<CreateCourse>;
+      createGroup(): Promise<CreateGroup>;
       createUser(
         userType: UserTypes,
         email: string,
@@ -130,4 +131,16 @@ global.createCourse = async () => {
     .send({ name: faker.company.companyName() });
 
   return { course: res.body.course, cookie };
+};
+
+global.createGroup = async () => {
+  const [cookie] = await global.getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/groups/create')
+    .set('Cookie', cookie)
+    .send({ name: faker.name.firstName() })
+    .expect(201);
+
+  return { group: res.body.group, cookie };
 };

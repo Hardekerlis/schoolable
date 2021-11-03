@@ -8,6 +8,7 @@ import {
   LANG,
 } from '@gustafdahl/schoolable-common';
 import { body } from 'express-validator';
+import { isValidObjectId } from 'mongoose';
 
 const router = Router();
 
@@ -37,6 +38,31 @@ router.post(
   ],
   validateResult,
   create,
+);
+
+import remove from './remove';
+router.delete(
+  '/remove',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher]),
+  [
+    body('groupId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needGroupId;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        if (!isValidObjectId(value)) {
+          throw new Error(LANG[`${req.lang}`].invalidGroupId);
+        }
+
+        return value;
+      }),
+  ],
+  validateResult,
+  remove,
 );
 
 export default router;
