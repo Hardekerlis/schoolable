@@ -64,7 +64,95 @@ router.put(
   currentUser,
   getLanguage,
   requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
-  update,
+  [
+    body('owner')
+      .optional()
+      .not()
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].invalidField;
+      }),
+    body('admins')
+      .optional()
+      .not()
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].invalidField;
+      }),
+    body('students')
+      .optional()
+      .not()
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].invalidField;
+      }),
+    body('deletion')
+      .optional()
+      .not()
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].invalidField;
+      }),
+    body('name')
+      .optional()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needString;
+      }),
+    body('locked')
+      .optional()
+      .isBoolean()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needBoolean;
+      }),
+    body('unlockOn')
+      .optional()
+      .isDate()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needDate;
+      }),
+    body('lockOn')
+      .optional()
+      .isDate()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needDate;
+      }),
+    body('hidden')
+      .optional()
+      .isBoolean()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needBoolean;
+      }),
+    body('visibleOn')
+      .optional()
+      .isDate()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needDate;
+      }),
+
+    body('coursePage')
+      .optional()
+      .not()
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].invalidField;
+      }),
+    body('courseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needCourseId;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        if (!isValidObjectId(value)) {
+          throw new Error(LANG[`${req.lang}`].invalidCourseId);
+        }
+
+        return value;
+      }),
+  ],
+  validateResult,
+  update.course,
 );
 
 import students from './students';

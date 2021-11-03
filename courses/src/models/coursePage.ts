@@ -5,7 +5,6 @@ import { CourseMenuItem, ActionTypes } from '@gustafdahl/schoolable-common';
 interface CoursePageAttributes {
   menu?: CourseMenuItem[];
   description?: string;
-  upForDeletion?: boolean;
 }
 
 interface CoursePageModel extends mongoose.Model<CoursePageDoc> {
@@ -15,7 +14,6 @@ interface CoursePageModel extends mongoose.Model<CoursePageDoc> {
 export interface CoursePageDoc extends mongoose.Document {
   menu?: CourseMenuItem[];
   description?: string;
-  upForDeletion?: boolean;
 }
 
 const coursePageSchema = new mongoose.Schema(
@@ -43,10 +41,6 @@ const coursePageSchema = new mongoose.Schema(
     description: {
       type: String,
       default: '',
-    },
-    upForDeletion: {
-      type: Boolean,
-      default: false,
     },
   },
   {
