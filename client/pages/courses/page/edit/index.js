@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import {
   Request,
   handleErrors,
-  getUserData,
   Prompt,
   firstLetterToUpperCase,
   getUserDataServer
@@ -60,6 +59,7 @@ export const getServerSideProps = async ctx => {
   if(!serverErrors) {
     course = data.course;
 
+    //TODO: implement permissions check as well
     if(course.owner.userId !== userData.userId) {
       return {
         redirect: {
@@ -229,14 +229,15 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
               nameChanged={phaseNameChanged}
               courseId={course.id}
               info={phaseEditMenuInfo}
+              setLoaderActive={setLoaderActive}
             />
           )}
 
           <div className={styles.header}>
             <p className={styles.headline}>
-              <span style={{ fontWeight: 300 }}>
+              <p className={styles.editing}>
                 {lang.coursePageTitleEditing}
-              </span>
+              </p>
               {parsedCourseName}
             </p>
 

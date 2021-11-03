@@ -21,7 +21,7 @@ import {
 
 import styles from './phaseEditMenu.module.sass';
 
-const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
+const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu, setLoaderActive }) => {
   const router = useRouter();
 
   let [phaseName, setPhaseName] = useState(info.name);
@@ -117,7 +117,8 @@ const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu }) => {
 
   const goToPhasePageEdit = () => {
     //TODO: go to phase edit page
-    // router.push()
+    setLoaderActive(true);
+    router.push(`/courses/page/phases/edit?id=${router.query.id}&phase=${info.id}`);
   };
 
   return (

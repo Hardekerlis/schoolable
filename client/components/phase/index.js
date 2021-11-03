@@ -60,7 +60,8 @@ const Phase = ({
 
   const goToPhaseEdit = () => {
     //TODO: go to phase edit page
-    // router.push()
+    setLoaderActive(true);
+    router.push(`/courses/page/phases/edit?id=${router.query.id}&phase=${id}`);
   }
 
   const goToPhasePage = () => {

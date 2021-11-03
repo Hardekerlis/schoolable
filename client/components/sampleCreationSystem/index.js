@@ -103,6 +103,8 @@ const SampleCreationSystem = ({
   const _createItemButtonClassName = createItemButtonClassName
     ? `${styles.createItem} ${createItemButtonClassName}`
     : styles.createItem;
+    
+  if(!currentItems) currentItems = [];
 
   return (
     <>

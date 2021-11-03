@@ -6,9 +6,20 @@ import Image from 'next/image';
 
 import Layout from 'layouts/default';
 
-import { WarpBack } from 'helpers/systemIcons'
+import {
+  WarpBack,
+  PlusClipboard
+ } from 'helpers/systemIcons'
 
-import { Sidebar, Breadcrumbs, Loader, CourseNavigation, PhaseItem, PhaseItemShowcase } from 'components';
+import {
+  Sidebar,
+  Breadcrumbs,
+  Loader,
+  CourseNavigation,
+  PhaseItem,
+  PhaseItemShowcase,
+  SampleCreationSystem
+ } from 'components';
 
 import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
@@ -16,14 +27,17 @@ import {
   handleErrors,
   Prompt,
   Request,
-  ErrorHandler
+  ErrorHandler,
+  getUserDataServer
 } from 'helpers';
 
-import styles from './phases.module.sass';
+import styles from './phasesEdit.module.sass';
 
 export const getServerSideProps = async ctx => {
 
   if(!(await authCheck(ctx))) return redirectToLogin;
+
+  const userData = getUserDataServer(ctx);
 
   let { data, meta } = await Request().server
     .phase.add(`fetch/${ctx.query.phase}`)
@@ -80,6 +94,16 @@ export const getServerSideProps = async ctx => {
           ownerName: result.data.course.owner.name
         }
 
+        //TODO: implement permissions check as well
+        if(result.data.course.owner.userId !== userData.userId) {
+          return {
+            redirect: {
+              destination: '/pageNotFound',
+              permanent: false,
+            },
+          };
+        }
+
         if(ctx.query.item !== undefined) {
 
           phaseItemSelected = ctx.query.item;
@@ -97,7 +121,7 @@ export const getServerSideProps = async ctx => {
       serverErrors,
       phase,
       courseInfo,
-      phaseItems,
+      _phaseItems: phaseItems,
       phaseItemSelected
     },
   };
@@ -112,7 +136,7 @@ const usePrevious = (value) => {
   return ref.current;
 }
 
-const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected }) => {
+const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelected }) => {
 
   //TODO: track which course name is associated with this phase
   //else get it from an api call
@@ -122,6 +146,7 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
   const router = useRouter();
 
   // console.log(phase)
+  const [phaseItems, setPhaseItems] = useState(_phaseItems)
 
   const [loaderActive, setLoaderActive] = useState(false);
   const [itemRenders, setItemRenders] = useState([]);
@@ -147,6 +172,30 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
         }
       }
     }
+
+
+  }, [])
+
+  useEffect(async() => {
+
+    //p cannot be child of p: pages/edit
+    //additional phaseitem creation icon positioning
+    //done???
+    //
+
+
+    // const { data, meta } = await Request().client
+    //   .phaseitem.add('create')
+    //   .body({
+    //     name: 'My phaseItem',
+    //     phaseId: router.query.phase,
+    //     parentCourse: router.query.id
+    //   })
+    //   .post
+    //   .json
+    //   .result;
+    //
+    // console.log(data)
 
 
   }, [])
@@ -208,22 +257,33 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
   }
 
   useEffect(() => {
-
     if(prevSelectedItem === false) {
       //scroll down to the selected item
-
       if(listRef.current) {
-
         const selectedElem = listRef.current.children[selectedItem];
 
         listRef.current.scrollTop = (100 * selectedItem) - (listRef.current.getBoundingClientRect().height/2.5);
-
-
       }
+    }
+  }, [selectedItem, listRef])
 
+  const onItemCreation = async response => {
+
+    if(response.errors === false) {
+      let arr = phaseItems.slice();
+
+      arr.push(response.phaseItem);
+
+      setPhaseItems(arr);
+
+      Prompt.success("Phase item created!");
+      return true;
+    }else {
+      Prompt.error(response.errors);
+      return false;
     }
 
-  }, [selectedItem, listRef])
+  }
 
   return (
     <Layout>
@@ -236,6 +296,7 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
           <div className={styles.header}>
 
             <div className={styles.breadcrumbs}>
+              <p className={styles.editing}>Editing: </p>
               <Breadcrumbs options={navOptions} />
             </div>
 
@@ -258,8 +319,21 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
             { (selectedItem === false) ?
 
                 <>
-
                   <div className={styles.content}>
+
+                    <SampleCreationSystem
+                      creationContainerClassName={styles.creationSystemContainer}
+                      body={{
+                        parentCourse: router.query.id,
+                        phaseId: router.query.phase
+                      }}
+                      requestCallback={onItemCreation}
+                      itemApiPath={`/api/phaseitem/create`}
+                      currentItems={phaseItems}
+                      itemName={"Phase item"}
+                      noCurrentItemText={"No phase items found."}
+                      createAdditionalItemIcon={PlusClipboard}
+                    />
 
                     {itemRenders}
 
