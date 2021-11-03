@@ -130,13 +130,6 @@ router.put(
         return LANG[`${req.lang}`].needDate;
       }),
 
-    body('coursePage')
-      .optional()
-      .not()
-      .exists()
-      .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].invalidField;
-      }),
     body('courseId')
       .exists()
       .withMessage((value, { req }) => {
@@ -150,9 +143,15 @@ router.put(
 
         return value;
       }),
+    body('coursePage.description')
+      .optional()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needString;
+      }),
   ],
   validateResult,
-  update.course,
+  update,
 );
 
 import students from './students';
