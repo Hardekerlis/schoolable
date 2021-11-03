@@ -7,7 +7,7 @@ import {
   validateResult,
   LANG,
 } from '@gustafdahl/schoolable-common';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { isValidObjectId } from 'mongoose';
 
 const router = Router();
@@ -149,6 +149,23 @@ router.post(
   ],
   validateResult,
   removeUsers,
+);
+
+import fetch from './fetch';
+router.get(
+  '/fetch',
+  currentUser,
+  getLanguage,
+  requireAuth('all'),
+  [
+    query('name')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needNameQuery;
+      }),
+  ],
+  validateResult,
+  fetch,
 );
 
 export default router;

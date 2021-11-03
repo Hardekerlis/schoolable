@@ -10,3 +10,6 @@ noGroupFound: "Couldn't find a group"
 removedGroup: 'Successfully removed group'
 needUsers: 'Need users to add to group'
 addedToGroup: 'Added users to group'
+needNameQuery: 'Need a name query in url'
+noGroupsFound: "Couldn't find any groups"
+foundGroups: 'Found groups'
