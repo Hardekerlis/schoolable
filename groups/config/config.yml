@@ -1,0 +1,20 @@
+debug: true
+dev: true
+port: 3000
+cookies:
+  signed: true
+  secure: false
+  httpOnly: true
+  # maxAge: 9999999999
+logs:
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
+database:
+  uri: groups-mongo-srv
+  localIp: 127.0.0.1
+  useMemoryLocal: true
+  port: 27017
+  name: groups
+nats:
+  url: http://nats-srv:4222
+  clusterId: schoolable
