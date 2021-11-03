@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 interface CourseAttributes {
-  courseId: string;
+  id: string;
   name: string;
   owner: string;
   admins?: string[];
@@ -13,7 +13,7 @@ interface CourseModel extends mongoose.Model<CourseDoc> {
 }
 
 export interface CourseDoc extends mongoose.Document {
-  courseId: string;
+  id: string;
   name: string;
   owner: string;
   admins?: string[];
@@ -22,8 +22,8 @@ export interface CourseDoc extends mongoose.Document {
 
 const courseSchema = new mongoose.Schema(
   {
-    courseId: {
-      type: String,
+    _id: {
+      type: mongoose.Types.ObjectId,
       required: true,
     },
     name: {
@@ -63,6 +63,11 @@ const courseSchema = new mongoose.Schema(
 );
 
 courseSchema.statics.build = (attributes: CourseAttributes) => {
+  // @ts-ignore
+  attributes._id = attributes.id;
+  // @ts-ignore
+  delete attributes.id;
+
   return new Course(attributes);
 };
 

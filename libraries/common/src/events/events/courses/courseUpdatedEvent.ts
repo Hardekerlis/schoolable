@@ -7,7 +7,5 @@ export interface CourseUpdatedEvent {
   data: {
     courseId: string;
     name: string;
-    admins: string[];
-    students: string[];
   };
 }

@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
 interface UserAttributes {
-  userId: string;
+  _id: string;
   email: string;
   userType: UserTypes;
   name: {
@@ -16,7 +16,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
 }
 
 export interface UserDoc extends mongoose.Document {
-  userId: string;
+  _id: string;
   email: string;
   userType: UserTypes;
   name: {
@@ -27,8 +27,8 @@ export interface UserDoc extends mongoose.Document {
 
 const userSchema = new mongoose.Schema(
   {
-    userId: {
-      type: String,
+    _id: {
+      type: mongoose.Types.ObjectId,
       required: true,
     },
     email: {

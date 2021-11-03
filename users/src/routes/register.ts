@@ -3,14 +3,13 @@ import {
   NotAuthorizedError,
   LANG,
   UserTypes,
-  CONFIG,
   BadRequestError,
 } from '@gustafdahl/schoolable-common';
 
 import User from '../models/user';
 import UserSettings from '../models/userSettings';
 
-import UserCreatedPublisher from '../events/publishers/userCreated';
+import { UserCreatedPublisher } from '../events/publishers/userCreated';
 
 import logger from '../utils/logger';
 import { natsWrapper } from '../utils/natsWrapper';

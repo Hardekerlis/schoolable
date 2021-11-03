@@ -26,7 +26,7 @@ const create = async (req: Request, res: Response) => {
   const ownerId = currentUser?.id;
 
   logger.debug('Looking up if owner user exists');
-  const ownerUser = await User.findOne({ userId: ownerId });
+  const ownerUser = await User.findById(ownerId);
 
   if (!ownerUser) {
     logger.info('No user found');
@@ -112,10 +112,10 @@ const create = async (req: Request, res: Response) => {
       new CourseCreatedPublisher(natsWrapper.client, logger).publish({
         courseId: course.id as string,
         name: course.name,
-        owner: course.owner.userId,
+        owner: course.owner.id,
       });
 
-      logger.info('Sent Nats course created event');
+      logger.verbose('Sent Nats course created event');
     }
 
     logger.info('Course successfully created. Responding user');

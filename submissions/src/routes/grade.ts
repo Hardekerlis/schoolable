@@ -47,7 +47,7 @@ const grade = async (req: Request, res: Response) => {
     userId: file.uploader,
     grade,
   });
-  logger.debug('Published submission graded NATS event');
+  logger.verbose('Published submission graded NATS event');
 
   logger.info('File successfully graded');
   res.status(200).json({

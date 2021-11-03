@@ -59,7 +59,7 @@ export const fetchMany = async (req: Request, res: Response) => {
   if (currentUser?.userType !== UserTypes.Admin) {
     logger.debug('User is not application admin');
 
-    logger.debug('Checking if user is allowed to fetch phase items from phaes');
+    logger.debug('Checking if user is allowed to fetch phase items from phase');
     if (
       course.owner !== currentUser?.id &&
       !course.admins?.includes(currentUser?.id as string) &&
@@ -81,7 +81,7 @@ export const fetchMany = async (req: Request, res: Response) => {
   logger.debug('Found parent phase');
 
   let query = {
-    parentPhase: phase.phaseId,
+    parentPhase: phase.id,
     parentCourse: phase.parentCourse,
   };
 
@@ -196,7 +196,7 @@ export const fetchOne = async (req: Request, res: Response) => {
 
   let query = {
     id: phaseItemId,
-    parentPhase: phase.phaseId,
+    parentPhase: phase.id,
     parentCourse: phase.parentCourse,
   };
 

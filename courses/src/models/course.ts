@@ -4,15 +4,20 @@ import { UserDoc } from './user';
 
 interface CourseAttributes {
   name: string; // Name of the course
+
   owner: UserDoc; // Teacher whom owns the course
-  coursePage: CoursePageDoc; // The course page. Fetched when course is entered
   admins?: UserDoc[];
   students?: UserDoc[]; // user ids - subdocuments?
+
+  coursePage: CoursePageDoc; // The course page. Fetched when course is entered
+
   locked?: boolean; // Is the course locked but visible to students
   unlockOn?: Date; // What date should the course be unlocked
+  lockOn?: Date; // When should the course be locked
+
   hidden?: boolean; // Is the course visible to students
   visibleOn?: Date; // What date shoukd the course be visible
-  lockOn?: Date; // When should the course be locked
+
   deletion?: {
     isUpForDeletion: boolean; // If the course is up for deletion
     removeAt: Date; // When it is going to be deleted
@@ -25,15 +30,20 @@ interface CourseModel extends mongoose.Model<CourseDoc> {
 
 export interface CourseDoc extends mongoose.Document {
   name: string; // Name of the course
+
   owner: UserDoc; // Teacher whom owns the course
-  coursePage: CoursePageDoc; // The course page. Fetched when course is entered
   admins?: UserDoc[];
   students?: UserDoc[]; // user ids - subdocuments?
+
+  coursePage: CoursePageDoc; // The course page. Fetched when course is entered
+
   locked?: boolean; // Is the course locked but visible to students
   unlockOn?: Date; // What date should the course be unlocked
+  lockOn?: Date; // When should the course be locked
+
   hidden?: boolean; // Is the course visible to students
   visibleOn?: Date; // What date shoukd the course be visible
-  lockOn?: Date; // When should the course be locked
+
   deletion?: {
     isUpForDeletion: boolean; // If the course is up for deletion
     removeAt: Date; // When it is going to be deleted
@@ -46,19 +56,20 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    students: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
-        default: '',
-      },
-    ],
+
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
       required: true,
     },
     admins: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        default: '',
+      },
+    ],
+    students: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',

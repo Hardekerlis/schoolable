@@ -16,7 +16,8 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    courseId,
+    // @ts-ignore
+    _id: courseId,
   });
 
   await course.save();

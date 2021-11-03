@@ -34,7 +34,7 @@ export const fetchMany = async (req: Request, res: Response) => {
     logger.debug('User is not an admin');
     query = {
       $and: [
-        { courseId: parentCourse },
+        { id: parentCourse },
         {
           $or: [
             { owner: currentUser.id },
@@ -46,7 +46,7 @@ export const fetchMany = async (req: Request, res: Response) => {
     };
   } else if (currentUser.userType === UserTypes.Admin) {
     logger.debug('User is an admin');
-    query = { courseId: parentCourse };
+    query = { id: parentCourse };
   } else {
     logger.warn('Invalid user type');
     throw new NotAuthorizedError();
@@ -62,7 +62,7 @@ export const fetchMany = async (req: Request, res: Response) => {
 
   logger.debug('Looking up phases associated with course');
   const phases = await Phase.find({
-    parentCourse: course.courseId,
+    parentCourse: course.id,
   }).select('-phaseItems -parentCourse -description');
 
   // TODO: Remove hidden phases if user is of type student
@@ -109,7 +109,7 @@ export const fetchOne = async (req: Request, res: Response) => {
     logger.debug('User is not an admin');
     query = {
       $and: [
-        { courseId: parentCourse },
+        { id: parentCourse },
         {
           $or: [
             { owner: currentUser.id },
@@ -121,7 +121,7 @@ export const fetchOne = async (req: Request, res: Response) => {
     };
   } else if (currentUser.userType === UserTypes.Admin) {
     logger.debug('User is an admin');
-    query = { courseId: parentCourse };
+    query = { id: parentCourse };
   } else {
     logger.warn('Invalid user type');
     throw new NotAuthorizedError();

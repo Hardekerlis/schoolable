@@ -25,7 +25,7 @@ const remove = async (req: Request, res: Response) => {
 
   logger.info(`Trying to queue phase with id ${phaseId} for removal`);
 
-  const course = await Course.findOne({ courseId: parentCourse });
+  const course = await Course.findById(parentCourse);
 
   if (!course) {
     logger.debug('No course found');

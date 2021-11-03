@@ -5,12 +5,19 @@ import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 
-import { CourseCreatedListener } from './events/listeners/courseCreated';
-import { CourseRemovedListener } from './events/listeners/courseRemoved';
-import { CourseUpdatedListener } from './events/listeners/courseUpdated';
-import { PhaseRemovedListener } from './events/listeners/phaseRemoved';
-import { PhaseCreatedListener } from './events/listeners/phaseCreated';
-import { RemovePhaseItemListener } from './events/listeners/removePhaseItem';
+import {
+  RemovePhaseItemListener,
+  CourseCreatedListener,
+  CourseRemovedListener,
+  CourseUpdatedListener,
+  PhaseCreatedListener,
+  PhaseRemovedListener,
+  UserRemovedListener,
+  CourseAddedAdminListener,
+  CourseAddedStudentListener,
+  CourseRemovedAdminListener,
+  CourseRemovedStudentListener,
+} from './events/listeners/';
 
 import mongoose from 'mongoose';
 
@@ -62,6 +69,21 @@ const startServer = async () => {
 
     logger.debug('Registered RemovePhaseItemListener for nats');
     new RemovePhaseItemListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered UserRemovedListener for nats');
+    new UserRemovedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseAddedAdminListener for nats');
+    new CourseAddedAdminListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseAddedStudentListener for nats');
+    new CourseAddedStudentListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedAdminListener for nats');
+    new CourseRemovedAdminListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedStudentListener for nats');
+    new CourseRemovedStudentListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

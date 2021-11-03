@@ -23,7 +23,7 @@ const update = async (req: Request, res: Response) => {
 
   logger.info(`Trying to update phase with id ${phaseId}`);
 
-  const course = await Course.findOne({ courseId: parentCourse });
+  const course = await Course.findById(parentCourse);
 
   if (!course) {
     logger.debug('No course found');

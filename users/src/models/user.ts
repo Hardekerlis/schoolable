@@ -15,6 +15,10 @@ interface UserAttributes {
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
   setupComplete?: boolean;
+  deletion?: {
+    isUpForDeletion: boolean; // If the course is up for deletion
+    removeAt: Date; // When it is going to be deleted
+  };
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -31,6 +35,10 @@ export interface UserDoc extends mongoose.Document {
   settings: UserSettingsDoc;
   passwordChoosen?: boolean;
   setupComplete?: boolean;
+  deletion?: {
+    isUpForDeletion: boolean; // If the course is up for deletion
+    removeAt: Date; // When it is going to be deleted
+  };
 }
 
 const userSchema = new mongoose.Schema(
@@ -65,6 +73,10 @@ const userSchema = new mongoose.Schema(
     settings: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'userSettings',
+    },
+    deletion: {
+      isUpForDeletion: { type: Boolean, default: false },
+      removeAt: { type: Date, default: null },
     },
   },
   {

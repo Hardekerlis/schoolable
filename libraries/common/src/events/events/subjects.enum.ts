@@ -13,6 +13,10 @@ export enum Subjects {
   CourseUpdated = 'course:updated',
   CourseRemoved = 'course:removed',
   CourseQueueRemove = 'course:queueRemove',
+  CourseAddedAdmin = 'course:addedAdmin',
+  CourseRemovedAdmin = 'course:removedAdmin',
+  CourseAddedStudent = 'course:addedStudent',
+  CourseRemovedStudent = 'course:removedStudent',
 
   PhaseCreated = 'phase:created',
   PhaseUpdated = 'phase:updated',

@@ -50,7 +50,7 @@ const update = async (req: Request, res: Response) => {
   }
 
   logger.debug('Looking up parent course');
-  const course = await Course.findOne({ courseId: parentCourse });
+  const course = await Course.findById(parentCourse);
 
   if (!course) {
     logger.debug('No course parent course found');
@@ -76,7 +76,7 @@ const update = async (req: Request, res: Response) => {
     );
 
   logger.debug('Looking up parent phase');
-  const phase = await Phase.findOne({ phaseId: parentPhase });
+  const phase = await Phase.findById(parentPhase);
 
   if (!phase) {
     logger.debug('No parent phase found');

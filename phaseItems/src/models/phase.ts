@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 interface PhaseAttributes {
-  phaseId: string;
+  id: string;
   parentCourse: string;
   name: string;
 }
@@ -11,15 +11,15 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 }
 
 export interface PhaseDoc extends mongoose.Document {
-  phaseId: string;
+  id: string;
   parentCourse: string;
   name: string;
 }
 
 const phaseSchema = new mongoose.Schema(
   {
-    phaseId: {
-      type: String,
+    _id: {
+      type: mongoose.Types.ObjectId,
       required: true,
     },
     parentCourse: {
@@ -52,6 +52,11 @@ const phaseSchema = new mongoose.Schema(
 );
 
 phaseSchema.statics.build = (attributes: PhaseAttributes) => {
+  // @ts-ignore
+  attributes._id = attributes.id;
+  // @ts-ignore
+  delete attributes.id;
+
   return new Phase(attributes);
 };
 

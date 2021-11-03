@@ -4,6 +4,7 @@ import {
   CourseCreatedEvent,
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
+import mongoose from 'mongoose';
 
 import { queueGroupName } from './queueGroupName';
 import Course from '../../models/course';
@@ -19,7 +20,7 @@ export class CoruseCreatedListener extends Listener<CourseCreatedEvent> {
     logger.info('Creating course references');
 
     const course = Course.build({
-      courseId,
+      id: courseId,
       name,
       owner,
     });

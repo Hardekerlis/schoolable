@@ -27,7 +27,7 @@ const remove = async (req: Request, res: Response) => {
   logger.info(`Starting removal of course with id ${courseId}`);
 
   logger.debug('Looking up user');
-  const user = await User.findOne({ userId: currentUser!.id });
+  const user = await User.findById(currentUser!.id);
 
   if (!user) {
     logger.debug('No user found');
