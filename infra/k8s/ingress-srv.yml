@@ -12,6 +12,13 @@ spec:
       http:
         paths:
           - pathType: Prefix
+            path: /api/groups/*
+            backend:
+              service:
+                name: groups-srv
+                port:
+                  number: 3000
+          - pathType: Prefix
             path: /api/users/*
             backend:
               service:

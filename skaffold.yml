@@ -126,3 +126,14 @@ build:
             dest: .
           - src: "**/*.yml"
             dest: .
+    - image: eu.gcr.io/schoolable-platform/groups
+      context: groups
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.yml"
+            dest: .
