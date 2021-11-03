@@ -65,4 +65,47 @@ router.delete(
   remove,
 );
 
+import addUsers from './addUsers';
+router.post(
+  '/add/',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher]),
+  [
+    body('groupId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needGroupId;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        if (!isValidObjectId(value)) {
+          throw new Error(LANG[`${req.lang}`].invalidGroupId);
+        }
+
+        return value;
+      }),
+    body('users')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needUsers;
+      })
+      .bail()
+      .custom((value, { req }) => {
+        const lang = LANG[`${req.lang}`];
+        if (value instanceof Array && value.length !== -1) {
+          for (const user of value) {
+            if (!isValidObjectId(user)) {
+              throw new Error(lang.invalidUserId);
+            }
+          }
+
+          return value;
+        } else throw new Error(lang.mustArray);
+      }),
+  ],
+  validateResult,
+  addUsers,
+);
+
 export default router;

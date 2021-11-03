@@ -8,3 +8,5 @@ needGroupId: 'Need a group id'
 invalidGroupId: 'Invalid group id'
 noGroupFound: "Couldn't find a group"
 removedGroup: 'Successfully removed group'
+needUsers: 'Need users to add to group'
+addedToGroup: 'Added users to group'
