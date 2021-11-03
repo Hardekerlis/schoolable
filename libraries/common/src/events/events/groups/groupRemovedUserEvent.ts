@@ -3,7 +3,7 @@
 import { Subjects } from '../';
 
 export interface GroupRemovedUserEvent {
-  subject: Subjects.GroupRemoved;
+  subject: Subjects.GroupRemovedUser;
   data: {
     groupId: string;
     name: string;
