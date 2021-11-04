@@ -208,7 +208,7 @@ const Login = () => {
       .json
       .body({
         name: 'Lektion 1',
-        parentCourse: result.data.course.id
+        parentCourseId: result.data.course.id
       })
       .result
 

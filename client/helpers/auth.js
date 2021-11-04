@@ -5,10 +5,23 @@ import { Request } from 'helpers';
 
 const authCheck = async (ctx) => {
 
-  const { meta } = await Request().server.sessions.add('check').get.json.c(ctx).result;
+  try {
 
-  if(meta?.status === 200) return true;
-  return false;
+    const { meta } = await Request().server.sessions.add('check').get.json.c(ctx).result;
+
+    if(meta?.status === 200) return true;
+    return false;
+
+  }catch(err) {
+
+    console.log(err);
+    console.log("please check the above error.");
+    console.log('check failed, assuming that the "sessions" service crashed or is offline.');
+
+    return true;
+
+  }
+
 
 }
 

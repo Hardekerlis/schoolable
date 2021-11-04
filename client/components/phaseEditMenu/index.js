@@ -105,8 +105,8 @@ const PhaseEditMenu = ({ info, courseId, nameChanged, closeMenu, setLoaderActive
 
     let req = new Request(`/api/phase/update`, {
       name: value,
-      parentCourse: courseId,
-      phaseId: info.id,
+      parentCourseId: courseId,
+      parentPhaseId: info.id,
     })
       .json()
       .put();

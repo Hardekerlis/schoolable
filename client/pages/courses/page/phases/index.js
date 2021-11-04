@@ -6,7 +6,10 @@ import Image from 'next/image';
 
 import Layout from 'layouts/default';
 
-import { WarpBack } from 'helpers/systemIcons'
+import {
+  WarpBack,
+  Edit
+} from 'helpers/systemIcons'
 
 import { Sidebar, Breadcrumbs, Loader, CourseNavigation, PhaseItem, PhaseItemShowcase } from 'components';
 
@@ -16,7 +19,8 @@ import {
   handleErrors,
   Prompt,
   Request,
-  ErrorHandler
+  ErrorHandler,
+  getUserData
 } from 'helpers';
 
 import styles from './phases.module.sass';
@@ -28,7 +32,7 @@ export const getServerSideProps = async ctx => {
   let { data, meta } = await Request().server
     .phase.add(`fetch/${ctx.query.phase}`)
     .body({
-      parentCourse: ctx.query.id
+      parentCourseId: ctx.query.id
     })
     .post
     .json
@@ -53,8 +57,8 @@ export const getServerSideProps = async ctx => {
       .json
       .c(ctx)
       .body({
-        parentCourse: ctx.query.id,
-        phaseId: ctx.query.phase
+        parentCourseId: ctx.query.id,
+        parentPhaseId: ctx.query.phase
       })
       .result
 
@@ -77,7 +81,8 @@ export const getServerSideProps = async ctx => {
       if(serverErrors === false) {
         courseInfo = {
           name: result.data.course.name,
-          ownerName: result.data.course.owner.name
+          ownerName: result.data.course.owner.name,
+          ownerId: result.data.course.owner.id
         }
 
         if(ctx.query.item !== undefined) {
@@ -225,8 +230,34 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
 
   }, [selectedItem, listRef])
 
+  const userData = getUserData();
+
+  //TODO: implement permissions check as well
+  const canUserEditPage = (userData.userId === courseInfo.ownerId) ? true : false;
+
+  let courseNavigationOptions = [
+    {
+      text: 'Go back',
+      onClick: () => navTo(`/courses/page?id=${router.query.id}`),
+      icon: WarpBack
+    },
+  ];
+
+  const editPhaseClick = () => {
+    setLoaderActive(true);
+    router.push(`/courses/page/phases/edit?id=${router.query.id}&phase=${router.query.phase}`);
+  }
+
+  if(canUserEditPage) courseNavigationOptions.push(
+    {
+      text: 'Edit phase',
+      onClick: editPhaseClick,
+      icon: Edit,
+    }
+  )
+
   return (
-    <Layout>
+    <Layout title={phase.name}>
       <Loader active={loaderActive} />
       <div className={styles.wrapper}>
         <Sidebar />
@@ -245,13 +276,7 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
 
           <div className={styles.hozLine}></div>
 
-          <CourseNavigation options={[
-            {
-              text: 'Go back',
-              onClick: () => navTo(`/courses/page?id=${router.query.id}`),
-              icon: WarpBack
-            },
-          ]} />
+          <CourseNavigation options={courseNavigationOptions} />
 
           <div className={styles.inner}>
 

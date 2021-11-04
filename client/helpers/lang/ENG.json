@@ -28,7 +28,11 @@
     "goBack": "Back to course",
     "editPhaseText": "Edit this phase",
     "phaseCreated": "Phase created!",
-    "phaseNameEdit": "Edit phase name:"
+    "phaseNameEdit": "Edit phase name:",
+    "layoutTitle": "Editing:"
+  },
+  "phasesEdit": {
+    "layoutTitle": "Editing:"
   },
   "courseMenu": {
     "overview": "Overview",

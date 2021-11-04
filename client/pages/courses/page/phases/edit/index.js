@@ -23,6 +23,9 @@ import {
 
 import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
+import language from 'helpers/lang';
+const lang = language.phasesEdit;
+
 import {
   handleErrors,
   Prompt,
@@ -42,7 +45,7 @@ export const getServerSideProps = async ctx => {
   let { data, meta } = await Request().server
     .phase.add(`fetch/${ctx.query.phase}`)
     .body({
-      parentCourse: ctx.query.id
+      parentCourseId: ctx.query.id
     })
     .post
     .json
@@ -67,8 +70,8 @@ export const getServerSideProps = async ctx => {
       .json
       .c(ctx)
       .body({
-        parentCourse: ctx.query.id,
-        phaseId: ctx.query.phase
+        parentCourseId: ctx.query.id,
+        parentPhaseId: ctx.query.phase
       })
       .result
 
@@ -95,7 +98,7 @@ export const getServerSideProps = async ctx => {
         }
 
         //TODO: implement permissions check as well
-        if(result.data.course.owner.userId !== userData.userId) {
+        if(result.data.course.owner.id !== userData.userId) {
           return {
             redirect: {
               destination: '/pageNotFound',
@@ -188,8 +191,8 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
     //   .phaseitem.add('create')
     //   .body({
     //     name: 'My phaseItem',
-    //     phaseId: router.query.phase,
-    //     parentCourse: router.query.id
+    //     parentPhaseId: router.query.phase,
+    //     parentCourseId: router.query.id
     //   })
     //   .post
     //   .json
@@ -286,7 +289,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
   }
 
   return (
-    <Layout>
+    <Layout title={`${lang.layoutTitle} ${phase.name}`}>
       <Loader active={loaderActive} />
       <div className={styles.wrapper}>
         <Sidebar />
@@ -323,9 +326,10 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
                     <SampleCreationSystem
                       creationContainerClassName={styles.creationSystemContainer}
+                      createItemButtonClassName={styles.createPhaseButton}
                       body={{
-                        parentCourse: router.query.id,
-                        phaseId: router.query.phase
+                        parentCourseId: router.query.id,
+                        parentPhaseId: router.query.phase
                       }}
                       requestCallback={onItemCreation}
                       itemApiPath={`/api/phaseitem/create`}

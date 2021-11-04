@@ -44,11 +44,14 @@ export const getServerSideProps = async ctx => {
     .c(ctx)
     .result;
 
-  // let request = new Request(`/api/course/fetch/${ctx.query.id}`)
-  //   .get()
-  //   .json()
-  //   .ctx(ctx);
-  // let res = await request.send();
+  if(meta.status === 404) {
+    return {
+      redirect: {
+        destination: '/pageNotFound',
+        permanent: false
+      }
+    }
+  }
 
   //200 is the expected status code
   let serverErrors = handleErrors(200, [404], data, meta);
@@ -60,7 +63,7 @@ export const getServerSideProps = async ctx => {
     course = data.course;
 
     //TODO: implement permissions check as well
-    if(course.owner.userId !== userData.userId) {
+    if(course.owner.id !== userData.userId) {
       return {
         redirect: {
           destination: '/pageNotFound',
@@ -77,7 +80,7 @@ export const getServerSideProps = async ctx => {
       .json
       .c(ctx)
       .body({
-        parentCourse: ctx.query.id
+        parentCourseId: ctx.query.id
       })
       .result;
 
@@ -217,7 +220,7 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
   }, [phases]);
 
   return (
-    <Layout>
+    <Layout title={`${lang.layoutTitle} ${course.name}`}>
       <Loader active={loaderActive} />
       <div className={styles.wrapper}>
         <Sidebar />
@@ -234,12 +237,12 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
           )}
 
           <div className={styles.header}>
-            <p className={styles.headline}>
+            <div className={styles.headline}>
               <p className={styles.editing}>
                 {lang.coursePageTitleEditing}
               </p>
               {parsedCourseName}
-            </p>
+            </div>
 
             <p className={styles.authorText}>
               {course.owner.name.first} {course.owner.name.last}
@@ -284,7 +287,7 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
                       <SampleCreationSystem
                         creationContainerClassName={styles.creationContainer}
                         body={{
-                          parentCourse: course.id,
+                          parentCourseId: course.id,
                         }}
                         createItemButtonClassName={styles.createPhaseButton}
                         requestCallback={onPhaseCreation}
@@ -319,7 +322,7 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
 //         <SampleCreationSystem
 //           creationContainerClassName={styles.creationContainer}
 //           body={{
-//             parentCourse: course.id,
+//             parentCourseId: course.id,
 //           }}
 //           createItemButtonClassName={styles.createPhaseButton}
 //           requestCallback={onPhaseCreation}

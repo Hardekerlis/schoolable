@@ -13,7 +13,10 @@ import {
 
 import Layout from 'layouts/default/';
 
-import { Edit } from 'helpers/systemIcons'
+import {
+  Edit,
+  WarpBack
+ } from 'helpers/systemIcons'
 
 import {
   Sidebar,
@@ -35,11 +38,6 @@ export const getServerSideProps = async ctx => {
   if(!(await authCheck(ctx))) return redirectToLogin;
 
   //Get course data. Not phases.
-  // let request = new Request(`/api/course/fetch/${ctx.query.id}`)
-  //   .get()
-  //   .json()
-  //   .ctx(ctx);
-  // let res = await request.send();
 
   let { data, meta } = await Request().server
     .course.add(`fetch/${ctx.query.id}`)
@@ -48,38 +46,41 @@ export const getServerSideProps = async ctx => {
     .c(ctx)
     .result;
 
+  console.log(ctx.query.id);
+
   console.log("course fetch", data)
 
-  console.log("gjeapgjeaigjaep")
+  console.log("gjeapgjeaigjaep", meta)
 
   //200 is the expected status code
   let serverErrors = handleErrors(200, [404], data, meta);
+
+  if(meta.status === 404) {
+    return {
+      redirect: {
+        destination: '/pageNotFound',
+        permanent: false,
+      },
+    }
+  }
 
   let course = null;
   let phases = [];
 
   if(!serverErrors) {
+    console.log(data)
     if(data.course) course = data.course;
 
     //Get phases
     let result = await Request().server
       .phase.add('fetch')
       .body({
-        parentCourse: ctx.query.id
+        parentCourseId: ctx.query.id
       })
       .post
       .json
       .c(ctx)
       .result;
-
-
-    // let response = await new Request(`/api/phase/fetch`, {
-    //   parentCourse: ctx.query.id,
-    // })
-    //   .post()
-    //   .json()
-    //   .ctx(ctx)
-    //   .send();
 
     serverErrors = handleErrors(200, [404], result.data, result.meta);
 
@@ -109,9 +110,11 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
 
   ErrorHandler(serverErrors);
 
+  console.log(serverErrors)
+
   //TODO: FIX THIS ERROR HANDLING
   //to replicate: try to go to course page without an id for course
-  if(serverErrors) {
+  if(serverErrors || !course) {
     return (
       <div></div>
     )
@@ -119,7 +122,8 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
 
   const userData = getUserData();
 
-  const { coursePage } = course;
+  // const { coursePage } = course;
+  const coursePage = course?.coursePage;
 
   if(!_phases) _phases = [];
 
@@ -135,7 +139,28 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
 
 
   //TODO: implement permissions check as well
-  const canUserEditPage = (userData.userId === course.owner.userId) ? true : false;
+  const canUserEditPage = (userData.userId === course.owner.id) ? true : false;
+
+  let courseNavigationOptions = [
+    {
+      text: 'Go back',
+      onClick: () => {
+        setLoaderActive(true);
+        router.push(`/courses`)
+      },
+      icon: WarpBack
+    },
+  ];
+
+  if(canUserEditPage) courseNavigationOptions.push(
+    {
+      text: lang.editCourse,
+      onClick: editCourseClick,
+      icon: Edit
+    }
+  )
+
+
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
@@ -153,22 +178,14 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
   }, [phases]);
 
   return (
-    <Layout>
+    <Layout title={course.name}>
       <Loader active={loaderActive} />
       <div className={styles.wrapper}>
         <Sidebar />
 
         <div className={styles.container}>
 
-          {(canUserEditPage) && (
-            <CourseNavigation options={[
-              {
-                text: lang.editCourse,
-                onClick: editCourseClick,
-                icon: Edit
-              },
-            ]} />
-          )}
+          <CourseNavigation options={courseNavigationOptions} />
 
           <div className={styles.header}>
             <p className={styles.headline}>{parsedCourseName}</p>

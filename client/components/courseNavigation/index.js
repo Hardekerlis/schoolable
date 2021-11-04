@@ -8,6 +8,8 @@ const CourseNavigation = ({ options }) => {
 
   const optionHeight = 75;
 
+  console.log(options)
+
   const renderers = options.map((obj, index) => {
 
     return (
