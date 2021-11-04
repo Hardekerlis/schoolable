@@ -11,6 +11,7 @@ import User from '../models/user';
 
 import logger from '../utils/logger';
 
+// TODO: Change url.parse api to correct
 const fetch = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const lang = LANG[`${req.lang}`];

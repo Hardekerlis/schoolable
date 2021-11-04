@@ -15,17 +15,17 @@ import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
 const remove = async (req: Request, res: Response) => {
-  const { phaseId, parentCourse } = req.body;
+  const { phaseId, parentCourseId } = req.body;
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
   const data = req.body;
   delete data.phaseId;
-  delete data.parentCourse;
+  delete data.parentCourseId;
 
   logger.info(`Trying to queue phase with id ${phaseId} for removal`);
 
-  const course = await Course.findById(parentCourse);
+  const course = await Course.findById(parentCourseId);
 
   if (!course) {
     logger.debug('No course found');
@@ -65,7 +65,7 @@ const remove = async (req: Request, res: Response) => {
   if (process.env.NODE_ENV !== 'test') {
     // Publishes event to nats service
     new PhaseQueueRemovePublisher(natsWrapper.client, logger).publish({
-      parentCourse: course.id as string,
+      parentCourseId: course.id as string,
       phaseId: phase.id,
       removeAt: removeAt,
     });

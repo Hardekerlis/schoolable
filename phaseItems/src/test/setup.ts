@@ -9,6 +9,8 @@ import {
   UserPayload,
 } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
+import { sign } from 'cookie-signature';
+process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import { app } from '../app';
 app; // Load env variables in app
@@ -33,8 +35,6 @@ winstonTestSetup();
 jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
-
-process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 beforeAll(async () => {
   process.env.MONGOMS_DOWNLOAD_URL =
@@ -83,6 +83,7 @@ global.getAuthCookie = async (
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
+  const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${token}; path=/`];
+  return [`token=${signedCookie}; path=/`];
 };

@@ -5,8 +5,8 @@ import { Subjects } from '../';
 export interface PhaseItemQueueRemoveEvent {
   subject: Subjects.PhaseItemQueueRemove;
   data: {
-    parentPhase: string;
-    parentCourse: string;
+    parentPhaseId: string;
+    parentCourseId: string;
     phaseItemId: string;
     removeAt: Date;
   };

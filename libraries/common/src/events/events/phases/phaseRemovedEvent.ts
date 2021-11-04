@@ -6,6 +6,6 @@ export interface PhaseRemovedEvent {
   subject: Subjects.PhaseRemoved;
   data: {
     phaseId: string;
-    parentCourse: string;
+    parentCourseId: string;
   };
 }

@@ -15,16 +15,16 @@ export class PhaseRemovedListener extends Listener<PhaseRemovedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: PhaseRemovedEvent['data'], msg: Message) {
-    const { phaseId, parentCourse } = data;
+    const { phaseId, parentCourseId } = data;
 
     logger.info('Removing phase');
 
     const phaseItems = await PhaseItem.deleteMany({
       id: phaseId,
-      parentCourse,
+      parentCourseId,
     });
 
-    await Phase.findOneAndRemove({ phaseId, parentCourse });
+    await Phase.findOneAndRemove({ phaseId, parentCourseId });
 
     logger.info('Successfully removed phase from database');
 

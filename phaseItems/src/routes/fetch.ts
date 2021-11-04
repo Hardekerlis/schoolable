@@ -13,19 +13,16 @@ import PhaseItem from '../models/phaseItem';
 
 import logger from '../utils/logger';
 
-// TODO: Change phaseId to parentPhaseId
-// TODO: Change parentCourse to parentCourseId
-
 export const fetchMany = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
-  const { phaseId, parentCourse } = req.body;
+  const { parentPhaseId, parentCourseId } = req.body;
 
   logger.info('Fetching phase items');
 
   logger.debug('Checking if parent course is a valid ObjectId');
-  if (!isValidObjectId(parentCourse)) {
+  if (!isValidObjectId(parentCourseId)) {
     logger.debug('Parent course is not a valid ObjectId');
     return res.status(404).json({
       errors: false,
@@ -36,7 +33,7 @@ export const fetchMany = async (req: Request, res: Response) => {
   logger.debug('Parent course is a valid ObjectId');
 
   logger.debug('Checking if phase id is a valid ObjectId');
-  if (!isValidObjectId(phaseId)) {
+  if (!isValidObjectId(parentPhaseId)) {
     logger.debug('Phase id is not a valid object id');
     return res.status(404).json({
       errors: false,
@@ -47,7 +44,7 @@ export const fetchMany = async (req: Request, res: Response) => {
   logger.debug('Phase id is a valid ObjectId');
 
   logger.debug('Looking up course');
-  const course = await Course.findOne({ courseId: parentCourse });
+  const course = await Course.findOne({ courseId: parentCourseId });
 
   if (!course) {
     logger.debug('No course found');
@@ -71,7 +68,7 @@ export const fetchMany = async (req: Request, res: Response) => {
   } else logger.debug('User is application admin');
 
   logger.debug('Looking up parent phase');
-  const phase = await Phase.findOne({ phaseId });
+  const phase = await Phase.findOne({ parentPhaseId });
 
   if (!phase) {
     logger.debug('No parent phase found');
@@ -81,8 +78,8 @@ export const fetchMany = async (req: Request, res: Response) => {
   logger.debug('Found parent phase');
 
   let query = {
-    parentPhase: phase.id,
-    parentCourse: phase.parentCourse,
+    parentPhaseId: phase.id,
+    parentCourseId: phase.parentCourseId,
   };
 
   logger.debug('Checking if user is a student');
@@ -96,7 +93,7 @@ export const fetchMany = async (req: Request, res: Response) => {
 
   logger.debug('Fetching phase items');
   const phaseItems = await PhaseItem.find(query).select(
-    '-parentCourse -parentPhase',
+    '-parentCourseId -parentPhaseId',
   );
 
   if (!phaseItems[0]) {
@@ -117,12 +114,12 @@ export const fetchMany = async (req: Request, res: Response) => {
   });
 };
 
-// TODO: Change phaseId to parentPhaseId
-// TODO: Change parentCourse to parentCourseId
+// TODO: Change parentPhaseId to parentPhaseId
+// TODO: Change parentCourseId to parentCourseIdId
 
 export const fetchOne = async (req: Request, res: Response) => {
   const { phaseItemId } = req.params;
-  const { parentCourse, phaseId } = req.body;
+  const { parentCourseId, parentPhaseId } = req.body;
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
@@ -130,7 +127,7 @@ export const fetchOne = async (req: Request, res: Response) => {
   logger.info(`Fetching phase item with id ${phaseItemId}`);
 
   logger.debug('Checking if parent course is a valid ObjectId');
-  if (!isValidObjectId(parentCourse)) {
+  if (!isValidObjectId(parentCourseId)) {
     logger.debug('Parent course is not a valid ObjectId');
     return res.status(404).json({
       errors: false,
@@ -141,7 +138,7 @@ export const fetchOne = async (req: Request, res: Response) => {
   logger.debug('Parent course is a valid ObjectId');
 
   logger.debug('Checking if phase id is a valid ObjectId');
-  if (!isValidObjectId(phaseId)) {
+  if (!isValidObjectId(parentPhaseId)) {
     logger.debug('Phase id is not a valid object id');
     return res.status(404).json({
       errors: false,
@@ -163,7 +160,7 @@ export const fetchOne = async (req: Request, res: Response) => {
   logger.debug('Phase item id is a valid ObjectId');
 
   logger.debug('Looking up parent course');
-  const course = await Course.findOne({ courseId: parentCourse });
+  const course = await Course.findById(parentCourseId);
 
   if (!course) {
     logger.debug('No course found');
@@ -186,7 +183,7 @@ export const fetchOne = async (req: Request, res: Response) => {
   } else logger.debug('User is an application admin');
 
   logger.debug('Looking up parent phase');
-  const phase = await Phase.findOne({ phaseId });
+  const phase = await Phase.findById(parentPhaseId);
 
   if (!phase) {
     logger.debug('No parent phase found');
@@ -196,8 +193,8 @@ export const fetchOne = async (req: Request, res: Response) => {
 
   let query = {
     id: phaseItemId,
-    parentPhase: phase.id,
-    parentCourse: phase.parentCourse,
+    parentPhaseId: phase.id,
+    parentCourseId: phase.parentCourseId,
   };
 
   logger.debug('Checking if user is a student');
@@ -211,7 +208,7 @@ export const fetchOne = async (req: Request, res: Response) => {
 
   logger.debug('Looking up phase item');
   const phaseItem = await PhaseItem.findOne(query).select(
-    '-parentCourse -parentPhase',
+    '-parentCourseId -parentPhaseId',
   );
 
   if (!phaseItem) {

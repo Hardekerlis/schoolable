@@ -37,7 +37,7 @@ it('Returns a 401 if user is not authorized', async () => {
   await request(app)
     .post(path)
     .send({
-      parentCourse: courseId,
+      parentCourseId: courseId,
       name: faker.company.companyName(),
     })
     .expect(401);
@@ -56,7 +56,7 @@ it('Returns a 401 if user is not a teacher, temp teacher or admin', async () => 
     .post(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse: courseId,
+      parentCourseId: courseId,
       name: faker.company.companyName(),
     })
     .expect(401);
@@ -75,7 +75,7 @@ it('Returns a 401 if user is not course owner or course admin', async () => {
     .post(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse: courseId,
+      parentCourseId: courseId,
       name: faker.company.companyName(),
     })
     .expect(401);
@@ -94,7 +94,7 @@ it('Returns a 400 if no course is found', async () => {
     .post(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse: new mongoose.Types.ObjectId().toHexString(),
+      parentCourseId: new mongoose.Types.ObjectId().toHexString(),
       name: faker.company.companyName(),
     })
     .expect(400);
@@ -115,7 +115,7 @@ it('Returns a 201 if phase is created', async () => {
     .post(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse: courseId,
+      parentCourseId: courseId,
       name: faker.company.companyName(),
     })
     .expect(201);
@@ -136,7 +136,7 @@ it('Phase is returned in body if it is created', async () => {
     .post(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse: courseId,
+      parentCourseId: courseId,
       name: faker.company.companyName(),
     })
     .expect(201);

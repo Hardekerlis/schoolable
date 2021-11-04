@@ -14,12 +14,12 @@ export class PhaseCreatedListener extends Listener<PhaseCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: PhaseCreatedEvent['data'], msg: Message) {
-    const { phaseId, parentCourse, name } = data;
+    const { phaseId, parentCourseId, name } = data;
 
     logger.info('Creating phase');
 
     logger.debug('Building phase');
-    const phase = Phase.build({ id: phaseId, parentCourse, name });
+    const phase = Phase.build({ id: phaseId, parentCourseId, name });
 
     logger.debug('Saving phase');
     await phase.save();

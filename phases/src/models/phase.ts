@@ -9,7 +9,7 @@ interface PhaseItem {
 
 interface PhaseAttributes {
   name: string;
-  parentCourse: string;
+  parentCourseId: string;
   phaseItems?: PhaseItem[];
   description?: string;
   locked?: boolean; // Is the phase locked but visible to students
@@ -29,7 +29,7 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 
 export interface PhaseDoc extends mongoose.Document {
   name: string;
-  parentCourse: string;
+  parentCourseId: string;
   phaseItems?: PhaseItem[];
   description?: string;
   locked?: boolean; // Is the phase locked but visible to students
@@ -49,7 +49,7 @@ const phaseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    parentCourse: {
+    parentCourseId: {
       type: String,
       required: true,
     },

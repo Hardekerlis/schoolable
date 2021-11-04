@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 interface PhaseAttributes {
   id: string;
-  parentCourse: string;
+  parentCourseId: string;
   name: string;
 }
 
@@ -12,7 +12,7 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 
 export interface PhaseDoc extends mongoose.Document {
   id: string;
-  parentCourse: string;
+  parentCourseId: string;
   name: string;
 }
 
@@ -22,7 +22,7 @@ const phaseSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    parentCourse: {
+    parentCourseId: {
       type: String,
       required: true,
     },

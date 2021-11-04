@@ -13,17 +13,17 @@ import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
 const update = async (req: Request, res: Response) => {
-  const { phaseId, parentCourse } = req.body;
+  const { phaseId, parentCourseId } = req.body;
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
   const data = req.body;
   delete data.phaseId;
-  delete data.parentCourse;
+  delete data.parentCourseId;
 
   logger.info(`Trying to update phase with id ${phaseId}`);
 
-  const course = await Course.findById(parentCourse);
+  const course = await Course.findById(parentCourseId);
 
   if (!course) {
     logger.debug('No course found');
@@ -54,7 +54,7 @@ const update = async (req: Request, res: Response) => {
     // Publishes event to nats service
     new PhaseUpdatedPublisher(natsWrapper.client, logger).publish({
       phaseId: phase.id as string,
-      parentCourse: parentCourse,
+      parentCourseId: parentCourseId,
     });
 
     logger.info('Sent Nats phase created event');

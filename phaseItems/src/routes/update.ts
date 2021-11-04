@@ -14,17 +14,17 @@ import logger from '../utils/logger';
 
 const update = async (req: Request, res: Response) => {
   const { currentUser } = req;
-  const { phaseItemId, parentPhase, parentCourse } = req.body;
+  const { phaseItemId, parentPhaseId, parentCourseId } = req.body;
   const data = req.body;
   delete data.phaseItemId;
-  delete data.parentPhase;
-  delete data.parentCourse;
+  delete data.parentPhaseId;
+  delete data.parentCourseId;
   const _lang = req.lang;
   const lang = LANG[_lang];
 
   logger.info(`Trying to update phase item with id ${phaseItemId}`);
 
-  if (!isValidObjectId(parentPhase)) {
+  if (!isValidObjectId(parentPhaseId)) {
     logger.debug('Parent phase id is not a valid ObjectId');
     return res.status(404).json({
       errors: false,
@@ -32,7 +32,7 @@ const update = async (req: Request, res: Response) => {
     });
   }
 
-  if (!isValidObjectId(parentCourse)) {
+  if (!isValidObjectId(parentCourseId)) {
     logger.debug('Parent course id is not a valid ObjectId');
     return res.status(404).json({
       errors: false,
@@ -50,7 +50,7 @@ const update = async (req: Request, res: Response) => {
   }
 
   logger.debug('Looking up parent course');
-  const course = await Course.findById(parentCourse);
+  const course = await Course.findById(parentCourseId);
 
   if (!course) {
     logger.debug('No course parent course found');
@@ -76,7 +76,7 @@ const update = async (req: Request, res: Response) => {
     );
 
   logger.debug('Looking up parent phase');
-  const phase = await Phase.findById(parentPhase);
+  const phase = await Phase.findById(parentPhaseId);
 
   if (!phase) {
     logger.debug('No parent phase found');

@@ -24,7 +24,7 @@ export class CourseRemovedListener extends Listener<CourseRemovedEvent> {
     logger.debug('Removed course');
 
     logger.debug('Looking up phases associated with course');
-    const phases = await Phase.find({ parentCourse: courseId });
+    const phases = await Phase.find({ parentCourseId: courseId });
 
     logger.debug('Checking if any phases where found');
     if (phases[0]) {

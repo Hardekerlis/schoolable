@@ -17,7 +17,7 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    courseId,
+    id: courseId,
   });
 
   await course.save();
@@ -27,23 +27,23 @@ const createCourse = async (ownerId?: string) => {
 
 const createPhase = async (ownerId?: string) => {
   if (!ownerId) ownerId = new mongoose.Types.ObjectId().toHexString();
-  const phaseId = new mongoose.Types.ObjectId().toHexString();
+  const parentPhaseId = new mongoose.Types.ObjectId().toHexString();
 
   const { courseId } = await createCourse(ownerId);
 
   const phase = Phase.build({
-    phaseId: phaseId as string,
-    parentCourse: courseId,
+    id: parentPhaseId as string,
+    parentCourseId: courseId,
     name: faker.company.companyName(),
   });
 
   await phase.save();
 
-  return { phaseId, ownerId, parentCourse: courseId };
+  return { parentPhaseId, ownerId, parentCourseId: courseId };
 };
 
 const createPhaseItem = async () => {
-  const { phaseId, parentCourse, ownerId } = await createPhase();
+  const { parentPhaseId, parentCourseId, ownerId } = await createPhase();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -55,13 +55,18 @@ const createPhaseItem = async () => {
     .post('/api/phaseitem/create')
     .set('Cookie', cookie)
     .send({
-      phaseId,
+      parentPhaseId,
       name,
-      parentCourse,
+      parentCourseId,
     })
     .expect(201);
 
-  return { phaseId, parentCourse, ownerId, phaseItem: res.body.phaseItem };
+  return {
+    parentPhaseId,
+    parentCourseId,
+    ownerId,
+    phaseItem: res.body.phaseItem,
+  };
 };
 
 const getPath = (id: String) => {
@@ -76,35 +81,39 @@ describe('Fetch many', () => {
   });
 
   it('Returns a 401 if user is not authenticated', async () => {
-    const { phaseId, parentCourse } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId } = await createPhaseItem();
 
-    await request(app).post(path).send({ phaseId, parentCourse }).expect(401);
+    await request(app)
+      .post(path)
+      .send({ parentPhaseId, parentCourseId })
+      .expect(401);
   });
 
   it('Returns a 401 if user is not course owner, admin or student', async () => {
-    const { phaseId, parentCourse } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId } = await createPhaseItem();
     const [cookie] = await global.getAuthCookie();
 
     await request(app)
       .post(path)
       .set('Cookie', cookie)
       .send({
-        phaseId,
-        parentCourse,
+        parentPhaseId,
+        parentCourseId,
       })
       .expect(401);
   });
 
   it('Returns all phase items if user is of type admin', async () => {
-    const { phaseId, parentCourse, phaseItem } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId, phaseItem } =
+      await createPhaseItem();
     const [cookie] = await global.getAuthCookie(UserTypes.Admin);
 
     const res = await request(app)
       .post(path)
       .set('Cookie', cookie)
       .send({
-        phaseId,
-        parentCourse,
+        parentPhaseId,
+        parentCourseId,
       })
       .expect(200);
 
@@ -112,7 +121,7 @@ describe('Fetch many', () => {
   });
 
   it('Returns a 404 if no phase items are found', async () => {
-    const { phaseId, parentCourse, ownerId } = await createPhase();
+    const { parentPhaseId, parentCourseId, ownerId } = await createPhase();
     const [cookie] = await global.getAuthCookie(
       UserTypes.Teacher,
       undefined,
@@ -123,14 +132,14 @@ describe('Fetch many', () => {
       .post(path)
       .set('Cookie', cookie)
       .send({
-        phaseId,
-        parentCourse,
+        parentPhaseId,
+        parentCourseId,
       })
       .expect(404);
   });
 
   it('Returns 0 phase items if no phase items are accessible to user', async () => {
-    const { phaseId, parentCourse, ownerId } = await createPhase();
+    const { parentPhaseId, parentCourseId, ownerId } = await createPhase();
     const [cookie] = await global.getAuthCookie(
       UserTypes.Teacher,
       undefined,
@@ -141,8 +150,8 @@ describe('Fetch many', () => {
       .post(path)
       .set('Cookie', cookie)
       .send({
-        phaseId,
-        parentCourse,
+        parentPhaseId,
+        parentCourseId,
       })
       .expect(404);
 
@@ -150,7 +159,7 @@ describe('Fetch many', () => {
   });
 
   it('Returns a 200 if phase items are found', async () => {
-    const { phaseId, parentCourse, ownerId } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId, ownerId } = await createPhaseItem();
     const [cookie] = await global.getAuthCookie(
       UserTypes.Teacher,
       undefined,
@@ -161,14 +170,14 @@ describe('Fetch many', () => {
       .post(path)
       .set('Cookie', cookie)
       .send({
-        phaseId,
-        parentCourse,
+        parentPhaseId,
+        parentCourseId,
       })
       .expect(200);
   });
 
   it('Returns a phase items in body if any are found', async () => {
-    const { phaseId, parentCourse, ownerId } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId, ownerId } = await createPhaseItem();
     const [cookie] = await global.getAuthCookie(
       UserTypes.Teacher,
       undefined,
@@ -179,8 +188,8 @@ describe('Fetch many', () => {
       .post(path)
       .set('Cookie', cookie)
       .send({
-        phaseId,
-        parentCourse,
+        parentPhaseId,
+        parentCourseId,
       })
       .expect(200);
 
@@ -198,40 +207,43 @@ describe('Fetch one', () => {
   });
 
   it('Returns a 401 if user is not authenticated', async () => {
-    const { phaseId, parentCourse, phaseItem } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId, phaseItem } =
+      await createPhaseItem();
 
     await request(app)
       .post(getPath(phaseItem.id))
-      .send({ phaseId, parentCourse })
+      .send({ parentPhaseId, parentCourseId })
       .expect(401);
   });
 
   it('Returns a 401 if user is not course owner, admin or student', async () => {
-    const { phaseId, parentCourse, phaseItem } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId, phaseItem } =
+      await createPhaseItem();
     const [cookie] = await global.getAuthCookie();
 
     await request(app)
       .post(getPath(phaseItem.id))
       .set('Cookie', cookie)
-      .send({ phaseId, parentCourse })
+      .send({ parentPhaseId, parentCourseId })
       .expect(401);
   });
 
   it('Returns phase item if user is of type admin', async () => {
-    const { phaseId, parentCourse, phaseItem } = await createPhaseItem();
+    const { parentPhaseId, parentCourseId, phaseItem } =
+      await createPhaseItem();
     const [cookie] = await global.getAuthCookie(UserTypes.Admin);
 
     const res = await request(app)
       .post(getPath(phaseItem.id))
       .set('Cookie', cookie)
-      .send({ phaseId, parentCourse })
+      .send({ parentPhaseId, parentCourseId })
       .expect(200);
 
     expect(res.body.phaseItem).toBeDefined();
   });
 
   it('Returns a 404 if no phase item is found', async () => {
-    const { phaseId, parentCourse, ownerId } = await createPhase();
+    const { parentPhaseId, parentCourseId, ownerId } = await createPhase();
     const [cookie] = await global.getAuthCookie(
       UserTypes.Teacher,
       undefined,
@@ -241,12 +253,12 @@ describe('Fetch one', () => {
     const res = await request(app)
       .post(getPath(new mongoose.Types.ObjectId().toHexString()))
       .set('Cookie', cookie)
-      .send({ phaseId, parentCourse })
+      .send({ parentPhaseId, parentCourseId })
       .expect(404);
   });
 
   it('Phase item is not defined in body if no phase item is found', async () => {
-    const { phaseId, parentCourse, ownerId } = await createPhase();
+    const { parentPhaseId, parentCourseId, ownerId } = await createPhase();
     const [cookie] = await global.getAuthCookie(
       UserTypes.Teacher,
       undefined,
@@ -256,14 +268,14 @@ describe('Fetch one', () => {
     const res = await request(app)
       .post(getPath(new mongoose.Types.ObjectId().toHexString()))
       .set('Cookie', cookie)
-      .send({ phaseId, parentCourse })
+      .send({ parentPhaseId, parentCourseId })
       .expect(404);
 
     expect(res.body.phaseItem).not.toBeDefined();
   });
 
   it('Returns a 200 if a phase item is found', async () => {
-    const { phaseId, parentCourse, phaseItem, ownerId } =
+    const { parentPhaseId, parentCourseId, phaseItem, ownerId } =
       await createPhaseItem();
 
     const [cookie] = await global.getAuthCookie(
@@ -275,12 +287,12 @@ describe('Fetch one', () => {
     await request(app)
       .post(getPath(phaseItem.id))
       .set('Cookie', cookie)
-      .send({ phaseId, parentCourse })
+      .send({ parentPhaseId, parentCourseId })
       .expect(200);
   });
 
   it('Returns phase item in body if an item is found', async () => {
-    const { phaseId, parentCourse, phaseItem, ownerId } =
+    const { parentPhaseId, parentCourseId, phaseItem, ownerId } =
       await createPhaseItem();
 
     const [cookie] = await global.getAuthCookie(
@@ -292,7 +304,7 @@ describe('Fetch one', () => {
     const res = await request(app)
       .post(getPath(phaseItem.id))
       .set('Cookie', cookie)
-      .send({ phaseId, parentCourse })
+      .send({ parentPhaseId, parentCourseId })
       .expect(200);
 
     expect(res.body.phaseItem).toBeDefined();

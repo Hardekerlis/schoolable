@@ -5,8 +5,8 @@ import { Subjects } from '../';
 export interface PhaseItemCreatedEvent {
   subject: Subjects.PhaseItemCreated;
   data: {
-    parentPhase: string;
-    parentCourse: string;
+    parentPhaseId: string;
+    parentCourseId: string;
     phaseItemId: string;
     name: string;
   };

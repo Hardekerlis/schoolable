@@ -13,7 +13,7 @@ import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
 const create = async (req: Request, res: Response) => {
-  const { name, parentCourse } = req.body;
+  const { name, parentCourseId } = req.body;
   const { currentUser } = req;
   const _lang = req.lang;
   const lang = LANG[_lang];
@@ -21,7 +21,7 @@ const create = async (req: Request, res: Response) => {
   logger.info('Starting creation of phase');
   logger.debug('Looking up course');
   // Find course to make sure the phase has a course to exist in
-  const course = await Course.findById(parentCourse);
+  const course = await Course.findById(parentCourseId);
 
   // Logger check if course exists
   if (!course) {
@@ -42,7 +42,7 @@ const create = async (req: Request, res: Response) => {
   logger.debug('Building phase');
   const phase = Phase.build({
     name,
-    parentCourse,
+    parentCourseId,
   });
 
   logger.debug('Trying to save phase');
@@ -55,7 +55,7 @@ const create = async (req: Request, res: Response) => {
     // Publishes event to nats service
     new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
       phaseId: phase.id as string,
-      parentCourse: parentCourse,
+      parentCourseId: parentCourseId,
       name,
     });
 

@@ -32,7 +32,7 @@ router.put(
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].noPhaseId;
       }),
-    body('parentCourse')
+    body('parentCourseId')
       .isString()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].noParentCourseId;
@@ -54,7 +54,7 @@ router.delete(
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].noPhaseId;
       }),
-    body('parentCourse')
+    body('parentCourseId')
       .isString()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].noParentCourseId;

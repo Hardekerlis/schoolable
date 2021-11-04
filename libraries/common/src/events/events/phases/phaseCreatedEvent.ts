@@ -6,7 +6,7 @@ export interface PhaseCreatedEvent {
   subject: Subjects.PhaseCreated;
   data: {
     phaseId: string;
-    parentCourse: string;
+    parentCourseId: string;
     name: string;
   };
 }

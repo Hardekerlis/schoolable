@@ -15,18 +15,20 @@ export class RemovePhaseListener extends Listener<RemovePhaseEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: RemovePhaseEvent['data'], msg: Message) {
-    const { phaseId, parentCourse } = data;
+    const { phaseId, parentCourseId } = data;
 
     logger.info('Removing phase');
 
     logger.debug(`Finding and removing phase with id ${phaseId}`);
-    await Phase.findOneAndRemove({ $and: [{ id: phaseId }, { parentCourse }] });
+    await Phase.findOneAndRemove({
+      $and: [{ id: phaseId }, { parentCourseId }],
+    });
     logger.debug('Removed phase');
 
     logger.info('Publishing phase was deleted');
     new PhaseRemovedPublisher(this.client, logger).publish({
       phaseId,
-      parentCourse,
+      parentCourseId,
     });
 
     msg.ack();

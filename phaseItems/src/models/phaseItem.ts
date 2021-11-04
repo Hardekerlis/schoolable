@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 interface PhaseItemAttributes {
   name: string;
-  parentCourse: string;
-  parentPhase: string;
+  parentCourseId: string;
+  parentPhaseId: string;
   paragraphs?: string[];
   locked?: boolean;
   unlockOn?: Date;
@@ -22,8 +22,8 @@ interface PhaseItemModel extends mongoose.Model<PhaseItemDoc> {
 
 export interface PhaseItemDoc extends mongoose.Document {
   name: string;
-  parentCourse: string;
-  parentPhase: string;
+  parentCourseId: string;
+  parentPhaseId: string;
   paragraphs?: string[];
   locked?: boolean;
   unlockOn?: Date;
@@ -42,11 +42,11 @@ const phaseItemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    parentCourse: {
+    parentCourseId: {
       type: String,
       required: true,
     },
-    parentPhase: {
+    parentPhaseId: {
       type: String,
       required: true,
     },

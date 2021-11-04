@@ -17,7 +17,7 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    courseId,
+    id: courseId,
   });
 
   await course.save();
@@ -27,19 +27,19 @@ const createCourse = async (ownerId?: string) => {
 
 const createPhase = async (ownerId?: string) => {
   if (!ownerId) ownerId = new mongoose.Types.ObjectId().toHexString();
-  const phaseId = new mongoose.Types.ObjectId().toHexString();
+  const parentPhaseId = new mongoose.Types.ObjectId().toHexString();
 
   const { courseId } = await createCourse(ownerId);
 
   const phase = Phase.build({
-    phaseId: phaseId as string,
-    parentCourse: courseId,
+    id: parentPhaseId as string,
+    parentCourseId: courseId,
     name: faker.company.companyName(),
   });
 
   await phase.save();
 
-  return { phaseId, ownerId, parentCourse: courseId };
+  return { parentPhaseId, ownerId, parentCourseId: courseId };
 };
 
 it(`Has a route handler listening on ${path} for post requests`, async () => {
@@ -49,14 +49,14 @@ it(`Has a route handler listening on ${path} for post requests`, async () => {
 });
 
 it('Returns a 401 if user is not authorized', async () => {
-  const { parentCourse, phaseId } = await createPhase();
+  const { parentCourseId, parentPhaseId } = await createPhase();
 
   await request(app)
     .post(path)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
-      phaseId,
+      parentCourseId,
+      parentPhaseId,
     })
     .expect(401);
 });
@@ -68,15 +68,15 @@ it('Returns a 401 if user is not a teacher, temp teacher or admin', async () => 
     new mongoose.Types.ObjectId().toHexString(),
   );
 
-  const { parentCourse, phaseId } = await createPhase();
+  const { parentCourseId, parentPhaseId } = await createPhase();
 
   await request(app)
     .post(path)
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
-      phaseId,
+      parentCourseId,
+      parentPhaseId,
     })
     .expect(401);
 });
@@ -88,41 +88,41 @@ it('Returns a 401 if user is not course owner or course admin', async () => {
     new mongoose.Types.ObjectId().toHexString(),
   );
 
-  const { parentCourse, phaseId } = await createPhase();
+  const { parentCourseId, parentPhaseId } = await createPhase();
 
   await request(app)
     .post(path)
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
-      phaseId,
+      parentCourseId,
+      parentPhaseId,
     })
     .expect(401);
 });
 
 it('Returns a 400 if name is undefined', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourse, phaseId } = await createPhase(ownerId);
+  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
     ownerId,
   );
 
-  await request(app)
+  const res = await request(app)
     .post(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse,
-      phaseId,
+      parentCourseId,
+      parentPhaseId,
     })
     .expect(400);
 });
 
-it('Returns a 400 if parentCourse is undefined', async () => {
+it('Returns a 400 if parentCourseId is undefined', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { phaseId } = await createPhase(ownerId);
+  const { parentPhaseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -134,14 +134,14 @@ it('Returns a 400 if parentCourse is undefined', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      phaseId,
+      parentPhaseId,
     })
     .expect(400);
 });
 
-it('Returns a 400 if phaseId is undefined', async () => {
+it('Returns a 400 if parentPhaseId is undefined', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourse } = await createPhase(ownerId);
+  const { parentCourseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -153,14 +153,14 @@ it('Returns a 400 if phaseId is undefined', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
+      parentCourseId,
     })
     .expect(400);
 });
 
-it('Returns a 404 if phaseId is not a valid object id', async () => {
+it('Returns a 404 if parentPhaseId is not a valid object id', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourse } = await createPhase(ownerId);
+  const { parentCourseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -172,15 +172,15 @@ it('Returns a 404 if phaseId is not a valid object id', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
-      phaseId: 'notvalidobjectid',
+      parentCourseId,
+      parentPhaseId: 'notvalidobjectid',
     })
     .expect(404);
 });
 
-it('Returns a 404 if parentCourse is not a valid object id', async () => {
+it('Returns a 404 if parentCourseId is not a valid object id', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { phaseId } = await createPhase(ownerId);
+  const { parentPhaseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -192,15 +192,15 @@ it('Returns a 404 if parentCourse is not a valid object id', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse: 'notvalidobjectid',
-      phaseId,
+      parentCourseId: 'notvalidobjectid',
+      parentPhaseId,
     })
     .expect(404);
 });
 
-it('Returns a 404 if no parentCourse is found', async () => {
+it('Returns a 404 if no parentCourseId is found', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { phaseId } = await createPhase(ownerId);
+  const { parentPhaseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -212,15 +212,15 @@ it('Returns a 404 if no parentCourse is found', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse: new mongoose.Types.ObjectId().toHexString(),
-      phaseId,
+      parentCourseId: new mongoose.Types.ObjectId().toHexString(),
+      parentPhaseId,
     })
     .expect(404);
 });
 
 it('Returns a 404 if no phase with supplied id is found', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourse } = await createPhase(ownerId);
+  const { parentCourseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -232,15 +232,15 @@ it('Returns a 404 if no phase with supplied id is found', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
-      phaseId: new mongoose.Types.ObjectId().toHexString(),
+      parentCourseId,
+      parentPhaseId: new mongoose.Types.ObjectId().toHexString(),
     })
     .expect(404);
 });
 
 it('Returns a 201 if phase item is successfully created', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourse, phaseId } = await createPhase(ownerId);
+  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -252,15 +252,15 @@ it('Returns a 201 if phase item is successfully created', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
-      phaseId,
+      parentCourseId,
+      parentPhaseId,
     })
     .expect(201);
 });
 
 it('Returns phase item in response body if it successfully created', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourse, phaseId } = await createPhase(ownerId);
+  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -272,8 +272,8 @@ it('Returns phase item in response body if it successfully created', async () =>
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentCourse,
-      phaseId,
+      parentCourseId,
+      parentPhaseId,
     })
     .expect(201);
 

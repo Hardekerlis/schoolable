@@ -23,12 +23,12 @@ router.post(
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needName;
       }),
-    body('phaseId')
+    body('parentPhaseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needPhaseId;
       }),
-    body('parentCourse')
+    body('parentCourseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needParentCourse;
@@ -45,12 +45,12 @@ router.post(
   getLanguage,
   requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
   [
-    body('phaseId')
+    body('parentPhaseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needPhaseId;
       }),
-    body('parentCourse')
+    body('parentCourseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needParentCourse;
@@ -65,12 +65,12 @@ router.post(
   getLanguage,
   requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
   [
-    body('phaseId')
+    body('parentPhaseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needPhaseId;
       }),
-    body('parentCourse')
+    body('parentCourseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needParentCourse;
@@ -87,12 +87,12 @@ router.put(
   getLanguage,
   requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
   [
-    body('parentPhase')
+    body('parentPhaseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needPhaseId;
       }),
-    body('parentCourse')
+    body('parentCourseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needParentCourse;
@@ -114,12 +114,12 @@ router.delete(
   getLanguage,
   requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
   [
-    body('parentPhase')
+    body('parentPhaseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needPhaseId;
       }),
-    body('parentCourse')
+    body('parentCourseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needParentCourse;

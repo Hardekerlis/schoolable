@@ -19,7 +19,7 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    courseId,
+    id: courseId,
   });
 
   await course.save();
@@ -34,18 +34,18 @@ const createPhase = async (ownerId?: string) => {
   const { courseId } = await createCourse(ownerId);
 
   const phase = Phase.build({
-    phaseId: phaseId as string,
-    parentCourse: courseId,
+    id: phaseId as string,
+    parentCourseId: courseId,
     name: faker.company.companyName(),
   });
 
   await phase.save();
 
-  return { phaseId, ownerId, parentCourse: courseId };
+  return { phaseId, ownerId, parentCourseId: courseId };
 };
 
 const createPhaseItem = async () => {
-  const { phaseId, parentCourse, ownerId } = await createPhase();
+  const { phaseId, parentCourseId, ownerId } = await createPhase();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -57,15 +57,15 @@ const createPhaseItem = async () => {
     .post('/api/phaseitem/create')
     .set('Cookie', cookie)
     .send({
-      phaseId,
+      parentPhaseId: phaseId,
       name,
-      parentCourse,
+      parentCourseId,
     })
     .expect(201);
 
   return {
-    parentPhase: phaseId,
-    parentCourse,
+    parentPhaseId: phaseId,
+    parentCourseId,
     ownerId,
     phaseItem: res.body.phaseItem,
   };
@@ -78,50 +78,50 @@ it(`Has a route handler listening on ${path} for delete requests`, async () => {
 });
 
 it('Returns a 401 if user is not authorized', async () => {
-  const { parentPhase, parentCourse, phaseItem } = await createPhaseItem();
+  const { parentPhaseId, parentCourseId, phaseItem } = await createPhaseItem();
 
   await request(app)
     .delete(path)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(401);
 });
 
 it('Returns a 401 if user is not a teacher, temp teacher or admin', async () => {
-  const { parentPhase, parentCourse, phaseItem } = await createPhaseItem();
+  const { parentPhaseId, parentCourseId, phaseItem } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(UserTypes.Student);
 
   await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(401);
 });
 
 it('Returns a 401 if user is not course owner', async () => {
-  const { parentPhase, parentCourse, phaseItem } = await createPhaseItem();
+  const { parentPhaseId, parentCourseId, phaseItem } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie();
 
   await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(401);
 });
 
 it('Returns a 404 if parent phase isnt found', async () => {
-  const { parentCourse, phaseItem, ownerId } = await createPhaseItem();
+  const { parentCourseId, phaseItem, ownerId } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -132,15 +132,15 @@ it('Returns a 404 if parent phase isnt found', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase: new mongoose.Types.ObjectId().toHexString(),
-      parentCourse,
+      parentPhaseId: new mongoose.Types.ObjectId().toHexString(),
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(404);
 });
 
 it('Returns a 404 if parent course isnt found', async () => {
-  const { parentPhase, phaseItem, ownerId } = await createPhaseItem();
+  const { parentPhaseId, phaseItem, ownerId } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -151,15 +151,15 @@ it('Returns a 404 if parent course isnt found', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse: new mongoose.Types.ObjectId().toHexString(),
+      parentPhaseId,
+      parentCourseId: new mongoose.Types.ObjectId().toHexString(),
       phaseItemId: phaseItem.id,
     })
     .expect(404);
 });
 
 it('Returns a 404 if no phase item is found', async () => {
-  const { parentPhase, parentCourse, ownerId } = await createPhaseItem();
+  const { parentPhaseId, parentCourseId, ownerId } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -170,15 +170,15 @@ it('Returns a 404 if no phase item is found', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: new mongoose.Types.ObjectId().toHexString(),
     })
     .expect(404);
 });
 
 it('Returns a 400 if parent phase is undefined', async () => {
-  const { parentCourse, phaseItem, ownerId } = await createPhaseItem();
+  const { parentCourseId, phaseItem, ownerId } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -189,14 +189,14 @@ it('Returns a 400 if parent phase is undefined', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(400);
 });
 
 it('Returns a 400 if parent course is undefined', async () => {
-  const { parentPhase, phaseItem, ownerId } = await createPhaseItem();
+  const { parentPhaseId, phaseItem, ownerId } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -207,14 +207,14 @@ it('Returns a 400 if parent course is undefined', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
+      parentPhaseId,
       phaseItemId: phaseItem.id,
     })
     .expect(400);
 });
 
 it('Returns a 400 if phase item id is undefined', async () => {
-  const { parentPhase, parentCourse, ownerId } = await createPhaseItem();
+  const { parentPhaseId, parentCourseId, ownerId } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -225,37 +225,37 @@ it('Returns a 400 if phase item id is undefined', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
     })
     .expect(400);
 });
 
 it('Returns a 200 if user is of type admin', async () => {
-  const { parentPhase, parentCourse, phaseItem } = await createPhaseItem();
+  const { parentPhaseId, parentCourseId, phaseItem } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(UserTypes.Admin);
 
   await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(200);
 });
 
 it('Returns isUpForDeletion as true if user is of type admin', async () => {
-  const { parentPhase, parentCourse, phaseItem } = await createPhaseItem();
+  const { parentPhaseId, parentCourseId, phaseItem } = await createPhaseItem();
   const [cookie] = await global.getAuthCookie(UserTypes.Admin);
 
   const res = await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(200);
@@ -264,7 +264,7 @@ it('Returns isUpForDeletion as true if user is of type admin', async () => {
 });
 
 it('Returns a 200 if course is successfully updated', async () => {
-  const { parentPhase, parentCourse, phaseItem, ownerId } =
+  const { parentPhaseId, parentCourseId, phaseItem, ownerId } =
     await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
@@ -276,15 +276,15 @@ it('Returns a 200 if course is successfully updated', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(200);
 });
 
 it('Returns updated phase item if it is updated', async () => {
-  const { parentPhase, parentCourse, phaseItem, ownerId } =
+  const { parentPhaseId, parentCourseId, phaseItem, ownerId } =
     await createPhaseItem();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
@@ -296,8 +296,8 @@ it('Returns updated phase item if it is updated', async () => {
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentPhase,
-      parentCourse,
+      parentPhaseId,
+      parentCourseId,
       phaseItemId: phaseItem.id,
     })
     .expect(200);

@@ -37,11 +37,11 @@ const createPhase = async () => {
   const res = await request(app)
     .post('/api/phase/create')
     .set('Cookie', cookie)
-    .send({ parentCourse: courseId, name: faker.company.companyName() })
+    .send({ parentCourseId: courseId, name: faker.company.companyName() })
     .expect(201);
 
   return {
-    parentCourse: courseId,
+    parentCourseId: courseId,
     phase: res.body.phase,
     phaseId: res.body.phase.id,
     cookie,
@@ -55,13 +55,13 @@ it(`Has a route handler listening on ${path} for delete requests`, async () => {
 });
 
 it('Returns a 401 if user is not authenticated', async () => {
-  const { phaseId, parentCourse } = await createPhase();
+  const { phaseId, parentCourseId } = await createPhase();
 
-  await request(app).delete(path).send({ phaseId, parentCourse }).expect(401);
+  await request(app).delete(path).send({ phaseId, parentCourseId }).expect(401);
 });
 
 it('Returns a 401 if user is not of type teacher, temp teacher or admin', async () => {
-  const { phaseId, parentCourse } = await createPhase();
+  const { phaseId, parentCourseId } = await createPhase();
   const [cookie] = await global.getAuthCookie(UserTypes.Student);
 
   await request(app)
@@ -69,13 +69,13 @@ it('Returns a 401 if user is not of type teacher, temp teacher or admin', async 
     .set('Cookie', cookie)
     .send({
       phaseId,
-      parentCourse,
+      parentCourseId,
     })
     .expect(401);
 });
 
 it('Returns a 401 if user is not course owner or admin', async () => {
-  const { phaseId, parentCourse } = await createPhase();
+  const { phaseId, parentCourseId } = await createPhase();
   const [cookie] = await global.getAuthCookie();
 
   await request(app)
@@ -83,26 +83,26 @@ it('Returns a 401 if user is not course owner or admin', async () => {
     .set('Cookie', cookie)
     .send({
       phaseId,
-      parentCourse,
+      parentCourseId,
     })
     .expect(401);
 });
 
 it('Returns a 400 if phaseId is not present in body', async () => {
-  const { parentCourse, cookie } = await createPhase();
+  const { parentCourseId, cookie } = await createPhase();
 
   const res = await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
-      parentCourse,
+      parentCourseId,
     })
     .expect(400);
 
   expect(res.body.errors[0].message).toEqual('No phase id found in body');
 });
 
-it('Returns a 400 if parentCourse is not present in body', async () => {
+it('Returns a 400 if parentCourseId is not present in body', async () => {
   const { phaseId, cookie } = await createPhase();
 
   const res = await request(app)
@@ -119,27 +119,27 @@ it('Returns a 400 if parentCourse is not present in body', async () => {
 });
 
 it('Returns a 200 if phase is successfully queued for removal', async () => {
-  const { phaseId, parentCourse, cookie } = await createPhase();
+  const { phaseId, parentCourseId, cookie } = await createPhase();
 
   await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
       phaseId,
-      parentCourse,
+      parentCourseId,
     })
     .expect(200);
 });
 
 it('Returns the phases with removeAt as a date', async () => {
-  const { phaseId, parentCourse, cookie } = await createPhase();
+  const { phaseId, parentCourseId, cookie } = await createPhase();
 
   const res = await request(app)
     .delete(path)
     .set('Cookie', cookie)
     .send({
       phaseId,
-      parentCourse,
+      parentCourseId,
     })
     .expect(200);
 

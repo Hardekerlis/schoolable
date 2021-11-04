@@ -20,11 +20,11 @@ import { natsWrapper } from '../utils/natsWrapper';
 
 const remove = async (req: Request, res: Response) => {
   const { currentUser } = req;
-  const { phaseItemId, parentPhase, parentCourse } = req.body;
+  const { phaseItemId, parentPhaseId, parentCourseId } = req.body;
   const _lang = req.lang;
   const lang = LANG[_lang];
 
-  if (!isValidObjectId(parentPhase)) {
+  if (!isValidObjectId(parentPhaseId)) {
     logger.debug('Parent phase id is not a valid ObjectId');
     return res.status(404).json({
       errors: false,
@@ -32,7 +32,7 @@ const remove = async (req: Request, res: Response) => {
     });
   }
 
-  if (!isValidObjectId(parentCourse)) {
+  if (!isValidObjectId(parentCourseId)) {
     logger.debug('Parent course id is not a valid ObjectId');
     return res.status(404).json({
       errors: false,
@@ -50,7 +50,7 @@ const remove = async (req: Request, res: Response) => {
   }
 
   logger.debug('Looking up parent course');
-  const course = await Course.findOne({ courseId: parentCourse });
+  const course = await Course.findById(parentCourseId);
 
   if (!course) {
     logger.debug('No course parent course found');
@@ -76,7 +76,7 @@ const remove = async (req: Request, res: Response) => {
     );
 
   logger.debug('Looking up parent phase');
-  const phase = await Phase.findOne({ phaseId: parentPhase });
+  const phase = await Phase.findById(parentPhaseId);
 
   if (!phase) {
     logger.debug('No parent phase found');
@@ -107,8 +107,8 @@ const remove = async (req: Request, res: Response) => {
   if (process.env.NODE_ENV !== 'test') {
     // Publishes event to nats service
     new PhaseItemQueueRemovePublisher(natsWrapper.client, logger).publish({
-      parentCourse: course.id as string,
-      parentPhase: phase.id,
+      parentCourseId: course.id as string,
+      parentPhaseId: phase.id,
       phaseItemId: phaseItem.id,
       removeAt: removeAt,
     });

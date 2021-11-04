@@ -14,7 +14,7 @@ import logger from '../utils/logger';
 
 export const fetchMany = async (req: Request, res: Response) => {
   const { currentUser } = req;
-  const { parentCourse } = req.body;
+  const { parentCourseId } = req.body;
   const _lang = req.lang;
   const lang = LANG[_lang];
 
@@ -23,7 +23,7 @@ export const fetchMany = async (req: Request, res: Response) => {
 
   logger.info('Fetching course phases');
 
-  if (!mongoose.isValidObjectId(parentCourse)) {
+  if (!mongoose.isValidObjectId(parentCourseId)) {
     logger.warn('Parent course value is not a valid object id');
     throw new BadRequestError(lang.badIds);
   }
@@ -34,7 +34,7 @@ export const fetchMany = async (req: Request, res: Response) => {
     logger.debug('User is not an admin');
     query = {
       $and: [
-        { id: parentCourse },
+        { id: parentCourseId },
         {
           $or: [
             { owner: currentUser.id },
@@ -46,7 +46,7 @@ export const fetchMany = async (req: Request, res: Response) => {
     };
   } else if (currentUser.userType === UserTypes.Admin) {
     logger.debug('User is an admin');
-    query = { id: parentCourse };
+    query = { id: parentCourseId };
   } else {
     logger.warn('Invalid user type');
     throw new NotAuthorizedError();
@@ -62,8 +62,8 @@ export const fetchMany = async (req: Request, res: Response) => {
 
   logger.debug('Looking up phases associated with course');
   const phases = await Phase.find({
-    parentCourse: course.id,
-  }).select('-phaseItems -parentCourse -description');
+    parentCourseId: course.id,
+  }).select('-phaseItems -parentCourseId -description');
 
   // TODO: Remove hidden phases if user is of type student
 
@@ -87,7 +87,7 @@ export const fetchMany = async (req: Request, res: Response) => {
 export const fetchOne = async (req: Request, res: Response) => {
   const { phaseId } = req.params;
   const { currentUser } = req;
-  const { parentCourse } = req.body;
+  const { parentCourseId } = req.body;
   const _lang = req.lang;
   const lang = LANG[_lang];
 
@@ -97,7 +97,7 @@ export const fetchOne = async (req: Request, res: Response) => {
 
   if (
     !mongoose.isValidObjectId(phaseId) ||
-    !mongoose.isValidObjectId(parentCourse)
+    !mongoose.isValidObjectId(parentCourseId)
   ) {
     logger.warn('Parent course or phase id value is not a valid object id');
     throw new BadRequestError(lang.badIds);
@@ -109,7 +109,7 @@ export const fetchOne = async (req: Request, res: Response) => {
     logger.debug('User is not an admin');
     query = {
       $and: [
-        { id: parentCourse },
+        { id: parentCourseId },
         {
           $or: [
             { owner: currentUser.id },
@@ -121,7 +121,7 @@ export const fetchOne = async (req: Request, res: Response) => {
     };
   } else if (currentUser.userType === UserTypes.Admin) {
     logger.debug('User is an admin');
-    query = { id: parentCourse };
+    query = { id: parentCourseId };
   } else {
     logger.warn('Invalid user type');
     throw new NotAuthorizedError();
@@ -129,6 +129,8 @@ export const fetchOne = async (req: Request, res: Response) => {
 
   logger.debug('Finding parent course');
   const course = await Course.findOne(query);
+
+  console.log(course);
 
   if (!course) {
     logger.info('No course found');

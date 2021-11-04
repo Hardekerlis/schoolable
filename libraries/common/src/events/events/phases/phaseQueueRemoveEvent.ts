@@ -6,7 +6,7 @@ export interface PhaseQueueRemoveEvent {
   subject: Subjects.PhaseQueueRemove;
   data: {
     phaseId: string;
-    parentCourse: string;
+    parentCourseId: string;
     removeAt: Date;
   };
 }
