@@ -7,6 +7,15 @@ import { natsWrapper } from './utils/natsWrapper';
 
 import mongoose from 'mongoose';
 
+import {
+  CourseAddedAdminListener,
+  CourseAddedStudentListener,
+  CourseCreatedListener,
+  CourseRemovedListener,
+  CourseRemovedAdminListener,
+  CourseRemovedStudentListener,
+} from './events/listeners';
+
 const startServer = async () => {
   const { env } = process;
 
@@ -47,6 +56,23 @@ const startServer = async () => {
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     // Register listeners below this line
+    logger.debug('Registered CourseAddedAdminListener for nats');
+    new CourseAddedAdminListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseAddedStudentListener for nats');
+    new CourseAddedStudentListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseCreatedListener for nats');
+    new CourseCreatedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedListener for nats');
+    new CourseRemovedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedAdminListener for nats');
+    new CourseRemovedAdminListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedStudentListener for nats');
+    new CourseRemovedStudentListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

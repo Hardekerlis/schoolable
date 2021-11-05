@@ -7,6 +7,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/phaseitem/create';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 import Course from '../../models/course';
 import Phase from '../../models/phase';
 const createCourse = async (ownerId?: string) => {
@@ -278,4 +280,26 @@ it('Returns phase item in response body if it successfully created', async () =>
     .expect(201);
 
   expect(res.body.phaseItem).toBeDefined();
+});
+
+it('Publishes NATS event', async () => {
+  const ownerId = new mongoose.Types.ObjectId().toHexString();
+  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
+  const [cookie] = await global.getAuthCookie(
+    UserTypes.Teacher,
+    undefined,
+    ownerId,
+  );
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      name: faker.company.companyName(),
+      parentCourseId,
+      parentPhaseId,
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

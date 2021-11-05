@@ -104,17 +104,15 @@ const remove = async (req: Request, res: Response) => {
 
   await phaseItem.save();
 
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new PhaseItemQueueRemovePublisher(natsWrapper.client, logger).publish({
-      parentCourseId: course.id as string,
-      parentPhaseId: phase.id,
-      phaseItemId: phaseItem.id,
-      removeAt: removeAt,
-    });
+  // Publishes event to nats service
+  new PhaseItemQueueRemovePublisher(natsWrapper.client, logger).publish({
+    parentCourseId: course.id as string,
+    parentPhaseId: phase.id,
+    phaseItemId: phaseItem.id,
+    removeAt: removeAt,
+  });
 
-    logger.info('Sent Nats phase item queue remove event');
-  }
+  logger.verbose('Sent Nats phase item queue remove event');
 
   res.status(200).json({
     errors: false,

@@ -8,6 +8,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/phaseitem/remove';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 import Course from '../../models/course';
 import Phase from '../../models/phase';
 
@@ -303,4 +305,26 @@ it('Returns updated phase item if it is updated', async () => {
     .expect(200);
 
   expect(res.body.phaseItem.deletion.isUpForDeletion).toEqual(true);
+});
+
+it('Returns updated phase item if it is updated', async () => {
+  const { parentPhaseId, parentCourseId, phaseItem, ownerId } =
+    await createPhaseItem();
+  const [cookie] = await global.getAuthCookie(
+    UserTypes.Teacher,
+    undefined,
+    ownerId,
+  );
+
+  await request(app)
+    .delete(path)
+    .set('Cookie', cookie)
+    .send({
+      parentPhaseId,
+      parentCourseId,
+      phaseItemId: phaseItem.id,
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

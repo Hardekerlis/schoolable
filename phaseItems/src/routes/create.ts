@@ -78,17 +78,15 @@ const create = async (req: Request, res: Response) => {
   logger.debug('Saving phase item');
   await phaseItem.save();
 
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new PhaseItemCreatedPublisher(natsWrapper.client, logger).publish({
-      parentCourseId: course.id as string,
-      parentPhaseId: phase.id,
-      phaseItemId: phaseItem.id,
-      name,
-    });
+  // Publishes event to nats service
+  new PhaseItemCreatedPublisher(natsWrapper.client, logger).publish({
+    parentCourseId: course.id as string,
+    parentPhaseId: phase.id,
+    phaseItemId: phaseItem.id,
+    name,
+  });
 
-    logger.info('Sent Nats phase item created event');
-  }
+  logger.verbose('Sent Nats phase item created event');
 
   logger.info('Created phase item. Returning to user');
 
