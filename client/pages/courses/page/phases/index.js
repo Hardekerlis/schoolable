@@ -190,6 +190,8 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
 
   const selectItem = (index) => {
 
+    //TODO: maybe not push it, just update path.
+
     router.push(`${router.pathname}?id=${router.query.id}&phase=${router.query.phase}&item=${phaseItems[index].id}`)
 
     setSelectedItem(index)
