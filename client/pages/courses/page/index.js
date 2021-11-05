@@ -110,8 +110,6 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
 
   ErrorHandler(serverErrors);
 
-  console.log(serverErrors)
-
   //TODO: FIX THIS ERROR HANDLING
   //to replicate: try to go to course page without an id for course
   if(serverErrors || !course) {
@@ -166,8 +164,6 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
 
 
   useEffect(() => {
-    console.log("gjeao")
-    console.log(phases)
     setPhasesRender(
       phases.map((obj, index) => {
         return (
