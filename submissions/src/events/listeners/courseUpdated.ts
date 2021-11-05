@@ -14,11 +14,11 @@ export class CourseUpdatedListener extends Listener<CourseUpdatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: CourseUpdatedEvent['data'], msg: Message) {
-    const { courseId, name, admins, students } = data;
+    const { courseId, name } = data;
 
     logger.info(`Updating course with id ${courseId}`);
 
-    await Course.findOneAndUpdate({ courseId }, { name, admins, students });
+    await Course.findOneAndUpdate({ courseId }, { name });
 
     logger.info('Updated course');
 

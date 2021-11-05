@@ -4,6 +4,8 @@ import { app } from '../../app';
 
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 const path = '/api/course/create';
 
 it(`Has a route handler listening on ${path} for post requests`, async () => {
@@ -55,4 +57,16 @@ it('coursePage key is defined in course if creation is successful', async () => 
     .expect(201);
 
   expect(res.body.course.coursePage).toBeDefined();
+});
+
+it('Publishes NATS event', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({ name: faker.company.companyName() })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

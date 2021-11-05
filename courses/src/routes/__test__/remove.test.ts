@@ -6,6 +6,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/course/remove';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 const createCourse = async () => {
   const [cookie] = await global.getAuthCookie();
 
@@ -75,4 +77,16 @@ it('deletion.isUpForDeletion is true', async () => {
     .expect(200);
 
   expect(res.body.course.deletion.isUpForDeletion).toEqual(true);
+});
+
+it('Publishes NATS event', async () => {
+  const { course, cookie } = await createCourse();
+
+  const res = await request(app)
+    .delete(path)
+    .set('Cookie', cookie)
+    .send({ courseId: course.id })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

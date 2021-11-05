@@ -107,16 +107,16 @@ const create = async (req: Request, res: Response) => {
 
     // Couldnt get nats mock to work
     // Code is only ran if its not test environment
-    if (process.env.NODE_ENV !== 'test') {
-      // Publishes event to nats service
-      new CourseCreatedPublisher(natsWrapper.client, logger).publish({
-        courseId: course.id as string,
-        name: course.name,
-        owner: course.owner.id,
-      });
+    // if (process.env.NODE_ENV !== 'test') {
+    // Publishes event to nats service
+    await new CourseCreatedPublisher(natsWrapper.client, logger).publish({
+      courseId: course.id as string,
+      name: course.name,
+      owner: course.owner.id,
+    });
 
-      logger.verbose('Sent Nats course created event');
-    }
+    logger.verbose('Sent Nats course created event');
+    // }
 
     logger.info('Course successfully created. Responding user');
     res.status(201).json({

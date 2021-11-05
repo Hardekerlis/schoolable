@@ -88,20 +88,16 @@ const register = async (req: Request, res: Response) => {
   logger.info('Trying to save new user');
   await newUser.save();
 
-  // Couldnt get nats mock to work
-  // Code is only ran if its not test environment
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new UserCreatedPublisher(natsWrapper.client, logger).publish({
-      userId: newUser.id,
-      email: newUser.email, // To send email to the user registered
-      userType: userType,
-      name: name,
-      lang: newUser.settings.language,
-    });
+  // Publishes event to nats service
+  new UserCreatedPublisher(natsWrapper.client, logger).publish({
+    userId: newUser.id,
+    email: newUser.email, // To send email to the user registered
+    userType: userType,
+    name: name,
+    lang: newUser.settings.language,
+  });
 
-    logger.info('Sent Nats user registered event');
-  }
+  logger.verbose('Sent Nats user registered event');
 
   logger.info('User creation successful');
   res.status(201).json({

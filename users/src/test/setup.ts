@@ -12,6 +12,8 @@ import {
 import jwt from 'jsonwebtoken';
 import { sign } from 'cookie-signature';
 
+jest.mock('../utils/natsWrapper');
+
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import { UserDoc } from '../models/user';

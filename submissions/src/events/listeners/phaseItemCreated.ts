@@ -15,9 +15,15 @@ export class PhaseItemCreatedListener extends Listener<PhaseItemCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: PhaseItemCreatedEvent['data'], msg: Message) {
+    const { parentPhaseId, parentCourseId, phaseItemId, name } = data;
     logger.info('Creating phase item reference');
 
-    const phaseItem = PhaseItem.build(data);
+    const phaseItem = PhaseItem.build({
+      parentPhaseId,
+      parentCourseId,
+      id: phaseItemId,
+      name,
+    });
 
     logger.debug('Saving phase item in database');
     await phaseItem.save();

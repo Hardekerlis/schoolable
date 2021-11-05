@@ -14,15 +14,14 @@ export class PhaseItemRemovedListener extends Listener<PhaseItemRemovedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: PhaseItemRemovedEvent['data'], msg: Message) {
-    const { parentPhase, parentCourse, phaseItemId } = data;
+    const { phaseItemId } = data;
 
-    logger.info('Removing phase item');
+    logger.info(`Removing phase item with id ${phaseItemId}`);
 
-    await PhaseItem.findOneAndRemove({
-      parentPhase,
-      parentCourse,
-      phaseItemId,
-    });
+    const phaseItem = await PhaseItem.findByIdAndRemove(phaseItemId);
+    if (!phaseItem) {
+      logger.error('No phase item found');
+    }
 
     logger.info('Successfully removed phase item from database');
 

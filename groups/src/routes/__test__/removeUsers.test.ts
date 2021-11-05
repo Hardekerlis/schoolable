@@ -7,6 +7,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/groups/remove/';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 it(`Has a route handler listening on ${path} for POST requests`, async () => {
   const res = await request(app).post(path).send({});
 
@@ -108,4 +110,19 @@ it('Returns group in response body', async () => {
 
   expect(res.body.group.users).not.toContain(users[0]);
   expect(res.body.group.users).not.toContain(users[2]);
+});
+
+it('Publishes NATS event', async () => {
+  const { group, cookie, users } = await global.addToGroup(3);
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      groupId: group.id,
+      users,
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
 interface PhaseItemAttributes {
-  parentPhase: string;
-  parentCourse: string;
-  phaseItemId: string;
+  id: string;
   name: string;
+  parentCourseId: string;
+  parentPhaseId: string;
 }
 
 interface PhaseItemModel extends mongoose.Model<PhaseItemDoc> {
@@ -12,27 +12,27 @@ interface PhaseItemModel extends mongoose.Model<PhaseItemDoc> {
 }
 
 export interface PhaseItemDoc extends mongoose.Document {
-  parentPhase: string;
-  parentCourse: string;
-  phaseItemId: string;
+  id: string;
   name: string;
+  parentCourseId: string;
+  parentPhaseId: string;
 }
 
 const phaseItemSchema = new mongoose.Schema(
   {
+    _id: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
     },
-    phaseItemId: {
+    parentCourseId: {
       type: String,
       required: true,
     },
-    parentCourse: {
-      type: String,
-      required: true,
-    },
-    parentPhase: {
+    parentPhaseId: {
       type: String,
       required: true,
     },
@@ -58,6 +58,11 @@ const phaseItemSchema = new mongoose.Schema(
 );
 
 phaseItemSchema.statics.build = (attributes: PhaseItemAttributes) => {
+  // @ts-ignore
+  attributes._id = attributes.id;
+  // @ts-ignore
+  delete attributes.id;
+
   return new PhaseItem(attributes);
 };
 

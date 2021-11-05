@@ -5,6 +5,8 @@ import { app } from '../../app';
 
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 const createCourse = async () => {
   const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
 
@@ -163,6 +165,26 @@ describe('Add admin', () => {
       })
       .expect(200);
   });
+
+  it('Publishes NATS event', async () => {
+    const { course, cookie } = await createCourse();
+    const user = await global.createUser(
+      UserTypes.Teacher,
+      faker.internet.email(),
+      new mongoose.Types.ObjectId().toHexString(),
+    );
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        adminId: user.id,
+      })
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });
 
 describe('Remove admin ', () => {
@@ -276,7 +298,7 @@ describe('Remove admin ', () => {
       .expect(404);
   });
 
-  it('Returns a 200 if user is application admin and not course owner or admin', async () => {
+  it('Returns a 200 if user is application admin', async () => {
     const { course, admin } = await addAdmin();
     const [cookie] = await global.getAuthCookie(UserTypes.Admin);
 
@@ -290,7 +312,7 @@ describe('Remove admin ', () => {
       .expect(200);
   });
 
-  it('Returns a 200 if user is successfully added to admins array', async () => {
+  it('Returns a 200 if user is successfully removed to admins array', async () => {
     const { course, admin, cookie } = await addAdmin();
 
     await request(app)
@@ -301,5 +323,20 @@ describe('Remove admin ', () => {
         adminId: admin.id,
       })
       .expect(200);
+  });
+
+  it('Publishes NATS event', async () => {
+    const { course, admin, cookie } = await addAdmin();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        adminId: admin.id,
+      })
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

@@ -48,17 +48,13 @@ const update = async (req: Request, res: Response) => {
     throw new BadRequestError(lang.noPhaseFound);
   }
 
-  // Couldnt get nats mock to work
-  // Code is only ran if its not test environment
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new PhaseUpdatedPublisher(natsWrapper.client, logger).publish({
-      phaseId: phase.id as string,
-      parentCourseId: parentCourseId,
-    });
+  // Publishes event to nats service
+  new PhaseUpdatedPublisher(natsWrapper.client, logger).publish({
+    phaseId: phase.id as string,
+    parentCourseId: parentCourseId,
+  });
 
-    logger.info('Sent Nats phase created event');
-  }
+  logger.verbose('Sent Nats phase created event');
 
   logger.info('Updated phase. Returning to user');
 

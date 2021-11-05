@@ -15,6 +15,8 @@ import { sign } from 'cookie-signature';
 import User, { UserDoc } from '../models/user';
 import { GroupDoc } from '../models/group';
 
+jest.mock('../utils/natsWrapper');
+
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import { app } from '../app';

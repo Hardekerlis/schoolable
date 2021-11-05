@@ -7,6 +7,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/phase/remove';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 import Course from '../../models/course';
 
 const createCourse = async (ownerId?: string) => {
@@ -17,8 +19,7 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    // @ts-ignore
-    _id: courseId,
+    id: courseId,
   });
 
   await course.save();
@@ -144,4 +145,19 @@ it('Returns the phases with removeAt as a date', async () => {
     .expect(200);
 
   expect(res.body.phase.deletion.isUpForDeletion).toEqual(true);
+});
+
+it('Publishes NATS event', async () => {
+  const { phaseId, parentCourseId, cookie } = await createPhase();
+
+  await request(app)
+    .delete(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId,
+      parentCourseId,
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

@@ -30,7 +30,7 @@ const fileFilter = (
     return cb(null, isAllowed);
   }
 
-  cb(new BadRequestError(LANG[`${req.lang}`].notSupportedFileType));
+  cb(null, isAllowed);
 };
 
 export default fileFilter;

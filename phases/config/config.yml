@@ -4,6 +4,11 @@ port: 3000
 logs:
   newLogFileFrequency: 24h
   maxFileSize: 50m
+cookies:
+  signed: true
+  secure: false
+  httpOnly: true
+  # maxAge: 9999999999
 database:
   uri: phases-mongo-srv
   localIp: 127.0.0.1

@@ -84,15 +84,13 @@ const students = {
     logger.debug('Saving user');
     await course.save();
 
-    if (process.env.NODE_ENV !== 'test') {
-      // Publishes event to nats service
-      new CourseAddedStudentPublisher(natsWrapper.client, logger).publish({
-        studentId: student.id,
-        courseId: course.id,
-      });
+    // Publishes event to nats service
+    await new CourseAddedStudentPublisher(natsWrapper.client, logger).publish({
+      studentId: student.id,
+      courseId: course.id,
+    });
 
-      logger.verbose('Sent Nats course added admin event');
-    }
+    logger.verbose('Sent Nats course added admin event');
 
     logger.info('Successfully added student to course');
     res.status(200).json({

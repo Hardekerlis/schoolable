@@ -48,12 +48,12 @@ router.post(
     });
   },
   [
-    body('parentCourse')
+    body('parentCourseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needParentCourse;
       }),
-    body('parentPhase')
+    body('parentPhaseId')
       .exists()
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needParentPhase;

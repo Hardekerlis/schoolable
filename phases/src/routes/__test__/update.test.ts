@@ -7,6 +7,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/phase/update';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 import Course from '../../models/course';
 const createCourse = async (ownerId?: string) => {
   const courseId = new mongoose.Types.ObjectId().toHexString();
@@ -16,8 +18,7 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    // @ts-ignore
-    _id: courseId,
+    id: courseId,
   });
 
   await course.save();
@@ -131,4 +132,17 @@ it('Returns the updated phase', async () => {
     .expect(200);
 
   expect(res.body.phase.name).toEqual(newName);
+});
+
+it('Publishes NATS event', async () => {
+  const { phaseId, cookie, parentCourseId } = await createPhase();
+  const newName = 'new name';
+
+  await request(app)
+    .put(path)
+    .set('Cookie', cookie)
+    .send({ parentCourseId, phaseId: phaseId, name: newName })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

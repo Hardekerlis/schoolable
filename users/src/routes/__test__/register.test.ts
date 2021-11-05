@@ -5,6 +5,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/users/register';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 interface Options {
   userType: UserTypes;
   field: string;
@@ -91,6 +93,14 @@ describe('Registration of first account', () => {
     const res = await request(app).post(path).send(userData).expect(201);
 
     expect(res.body.user).toBeDefined();
+  });
+
+  it('Publishes NATS event', async () => {
+    let userData = global.getUserData(UserTypes.Admin);
+
+    await request(app).post(path).send(userData).expect(201);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
 
@@ -225,5 +235,19 @@ describe('Registration of all accounts except first', () => {
       .expect(201);
 
     expect(res.body.user).toBeDefined();
+  });
+
+  it('Publishes NATS event', async () => {
+    const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+
+    let userData = global.getUserData(UserTypes.Admin);
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send(userData)
+      .expect(201);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

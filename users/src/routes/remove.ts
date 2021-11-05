@@ -73,16 +73,14 @@ const remove = async (req: Request, res: Response) => {
   logger.debug('Saving user');
   await userToRemove.save();
 
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new UserQueueRemovePublisher(natsWrapper.client, logger).publish({
-      userId: userToRemove.id as string,
-      removingAdmin: currentUser?.id as string,
-      removeAt: removeAt,
-    });
+  // Publishes event to nats service
+  new UserQueueRemovePublisher(natsWrapper.client, logger).publish({
+    userId: userToRemove.id as string,
+    removingAdmin: currentUser?.id as string,
+    removeAt: removeAt,
+  });
 
-    logger.verbose('Sent Nats course queue remove event');
-  }
+  logger.verbose('Sent Nats course queue remove event');
 
   logger.info('Successfully queued user to be deleted');
 

@@ -130,8 +130,6 @@ export const fetchOne = async (req: Request, res: Response) => {
   logger.debug('Finding parent course');
   const course = await Course.findOne(query);
 
-  console.log(course);
-
   if (!course) {
     logger.info('No course found');
     throw new NotAuthorizedError();

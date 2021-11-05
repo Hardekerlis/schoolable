@@ -5,6 +5,8 @@ import { app } from '../../app';
 
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 const createCourse = async () => {
   const [cookie] = await global.getAuthCookie();
 
@@ -162,6 +164,26 @@ describe('Add students', () => {
       .expect(200);
   });
 
+  it('Publishes NATS event', async () => {
+    const { course, cookie } = await createCourse();
+    const user = await global.createUser(
+      UserTypes.Student,
+      faker.internet.email(),
+      new mongoose.Types.ObjectId().toHexString(),
+    );
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        studentId: user.id,
+      })
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
+
   // Student class is refering to a group of students.
   it.todo('Returns a 200 if students in class are added');
 });
@@ -302,5 +324,20 @@ describe('Remove students', () => {
         studentId: student.id,
       })
       .expect(200);
+  });
+
+  it('Publishes NATS event', async () => {
+    const { course, student, cookie } = await addStudent();
+
+    await request(app)
+      .post(path)
+      .set('Cookie', cookie)
+      .send({
+        courseId: course.id,
+        studentId: student.id,
+      })
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

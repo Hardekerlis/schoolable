@@ -5,28 +5,7 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/users/remove';
 
-interface Options {
-  userType: UserTypes;
-  field: string;
-  newValue: string | object;
-}
-
-interface InvalidUser {
-  email: string;
-  userType: string;
-  name: {
-    first: string;
-    last: string;
-  };
-}
-
-const getInvalidUserData = (options: Options): InvalidUser => {
-  let data = global.getUserData(options.userType);
-
-  (data as any)[`${options.field}`] = options.newValue;
-
-  return data;
-};
+import { natsWrapper } from '../../utils/natsWrapper';
 
 it(`Has a route handler listening on ${path} for DELETE requests`, async () => {
   const res = await request(app).delete(path).send({});
@@ -108,4 +87,17 @@ it('Deletion.removeAt is a date', async () => {
   expect(
     Object.prototype.toString.call(new Date(res.body.user.deletion.removeAt)),
   ).toEqual('[object Date]');
+});
+
+it('Publishses NATS event', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Admin);
+  const [x, user] = await global.getAuthCookie(UserTypes.Teacher);
+
+  await request(app)
+    .delete(path)
+    .set('Cookie', cookie)
+    .send({ userId: user.id })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

@@ -2,10 +2,11 @@ import request from 'supertest';
 import faker from 'faker';
 import { app } from '../../app';
 import mongoose from 'mongoose';
-
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/phase/create';
+
+import { natsWrapper } from '../../utils/natsWrapper';
 
 import Course from '../../models/course';
 const createCourse = async (ownerId?: string) => {
@@ -16,8 +17,7 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    // @ts-ignore
-    _id: courseId,
+    id: courseId,
   });
 
   await course.save();
@@ -142,4 +142,27 @@ it('Phase is returned in body if it is created', async () => {
     .expect(201);
 
   expect(res.body.phase).toBeDefined();
+});
+
+it('Publishses NATS event', async () => {
+  const userId = new mongoose.Types.ObjectId().toHexString();
+
+  const [cookie] = await global.getAuthCookie(
+    UserTypes.Teacher,
+    faker.internet.email(),
+    userId,
+  );
+
+  const { courseId } = await createCourse(userId);
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      parentCourseId: courseId,
+      name: faker.company.companyName(),
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

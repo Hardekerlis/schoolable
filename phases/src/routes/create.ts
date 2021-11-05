@@ -49,18 +49,14 @@ const create = async (req: Request, res: Response) => {
   await phase.save();
   logger.debug('Saved phase');
 
-  // Couldnt get nats mock to work
-  // Code is only ran if its not test environment
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
-      phaseId: phase.id as string,
-      parentCourseId: parentCourseId,
-      name,
-    });
+  // Publishes event to nats service
+  new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
+    phaseId: phase.id as string,
+    parentCourseId: parentCourseId,
+    name,
+  });
 
-    logger.info('Sent Nats phase created event');
-  }
+  logger.verbose('Sent Nats phase created event');
 
   logger.info('Created phase');
 

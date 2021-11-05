@@ -1,5 +1,5 @@
 {
-  "name": "phases",
+  "name": "submissions",
   "version": "1.0.0",
   "description": "Submissions handler for courses",
   "main": "./build/index.js",
@@ -16,10 +16,11 @@
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-common": "^0.2.2",
+    "@gustafdahl/schoolable-common": "^1.0.0",
     "backblaze-b2": "^1.7.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "express-validator": "^6.12.2",
     "mongoose": "^6.0.8",
     "multer": "^1.4.3"
@@ -33,10 +34,10 @@
     "@types/node": "^15.12.5",
     "@types/supertest": "^2.0.11",
     "del-cli": "^4.0.1",
-    "express-async-errors": "^3.1.1",
     "faker": "^5.5.3",
     "jest": "^27.2.4",
     "mongodb-memory-server": "^7.4.2",
+    "nanoid": "^3.1.30",
     "nodemon": "^2.0.13",
     "prettier": "^2.4.1",
     "supertest": "^6.1.6",

@@ -68,15 +68,13 @@ const update = async (req: Request, res: Response) => {
   logger.debug('Saving updated course');
   await course.save();
 
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new CourseUpdatedPublisher(natsWrapper.client, logger).publish({
-      name: course.name,
-      courseId: course.id,
-    });
+  // Publishes event to nats service
+  await new CourseUpdatedPublisher(natsWrapper.client, logger).publish({
+    name: course.name,
+    courseId: course.id,
+  });
 
-    logger.verbose('Sent Nats course added admin event');
-  }
+  logger.verbose('Sent Nats course added admin event');
 
   logger.info('Successfully updated course');
   res.status(200).json({

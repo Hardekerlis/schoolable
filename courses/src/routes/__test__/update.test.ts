@@ -3,6 +3,8 @@ import faker from 'faker';
 import mongoose from 'mongoose';
 import { app } from '../../app';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 const createCourse = async () => {
   const [cookie] = await global.getAuthCookie();
 
@@ -151,4 +153,21 @@ it('course page is updated if it is changed', async () => {
   expect(res.body.course.coursePage.description).not.toEqual(
     course.coursePage.description,
   );
+});
+
+it('Publishes NATS wrapper', async () => {
+  const { course, cookie } = await createCourse();
+
+  const res = await request(app)
+    .put(path)
+    .set('Cookie', cookie)
+    .send({
+      coursePage: {
+        description: 'new description',
+      },
+      courseId: course.id,
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

@@ -49,16 +49,14 @@ const addUsers = async (req: Request, res: Response) => {
   logger.debug('Saving group');
   await group.save();
 
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new GroupAddedUserPublisher(natsWrapper.client, logger).publish({
-      name: group.name,
-      groupId: group.id,
-      users: group.users as string[],
-    });
+  // Publishes event to nats service
+  new GroupAddedUserPublisher(natsWrapper.client, logger).publish({
+    name: group.name,
+    groupId: group.id,
+    users: group.users as string[],
+  });
 
-    logger.verbose('Sent Nats group added user event');
-  }
+  logger.verbose('Sent Nats group added user event');
 
   logger.info('Succesfully added users to group');
 

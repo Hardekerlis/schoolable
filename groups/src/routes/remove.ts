@@ -26,14 +26,12 @@ const remove = async (req: Request, res: Response) => {
   }
   logger.debug('Found group and removed it');
 
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new GroupRemovedPublisher(natsWrapper.client, logger).publish({
-      groupId: removedGroup.id,
-    });
+  // Publishes event to nats service
+  new GroupRemovedPublisher(natsWrapper.client, logger).publish({
+    groupId: removedGroup.id,
+  });
 
-    logger.verbose('Sent Nats group created event');
-  }
+  logger.verbose('Sent Nats group created event');
 
   logger.info('Successfully removed group');
 

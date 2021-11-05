@@ -81,17 +81,13 @@ const admins = {
     logger.debug('Saving course');
     await course.save();
 
-    // Couldnt get nats mock to work
-    // Code is only ran if its not test environment
-    if (process.env.NODE_ENV !== 'test') {
-      // Publishes event to nats service
-      new CourseAddedAdminPublisher(natsWrapper.client, logger).publish({
-        adminId: courseAdmin.id,
-        courseId: course.id,
-      });
+    // Publishes event to nats service
+    await new CourseAddedAdminPublisher(natsWrapper.client, logger).publish({
+      adminId: courseAdmin.id,
+      courseId: course.id,
+    });
 
-      logger.verbose('Sent Nats course added admin event');
-    }
+    logger.verbose('Sent Nats course added admin event');
 
     logger.info('Successfully added course admin');
     res.status(200).json({

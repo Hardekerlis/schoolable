@@ -18,7 +18,7 @@ export class CourseCreatedListener extends Listener<CourseCreatedEvent> {
     const { courseId, name, owner } = data;
     logger.info('Creating course reference');
 
-    const course = Course.build({ courseId, name, owner });
+    const course = Course.build({ id: courseId, name, owner });
 
     logger.debug('Saving course in database');
     await course.save();

@@ -69,15 +69,13 @@ const remove = async (req: Request, res: Response) => {
   logger.debug('Trying to save course');
   await course.save();
 
-  if (process.env.NODE_ENV !== 'test') {
-    // Publishes event to nats service
-    new CourseQueueRemovePublisher(natsWrapper.client, logger).publish({
-      courseId: course.id as string,
-      removeAt: removeAt,
-    });
+  // Publishes event to nats service
+  await new CourseQueueRemovePublisher(natsWrapper.client, logger).publish({
+    courseId: course.id as string,
+    removeAt: removeAt,
+  });
 
-    logger.info('Sent Nats course queue remove event');
-  }
+  logger.info('Sent Nats course queue remove event');
 
   logger.info('Successfully marked course for deletion');
 

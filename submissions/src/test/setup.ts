@@ -13,9 +13,8 @@ import {
 } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
-jest.mock('backblaze-b2');
-
-import b2 from '../utils/b2';
+import { sign } from 'cookie-signature';
+jest.mock('../utils/b2');
 
 const b2Keys = JSON.parse(
   fs.readFileSync(
@@ -24,6 +23,8 @@ const b2Keys = JSON.parse(
     'utf8',
   ),
 );
+
+process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 process.env.B2_API_TOKEN_ID = b2Keys.B2_API_TOKEN_ID;
 process.env.B2_API_TOKEN = b2Keys.B2_API_TOKEN;
@@ -51,8 +52,6 @@ winstonTestSetup();
 jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
-
-process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 beforeAll(async () => {
   process.env.MONGOMS_DOWNLOAD_URL =
@@ -89,6 +88,7 @@ global.getAuthCookie = async (
   if (!id) id = new mongoose.Types.ObjectId().toHexString();
 
   const payload: UserPayload = {
+    sessionId: 'asdasgasgsa',
     id,
     email,
     userType,
@@ -100,6 +100,7 @@ global.getAuthCookie = async (
   };
 
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
+  const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${token}; path=/`];
+  return [`token=${signedCookie}; path=/`];
 };

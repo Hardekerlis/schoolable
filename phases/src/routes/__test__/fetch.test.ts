@@ -17,8 +17,7 @@ const createCourse = async (ownerId?: string) => {
   const course = Course.build({
     name,
     owner: ownerId,
-    // @ts-ignore
-    _id: courseId,
+    id: courseId,
   });
 
   await course.save();
@@ -168,7 +167,7 @@ describe('Fetch a single phase', () => {
 
   it('Returns a 404 if no phase is found', async () => {
     const { parentCourseId, cookie } = await createPhase();
-    const phaseId = new mongoose.Types.ObjectId();
+    const phaseId = new mongoose.Types.ObjectId().toHexString();
 
     await request(app)
       .post(getPath(phaseId))

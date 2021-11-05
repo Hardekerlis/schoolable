@@ -7,6 +7,8 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 const path = '/api/groups/create';
 
+import { natsWrapper } from '../../utils/natsWrapper';
+
 it(`Has a route handler listening on ${path} for POST requests`, async () => {
   const res = await request(app).post(path).send({});
 
@@ -99,4 +101,24 @@ it('Returns the new group in response body', async () => {
     .expect(201);
 
   expect(res.body.group).toBeDefined();
+});
+
+it('Publishes NATS event', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
+  const user = await global.createUser(
+    UserTypes.Student,
+    faker.internet.email(),
+    new mongoose.Types.ObjectId().toHexString(),
+  );
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      name: 'group1',
+      users: [user.id],
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

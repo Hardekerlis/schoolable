@@ -14,6 +14,8 @@ import { sign } from 'cookie-signature';
 
 import User, { UserDoc } from '../models/user';
 
+jest.mock('../utils/natsWrapper');
+
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 import { app } from '../app';
@@ -42,8 +44,6 @@ import logger from '../utils/logger';
 
 logger.debug('Setting up tests...');
 winstonTestSetup();
-
-jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
 
