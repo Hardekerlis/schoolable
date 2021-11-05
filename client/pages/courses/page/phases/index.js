@@ -23,6 +23,9 @@ import {
   getUserData
 } from 'helpers';
 
+import language from 'helpers/lang';
+const lang = language.phases;
+
 import styles from './phases.module.sass';
 
 export const getServerSideProps = async ctx => {
@@ -239,7 +242,7 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
 
   let courseNavigationOptions = [
     {
-      text: 'Go back',
+      text: lang.goBack,
       onClick: () => navTo(`/courses/page?id=${router.query.id}`),
       icon: WarpBack
     },
@@ -252,7 +255,7 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
 
   if(canUserEditPage) courseNavigationOptions.push(
     {
-      text: 'Edit phase',
+      text: lang.editPhase,
       onClick: editPhaseClick,
       icon: Edit,
     }
@@ -295,7 +298,7 @@ const Phases = ({ serverErrors, phase, phaseItems, courseInfo, phaseItemSelected
 
                   <div className={styles.information}>
                     <div className={styles.verLine}></div>
-                    <p className={styles.descTitle}>Phase description</p>
+                    <p className={styles.descTitle}>{lang.phaseDescription}</p>
                     <p className={styles.desc}>
                       {phase.description}
                     </p>

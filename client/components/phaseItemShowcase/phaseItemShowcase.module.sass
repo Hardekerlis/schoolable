@@ -3,8 +3,18 @@
 .wrapper:hover
   background-color: $black
 
+  .editText
+    opacity: 1
+
 .wrapper.selected
   background-color: rgba($purple, 0.7)
+
+  .editText
+    opacity: 0 !important
+
+// .listWrapper:hover
+//   .editText
+//     opacity: 0 !important
 
 .listWrapper
   padding: 20px !important
@@ -19,6 +29,13 @@
   .title
     margin: 0px !important
 
+  .editText
+    position: absolute
+    right: 0px
+    left: unset
+    padding: 0px 30px
+    font-size: 1.5rem
+
 .wrapper
   width: 350px
   height: 210px
@@ -28,6 +45,7 @@
   margin-bottom: 20px
   display: inline-block
   cursor: pointer
+  position: relative
 
   //TODO: static color
   box-shadow: 2px 2px 50px 0px rgba(0,0,0,0.2)
@@ -56,3 +74,29 @@
     overflow: hidden
     text-overflow: ellipsis
     font-size: 1.1rem
+
+.editText
+  opacity: 0
+  position: absolute
+  right: 0px
+  bottom: 0px
+  top: 0px
+  left: 0px
+  font-size: 2rem
+  font-weight: 300
+  background-color: rgba($purple, 0.7)
+  padding: 10px
+
+  display: flex
+  justify-content: center
+  align-items: center
+
+  user-select: none
+
+  @include transitionProp(0.2s, ease-out, opacity)
+
+  // p
+  //   position: absolute
+  //   right: 0px
+  //   bottom: 0px
+  //   margin: 0px

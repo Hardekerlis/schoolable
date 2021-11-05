@@ -13,6 +13,7 @@ import Loader from './loader';
 import CourseNavigation from './courseNavigation';
 import PhaseItem from './phaseItem';
 import PhaseItemShowcase from './phaseItemShowcase';
+import PhaseItemEditing from './phaseItemEditing';
 //import pos
 
 
@@ -46,5 +47,6 @@ export {
   CourseNavigation,
   PhaseItem,
   PhaseItemShowcase,
+  PhaseItemEditing,
   //export pos
 };

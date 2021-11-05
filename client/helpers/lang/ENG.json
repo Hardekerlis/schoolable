@@ -19,7 +19,8 @@
     "descriptionTitle": "Course description",
     "editCourse": "Edit course",
     "phases": "Course phases",
-    "noPhasesText": "No phases found"
+    "noPhasesText": "No phases found",
+    "goBack": "Go back"
   },
   "coursePageEdit": {
     "coursePageTitleEditing": "Editing: ",
@@ -32,7 +33,20 @@
     "layoutTitle": "Editing:"
   },
   "phasesEdit": {
-    "layoutTitle": "Editing:"
+    "layoutTitle": "Editing:",
+    "editingText": "Editing:",
+    "goBack": "Go back",
+    "phaseDescription": "Phase description",
+    "noPhaseItemsFound": "No phase items found.",
+    "creationSystemItemName": "Phase item"
+  },
+  "phases": {
+    "phaseDescription": "Phase description",
+    "editPhase": "Edit phase",
+    "goBack": "Go back"
+  },
+  "phaseItemShowcase": {
+    "editText": "Edit"
   },
   "courseMenu": {
     "overview": "Overview",

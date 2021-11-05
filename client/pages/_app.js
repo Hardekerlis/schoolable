@@ -18,11 +18,11 @@ function App({ Component, pageProps }) {
 
   }, [router.asPath])
 
-  useEffect(() => {
-    return () => {
-      console.log('_app; un-mounting...');
-    };
-  });
+  // useEffect(() => {
+  //   return () => {
+  //     console.log('_app; un-mounting...');
+  //   };
+  // });
 
   return (
     <>

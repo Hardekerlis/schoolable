@@ -141,7 +141,7 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
 
   let courseNavigationOptions = [
     {
-      text: 'Go back',
+      text: lang.goBack,
       onClick: () => {
         setLoaderActive(true);
         router.push(`/courses`)
@@ -185,8 +185,6 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
 
           <div className={styles.header}>
             <p className={styles.headline}>{parsedCourseName}</p>
-
-
             <p className={styles.authorText}>
               {course.owner.name.first} {course.owner.name.last}
             </p>

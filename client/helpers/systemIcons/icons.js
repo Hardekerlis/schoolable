@@ -36,8 +36,16 @@ const PlusCircle = (
   <svg height="21" viewBox="2.5 2.5 16 16" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(4 4)"><path d="m12.5 10.5v-8c0-1.1045695-.8954305-2-2-2h-8c-1.1045695 0-2 .8954305-2 2v8c0 1.1045695.8954305 2 2 2h8c1.1045695 0 2-.8954305 2-2z"/><path d="m6.5 3.5v6.056"/><path d="m6.5 3.5v6" transform="matrix(0 1 -1 0 13 0)"/></g></svg>
 )
 
+const PlusCircleRound = (
+  <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(2 3)"><path d="m8 16c4.4380025 0 8-3.5262833 8-7.96428571 0-4.43800246-3.5619975-8.03571429-8-8.03571429-4.43800245 0-8 3.59771183-8 8.03571429 0 4.43800241 3.56199755 7.96428571 8 7.96428571z"/><path d="m4 8h8"/><path d="m8 12.0563492v-8.0563492z"/></g></svg>
+)
+
 const PlusClipboard = (
   <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(4 3)"><path d="m3.5 1.5c-.42139382 0-1.08806048 0-2 0-.55228475 0-1 .44771525-1 1v11c0 .5522848.44771525 1 1 1h10c.5522847 0 1-.4477152 1-1v-11c0-.55228475-.4477153-1-1-1-.8888889 0-1.55555556 0-2 0"/><path d="m4.5.5h4c.55228475 0 1 .44771525 1 1s-.44771525 1-1 1h-4c-.55228475 0-1-.44771525-1-1s.44771525-1 1-1z"/><path d="m6.5 5.5v6.056"/><path d="m6.5 5.5v6" transform="matrix(0 1 -1 0 15 2)"/></g></svg>
+)
+
+const PlusList = (
+  <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(4 6)"><path d="m.5.5h12"/><path d="m.5 4.5h12"/><path d="m.5 8.5h7"/><path d="m9.5 8.5h4zm2 2v-4z"/></g></svg>
 )
 
 const Edit = (
@@ -67,8 +75,10 @@ export {
   Plus,
   PlusCircle,
   PlusClipboard,
+  PlusList,
   Edit,
   WarpBack,
   LightEdit,
-  Document
+  Document,
+  PlusCircleRound
 }

@@ -8,7 +8,8 @@ import Layout from 'layouts/default';
 
 import {
   WarpBack,
-  PlusClipboard
+  PlusClipboard,
+  PlusList
  } from 'helpers/systemIcons'
 
 import {
@@ -18,7 +19,8 @@ import {
   CourseNavigation,
   PhaseItem,
   PhaseItemShowcase,
-  SampleCreationSystem
+  SampleCreationSystem,
+  PhaseItemEditing
  } from 'components';
 
 import { authCheck, redirectToLogin } from 'helpers/auth.js';
@@ -157,6 +159,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
   const [navOptions, setNavOptions] = useState([])
 
   const prevSelectedItem = usePrevious(selectedItem);
+  const prevPhaseItems = usePrevious(phaseItems);
 
   const navTo = (path) => {
 
@@ -179,30 +182,6 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
   }, [])
 
-  useEffect(async() => {
-
-    //p cannot be child of p: pages/edit
-    //additional phaseitem creation icon positioning
-    //done???
-    //
-
-
-    // const { data, meta } = await Request().client
-    //   .phaseitem.add('create')
-    //   .body({
-    //     name: 'My phaseItem',
-    //     parentPhaseId: router.query.phase,
-    //     parentCourseId: router.query.id
-    //   })
-    //   .post
-    //   .json
-    //   .result;
-    //
-    // console.log(data)
-
-
-  }, [])
-
   useEffect(() => {
 
     let options = [
@@ -215,7 +194,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
         selected: true,
         onClick: () => {
           setSelectedItem(false);
-          router.push(`/courses/page/phases?id=${router.query.id}&phase=${router.query.phase}`);
+          router.push(`/courses/page/phases/edit?id=${router.query.id}&phase=${router.query.phase}`);
         }
       }
     ]
@@ -246,7 +225,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
     setItemRenders(phaseItems?.map((obj, index) => {
       return(
-        <PhaseItemShowcase onClick={() => selectItem(index)} list={(selectedItem === false) ? false : true} key={index} name={obj.name} description={"hej"} selected={index === selectedItem} />
+        <PhaseItemShowcase isEditing={true} onClick={() => selectItem(index)} list={(selectedItem === false) ? false : true} key={index} name={obj.name} description={"hej"} selected={index === selectedItem} />
       )
     }))
 
@@ -259,16 +238,19 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
     listRef.current = elem;
   }
 
+  const scrollToSelectedItem = (index) => {
+    if(!index) index = selectedItem;
+    if(listRef.current) {
+      listRef.current.scrollTop = (100 * index) - (listRef.current.getBoundingClientRect().height/2.5);
+    }
+  }
+
   useEffect(() => {
     if(prevSelectedItem === false) {
       //scroll down to the selected item
-      if(listRef.current) {
-        const selectedElem = listRef.current.children[selectedItem];
-
-        listRef.current.scrollTop = (100 * selectedItem) - (listRef.current.getBoundingClientRect().height/2.5);
-      }
+      scrollToSelectedItem();
     }
-  }, [selectedItem, listRef])
+  }, [selectedItem, listRef]);
 
   const onItemCreation = async response => {
 
@@ -277,9 +259,10 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
       arr.push(response.phaseItem);
 
+      Prompt.success("Phase item created!");
+
       setPhaseItems(arr);
 
-      Prompt.success("Phase item created!");
       return true;
     }else {
       Prompt.error(response.errors);
@@ -287,6 +270,78 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
     }
 
   }
+
+  useEffect(() => {
+
+    if(!prevPhaseItems || !phaseItems) return;
+
+    if(prevPhaseItems.length !== phaseItems.length) {
+      //created new phaseItem
+      //select that item for editing
+      setSelectedItem(phaseItems.length-1)
+      scrollToSelectedItem(phaseItems.length-1);
+    }
+
+  }, [phaseItems])
+
+  // useEffect(() => {
+  //
+  //   if(!prevPhaseItems || !phaseItems) return;
+  //
+  //   if(prevPhaseItems.length !== phaseItems.length) {
+  //     //created new phaseItem
+  //     //prompt its editing
+  //     promptPhaseItemEditing(phaseItems.length - 1);
+  //   }
+  //
+  // }, [phaseItems])
+  //
+  // const [isEditingItem, setIsEditingItem] = useState(false);
+  // const [editingItem, setEditingItem] = useState(null);
+  //
+  // const promptPhaseItemEditing = (index) => {
+  //
+  //   //wait for sampleCreationSystem to finish
+  //   //otherwise a memory leak is created.
+  //   //TODO: probably update sampleCreationSystem to handle this better
+  //   setTimeout(() => {
+  //     setEditingItem(phaseItems[index]);
+  //     setIsEditingItem(true);
+  //   }, 0)
+  //
+  // }
+  //
+  // const [courseNavigationOptions, setCourseNavigationOptions] = useState([]);
+
+  // useEffect(() => {
+  //
+  //   if(isEditingItem === false) {
+  //
+  //     setCourseNavigationOptions([
+  //       {
+  //         text: lang.goBack,
+  //         onClick: () => navTo(`/courses/page?id=${router.query.id}`),
+  //         icon: WarpBack
+  //       },
+  //     ])
+  //
+  //   }else {
+  //
+  //     setCourseNavigationOptions([
+  //       {
+  //         text: lang.goBack,
+  //         onClick: () => {
+  //           setIsEditingItem(false)
+  //         },
+  //         icon: WarpBack
+  //       },
+  //     ])
+  //
+  //   }
+  //
+  // }, [isEditingItem])
+
+  //TODO: Look over create phase item symbol.
 
   return (
     <Layout title={`${lang.layoutTitle} ${phase.name}`}>
@@ -299,7 +354,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
           <div className={styles.header}>
 
             <div className={styles.breadcrumbs}>
-              <p className={styles.editing}>Editing: </p>
+              <p className={styles.editing}>{lang.editingText}</p>
               <Breadcrumbs options={navOptions} />
             </div>
 
@@ -311,7 +366,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
           <CourseNavigation options={[
             {
-              text: 'Go back',
+              text: lang.goBack,
               onClick: () => navTo(`/courses/page?id=${router.query.id}`),
               icon: WarpBack
             },
@@ -319,25 +374,25 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
           <div className={styles.inner}>
 
+          <SampleCreationSystem
+            creationContainerClassName={styles.creationSystemContainer}
+            createItemButtonClassName={styles.createPhaseButton}
+            body={{
+              parentCourseId: router.query.id,
+              parentPhaseId: router.query.phase
+            }}
+            requestCallback={onItemCreation}
+            itemApiPath={`/api/phaseitem/create`}
+            currentItems={phaseItems}
+            itemName={lang.creationSystemItemName}
+            noCurrentItemText={lang.noPhaseItemsFound}
+            createAdditionalItemIcon={PlusList}
+          />
+
             { (selectedItem === false) ?
 
                 <>
                   <div className={styles.content}>
-
-                    <SampleCreationSystem
-                      creationContainerClassName={styles.creationSystemContainer}
-                      createItemButtonClassName={styles.createPhaseButton}
-                      body={{
-                        parentCourseId: router.query.id,
-                        parentPhaseId: router.query.phase
-                      }}
-                      requestCallback={onItemCreation}
-                      itemApiPath={`/api/phaseitem/create`}
-                      currentItems={phaseItems}
-                      itemName={"Phase item"}
-                      noCurrentItemText={"No phase items found."}
-                      createAdditionalItemIcon={PlusClipboard}
-                    />
 
                     {itemRenders}
 
@@ -346,7 +401,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
                   <div className={styles.information}>
                     <div className={styles.verLine}></div>
-                    <p className={styles.descTitle}>Phase description</p>
+                    <p className={styles.descTitle}>{lang.phaseDescription}</p>
                     <p className={styles.desc}>
                       {phase.description}
                     </p>
@@ -364,13 +419,15 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
                   </div>
 
-                  <PhaseItem />
+                  <PhaseItemEditing item={phaseItems[selectedItem]} index={selectedItem} />
 
                 </>
 
             }
 
           </div>
+
+
         </div>
       </div>
     </Layout>

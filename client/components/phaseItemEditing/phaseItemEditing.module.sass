@@ -1,0 +1,68 @@
+@import "styles/variables"
+
+.wrapper
+  padding: 24px
+  width: 100%
+
+  form
+    width: 100%
+
+  .inputContainer
+    display: flex
+    flex-direction: row
+    align-items: center
+    border-radius: 10px
+    cursor: text
+    width: 100%
+
+    .inner
+      display: inline-flex
+      flex-direction: row
+      align-items: center
+      border-radius: 10px
+      padding-left: 20px
+      width: auto
+      pointer-events: none
+      background-color: $blacker
+
+      //TODO: static color
+      box-shadow: 2px 2px 20px 0px rgba(#000000, 0.2)
+
+    p
+      font-size: 2rem
+      margin: 0px
+      font-weight: 500
+      user-select: none
+      pointer-events: none
+      border-right: 2px solid $lightGrey
+      padding-right: 20px
+      height: 100%
+
+  input:focus
+    color: $white
+    border: 1px solid $white !important
+
+  input
+    padding: 10px
+    padding-right: 20px
+    background-color: transparent
+    border: 1px solid $blacker !important
+    color: rgba($white, 0.6)
+    border: none
+    font-size: 2rem
+    font-weight: 300
+    width: auto
+    border-radius: 10px
+    outline: none
+
+    margin-left: 10px
+    pointer-events: all
+    min-width: 40px
+    max-width: 100%
+
+    @include transition(0.2s, ease-out)
+
+  .headline
+    font-size: 2.5rem
+    font-weight: 800
+    margin: 0px
