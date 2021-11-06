@@ -1,10 +1,3 @@
-//TODO: remove colors. uninstall
-
-// const yellow = ;
-const blue = '\x1b[34m';
-const red = '\x1b[31m';
-const reset = '\x1b[0m';
-
 class Logger {
 
   constructor(page) {
@@ -20,18 +13,14 @@ class Logger {
     console.log(`[${this.yellow}WARN${this.reset}] in (${this.purple}${this.page}${this.reset}):`, ...arguments)
   }
 
-}
+  log() {
+    console.log(`[${this.blue}DEBUG${this.reset}]`, ...arguments);
+  }
 
-// const Logger = {
-//   log: function() {
-//     console.log(`[${blue}DEBUG${reset}]`, ...arguments);
-//   },
-//   warn: function() {
-//     console.log(`[${yellow}WARN${reset}]`, ...arguments)
-//   },
-//   err: function() {
-//     console.log(`[${red}ERR${reset}]`, ...arguments)
-//   }
-// }
+  err() {
+    console.log(`[${this.red}ERR${this.reset}]`, ...arguments)
+  }
+
+}
 
 export default Logger;
