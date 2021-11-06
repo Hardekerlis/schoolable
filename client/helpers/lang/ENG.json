@@ -48,6 +48,9 @@
   "phaseItemShowcase": {
     "editText": "Edit"
   },
+  "phaseItemEditing": {
+    "contentText": "Content"
+  },
   "courseMenu": {
     "overview": "Overview",
     "newItemPlaceholder": "New item name",

@@ -13,7 +13,9 @@ import { firstLetterToUpperCase, lowerFirstLetter } from './misc.js';
 import getUserDataServer from './getUserDataServer.js';
 import ErrorHandler from './errorHandler.js';
 import PathWatcher from './pathWatcher.js';
-import { IconRenderer } from './systemIcons'
+import { IconRenderer } from './systemIcons';
+import requireQueries from './requireQueries.js';
+import Logger from './logger.js';
 
 export {
   Permission,
@@ -30,5 +32,7 @@ export {
   getUserDataServer,
   ErrorHandler,
   PathWatcher,
-  IconRenderer
+  IconRenderer,
+  requireQueries,
+  Logger
 };

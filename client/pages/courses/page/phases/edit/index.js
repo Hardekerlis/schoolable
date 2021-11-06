@@ -33,8 +33,12 @@ import {
   Prompt,
   Request,
   ErrorHandler,
-  getUserDataServer
+  getUserDataServer,
+  requireQueries,
+  Logger
 } from 'helpers';
+
+const logger = new Logger('/phases/edit');
 
 import styles from './phasesEdit.module.sass';
 
@@ -43,6 +47,22 @@ export const getServerSideProps = async ctx => {
   if(!(await authCheck(ctx))) return redirectToLogin;
 
   const userData = getUserDataServer(ctx);
+
+  //TODO: add this to all page.
+  const canContinue = requireQueries(ctx, [
+    'phase',
+    'id'
+  ])
+
+  if(!canContinue) {
+    logger.warn("Missing queries. Cannot render page properly. Redirecting to /pageNotFound");
+    return {
+      redirect: {
+        destination: '/pageNotFound',
+        permanent: false
+      }
+    }
+  }
 
   let { data, meta } = await Request().server
     .phase.add(`fetch/${ctx.query.phase}`)
@@ -182,8 +202,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
   }, [])
 
-  useEffect(() => {
-
+  const renderBreadcrumbs = () => {
     let options = [
       {
         name: courseInfo?.name,
@@ -209,6 +228,11 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
     }
 
     setNavOptions(options);
+  }
+
+  useEffect(() => {
+
+    renderBreadcrumbs();
 
   }, [selectedItem])
 
@@ -221,13 +245,17 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
     setSelectedItem(index)
   }
 
-  useEffect(() => {
-
+  const renderPhaseItems = () => {
     setItemRenders(phaseItems?.map((obj, index) => {
       return(
         <PhaseItemShowcase isEditing={true} onClick={() => selectItem(index)} list={(selectedItem === false) ? false : true} key={index} name={obj.name} description={"hej"} selected={index === selectedItem} />
       )
     }))
+  }
+
+  useEffect(() => {
+
+    renderPhaseItems();
 
   }, [phaseItems, selectedItem])
 
@@ -284,64 +312,15 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
   }, [phaseItems])
 
-  // useEffect(() => {
-  //
-  //   if(!prevPhaseItems || !phaseItems) return;
-  //
-  //   if(prevPhaseItems.length !== phaseItems.length) {
-  //     //created new phaseItem
-  //     //prompt its editing
-  //     promptPhaseItemEditing(phaseItems.length - 1);
-  //   }
-  //
-  // }, [phaseItems])
-  //
-  // const [isEditingItem, setIsEditingItem] = useState(false);
-  // const [editingItem, setEditingItem] = useState(null);
-  //
-  // const promptPhaseItemEditing = (index) => {
-  //
-  //   //wait for sampleCreationSystem to finish
-  //   //otherwise a memory leak is created.
-  //   //TODO: probably update sampleCreationSystem to handle this better
-  //   setTimeout(() => {
-  //     setEditingItem(phaseItems[index]);
-  //     setIsEditingItem(true);
-  //   }, 0)
-  //
-  // }
-  //
-  // const [courseNavigationOptions, setCourseNavigationOptions] = useState([]);
-
-  // useEffect(() => {
-  //
-  //   if(isEditingItem === false) {
-  //
-  //     setCourseNavigationOptions([
-  //       {
-  //         text: lang.goBack,
-  //         onClick: () => navTo(`/courses/page?id=${router.query.id}`),
-  //         icon: WarpBack
-  //       },
-  //     ])
-  //
-  //   }else {
-  //
-  //     setCourseNavigationOptions([
-  //       {
-  //         text: lang.goBack,
-  //         onClick: () => {
-  //           setIsEditingItem(false)
-  //         },
-  //         icon: WarpBack
-  //       },
-  //     ])
-  //
-  //   }
-  //
-  // }, [isEditingItem])
-
   //TODO: Look over create phase item symbol.
+
+  const itemUpdate = (newItemData) => {
+    phaseItems[selectedItem].name = newItemData.name;
+    renderPhaseItems();
+    //onyl re-render breadcrumbs if the selectedItem
+    //is being changed, which it is
+    renderBreadcrumbs();
+  }
 
   return (
     <Layout title={`${lang.layoutTitle} ${phase.name}`}>
@@ -419,7 +398,7 @@ const Phases = ({ serverErrors, phase, _phaseItems, courseInfo, phaseItemSelecte
 
                   </div>
 
-                  <PhaseItemEditing item={phaseItems[selectedItem]} index={selectedItem} />
+                  <PhaseItemEditing itemUpdate={itemUpdate} item={phaseItems[selectedItem]} index={selectedItem} />
 
                 </>
 

@@ -14,7 +14,10 @@ import {
   Edit,
   LightEdit,
   WarpBack,
-  Document
+  Document,
+  Toggle,
+  Checkbox,
+  CheckboxChecked
 } from './icons.js';
 import IconRenderer from './renderer.js';
 
@@ -35,5 +38,8 @@ export {
   Edit,
   LightEdit,
   WarpBack,
-  Document
+  Document,
+  Toggle,
+  Checkbox,
+  CheckboxChecked
 }

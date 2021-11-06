@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
+import { nanoid } from 'nanoid';
+
 import {
-  firstLetterToUpperCase
+  firstLetterToUpperCase,
+  IconRenderer
 } from 'helpers';
+
+import {
+  PlusCircleRound,
+  Checkbox,
+  CheckboxChecked
+} from 'helpers/systemIcons';
+
+import language from 'helpers/lang';
+const lang = language.phaseItemEditing;
 
 import styles from './phaseItemEditing.module.sass';
 
@@ -91,8 +103,92 @@ const Input = ({what, onChange, value, index}) => {
   )
 }
 
+const Paragraph = ({}) => {
 
-const PhaseItemEditing = ({ item, index }) => {
+  const [typeRenders, setTypeRenders] = useState([]);
+
+  const [selectedType, setSelectedType] = useState(0);
+
+  const [types, setTypes] = useState([
+    {
+      //should be able to edit text in html
+      name: 'Text',
+      value: 'text',
+      enabled: true
+    },
+    {
+      name: 'Image',
+      value: 'image',
+      enabled: false
+    },
+    {
+      name: 'File upload',
+      value: 'file_upload',
+      enabled: false
+    }
+  ]);
+
+  const setType = (index) => {
+    let ts = types.slice();
+    ts[selectedType].enabled = false;
+    ts[index].enabled = true;
+    setTypes(ts);
+    setSelectedType(index);
+  }
+
+  useEffect(() => {
+
+    setTypeRenders(types.map((obj, index) => {
+
+      return (
+        <div onClick={() => setType(index)} key={index} className={styles.selector}>
+          <p className={styles.title}>{obj.name}</p>
+          <div className={styles.enabler}><IconRenderer className={styles.box} icon={(obj.enabled) ? CheckboxChecked : Checkbox} /></div>
+        </div>
+      )
+
+    }))
+
+  }, [types])
+
+  const RenderTypeContent = ({ type }) => {
+
+    let render = (<div></div>);
+    let title = 'Content';
+
+    if(type === 'text') {
+      title = 'Text'
+      render = (
+        <>
+          <textarea className={styles.text}>
+
+          </textarea>
+        </>
+      )
+    }
+
+    return (
+      <div className={styles.content}>
+        <p className={styles.headline}>{title}</p>
+        {render}
+      </div>
+    )
+
+  }
+
+  return (
+    <div className={styles.paragraph}>
+      <p className={styles.headline}>Type of content:</p>
+      <div className={styles.selectors}>{typeRenders}</div>
+
+      <RenderTypeContent type={types[selectedType].value} />
+
+    </div>
+  )
+
+}
+
+const PhaseItemEditing = ({ item, index, itemUpdate }) => {
 
   const prevIndex = usePrevious(index);
 
@@ -103,19 +199,34 @@ const PhaseItemEditing = ({ item, index }) => {
 
   const [myIndex, setMyIndex] = useState(index);
 
+  const [newParagraphs, setNewParagraphs] = useState([]);
+
+
   useEffect(() => {
     if(index !== prevIndex) {
       setData(item)
       setMyIndex(index);
+
+      setNewParagraphs([]);      
     }
+
+
 
   }, [index])
 
   const nameChanged = (evt) => {
+
     setData({
       ...data,
       name: evt.target.value
     })
+
+    //update the name of to rendered item in the list.
+    itemUpdate({
+      ...data,
+      name: evt.target.value
+    });
+
   }
 
   //html, images, text, uploads
@@ -127,10 +238,32 @@ const PhaseItemEditing = ({ item, index }) => {
   //use url in image tag
   //in iframe
 
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    console.log("submitted");
+
+  }
+
+
+  const addContent = () => {
+    let list = newParagraphs.slice();
+    list.push(
+      <Paragraph key={newParagraphs.length} />
+    );
+    setNewParagraphs(list);
+  }
+
   return(
     <div className={styles.wrapper}>
-      <form>
+      <form onSubmit={onSubmit}>
         <Input what="Title" onChange={nameChanged} value={firstLetterToUpperCase(data.name)} index={myIndex} />
+        <p className={styles.contentText}>{lang.contentText}</p>
+        {newParagraphs}
+        <div onClick={addContent} className={styles.addParagraph}>
+          <IconRenderer icon={PlusCircleRound} />
+          <p>Add a some content</p>
+        </div>
       </form>
     </div>
   )
