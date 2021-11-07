@@ -1,8 +1,19 @@
 import mongoose from 'mongoose';
 
+export enum AccessTypes {
+  User = 'user',
+  Course = 'course',
+}
+
+interface Access {
+  type: AccessTypes;
+  ids: string[];
+}
+
 interface FileAttributes {
   owner: string; // Grader will be the course owner
   fileName: string;
+  access: Access;
   b2FileId: string; // The file id in storage bucket in backblaze
   b2BucketId: string; // The id of the bucket file is stored in
   contentType: string;
@@ -17,6 +28,7 @@ interface FileModel extends mongoose.Model<FileDoc> {
 export interface FileDoc extends mongoose.Document {
   owner: string; // Grader will be the course owner
   fileName: string;
+  access: Access;
   b2FileId: string; // The file id in storage bucket in backblaze
   b2BucketId: string; // The id of the bucket file is stored in
   contentType: string;
@@ -33,6 +45,14 @@ const fileSchema = new mongoose.Schema(
     fileName: {
       type: String,
       required: true,
+    },
+    access: {
+      type: {
+        type: String,
+        enum: Object.values(AccessTypes),
+        default: '',
+      },
+      ids: [{ type: String, default: '' }],
     },
     b2FileId: {
       type: String,

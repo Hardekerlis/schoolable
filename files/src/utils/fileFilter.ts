@@ -2,14 +2,9 @@ import { Request, Express } from 'express';
 import { FileFilterCallback } from 'multer';
 import { CONFIG, BadRequestError, LANG } from '@gustafdahl/schoolable-common';
 
-interface FileType {
-  ext: string;
-  mimeType: string;
-}
-
 // Primative file filter
 // Checks if file extension and file mime type is allowed and together
-const fileFilter = (
+const fileFilter = async (
   req: Request,
   file: Express.Multer.File,
   cb: FileFilterCallback,
@@ -30,7 +25,7 @@ const fileFilter = (
     return cb(null, isAllowed);
   }
 
-  cb(new BadRequestError(LANG[`${req.lang}`].notSupportedFileType));
+  cb(null, isAllowed);
 };
 
 export default fileFilter;
