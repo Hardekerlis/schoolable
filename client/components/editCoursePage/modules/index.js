@@ -4,7 +4,7 @@ import language from 'helpers/lang';
 const lang = language.coursePage.modules;
 
 import {
-  Module
+  EditableModule
 } from 'components';
 
 import styles from './modules.module.sass';
@@ -20,7 +20,7 @@ const Modules = ({ _modules, setLoaderActive }) => {
     setModulesRender(
       modules.map((obj, index) => {
         return (
-          <Module key={index} id={obj.id} name={obj.name} phases={obj.phases} />
+          <EditableModule key={index} id={obj.id} name={obj.name} phases={obj.phases} />
         );
       }),
     );

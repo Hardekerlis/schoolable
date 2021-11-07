@@ -5,7 +5,6 @@ import Dropdown from './dropdown';
 import CourseMenuItems from './courseMenuItems';
 import SampleCreationSystem from './sampleCreationSystem';
 import Module from './module';
-import PhaseEditMenu from './phaseEditMenu';
 import CoursePreview from './coursePreview';
 import RightClickMenu from './rightClickMenu';
 import Breadcrumbs from './breadcrumbs';
@@ -14,6 +13,7 @@ import CourseNavigation from './courseNavigation';
 import PhaseItem from './phaseItem';
 import PhaseItemShowcase from './phaseItemShowcase';
 import PhaseItemEditing from './phaseItemEditing';
+import EditableModule from './editableModule';
 //import pos
 
 
@@ -34,7 +34,6 @@ export {
   CourseMenuItems,
   SampleCreationSystem,
   Module,
-  PhaseEditMenu,
   OneDaySchedule,
   MultipleDaySchedule,
   Month,
@@ -48,5 +47,6 @@ export {
   PhaseItem,
   PhaseItemShowcase,
   PhaseItemEditing,
+  EditableModule,
   //export pos
 };

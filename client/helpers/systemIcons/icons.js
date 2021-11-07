@@ -76,6 +76,14 @@ const CheckboxChecked = (
   <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(3 3)"><path d="m2.5.5h10c1.1045695 0 2 .8954305 2 2v10c0 1.1045695-.8954305 2-2 2h-10c-1.1045695 0-2-.8954305-2-2v-10c0-1.1045695.8954305-2 2-2z"/><path d="m4.5 7.5 2 2 4-4"/></g></svg>
 )
 
+const Checkmark = (
+  <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><path d="m.5 5.5 3 3 8.028-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(5 6)"/></svg>
+)
+
+const Crossmark = (
+  <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(5 5)"><path d="m10.5 10.5-10-10z"/><path d="m10.5.5-10 10"/></g></svg>
+)
+
 export {
   RightArrow,
   Calendar,
@@ -95,5 +103,7 @@ export {
   PlusCircleRound,
   Toggle,
   Checkbox,
-  CheckboxChecked
+  CheckboxChecked,
+  Checkmark,
+  Crossmark
 }

@@ -19,6 +19,14 @@ $mainContainerMargin: 30px
     margin: 0px !important
     width: 100%
 
+  .courseMenu
+    display: flex
+    flex-direction: row
+    width: auto
+    height: auto
+    height: $courseMenuHeight
+    position: relative
+
 .header
   display: flex
   flex-direction: row
@@ -91,57 +99,16 @@ $mainContainerMargin: 30px
 .mainContainer
   margin-top: $mainContainerMargin
   width: 100%
-
-  //remove (maybe)
-  // min-height: 50%
-
   display: flex
   flex-direction: column
+  padding-left: 100px
 
 .content
   width: 100%
   height: calc(100vh - #{$headerHeight} - #{$courseMenuHeight} - #{$mainContainerMargin} - 20px)
   position: relative
 
-.noPhasesText
-  color: $white
-  font-size: 1.2rem
-
-.phasesContainer
-  height: 100%
-  width: 100%
-  overflow-y: scroll
-  padding-bottom: 60px
-  display: flex
-  flex-direction: row
-  flex-wrap: wrap
-  align-content: flex-start
-  padding-left: 100px
-  padding-top: 20px
-
-.phaseDivider
-  position: absolute
-  height: 100%
-  width: 2px
-  background-color: $lightGrey
-  margin-left: 50%
-  left: -2px
-
-.phasesText
-  font-size: 2rem
-  color: $white
-  font-weight: 600
-  margin: 0px
-  margin-left: 100px
-  margin-bottom: 10px
-
-.courseMenu
-  display: flex
-  flex-direction: row
-  width: auto
-  height: auto
-  height: $courseMenuHeight
-  position: relative
+  
 
 .creationContainer
   position: absolute

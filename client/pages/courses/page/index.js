@@ -23,7 +23,6 @@ import {
   Loader,
   CourseMenuItems,
   CourseNavigation,
-  Module
 } from 'components';
 
 import {
@@ -42,7 +41,7 @@ export const getServerSideProps = async ctx => {
 
   if(!(await authCheck(ctx))) return redirectToLogin;
 
-  //Get course data. Not phases.
+  //Get course data. Not modules first.
 
   let { data, meta } = await Request().server
     .course.add(`fetch/${ctx.query.id}`)
@@ -50,12 +49,6 @@ export const getServerSideProps = async ctx => {
     .json
     .c(ctx)
     .result;
-
-  // console.log(ctx.query.id);
-  //
-  // console.log("course fetch", data)
-  //
-  // console.log("gjeapgjeaigjaep", meta)
 
   //200 is the expected status code
   let serverErrors = handleErrors(200, [404], data, meta);
@@ -126,19 +119,14 @@ const CoursePage = ({ serverErrors, course, _modules, sub }) => {
 
   const userData = getUserData();
 
-  // const { coursePage } = course;
   const coursePage = course?.coursePage;
-
-  if(!_modules) _modules = [];
-
-  let [modules, setModules] = useState(_modules);
-  let [modulesRender, setModulesRender] = useState();
 
   let [loaderActive, setLoaderActive] = useState(false);
 
+
   const editCourseClick = () => {
     setLoaderActive(true)
-    router.push(`/courses/page/edit?id=${router.query.id}`);
+    router.push(`/courses/page/edit?id=${router.query.id}&sub=${sub}`);
   };
 
 
@@ -165,16 +153,6 @@ const CoursePage = ({ serverErrors, course, _modules, sub }) => {
   )
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
-
-  useEffect(() => {
-    setModulesRender(
-      modules.map((obj, index) => {
-        return (
-          <Module setLoaderActive={setLoaderActive} editing={false} key={index} id={obj.id} name={obj.name} />
-        );
-      }),
-    );
-  }, [modules]);
 
   return (
     <Layout title={course.name}>
@@ -215,11 +193,11 @@ const CoursePage = ({ serverErrors, course, _modules, sub }) => {
 
           <div className={styles.mainContainer}>
             <div className={styles.content}>
-              {sub === 'overview' && (
+              {sub === 'overview' &&
                 <Overview />
-              )}
+              }
               {sub === 'modules' &&
-                <Modules modulesRender={modulesRender} />
+                <Modules _modules={_modules} setLoaderActive={setLoaderActive} />
               }
             </div>
           </div>

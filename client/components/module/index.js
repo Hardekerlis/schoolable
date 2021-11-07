@@ -1,131 +1,102 @@
 import React, { useEffect, useState } from 'react';
 
-import { useRouter } from 'next/router';
-
-import {
-  faFileAlt,
-  faAngleRight,
-  faPenSquare,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { nanoid } from 'nanoid';
 
 import {
   IconRenderer,
-  LightEdit,
   Document
 } from 'helpers/systemIcons';
 
 import styles from './module.module.sass';
 
-const ModuleToolbarOption = ({ text, onClick, icon }) => {
-
-  return (
-    <div onClick={onClick} className={styles.option}>
-      <IconRenderer className={styles.icon} icon={icon} />
-      <p>{text}</p>
-    </div>
-  )
-
-}
-
 const Module = ({
-  index,
   name,
-  editing,
   id,
-  setModuleEditMenuOpen,
   className,
   clickable,
-  setLoaderActive
+  phases
 }) => {
-  const router = useRouter();
 
   if(clickable !== false) clickable = true;
 
-  const nonEditableClick = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownHeight, setDropdownHeight] = useState(0);
+  const [dropdownId, setDropdownId] = useState('module_dropdown_' + nanoid(6));
+
+
+  const children = [
+    {
+      name: 'hej'
+    },
+    {
+      name: 'wzzup'
+    },
+    {
+      name: 'wzzup1'
+    },
+    {
+      name: 'wzzup2'
+    }
+  ]
+
+  const [renders, setRenders] = useState([]);
+
+  useEffect(() => {
+
+    setRenders(children.map((obj, index) => {
+      return (
+        <div className={styles.child} key={index}>
+          <p>{obj.name}</p>
+        </div>
+      )
+    }))
+
+    //height of dropdown child = 60
+    setDropdownHeight(children.length * 80)
+
+  }, [])
+
+  const onModuleClick = () => {
     if(!clickable) return;
 
-    setLoaderActive(true)
-
-    console.log("no phase page exists")
-
-    // router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
+    setIsOpen(!isOpen);
   };
-
-  const editableClick = () => {
-    //open edit menu
-
-    // console.log("clicked an editable phase")
-
-    setModuleEditMenuOpen(index, name, id);
-  };
-
-  const goToModuleEdit = () => {
-    //TODO: go to phase edit page
-    setLoaderActive(true);
-
-    console.log("no phase page exists")
-
-    // router.push(`/courses/page/phases/edit?id=${router.query.id}&phase=${id}`);
-  }
-
-  const goToModulePage = () => {
-    setLoaderActive(true)
-    console.log('no phase page exists');
-    // router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
-  }
 
   let containerClassName = className
     ? `${styles.wrapper} ${className}`
     : styles.wrapper;
 
-  if(!clickable) {
-    containerClassName += ` ${styles.nonClickable}`;
-  }
+  if(isOpen) containerClassName += ` ${styles.open}`;
 
-  if(editing) {
-    //Editable module
 
-    return (
-      <div className={styles.moduleEditWrapper}>
+  if(!clickable) containerClassName += ` ${styles.nonClickable}`;
 
-        <div onClick={editableClick} className={styles.moduleEdit}>
-          <div className={styles.iconContainer}>
-            <FontAwesomeIcon
-              icon={faPenSquare}
-              className={`${styles.fileIcon} ${styles.icon}`}
-            />
-          </div>
-          <p className={styles.name}>{name}</p>
-          <div className={styles.editBtn}>
-            <p>Edit</p>
-          </div>
-        </div>
-
-        <div className={styles.toolbar}>
-          <ModuleToolbarOption text={"Edit module page"} icon={LightEdit} onClick={goToModuleEdit} />
-          <ModuleToolbarOption text={"Go to module page"} icon={Document} onClick={goToModulePage} />
-        </div>
-
-      </div>
-    );
-  }else {
-    //Non-editable module
-
-    return (
-      <div onClick={nonEditableClick} className={containerClassName}>
+  return (
+    <>
+      <div onClick={onModuleClick} className={containerClassName}>
         <div className={styles.textContainer}>
           <div className={styles.iconContainer}>
-            <FontAwesomeIcon
-              icon={faFileAlt}
-              className={`${styles.fileIcon} ${styles.icon}`}
+            <IconRenderer
+              icon={Document}
+              className={styles.icon}
             />
           </div>
           <p className={styles.name}>{name}</p>
         </div>
+        <div id={dropdownId} className={(isOpen) ? `${styles.dropdown} ${styles.open}` : styles.dropdown}>
+          {renders}
+        </div>
       </div>
-    );
-  }
+
+      <style>
+      {`
+        #${dropdownId}.${styles.open} {
+          height: ${dropdownHeight}px
+        }
+      `}
+      </style>
+    </>
+  );
 };
 
 

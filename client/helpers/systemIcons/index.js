@@ -17,7 +17,9 @@ import {
   Document,
   Toggle,
   Checkbox,
-  CheckboxChecked
+  CheckboxChecked,
+  Checkmark,
+  Crossmark
 } from './icons.js';
 import IconRenderer from './renderer.js';
 
@@ -41,5 +43,7 @@ export {
   Document,
   Toggle,
   Checkbox,
-  CheckboxChecked
+  CheckboxChecked,
+  Checkmark,
+  Crossmark
 }
