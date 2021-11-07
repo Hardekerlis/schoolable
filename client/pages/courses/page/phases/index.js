@@ -11,7 +11,7 @@ import {
   Edit
 } from 'helpers/systemIcons'
 
-import { Sidebar, Breadcrumbs, Loader, CourseNavigation, PhaseItem, PhaseItemShowcase } from 'components';
+// import { Sidebar, Breadcrumbs, Loader, CourseNavigation, PhaseItem, PhaseItemShowcase } from 'components';
 
 import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
