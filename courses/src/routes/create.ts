@@ -50,8 +50,6 @@ const create = async (req: Request, res: Response) => {
         ],
         removeable: false,
       },
-      // Every menu item below is just for example
-      // TODO: Remove example menu items
       {
         title: 'Modules',
         value: 'modules',
