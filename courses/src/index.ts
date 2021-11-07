@@ -5,7 +5,6 @@ import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import {
-  PhaseCreatedListener,
   RemoveCourseListener,
   UserCreatedListener,
   UserRemovedListener,
@@ -45,9 +44,6 @@ const startServer = async () => {
 
     logger.debug('Registered RemoveCourseListener for nats');
     new RemoveCourseListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered PhaseCreatedListener for nats');
-    new PhaseCreatedListener(natsWrapper.client, logger).listen();
 
     logger.debug('Registered UserCreatedListener for nats');
     new UserCreatedListener(natsWrapper.client, logger).listen();

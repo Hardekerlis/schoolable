@@ -7,8 +7,8 @@ import { Message } from 'node-nats-streaming';
 
 import { queueGroupName } from './queueGroupName';
 import Course from '../../models/course';
+import Module from '../../models/module';
 import Phase from '../../models/phase';
-import PhaseItem from '../../models/phaseItem';
 import logger from '../../utils/logger';
 
 export class CourseRemovedListener extends Listener<CourseRemovedEvent> {
@@ -21,13 +21,13 @@ export class CourseRemovedListener extends Listener<CourseRemovedEvent> {
     logger.info(
       `Removing course with id ${courseId} and its phases and phase items`,
     );
-    await PhaseItem.deleteMany({
+    await Phase.deleteMany({
       parentCourse: courseId,
     });
 
     logger.debug('Removed phase items');
 
-    await Phase.deleteMany({
+    await Module.deleteMany({
       parentCourse: courseId,
     });
 

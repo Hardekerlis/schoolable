@@ -1,13 +1,17 @@
 noParentCourse: "Couldn't find parent course"
-needName: 'Need a name'
-needPhaseId: 'Need a phase id'
 needParentCourse: 'Need a parent course'
+
+needName: 'Need a name'
+
+noModule: "Couldn't find phase"
+needModuleId: 'Need a module id'
+
+createdPhase: 'Successfully created phase'
+noPhases: "Couldn't find any phases"
+foundPhases: 'Found phases'
 noPhase: "Couldn't find phase"
-createdPhaseItem: 'Successfully created phase item'
-noPhaseItems: "Couldn't find any phase items"
-foundPhaseItems: 'Found phase items'
-noPhaseItem: "Couldn't find phase item"
-foundPhaseItem: 'Found phase item'
-needPhaseItemId: 'Need a phase item id'
-updatedPhaseItem: 'Successfully updated phase item'
-upForDeletion: 'Queued phase item %name% for deletion'
+foundPhase: 'Found phase'
+needPhaseId: 'Need a phase id'
+updatedPhase: 'Successfully updated phase'
+
+upForDeletion: 'Queued phase %name% for deletion'

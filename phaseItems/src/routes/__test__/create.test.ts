@@ -5,12 +5,12 @@ import mongoose from 'mongoose';
 
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
-const path = '/api/phaseitem/create';
+const path = '/api/phases/create';
 
 import { natsWrapper } from '../../utils/natsWrapper';
 
 import Course from '../../models/course';
-import Phase from '../../models/phase';
+import Module from '../../models/module';
 const createCourse = async (ownerId?: string) => {
   const courseId = new mongoose.Types.ObjectId().toHexString();
   const name = faker.company.companyName();
@@ -27,21 +27,21 @@ const createCourse = async (ownerId?: string) => {
   return { courseId, ownerId, name };
 };
 
-const createPhase = async (ownerId?: string) => {
+const createModule = async (ownerId?: string) => {
   if (!ownerId) ownerId = new mongoose.Types.ObjectId().toHexString();
-  const parentPhaseId = new mongoose.Types.ObjectId().toHexString();
+  const parentModuleId = new mongoose.Types.ObjectId().toHexString();
 
   const { courseId } = await createCourse(ownerId);
 
-  const phase = Phase.build({
-    id: parentPhaseId as string,
+  const phase = Module.build({
+    id: parentModuleId as string,
     parentCourseId: courseId,
     name: faker.company.companyName(),
   });
 
   await phase.save();
 
-  return { parentPhaseId, ownerId, parentCourseId: courseId };
+  return { parentModuleId, ownerId, parentCourseId: courseId };
 };
 
 it(`Has a route handler listening on ${path} for post requests`, async () => {
@@ -51,14 +51,14 @@ it(`Has a route handler listening on ${path} for post requests`, async () => {
 });
 
 it('Returns a 401 if user is not authorized', async () => {
-  const { parentCourseId, parentPhaseId } = await createPhase();
+  const { parentCourseId, parentModuleId } = await createModule();
 
   await request(app)
     .post(path)
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(401);
 });
@@ -70,7 +70,7 @@ it('Returns a 401 if user is not a teacher, temp teacher or admin', async () => 
     new mongoose.Types.ObjectId().toHexString(),
   );
 
-  const { parentCourseId, parentPhaseId } = await createPhase();
+  const { parentCourseId, parentModuleId } = await createModule();
 
   await request(app)
     .post(path)
@@ -78,7 +78,7 @@ it('Returns a 401 if user is not a teacher, temp teacher or admin', async () => 
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(401);
 });
@@ -90,7 +90,7 @@ it('Returns a 401 if user is not course owner or course admin', async () => {
     new mongoose.Types.ObjectId().toHexString(),
   );
 
-  const { parentCourseId, parentPhaseId } = await createPhase();
+  const { parentCourseId, parentModuleId } = await createModule();
 
   await request(app)
     .post(path)
@@ -98,14 +98,14 @@ it('Returns a 401 if user is not course owner or course admin', async () => {
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(401);
 });
 
 it('Returns a 400 if name is undefined', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
+  const { parentCourseId, parentModuleId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -117,14 +117,14 @@ it('Returns a 400 if name is undefined', async () => {
     .set('Cookie', cookie)
     .send({
       parentCourseId,
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(400);
 });
 
 it('Returns a 400 if parentCourseId is undefined', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentPhaseId } = await createPhase(ownerId);
+  const { parentModuleId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -136,14 +136,14 @@ it('Returns a 400 if parentCourseId is undefined', async () => {
     .set('Cookie', cookie)
     .send({
       name: faker.company.companyName(),
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(400);
 });
 
-it('Returns a 400 if parentPhaseId is undefined', async () => {
+it('Returns a 400 if parentModuleId is undefined', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourseId } = await createPhase(ownerId);
+  const { parentCourseId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -160,9 +160,9 @@ it('Returns a 400 if parentPhaseId is undefined', async () => {
     .expect(400);
 });
 
-it('Returns a 404 if parentPhaseId is not a valid object id', async () => {
+it('Returns a 404 if parentModuleId is not a valid object id', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourseId } = await createPhase(ownerId);
+  const { parentCourseId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -175,14 +175,14 @@ it('Returns a 404 if parentPhaseId is not a valid object id', async () => {
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId: 'notvalidobjectid',
+      parentModuleId: 'notvalidobjectid',
     })
     .expect(404);
 });
 
 it('Returns a 404 if parentCourseId is not a valid object id', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentPhaseId } = await createPhase(ownerId);
+  const { parentModuleId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -195,14 +195,14 @@ it('Returns a 404 if parentCourseId is not a valid object id', async () => {
     .send({
       name: faker.company.companyName(),
       parentCourseId: 'notvalidobjectid',
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(404);
 });
 
 it('Returns a 404 if no parentCourseId is found', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentPhaseId } = await createPhase(ownerId);
+  const { parentModuleId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -215,14 +215,14 @@ it('Returns a 404 if no parentCourseId is found', async () => {
     .send({
       name: faker.company.companyName(),
       parentCourseId: new mongoose.Types.ObjectId().toHexString(),
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(404);
 });
 
 it('Returns a 404 if no phase with supplied id is found', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourseId } = await createPhase(ownerId);
+  const { parentCourseId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -235,14 +235,14 @@ it('Returns a 404 if no phase with supplied id is found', async () => {
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId: new mongoose.Types.ObjectId().toHexString(),
+      parentModuleId: new mongoose.Types.ObjectId().toHexString(),
     })
     .expect(404);
 });
 
 it('Returns a 201 if phase item is successfully created', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
+  const { parentCourseId, parentModuleId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -255,14 +255,14 @@ it('Returns a 201 if phase item is successfully created', async () => {
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(201);
 });
 
 it('Returns phase item in response body if it successfully created', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
+  const { parentCourseId, parentModuleId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -275,7 +275,7 @@ it('Returns phase item in response body if it successfully created', async () =>
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(201);
 
@@ -284,7 +284,7 @@ it('Returns phase item in response body if it successfully created', async () =>
 
 it('Publishes NATS event', async () => {
   const ownerId = new mongoose.Types.ObjectId().toHexString();
-  const { parentCourseId, parentPhaseId } = await createPhase(ownerId);
+  const { parentCourseId, parentModuleId } = await createModule(ownerId);
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
     undefined,
@@ -297,7 +297,7 @@ it('Publishes NATS event', async () => {
     .send({
       name: faker.company.companyName(),
       parentCourseId,
-      parentPhaseId,
+      parentModuleId,
     })
     .expect(201);
 

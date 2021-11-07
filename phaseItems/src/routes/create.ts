@@ -7,24 +7,24 @@ import {
 } from '@gustafdahl/schoolable-common';
 
 import Course from '../models/course';
+import Module from '../models/module';
 import Phase from '../models/phase';
-import PhaseItem from '../models/phaseItem';
 
 import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
-import PhaseItemCreatedPublisher from '../events/publishers/phaseItemCreated';
+import PhaseCreatedPublisher from '../events/publishers/phaseCreated';
 
 const create = async (req: Request, res: Response) => {
   const { currentUser } = req;
-  const { name, parentPhaseId, parentCourseId } = req.body;
+  const { name, parentModuleId, parentCourseId } = req.body;
   const _lang = req.lang;
   const lang = LANG[_lang];
 
-  logger.info('Creating phase item');
+  logger.info('Creating phase');
 
-  if (!isValidObjectId(parentPhaseId)) {
-    logger.debug('Phase id is not a valid ObjectId');
+  if (!isValidObjectId(parentModuleId)) {
+    logger.debug('Module id is not a valid ObjectId');
     return res.status(404).json({
       errors: false,
       message: lang.noPhase,
@@ -59,41 +59,41 @@ const create = async (req: Request, res: Response) => {
   }
   logger.debug('User is allowed to create resources for this course');
 
-  logger.debug('Looking up parent phase');
-  const phase = await Phase.findById(parentPhaseId);
+  logger.debug('Looking up parent module');
+  const module = await Module.findById(parentModuleId);
 
-  if (!phase) {
-    logger.debug('No parent phase found');
+  if (!module) {
+    logger.debug('No parent module found');
     throw new NotFoundError();
   }
-  logger.debug('Found phase');
+  logger.debug('Found parent module');
 
-  logger.debug('Building phase item');
-  const phaseItem = PhaseItem.build({
+  logger.debug('Building phase');
+  const phase = Phase.build({
     name,
     parentCourseId: parentCourseId,
-    parentPhaseId: parentPhaseId,
+    parentModuleId: parentModuleId,
   });
 
-  logger.debug('Saving phase item');
-  await phaseItem.save();
+  logger.debug('Saving phase');
+  await phase.save();
 
   // Publishes event to nats service
-  new PhaseItemCreatedPublisher(natsWrapper.client, logger).publish({
+  new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
     parentCourseId: course.id as string,
-    parentPhaseId: phase.id,
-    phaseItemId: phaseItem.id,
+    parentModuleId: phase.id,
+    phaseId: phase.id,
     name,
   });
 
-  logger.verbose('Sent Nats phase item created event');
+  logger.verbose('Sent Nats phase created event');
 
-  logger.info('Created phase item. Returning to user');
+  logger.info('Created phase. Returning to user');
 
   res.status(201).json({
     errors: false,
-    message: lang.createdPhaseItem,
-    phaseItem,
+    message: lang.createdPhase,
+    phase,
   });
 };
 

@@ -1,9 +1,19 @@
 import mongoose from 'mongoose';
 
 interface PhaseAttributes {
-  id: string;
-  parentCourseId: string;
   name: string;
+  parentCourseId: string;
+  parentModuleId: string;
+  paragraphs?: string[];
+  locked?: boolean;
+  unlockOn?: Date;
+  hidden?: boolean;
+  visibleOn?: Date;
+  lockOn?: Date; // When should the phase be locked
+  deletion?: {
+    isUpForDeletion: boolean;
+    removeAt: Date;
+  };
 }
 
 interface PhaseModel extends mongoose.Model<PhaseDoc> {
@@ -11,24 +21,50 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 }
 
 export interface PhaseDoc extends mongoose.Document {
-  id: string;
-  parentCourseId: string;
   name: string;
+  parentCourseId: string;
+  parentModuleId: string;
+  paragraphs?: string[];
+  locked?: boolean;
+  unlockOn?: Date;
+  hidden?: boolean;
+  visibleOn?: Date;
+  lockOn?: Date; // When should the phase be locked
+  deletion?: {
+    isUpForDeletion: boolean;
+    removeAt: Date;
+  };
 }
 
 const phaseSchema = new mongoose.Schema(
   {
-    _id: {
-      type: mongoose.Types.ObjectId,
+    name: {
+      type: String,
       required: true,
     },
     parentCourseId: {
       type: String,
       required: true,
     },
-    name: {
+    parentModuleId: {
       type: String,
       required: true,
+    },
+    paragraphs: [String],
+    locked: {
+      type: Boolean,
+      default: true,
+    },
+    unlockOn: Date,
+    lockOn: Date,
+    hidden: {
+      type: Boolean,
+      default: true,
+    },
+    visibleOn: Date,
+    deletion: {
+      isUpForDeletion: Boolean,
+      removeAt: Date,
     },
   },
   {
@@ -52,11 +88,6 @@ const phaseSchema = new mongoose.Schema(
 );
 
 phaseSchema.statics.build = (attributes: PhaseAttributes) => {
-  // @ts-ignore
-  attributes._id = attributes.id;
-  // @ts-ignore
-  delete attributes.id;
-
   return new Phase(attributes);
 };
 

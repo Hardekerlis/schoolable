@@ -12,6 +12,13 @@ spec:
       http:
         paths:
           - pathType: Prefix
+            path: /api/phases/*
+            backend:
+              service:
+                name: phases-srv
+                port:
+                  number: 3000
+          - pathType: Prefix
             path: /api/groups/*
             backend:
               service:
@@ -47,33 +54,19 @@ spec:
                 port:
                   number: 3000
           - pathType: Prefix
-            path: /api/phaseitem/*
+            path: /api/modules/*
             backend:
               service:
-                name: phase-items-srv
+                name: modules-srv
                 port:
                   number: 3000
           - pathType: Prefix
-            path: /api/phase/*
-            backend:
-              service:
-                name: phases-srv
-                port:
-                  number: 3000
-          - pathType: Prefix
-            path: /api/course/*
+            path: /api/courses/*
             backend:
               service:
                 name: courses-srv
                 port:
                   number: 3000
-          # - pathType: Prefix
-          #   path: /api/auth/*
-          #   backend:
-          #     service:
-          #       name: auth-srv
-          #       port:
-          #         number: 3000
           - pathType: Prefix
             path: /*
             backend:

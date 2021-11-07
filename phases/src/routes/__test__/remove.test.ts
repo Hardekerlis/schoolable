@@ -2,52 +2,11 @@ import request from 'supertest';
 import faker from 'faker';
 import { app } from '../../app';
 import mongoose from 'mongoose';
-
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
-const path = '/api/phase/remove';
+const path = '/api/phases';
 
 import { natsWrapper } from '../../utils/natsWrapper';
-
-import Course from '../../models/course';
-
-const createCourse = async (ownerId?: string) => {
-  const courseId = new mongoose.Types.ObjectId().toHexString();
-  const name = faker.company.companyName();
-  if (!ownerId) ownerId = new mongoose.Types.ObjectId().toHexString();
-
-  const course = Course.build({
-    name,
-    owner: ownerId,
-    id: courseId,
-  });
-
-  await course.save();
-
-  return { courseId, ownerId, name };
-};
-
-const createPhase = async () => {
-  const { courseId, ownerId, name } = await createCourse();
-  const [cookie] = await global.getAuthCookie(
-    UserTypes.Teacher,
-    undefined,
-    ownerId,
-  );
-
-  const res = await request(app)
-    .post('/api/phase/create')
-    .set('Cookie', cookie)
-    .send({ parentCourseId: courseId, name: faker.company.companyName() })
-    .expect(201);
-
-  return {
-    parentCourseId: courseId,
-    phase: res.body.phase,
-    phaseId: res.body.phase.id,
-    cookie,
-  };
-};
 
 it(`Has a route handler listening on ${path} for delete requests`, async () => {
   const res = await request(app).delete(path).send({});
@@ -55,109 +14,28 @@ it(`Has a route handler listening on ${path} for delete requests`, async () => {
   expect(res.status).not.toEqual(404);
 });
 
-it('Returns a 401 if user is not authenticated', async () => {
-  const { phaseId, parentCourseId } = await createPhase();
-
-  await request(app).delete(path).send({ phaseId, parentCourseId }).expect(401);
+it('Returns a 401 if user is not authorized', async () => {
+  await request(app).post(path).send({}).expect(401);
 });
 
-it('Returns a 401 if user is not of type teacher, temp teacher or admin', async () => {
-  const { phaseId, parentCourseId } = await createPhase();
-  const [cookie] = await global.getAuthCookie(UserTypes.Student);
+it.todo('Returns a 401 if user is not teacher or admin');
 
-  await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      phaseId,
-      parentCourseId,
-    })
-    .expect(401);
-});
+it.todo('Returns a 401 if user is not course owner');
 
-it('Returns a 401 if user is not course owner or admin', async () => {
-  const { phaseId, parentCourseId } = await createPhase();
-  const [cookie] = await global.getAuthCookie();
+it.todo('Returns a 400 if parent course id is not in request body');
 
-  await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      phaseId,
-      parentCourseId,
-    })
-    .expect(401);
-});
+it.todo('Returns a 400 if parent module id is not in request body');
 
-it('Returns a 400 if phaseId is not present in body', async () => {
-  const { parentCourseId, cookie } = await createPhase();
+it.todo('Returns a 404 if parent course id is not a valid ObjectId');
 
-  const res = await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      parentCourseId,
-    })
-    .expect(400);
+it.todo('Returns a 404 if parent module id is not a valid ObjectId');
 
-  expect(res.body.errors[0].message).toEqual('No phase id found in body');
-});
+it.todo('Returns a 404 if no parent course is found');
 
-it('Returns a 400 if parentCourseId is not present in body', async () => {
-  const { phaseId, cookie } = await createPhase();
+it.todo('Returns a 404 if no parent module is found');
 
-  const res = await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      phaseId,
-    })
-    .expect(400);
+it.todo('Returns a 200 if a phase is successfully queued for deletion');
 
-  expect(res.body.errors[0].message).toEqual(
-    'No parent course id found in body',
-  );
-});
+it.todo('Returns the phase queued for deletion in response body');
 
-it('Returns a 200 if phase is successfully queued for removal', async () => {
-  const { phaseId, parentCourseId, cookie } = await createPhase();
-
-  await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      phaseId,
-      parentCourseId,
-    })
-    .expect(200);
-});
-
-it('Returns the phases with removeAt as a date', async () => {
-  const { phaseId, parentCourseId, cookie } = await createPhase();
-
-  const res = await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      phaseId,
-      parentCourseId,
-    })
-    .expect(200);
-
-  expect(res.body.phase.deletion.isUpForDeletion).toEqual(true);
-});
-
-it('Publishes NATS event', async () => {
-  const { phaseId, parentCourseId, cookie } = await createPhase();
-
-  await request(app)
-    .delete(path)
-    .set('Cookie', cookie)
-    .send({
-      phaseId,
-      parentCourseId,
-    })
-    .expect(200);
-
-  expect(natsWrapper.client.publish).toHaveBeenCalled();
-});
+it.todo('Publishes NATS event');

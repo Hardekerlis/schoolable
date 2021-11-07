@@ -11,7 +11,7 @@ const createCourse = async () => {
   const [cookie] = await global.getAuthCookie();
 
   const res = await request(app)
-    .post('/api/course/create')
+    .post('/api/courses/create')
     .set('Cookie', cookie)
     .send({ name: faker.company.companyName() });
 
@@ -30,7 +30,7 @@ const addStudent = async (amount?: number) => {
   );
 
   await request(app)
-    .post('/api/course/add/student')
+    .post('/api/courses/add/student')
     .set('Cookie', cookie)
     .send({
       courseId: course.id,
@@ -42,7 +42,7 @@ const addStudent = async (amount?: number) => {
 };
 
 describe('Add students', () => {
-  const path = '/api/course/add/student';
+  const path = '/api/courses/add/student';
 
   it(`Has a route handler listening on ${path} for post requests`, async () => {
     const res = await request(app).post(path).send({});
@@ -189,7 +189,7 @@ describe('Add students', () => {
 });
 
 describe('Remove students', () => {
-  const path = '/api/course/remove/student';
+  const path = '/api/courses/remove/student';
 
   it(`Has a route handler listening on ${path} for post requests`, async () => {
     const res = await request(app).post(path).send({});

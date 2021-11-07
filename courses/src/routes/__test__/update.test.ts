@@ -9,14 +9,14 @@ const createCourse = async () => {
   const [cookie] = await global.getAuthCookie();
 
   const res = await request(app)
-    .post('/api/course/create')
+    .post('/api/courses/create')
     .set('Cookie', cookie)
     .send({ name: faker.company.companyName() });
 
   return { course: res.body.course, cookie };
 };
 
-const path = '/api/course/update';
+const path = '/api/courses/update';
 
 it(`Has a route handler listening on ${path} for PUT requests`, async () => {
   const res = await request(app).put(path).send({});

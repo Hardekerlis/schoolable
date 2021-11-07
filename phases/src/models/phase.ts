@@ -1,17 +1,11 @@
 import mongoose from 'mongoose';
 
-interface PhaseItem {
-  name: string;
-  id: string;
-  locked: boolean;
-  hidden: boolean;
-}
+import { PhasePageDoc } from './phasePage';
 
 interface PhaseAttributes {
   name: string;
-  parentCourseId: string;
-  phaseItems?: PhaseItem[];
   description?: string;
+  page: PhasePageDoc;
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
   hidden?: boolean; // Is the phase visible to students
@@ -29,9 +23,8 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 
 export interface PhaseDoc extends mongoose.Document {
   name: string;
-  parentCourseId: string;
-  phaseItems?: PhaseItem[];
   description?: string;
+  page: PhasePageDoc;
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
   hidden?: boolean; // Is the phase visible to students
@@ -49,21 +42,14 @@ const phaseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    parentCourseId: {
-      type: String,
-      required: true,
-    },
-    phaseItems: [
-      {
-        name: String,
-        id: String,
-        locked: Boolean,
-        visible: Boolean,
-      },
-    ],
     description: {
       type: String,
       default: '',
+    },
+    page: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'phasePage',
+      required: true,
     },
     locked: {
       type: Boolean,
