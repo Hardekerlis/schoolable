@@ -53,35 +53,46 @@ const create = async (req: Request, res: Response) => {
       // Every menu item below is just for example
       // TODO: Remove example menu items
       {
-        title: 'Example 1',
-        value: 'example_1',
-        access: ['all'],
-        actions: [
-          {
-            actionType: ActionTypes.RightClick,
-            goTo: 'this.example_1',
-          },
-        ],
-      },
-      {
-        title: 'Example 2',
-        value: 'example_2',
+        title: 'Modules',
+        value: 'modules',
         access: ['all'],
         actions: [
           {
             actionType: ActionTypes.LeftClick,
-            goTo: 'this.example_2',
+            goTo: 'this.modules',
           },
         ],
       },
       {
-        title: 'Example 3',
-        value: 'example_3',
+        title: 'Attendees',
+        value: 'attendees',
         access: ['all'],
         actions: [
           {
             actionType: ActionTypes.LeftClick,
-            goTo: 'this.example_3',
+            goTo: 'this.attendees',
+          },
+        ],
+      },
+      {
+        title: 'Assignments',
+        value: 'assignments',
+        access: ['all'],
+        actions: [
+          {
+            actionType: ActionTypes.LeftClick,
+            goTo: 'this.assignments',
+          },
+        ],
+      },
+      {
+        title: 'Schedule',
+        value: 'schedule',
+        access: ['all'],
+        actions: [
+          {
+            actionType: ActionTypes.LeftClick,
+            goTo: 'this.schedule',
           },
         ],
       },
