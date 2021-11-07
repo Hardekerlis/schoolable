@@ -62,6 +62,7 @@ const create = async (req: Request, res: Response) => {
             goTo: 'this.modules',
           },
         ],
+        removeable: false,
       },
       {
         title: 'Attendees',
