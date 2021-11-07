@@ -4,7 +4,7 @@ import Sidebar from './sidebar';
 import Dropdown from './dropdown';
 import CourseMenuItems from './courseMenuItems';
 import SampleCreationSystem from './sampleCreationSystem';
-import Phase from './phase';
+import Module from './module';
 import PhaseEditMenu from './phaseEditMenu';
 import CoursePreview from './coursePreview';
 import RightClickMenu from './rightClickMenu';
@@ -33,7 +33,7 @@ export {
   Dropdown,
   CourseMenuItems,
   SampleCreationSystem,
-  Phase,
+  Module,
   PhaseEditMenu,
   OneDaySchedule,
   MultipleDaySchedule,

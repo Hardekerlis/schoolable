@@ -11,7 +11,8 @@
     "phase",
     "phaseitem",
     "sessions",
-    "users"
+    "users",
+    "module"
   ],
   "contentTypes": {
     "html": "text/html",

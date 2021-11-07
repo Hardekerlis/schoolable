@@ -15,9 +15,9 @@ import {
   Document
 } from 'helpers/systemIcons';
 
-import styles from './phase.module.sass';
+import styles from './module.module.sass';
 
-const PhaseToolbarOption = ({ text, onClick, icon }) => {
+const ModuleToolbarOption = ({ text, onClick, icon }) => {
 
   return (
     <div onClick={onClick} className={styles.option}>
@@ -28,12 +28,12 @@ const PhaseToolbarOption = ({ text, onClick, icon }) => {
 
 }
 
-const Phase = ({
+const Module = ({
   index,
   name,
   editing,
   id,
-  setPhaseEditMenuOpen,
+  setModuleEditMenuOpen,
   className,
   clickable,
   setLoaderActive
@@ -47,7 +47,9 @@ const Phase = ({
 
     setLoaderActive(true)
 
-    router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
+    console.log("no phase page exists")
+
+    // router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
   };
 
   const editableClick = () => {
@@ -55,18 +57,22 @@ const Phase = ({
 
     // console.log("clicked an editable phase")
 
-    setPhaseEditMenuOpen(index, name, id);
+    setModuleEditMenuOpen(index, name, id);
   };
 
-  const goToPhaseEdit = () => {
+  const goToModuleEdit = () => {
     //TODO: go to phase edit page
     setLoaderActive(true);
-    router.push(`/courses/page/phases/edit?id=${router.query.id}&phase=${id}`);
+
+    console.log("no phase page exists")
+
+    // router.push(`/courses/page/phases/edit?id=${router.query.id}&phase=${id}`);
   }
 
-  const goToPhasePage = () => {
+  const goToModulePage = () => {
     setLoaderActive(true)
-    router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
+    console.log('no phase page exists');
+    // router.push(`/courses/page/phases?id=${router.query.id}&phase=${id}`);
   }
 
   let containerClassName = className
@@ -78,12 +84,12 @@ const Phase = ({
   }
 
   if(editing) {
-    //Editable phase
+    //Editable module
 
     return (
-      <div className={styles.phaseEditWrapper}>
+      <div className={styles.moduleEditWrapper}>
 
-        <div onClick={editableClick} className={styles.phaseEdit}>
+        <div onClick={editableClick} className={styles.moduleEdit}>
           <div className={styles.iconContainer}>
             <FontAwesomeIcon
               icon={faPenSquare}
@@ -97,14 +103,14 @@ const Phase = ({
         </div>
 
         <div className={styles.toolbar}>
-          <PhaseToolbarOption text={"Edit phase page"} icon={LightEdit} onClick={goToPhaseEdit} />
-          <PhaseToolbarOption text={"Go to phase page"} icon={Document} onClick={goToPhasePage} />
+          <ModuleToolbarOption text={"Edit module page"} icon={LightEdit} onClick={goToModuleEdit} />
+          <ModuleToolbarOption text={"Go to module page"} icon={Document} onClick={goToModulePage} />
         </div>
 
       </div>
     );
   }else {
-    //Non-editable phase
+    //Non-editable module
 
     return (
       <div onClick={nonEditableClick} className={containerClassName}>
@@ -122,12 +128,5 @@ const Phase = ({
   }
 };
 
-// <div className={styles.iconContainer}>
-//   <FontAwesomeIcon icon={faFileAlt} className={`${styles.fileIcon} ${styles.icon}`} />
-// </div>
 
-// <div className={styles.arrowContainer}>
-//   <FontAwesomeIcon icon={faAngleRight} className={styles.arrow} />
-// </div>
-
-export default Phase;
+export default Module;

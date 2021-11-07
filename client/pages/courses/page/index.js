@@ -23,8 +23,13 @@ import {
   Loader,
   CourseMenuItems,
   CourseNavigation,
-  Phase
+  Module
 } from 'components';
+
+import {
+  Overview,
+  Modules
+} from 'components/coursePage';
 
 import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
@@ -46,11 +51,11 @@ export const getServerSideProps = async ctx => {
     .c(ctx)
     .result;
 
-  console.log(ctx.query.id);
-
-  console.log("course fetch", data)
-
-  console.log("gjeapgjeaigjaep", meta)
+  // console.log(ctx.query.id);
+  //
+  // console.log("course fetch", data)
+  //
+  // console.log("gjeapgjeaigjaep", meta)
 
   //200 is the expected status code
   let serverErrors = handleErrors(200, [404], data, meta);
@@ -65,13 +70,12 @@ export const getServerSideProps = async ctx => {
   }
 
   let course = null;
-  let phases = [];
+  let modules = [];
 
   if(!serverErrors) {
-    console.log(data)
     if(data.course) course = data.course;
 
-    //Get phases
+    //Get phases - change to module
     let result = await Request().server
       .phase.add('fetch')
       .body({
@@ -85,7 +89,7 @@ export const getServerSideProps = async ctx => {
     serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
-      phases = result.data.phases;
+      modules = result.data.phases; //change to modules
     }
   }
 
@@ -99,18 +103,20 @@ export const getServerSideProps = async ctx => {
     props: {
       serverErrors,
       course,
-      _phases: phases,
+      _modules: modules,
       sub: ctx.query.sub,
     },
   };
 };
 
-const CoursePage = ({ serverErrors, course, _phases, sub }) => {
+const CoursePage = ({ serverErrors, course, _modules, sub }) => {
   const router = useRouter();
 
   ErrorHandler(serverErrors);
 
   //TODO: FIX THIS ERROR HANDLING
+
+  //requireQueries
   //to replicate: try to go to course page without an id for course
   if(serverErrors || !course) {
     return (
@@ -123,10 +129,10 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
   // const { coursePage } = course;
   const coursePage = course?.coursePage;
 
-  if(!_phases) _phases = [];
+  if(!_modules) _modules = [];
 
-  let [phases, setPhases] = useState(_phases);
-  let [phasesRender, setPhasesRender] = useState();
+  let [modules, setModules] = useState(_modules);
+  let [modulesRender, setModulesRender] = useState();
 
   let [loaderActive, setLoaderActive] = useState(false);
 
@@ -158,20 +164,17 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
     }
   )
 
-
-
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
-
   useEffect(() => {
-    setPhasesRender(
-      phases.map((obj, index) => {
+    setModulesRender(
+      modules.map((obj, index) => {
         return (
-          <Phase setLoaderActive={setLoaderActive} editing={false} key={index} id={obj.id} name={obj.name} />
+          <Module setLoaderActive={setLoaderActive} editing={false} key={index} id={obj.id} name={obj.name} />
         );
       }),
     );
-  }, [phases]);
+  }, [modules]);
 
   return (
     <Layout title={course.name}>
@@ -213,20 +216,11 @@ const CoursePage = ({ serverErrors, course, _phases, sub }) => {
           <div className={styles.mainContainer}>
             <div className={styles.content}>
               {sub === 'overview' && (
-                <>
-                  {phasesRender?.length === 0 ? (
-                    <p className={styles.noPhasesText}>{lang.noPhasesText}</p>
-                  ) : (
-                    <>
-                      <p className={styles.phasesText}>{lang.phases}</p>
-
-                      <div className={styles.phasesContainer}>
-                        {phasesRender}
-                      </div>
-                    </>
-                  )}
-                </>
+                <Overview />
               )}
+              {sub === 'modules' &&
+                <Modules modulesRender={modulesRender} />
+              }
             </div>
           </div>
         </div>
