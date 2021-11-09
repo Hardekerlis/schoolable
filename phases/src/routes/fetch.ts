@@ -157,6 +157,7 @@ const fetch = {
       logger.debug('Phase is not hidden');
     }
 
+    // @ts-ignore
     phase.parentModule = undefined;
 
     logger.info('Successfully fetched phase');
