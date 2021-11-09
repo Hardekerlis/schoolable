@@ -7,7 +7,7 @@ import {
   LANG,
   UserTypes,
 } from '@gustafdahl/schoolable-common';
-import { body } from 'express-validator';
+import { body, query, param } from 'express-validator';
 
 const router = Router();
 
@@ -53,6 +53,32 @@ router.delete(
   ],
   validateResult,
   remove,
+);
+
+import fetch from './fetch';
+router.get(
+  '/fetch',
+  currentUser,
+  getLanguage,
+  requireAuth('all'),
+  [
+    query('module_id')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needModuleId;
+      }),
+  ],
+  validateResult,
+  fetch.many,
+);
+
+router.get(
+  '/fetch/:phaseId',
+  currentUser,
+  currentUser,
+  getLanguage,
+  requireAuth('all'),
+  fetch.one,
 );
 
 export default router;

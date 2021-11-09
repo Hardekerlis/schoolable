@@ -54,7 +54,7 @@ const phaseSchema = new mongoose.Schema(
     },
     page: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'phasePage',
+      ref: 'phasePages',
       required: true,
     },
     locked: {
