@@ -56,6 +56,10 @@ const login = async (req: Request, res: Response) => {
       geo.city = 'undefined';
     }
 
+    if (!geo?.region) {
+      geo.region = 'undefined';
+    }
+
     logger.debug('Building session');
     const session = Session.build({
       user: user,
