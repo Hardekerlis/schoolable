@@ -29,6 +29,12 @@ const create = async (req: Request, res: Response) => {
     throw new DocumentNotFoundError(lang.noCourseFound);
   }
 
+  const _module = await Module.findById(parentModuleId);
+
+  if (!_module) {
+    throw new DocumentNotFoundError(lang.noModuleFound);
+  }
+
   res.status(500).send();
 };
 
