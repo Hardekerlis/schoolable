@@ -1,3 +1,7 @@
 noCourseFound: "Coulnd't find course"
 noModuleFound: "Coulnd't find module"
+noPhaseFound: "Coulnd't find phase"
 createdPhase: 'Successfully created phase'
+needModuleId: 'Need a module id'
+needPhaseId: 'Need a phase id'
+upForDeletion: 'Successfully queued phase for deletion'

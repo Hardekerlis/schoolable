@@ -17,6 +17,8 @@ app; // Load env variables in app
 
 import Course, { CourseDoc } from '../models/course';
 import Module, { ModuleDoc } from '../models/module';
+import Phase, { PhaseDoc } from '../models/phase';
+import PhasePage from '../models/phasePage';
 
 interface CreateResourceReturnData {
   cookie: string;
@@ -31,6 +33,10 @@ interface CreateModuleReturnData extends CreateCourseReturnData {
   _module: ModuleDoc;
 }
 
+interface CreatePhaseReturnData extends CreateModuleReturnData {
+  phase: PhaseDoc;
+}
+
 declare global {
   namespace NodeJS {
     interface Global {
@@ -41,6 +47,7 @@ declare global {
       ): Promise<CreateResourceReturnData>;
       createCourse(): Promise<CreateCourseReturnData>;
       createModule(): Promise<CreateModuleReturnData>;
+      createPhase(): Promise<CreatePhaseReturnData>;
     }
   }
 }
@@ -125,4 +132,21 @@ global.createModule = async (): Promise<CreateModuleReturnData> => {
   await _module.save();
 
   return { cookie, course, userId, _module };
+};
+
+global.createPhase = async (): Promise<CreatePhaseReturnData> => {
+  const { cookie, course, userId, _module } = await global.createModule();
+
+  const phasePage = PhasePage.build({});
+  await phasePage.save();
+
+  const phase = Phase.build({
+    name: faker.company.companyName(),
+    parentModule: _module,
+    page: phasePage,
+  });
+
+  await phase.save();
+
+  return { cookie, course, userId, _module, phase };
 };

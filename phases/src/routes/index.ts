@@ -26,11 +26,33 @@ router.post(
     body('parentModuleId')
       .exists()
       .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].needPhaseId;
+        return LANG[`${req.lang}`].needModuleId;
       }),
   ],
   validateResult,
   create,
+);
+
+import remove from './remove';
+router.delete(
+  '/remove',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher]),
+  [
+    body('phaseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseId;
+      }),
+    body('parentModuleId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needModuleId;
+      }),
+  ],
+  validateResult,
+  remove,
 );
 
 export default router;
