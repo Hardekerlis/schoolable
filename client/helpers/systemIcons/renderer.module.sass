@@ -7,6 +7,7 @@
   display: flex
   flex-direction: row
   align-items: center
+  border-radius: 20px
 
   svg
     width: 100%
@@ -43,6 +44,7 @@
     text-overflow: clip
     padding: 0px 15px
     width: 100%
+    color: $white
 
 
 
@@ -63,5 +65,8 @@
     right: -30px
     @include rotate(180)
 
-.icon:hover .select
-  opacity: 1
+.icon:hover
+  background-color: transparent !important
+
+  .select
+    opacity: 1

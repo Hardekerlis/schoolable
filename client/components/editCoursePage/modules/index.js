@@ -1,30 +1,60 @@
 import React, { useEffect, useState } from 'react';
 
 import language from 'helpers/lang';
-const lang = language.coursePage.modules;
+const lang = language.coursePageEdit.modules;
 
 import {
-  EditableModule
+  PlusClipboard
+} from 'helpers/systemIcons'
+
+import {
+  EditableModule,
+  SampleCreationSystem,
 } from 'components';
+
+import {
+  Prompt
+} from 'helpers';
 
 import styles from './modules.module.sass';
 
-const Modules = ({ _modules, setLoaderActive }) => {
+const Modules = ({ _modules, course, setLoaderActive }) => {
 
   if(!_modules) _modules = [];
 
-  let [modules, setModules] = useState(_modules);
-  let [modulesRender, setModulesRender] = useState();
+  const [modules, setModules] = useState(_modules);
+  const [modulesRender, setModulesRender] = useState();
+  const [phaseOpen, setPhaseOpen] = useState(false);
 
   useEffect(() => {
     setModulesRender(
       modules.map((obj, index) => {
         return (
-          <EditableModule key={index} id={obj.id} name={obj.name} phases={obj.phases} />
+          <EditableModule fullWidth={!phaseOpen} key={index} id={obj.id} name={obj.name} phases={obj.phases} />
         );
       }),
     );
   }, [modules]);
+
+  const onModuleCreation = async response => {
+    // console.log(response);
+
+    if(response.errors === false) {
+      let arr = modules.slice();
+
+      arr.push(response.phase);
+
+      setModules(arr);
+
+      Prompt.success(lang.moduleCreated);
+      return true;
+    }else {
+      Prompt.error(response.errors);
+      return false;
+    }
+
+    //return false for error.
+  };
 
   return(
     <div className={styles.wrapper}>
@@ -39,6 +69,19 @@ const Modules = ({ _modules, setLoaderActive }) => {
           </div>
         </>
       )}
+      <SampleCreationSystem
+        creationContainerClassName={styles.creationContainer}
+        body={{
+          parentCourseId: course.id,
+        }}
+        createItemButtonClassName={styles.createModuleButton}
+        requestCallback={onModuleCreation}
+        itemApiPath={`/api/phase/create`}
+        currentItems={modules}
+        itemName={lang.moduleItemName}
+        noCurrentItemText={lang.courseMissingModules}
+        createAdditionalItemIcon={PlusClipboard}
+      />
     </div>
   )
 

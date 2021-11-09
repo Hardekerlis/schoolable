@@ -17,7 +17,7 @@ const CourseNavigation = ({ options }) => {
         <IconRenderer onHover={{
           text: obj.text,
           direction: 'right'
-        }} className={styles.icon} icon={obj.icon} />
+        }} className={(obj.className) ? `${obj.className} ${styles.icon}` : styles.icon} icon={obj.icon} />
       </div>
     )
 

@@ -133,25 +133,7 @@ const EditCourse = ({ serverErrors, _modules, course, sub }) => {
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
-  const onPhaseCreation = async response => {
-    // console.log(response);
-
-    if(response.errors === false) {
-      let arr = modules.slice();
-
-      arr.push(response.phase);
-
-      setPhases(arr);
-
-      Prompt.success(lang.phaseCreated);
-      return true;
-    }else {
-      Prompt.error(response.errors);
-      return false;
-    }
-
-    //return false for error.
-  };
+  
 
   const saveClick = () => {
     console.log("save all changes");
@@ -208,19 +190,21 @@ const EditCourse = ({ serverErrors, _modules, course, sub }) => {
                 {
                   text: lang.cancel,
                   onClick: cancelClick,
-                  icon: Crossmark
+                  icon: Crossmark,
+                  className: styles.cancel
                 },
                 {
                   text: lang.save,
                   onClick: saveClick,
-                  icon: Checkmark
+                  icon: Checkmark,
+                  className: styles.save
                 },
               ]} />
               {sub === 'overview' &&
                 <Overview />
               }
               {sub === 'modules' &&
-                <Modules _modules={_modules} />
+                <Modules course={course} _modules={_modules} />
               }
             </div>
           </div>
