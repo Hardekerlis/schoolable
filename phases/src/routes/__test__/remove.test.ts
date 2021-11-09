@@ -4,7 +4,7 @@ import { app } from '../../app';
 import mongoose from 'mongoose';
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
-const path = '/api/phases';
+const path = '/api/phases/remove';
 
 import { natsWrapper } from '../../utils/natsWrapper';
 

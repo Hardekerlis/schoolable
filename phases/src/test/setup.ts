@@ -14,6 +14,22 @@ jest.mock('../utils/natsWrapper');
 import { app } from '../app';
 app; // Load env variables in app
 
+import Course, { CourseDoc } from '../models/course';
+import Module, { ModuleDoc } from '../models/module';
+
+interface CreateResourceReturnData {
+  cookie: string;
+  userId: string;
+}
+
+interface CreateCourseReturnData extends CreateResourceReturnData {
+  course: CourseDoc;
+}
+
+interface CreateModuleReturnData extends CreateCourseReturnData {
+  _module: ModuleDoc;
+}
+
 declare global {
   namespace NodeJS {
     interface Global {
@@ -21,7 +37,9 @@ declare global {
         userType?: UserTypes,
         email?: string,
         id?: string,
-      ): Promise<string[]>;
+      ): Promise<CreateResourceReturnData>;
+      createCourse(): Promise<CreateCourseReturnData>;
+      createModule(): Promise<CreateModuleReturnData>;
     }
   }
 }
@@ -63,14 +81,14 @@ afterAll(async () => {
 global.getAuthCookie = async (
   userType?: UserTypes,
   email?: string,
-  id?: string,
-): Promise<string[]> => {
+  userId?: string,
+): Promise<CreateResourceReturnData> => {
   if (!userType) userType = UserTypes.Teacher;
   if (!email) email = faker.internet.email();
-  if (!id) id = new mongoose.Types.ObjectId().toHexString();
+  if (!userId) userId = new mongoose.Types.ObjectId().toHexString();
 
   const payload: UserPayload = {
-    id,
+    id: userId,
     email,
     userType,
     sessionId: 'asdasdsad',
@@ -84,5 +102,33 @@ global.getAuthCookie = async (
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
   const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${signedCookie}; path=/`];
+  return { cookie: `token=${signedCookie}; path=/`, userId };
+};
+
+global.createCourse = async (): Promise<CreateCourseReturnData> => {
+  const { userId, cookie } = await global.getAuthCookie();
+
+  const course = Course.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    name: faker.company.companyName(),
+    owner: userId,
+  });
+
+  await course.save();
+
+  return { userId, cookie, course };
+};
+
+global.createModule = async (): Promise<CreateModuleReturnData> => {
+  const { cookie, course, userId } = await global.createCourse();
+
+  const _module = Module.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    parentCourseId: course.id,
+    name: faker.company.companyName(),
+  });
+
+  await _module.save();
+
+  return { cookie, course, userId, _module };
 };
