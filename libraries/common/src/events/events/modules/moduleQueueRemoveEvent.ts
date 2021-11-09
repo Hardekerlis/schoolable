@@ -1,5 +1,3 @@
-/** @format */
-
 import { Subjects } from '../';
 
 export interface ModuleQueueRemoveEvent {

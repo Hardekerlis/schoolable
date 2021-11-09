@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 import { PhasePageDoc } from './phasePage';
+import { CourseDoc } from './course';
+import { ModuleDoc } from './module';
 
 interface PhaseAttributes {
   name: string;
@@ -11,6 +13,8 @@ interface PhaseAttributes {
   hidden?: boolean; // Is the phase visible to students
   visibleOn?: Date; // What date shoukd the phase be visible
   lockOn?: Date; // When should the phase be locked
+  // parentCourse?: CourseDoc | string;
+  parentModule: ModuleDoc;
   deletion?: {
     isUpForDeletion: boolean;
     removeAt: Date;
@@ -30,6 +34,8 @@ export interface PhaseDoc extends mongoose.Document {
   hidden?: boolean; // Is the phase visible to students
   visibleOn?: Date; // What date shoukd the phase be visible
   lockOn?: Date; // When should the phase be locked
+  // parentCourse?: CourseDoc | string;
+  parentModule: ModuleDoc;
   deletion?: {
     isUpForDeletion: boolean;
     removeAt: Date;
@@ -62,6 +68,11 @@ const phaseSchema = new mongoose.Schema(
     },
     visibleOn: Date,
     lockOn: Date,
+    parentModule: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'modules',
+      required: true,
+    },
     deletion: {
       isUpForDeletion: {
         type: Boolean,

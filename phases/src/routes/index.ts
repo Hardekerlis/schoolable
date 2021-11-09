@@ -28,11 +28,6 @@ router.post(
       .withMessage((value, { req }) => {
         return LANG[`${req.lang}`].needPhaseId;
       }),
-    body('parentCourseId')
-      .exists()
-      .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].needParentCourse;
-      }),
   ],
   validateResult,
   create,

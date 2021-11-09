@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
 
+import { CourseDoc } from './course';
+
 interface ModuleAttributes {
   id: string;
-  parentCourseId: string;
+  parentCourse: CourseDoc | string;
   name: string;
 }
 
@@ -12,7 +14,7 @@ interface ModuleModel extends mongoose.Model<ModuleDoc> {
 
 export interface ModuleDoc extends mongoose.Document {
   id: string;
-  parentCourseId: string;
+  parentCourse: CourseDoc | string;
   name: string;
 }
 
@@ -22,8 +24,9 @@ const moduleSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    parentCourseId: {
-      type: String,
+    parentCourse: {
+      type: mongoose.Types.ObjectId,
+      ref: 'courses',
       required: true,
     },
     name: {

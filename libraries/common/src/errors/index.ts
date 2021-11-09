@@ -1,5 +1,3 @@
-/** @format */
-
 export * from './notAuthorizedError';
 export * from './notFoundError';
 export * from './databaseConnectionError';

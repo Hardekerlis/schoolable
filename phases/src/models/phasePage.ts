@@ -29,10 +29,10 @@ enum HandInTypes {
 }
 
 interface PhasePageAttributes {
-  paragraphs: Paragraph[];
+  paragraphs?: Paragraph[];
   handInButton?: HandInTypes[];
-  openedBy: string[];
-  finsihedBy: string[];
+  openedBy?: string[];
+  finsihedBy?: string[];
 }
 
 interface PhasePageModel extends mongoose.Model<PhasePageDoc> {

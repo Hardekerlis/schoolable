@@ -10,6 +10,7 @@ import { sign } from 'cookie-signature';
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 jest.mock('../utils/natsWrapper');
+jest.mock('../utils/logger');
 
 import { app } from '../app';
 app; // Load env variables in app
@@ -43,13 +44,6 @@ declare global {
     }
   }
 }
-
-import logger from '../utils/logger';
-
-logger.debug('Setting up tests...');
-winstonTestSetup();
-
-jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
 
@@ -124,7 +118,7 @@ global.createModule = async (): Promise<CreateModuleReturnData> => {
 
   const _module = Module.build({
     id: new mongoose.Types.ObjectId().toHexString(),
-    parentCourseId: course.id,
+    parentCourse: course,
     name: faker.company.companyName(),
   });
 

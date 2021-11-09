@@ -7,3 +7,4 @@ export * from './modules';
 export * from './submissions';
 export * from './sessions';
 export * from './groups';
+export * from './phases';
