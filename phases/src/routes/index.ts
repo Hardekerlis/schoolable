@@ -4,10 +4,11 @@ import {
   getLanguage,
   requireAuth,
   validateResult,
-  UserTypes,
   LANG,
+  UserTypes,
+  HandInTypes,
 } from '@gustafdahl/schoolable-common';
-import { body } from 'express-validator';
+import { body, query, param } from 'express-validator';
 
 const router = Router();
 
@@ -16,8 +17,69 @@ router.post(
   '/create',
   currentUser,
   getLanguage,
-  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  requireAuth([UserTypes.Admin, UserTypes.Teacher]),
+  [
+    body('name')
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needName;
+      }),
+    body('parentModuleId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needModuleId;
+      }),
+  ],
+  validateResult,
   create,
+);
+
+import remove from './remove';
+router.delete(
+  '/remove',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher]),
+  [
+    body('phaseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseId;
+      }),
+    body('parentModuleId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needModuleId;
+      }),
+  ],
+  validateResult,
+  remove,
+);
+
+import fetch from './fetch';
+router.get(
+  '/fetch',
+  currentUser,
+  getLanguage,
+  requireAuth('all'),
+  [
+    query('module_id')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needModuleId;
+      }),
+  ],
+  validateResult,
+  fetch.many,
+);
+
+router.get(
+  '/fetch/:phaseId',
+  currentUser,
+  currentUser,
+  getLanguage,
+  requireAuth('all'),
+  fetch.one,
 );
 
 import update from './update';
@@ -28,50 +90,36 @@ router.put(
   requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
   [
     body('phaseId')
-      .isString()
+      .exists()
       .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].noPhaseId;
+        return LANG[`${req.lang}`].needPhaseId;
       }),
-    body('parentCourseId')
+
+    body('name')
+      .optional()
       .isString()
       .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].noParentCourseId;
+        return LANG[`${req.lang}`].needString;
+      }),
+    body('description')
+      .optional()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needString;
+      }),
+
+    body('page.handInTypes')
+      .optional()
+      .custom((value, { req }) => {
+        if (!Object.values(HandInTypes).includes(value)) {
+          throw new Error(LANG[`${req.lang}`].needHandInTypes);
+        }
+
+        return value;
       }),
   ],
   validateResult,
   update,
-);
-
-import remove from './remove';
-router.delete(
-  '/remove',
-  currentUser,
-  getLanguage,
-  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
-  [
-    body('phaseId')
-      .isString()
-      .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].noPhaseId;
-      }),
-    body('parentCourseId')
-      .isString()
-      .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].noParentCourseId;
-      }),
-  ],
-  validateResult,
-  remove,
-);
-
-import { fetchMany, fetchOne } from './fetch';
-router.post('/fetch', currentUser, getLanguage, requireAuth('all'), fetchMany);
-router.post(
-  '/fetch/:phaseId',
-  currentUser,
-  getLanguage,
-  requireAuth('all'),
-  fetchOne,
 );
 
 export default router;

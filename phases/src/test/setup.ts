@@ -10,9 +10,32 @@ import { sign } from 'cookie-signature';
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 jest.mock('../utils/natsWrapper');
+jest.mock('../utils/logger');
 
 import { app } from '../app';
 app; // Load env variables in app
+
+import Course, { CourseDoc } from '../models/course';
+import Module, { ModuleDoc } from '../models/module';
+import Phase, { PhaseDoc } from '../models/phase';
+import PhasePage from '../models/phasePage';
+
+interface CreateResourceReturnData {
+  cookie: string;
+  userId: string;
+}
+
+interface CreateCourseReturnData extends CreateResourceReturnData {
+  course: CourseDoc;
+}
+
+interface CreateModuleReturnData extends CreateCourseReturnData {
+  _module: ModuleDoc;
+}
+
+interface CreatePhaseReturnData extends CreateModuleReturnData {
+  phase: PhaseDoc;
+}
 
 declare global {
   namespace NodeJS {
@@ -21,17 +44,13 @@ declare global {
         userType?: UserTypes,
         email?: string,
         id?: string,
-      ): Promise<string[]>;
+      ): Promise<CreateResourceReturnData>;
+      createCourse(): Promise<CreateCourseReturnData>;
+      createModule(): Promise<CreateModuleReturnData>;
+      createPhase(): Promise<CreatePhaseReturnData>;
     }
   }
 }
-
-import logger from '../utils/logger';
-
-logger.debug('Setting up tests...');
-winstonTestSetup();
-
-jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
 
@@ -63,14 +82,14 @@ afterAll(async () => {
 global.getAuthCookie = async (
   userType?: UserTypes,
   email?: string,
-  id?: string,
-): Promise<string[]> => {
+  userId?: string,
+): Promise<CreateResourceReturnData> => {
   if (!userType) userType = UserTypes.Teacher;
   if (!email) email = faker.internet.email();
-  if (!id) id = new mongoose.Types.ObjectId().toHexString();
+  if (!userId) userId = new mongoose.Types.ObjectId().toHexString();
 
   const payload: UserPayload = {
-    id,
+    id: userId,
     email,
     userType,
     sessionId: 'asdasdsad',
@@ -84,5 +103,50 @@ global.getAuthCookie = async (
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
   const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${signedCookie}; path=/`];
+  return { cookie: `token=${signedCookie}; path=/`, userId };
+};
+
+global.createCourse = async (): Promise<CreateCourseReturnData> => {
+  const { userId, cookie } = await global.getAuthCookie();
+
+  const course = Course.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    name: faker.company.companyName(),
+    owner: userId,
+  });
+
+  await course.save();
+
+  return { userId, cookie, course };
+};
+
+global.createModule = async (): Promise<CreateModuleReturnData> => {
+  const { cookie, course, userId } = await global.createCourse();
+
+  const _module = Module.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    parentCourse: course,
+    name: faker.company.companyName(),
+  });
+
+  await _module.save();
+
+  return { cookie, course, userId, _module };
+};
+
+global.createPhase = async (): Promise<CreatePhaseReturnData> => {
+  const { cookie, course, userId, _module } = await global.createModule();
+
+  const phasePage = PhasePage.build({});
+  await phasePage.save();
+
+  const phase = Phase.build({
+    name: faker.company.companyName(),
+    parentModule: _module,
+    page: phasePage,
+  });
+
+  await phase.save();
+
+  return { cookie, course, userId, _module, phase };
 };

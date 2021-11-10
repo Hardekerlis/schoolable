@@ -1,158 +1,179 @@
 import { Request, Response } from 'express';
 import {
-  BadRequestError,
-  NotAuthorizedError,
-  UserTypes,
   LANG,
+  InvalidObjectIdError,
+  DocumentNotFoundError,
+  UserTypes,
+  NotAuthorizedError,
+  BadRequestError,
+  CONFIG,
+  UserPayload,
 } from '@gustafdahl/schoolable-common';
-import mongoose from 'mongoose';
+import { isValidObjectId } from 'mongoose';
 
+import Module from '../models/module';
 import Phase from '../models/phase';
-import Course from '../models/course';
+import { CourseDoc } from '../models/course';
 
 import logger from '../utils/logger';
 
-export const fetchMany = async (req: Request, res: Response) => {
-  const { currentUser } = req;
-  const { parentCourseId } = req.body;
-  const _lang = req.lang;
-  const lang = LANG[_lang];
+const fetch = {
+  many: async (req: Request, res: Response) => {
+    const currentUser = req.currentUser as UserPayload;
+    const lang = LANG[`${req.lang}`];
 
-  // TODO: Might need to set limit to fetch phases.
-  if (!currentUser) throw new NotAuthorizedError();
+    logger.info('Attempting to fetch phases');
 
-  logger.info('Fetching course phases');
+    logger.debug('Getting query');
+    const url = new URL(`http://localhost:3000${req.url}`);
+    const parentModuleId = url.searchParams.get('module_id');
 
-  if (!mongoose.isValidObjectId(parentCourseId)) {
-    logger.warn('Parent course value is not a valid object id');
-    throw new BadRequestError(lang.badIds);
-  }
+    logger.debug('Checking if query is a valid object id');
+    if (!isValidObjectId(parentModuleId)) {
+      logger.debug('Query is not a valid object id');
+      throw new InvalidObjectIdError(lang.noModuleFound);
+    }
+    logger.debug('Query is a valid object id');
 
-  let query: object;
-  logger.debug('Determining what type of query to run');
-  if (currentUser.userType !== UserTypes.Admin) {
-    logger.debug('User is not an admin');
-    query = {
-      $and: [
-        { id: parentCourseId },
-        {
-          $or: [
-            { owner: currentUser.id },
-            { students: currentUser.id },
-            { admins: currentUser.id },
-          ],
-        },
-      ],
-    };
-  } else if (currentUser.userType === UserTypes.Admin) {
-    logger.debug('User is an admin');
-    query = { id: parentCourseId };
-  } else {
-    logger.warn('Invalid user type');
-    throw new NotAuthorizedError();
-  }
+    logger.debug('Fetching module from database');
+    const _module = await Module.findById(parentModuleId).populate(
+      'parentCourse',
+    );
 
-  logger.debug('Finding parent course');
-  const course = await Course.findOne(query);
+    if (!_module) {
+      logger.debug('No module found');
+      throw new DocumentNotFoundError(lang.noModuleFound);
+    }
+    logger.debug('Found module');
 
-  if (!course) {
-    logger.info('No course found');
-    throw new NotAuthorizedError();
-  }
+    const parentCourse = (_module.parentCourse as CourseDoc)!;
 
-  logger.debug('Looking up phases associated with course');
-  const phases = await Phase.find({
-    parentCourseId: course.id,
-  }).select('-phaseItems -parentCourseId -description');
+    logger.debug('Checking if user is an application admin');
+    if (currentUser.userType !== UserTypes.Admin) {
+      logger.debug('User is not application admin');
+      logger.debug('Checking if user is allowed to fetch phases');
+      if (
+        parentCourse.owner.toString() !== currentUser?.id &&
+        !parentCourse.students?.includes(currentUser?.id!) &&
+        !parentCourse.admins?.includes(currentUser?.id!)
+      ) {
+        logger.debug('User is not allowed to fetch phases');
+        throw new NotAuthorizedError();
+      }
+      logger.debug('User is allowed to fetch phases');
+    } else logger.debug('User is an application admin');
 
-  // TODO: Remove hidden phases if user is of type student
+    logger.debug('Fetching phases from database');
+    // @ts-ignore
+    const phases = await Phase.find({ parentModule: _module.id });
 
-  if (!phases[0]) {
-    logger.info('No phases found');
-    return res.status(404).json({
+    if (!phases[0]) {
+      logger.debug('No phases found');
+      throw new DocumentNotFoundError(lang.noPhasesFound);
+    }
+    logger.debug('Found phases');
+
+    logger.debug('Checking if user is a student');
+    if (
+      parentCourse.students?.includes(currentUser.id) &&
+      currentUser.userType === UserTypes.Student
+    ) {
+      logger.debug('User is a student');
+      logger.debug('Removing all hidden phases from response');
+      for (const phase of phases) {
+        if (phase.hidden) {
+          phases.splice(phases.indexOf(phase), 1);
+        }
+      }
+      logger.debug('Removed all hidden phases');
+    }
+
+    logger.info('Successfully fetched phases');
+
+    res.status(200).json({
       errors: false,
-      message: lang.noPhasesFound,
-      phases: [],
+      message: lang.fetchedPhases,
+      phases,
     });
-  }
+  },
+  one: async (req: Request, res: Response) => {
+    const currentUser = req.currentUser as UserPayload;
+    const lang = LANG[`${req.lang}`];
+    const { phaseId } = req.params;
 
-  logger.info('Found phases. Returning to user');
-  res.status(200).json({
-    errors: false,
-    message: lang.foundPhases,
-    phases,
-  });
+    logger.info('Attempting to fetch phase');
+
+    logger.debug('Checking if phase id is a valid object id');
+    if (!isValidObjectId(phaseId)) {
+      logger.debug('Phase id is not a valid object id');
+      throw new InvalidObjectIdError(lang.noPhaseFound);
+    }
+    logger.debug('Phase id is a valid object id');
+
+    logger.debug('Fetching phase from database');
+    const phase = await Phase.findById(phaseId)
+      .populate('page')
+      .populate({
+        path: 'parentModule',
+        populate: {
+          path: 'parentCourse',
+        },
+      });
+
+    if (!phase) {
+      logger.debug('No phase found');
+      throw new DocumentNotFoundError(lang.noPhaseFound);
+    }
+    logger.debug('Found phase');
+
+    const parentCourse = phase.parentModule.parentCourse as CourseDoc;
+
+    logger.debug('Checking if user is an application admin');
+    if (currentUser.userType !== UserTypes.Admin) {
+      logger.debug('User is not application admin');
+      logger.debug('Checking if user is allowed to fetch phases');
+      if (
+        parentCourse.owner.toString() !== currentUser?.id &&
+        !parentCourse.students?.includes(currentUser?.id!) &&
+        !parentCourse.admins?.includes(currentUser?.id!)
+      ) {
+        logger.debug('User is not allowed to fetch phases');
+        throw new NotAuthorizedError();
+      }
+      logger.debug('User is allowed to fetch phases');
+    } else logger.debug('User is an application admin');
+
+    logger.debug('Checking if user is a student');
+    if (
+      parentCourse.students?.includes(currentUser.id) &&
+      currentUser.userType === UserTypes.Student
+    ) {
+      logger.debug('User is a student');
+      logger.debug('Checking if phase is hidden');
+      if (phase.hidden) {
+        logger.debug('User is not allowed to see this phase');
+        throw new DocumentNotFoundError(lang.noPhaseFound);
+      }
+      logger.debug('Phase is not hidden');
+    }
+
+    // @ts-ignore
+    phase.parentModule = undefined;
+
+    // REVIEW: Should this be a user doc instead?
+    logger.debug('Adding user to list with users whom have opened phase');
+    phase.page.openedBy?.push(currentUser.id);
+
+    logger.debug('Saving phase page');
+    await phase.page.save();
+
+    logger.info('Successfully fetched phase');
+    res.status(200).json({
+      errors: false,
+      message: lang.fetchedPhase,
+      phase,
+    });
+  },
 };
 
-export const fetchOne = async (req: Request, res: Response) => {
-  const { phaseId } = req.params;
-  const { currentUser } = req;
-  const { parentCourseId } = req.body;
-  const _lang = req.lang;
-  const lang = LANG[_lang];
-
-  if (!currentUser) throw new NotAuthorizedError();
-
-  logger.info('Fetching course phase');
-
-  if (
-    !mongoose.isValidObjectId(phaseId) ||
-    !mongoose.isValidObjectId(parentCourseId)
-  ) {
-    logger.warn('Parent course or phase id value is not a valid object id');
-    throw new BadRequestError(lang.badIds);
-  }
-
-  let query: object;
-  logger.debug('Determining what type of query to run');
-  if (currentUser.userType !== UserTypes.Admin) {
-    logger.debug('User is not an admin');
-    query = {
-      $and: [
-        { id: parentCourseId },
-        {
-          $or: [
-            { owner: currentUser.id },
-            { students: currentUser.id },
-            { admins: currentUser.id },
-          ],
-        },
-      ],
-    };
-  } else if (currentUser.userType === UserTypes.Admin) {
-    logger.debug('User is an admin');
-    query = { id: parentCourseId };
-  } else {
-    logger.warn('Invalid user type');
-    throw new NotAuthorizedError();
-  }
-
-  logger.debug('Finding parent course');
-  const course = await Course.findOne(query);
-
-  if (!course) {
-    logger.info('No course found');
-    throw new NotAuthorizedError();
-  }
-
-  // TODO: Remove hidden phases from students
-
-  logger.debug('Looking up phase');
-  const phase = await Phase.findById(phaseId);
-
-  if (!phase) {
-    logger.info('No phase found');
-    return res.status(404).json({
-      errors: false,
-      message: lang.noPhaseFound,
-      phase: undefined,
-    });
-  }
-
-  logger.info('Found phase. Returning to user');
-  res.status(200).json({
-    errors: false,
-    message: lang.foundPhase,
-    phase,
-  });
-};
+export default fetch;

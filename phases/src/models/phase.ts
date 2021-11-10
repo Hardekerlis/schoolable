@@ -1,22 +1,23 @@
 import mongoose from 'mongoose';
 
-interface PhaseItem {
-  name: string;
-  id: string;
-  locked: boolean;
-  hidden: boolean;
-}
+import { PhasePageDoc } from './phasePage';
+import { CourseDoc } from './course';
+import { ModuleDoc } from './module';
 
 interface PhaseAttributes {
   name: string;
-  parentCourseId: string;
-  phaseItems?: PhaseItem[];
   description?: string;
+
+  page: PhasePageDoc;
+
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
+  lockOn?: Date; // When should the phase be locked
+
   hidden?: boolean; // Is the phase visible to students
   visibleOn?: Date; // What date shoukd the phase be visible
-  lockOn?: Date; // When should the phase be locked
+  parentModule: ModuleDoc;
+
   deletion?: {
     isUpForDeletion: boolean;
     removeAt: Date;
@@ -29,14 +30,18 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 
 export interface PhaseDoc extends mongoose.Document {
   name: string;
-  parentCourseId: string;
-  phaseItems?: PhaseItem[];
   description?: string;
+
+  page: PhasePageDoc;
+
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
+  lockOn?: Date; // When should the phase be locked
+
   hidden?: boolean; // Is the phase visible to students
   visibleOn?: Date; // What date shoukd the phase be visible
-  lockOn?: Date; // When should the phase be locked
+  parentModule: ModuleDoc;
+
   deletion?: {
     isUpForDeletion: boolean;
     removeAt: Date;
@@ -49,21 +54,14 @@ const phaseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    parentCourseId: {
-      type: String,
-      required: true,
-    },
-    phaseItems: [
-      {
-        name: String,
-        id: String,
-        locked: Boolean,
-        visible: Boolean,
-      },
-    ],
     description: {
       type: String,
       default: '',
+    },
+    page: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'phasePages',
+      required: true,
     },
     locked: {
       type: Boolean,
@@ -76,6 +74,11 @@ const phaseSchema = new mongoose.Schema(
     },
     visibleOn: Date,
     lockOn: Date,
+    parentModule: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'modules',
+      required: true,
+    },
     deletion: {
       isUpForDeletion: {
         type: Boolean,

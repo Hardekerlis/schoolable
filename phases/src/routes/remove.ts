@@ -1,80 +1,114 @@
 import { Request, Response } from 'express';
 import {
-  BadRequestError,
-  NotAuthorizedError,
   LANG,
+  InvalidObjectIdError,
+  DocumentNotFoundError,
+  UserTypes,
+  NotAuthorizedError,
+  BadRequestError,
   CONFIG,
 } from '@gustafdahl/schoolable-common';
+import { isValidObjectId } from 'mongoose';
 import { DateTime } from 'luxon';
 
+import Module from '../models/module';
 import Phase from '../models/phase';
-import Course from '../models/course';
+import { CourseDoc } from '../models/course';
 
-import PhaseQueueRemovePublisher from '../events/publishers/phaseQueueRemove';
-import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
+import { natsWrapper } from '../utils/natsWrapper';
+
+import { PhaseQueueRemovePublisher } from '../events';
+
+// TODO: Remove the need for parent module id
 
 const remove = async (req: Request, res: Response) => {
-  const { phaseId, parentCourseId } = req.body;
   const { currentUser } = req;
-  const _lang = req.lang;
-  const lang = LANG[_lang];
-  const data = req.body;
-  delete data.phaseId;
-  delete data.parentCourseId;
+  const lang = LANG[`${req.lang}`];
+  const { parentModuleId, phaseId } = req.body;
 
-  logger.info(`Trying to queue phase with id ${phaseId} for removal`);
+  logger.info('Attempting to queue phase for removal');
 
-  const course = await Course.findById(parentCourseId);
-
-  if (!course) {
-    logger.debug('No course found');
-    throw new BadRequestError(lang.noParentCourse);
+  logger.debug('Checking if parent module id is a valid object id');
+  if (!isValidObjectId(parentModuleId)) {
+    logger.debug('Parent module id is not a valid object id');
+    throw new InvalidObjectIdError(lang.noModuleFound);
   }
+  logger.debug('Parent module id is a valid object id');
 
-  logger.debug('Checking if user is allowed to update course phase');
-  if (
-    // Check if user is allowed to create phases for course
-    course.owner !== currentUser?.id &&
-    !course.admins?.includes(currentUser?.id as string)
-  ) {
-    logger.debug('User is not allowed to update course phase');
-    throw new NotAuthorizedError();
+  logger.debug('Checking if phase id is a valid object id');
+  if (!isValidObjectId(phaseId)) {
+    logger.debug('Phase id is not a valid object id');
+    throw new InvalidObjectIdError(lang.noPhaseFound);
   }
+  logger.debug('Phase id is a valid object id');
 
-  const phase = await Phase.findById(phaseId);
+  logger.debug('Looking up module and populating parent course');
+  const _module = await Module.findById(parentModuleId).populate(
+    'parentCourse',
+  );
 
-  if (!phase) {
-    throw new BadRequestError(lang.noPhaseFound);
+  if (!_module) {
+    logger.debug('No module found');
+    throw new DocumentNotFoundError(lang.noModuleFound);
   }
+  logger.debug('Found module');
+
+  logger.debug('Checking if user is an application admin');
+  if (currentUser?.userType !== UserTypes.Admin) {
+    logger.debug('User is not application admin');
+    logger.debug('Checking if user is allowed to create resources for module');
+    if (
+      (_module.parentCourse as CourseDoc).owner.toString() !== currentUser?.id
+    ) {
+      logger.debug('User is not allowed to create resources for module');
+      throw new NotAuthorizedError();
+    }
+    logger.debug('User is allowed to create resources for module');
+  } else logger.debug('User is an application admin');
+
+  logger.debug('Looking up phase to be removed');
+  const phaseToRemove = await Phase.findById(phaseId);
+
+  if (!phaseToRemove) {
+    logger.debug('No phase found');
+    throw new DocumentNotFoundError(lang.noPhaseFound);
+  }
+  logger.debug('Found phase');
+
+  logger.debug('Checking if phase already is up for deletion');
+  if (phaseToRemove.deletion?.isUpForDeletion) {
+    logger.debug('Phase is already up for deletion');
+    throw new BadRequestError(lang.alreadyUpForDeletion);
+  }
+  logger.debug('Phase is not up for deletion');
 
   const removeAt = DateTime.now()
     .plus(CONFIG.debug ? { seconds: 5 } : { days: 30 })
     .toJSDate();
 
-  phase.deletion = {
+  logger.debug('Setting date to when phase is to be deleted by');
+  phaseToRemove.deletion = {
     isUpForDeletion: true,
     removeAt,
   };
 
-  phase.locked = true;
-  phase.hidden = true;
+  logger.debug('Saving phase');
+  await phaseToRemove.save();
 
-  await phase.save();
-
-  // Publishes event to nats service
-  new PhaseQueueRemovePublisher(natsWrapper.client, logger).publish({
-    parentCourseId: course.id as string,
-    phaseId: phase.id,
-    removeAt: removeAt,
+  await new PhaseQueueRemovePublisher(natsWrapper.client, logger).publish({
+    phaseId: phaseToRemove.id,
+    parentModuleId: _module.id,
+    parentCourseId: (_module.parentCourse as CourseDoc).id,
+    removeAt,
   });
+  logger.verbose('Sent Nats phase queued remove event');
 
-  logger.verbose('Sent Nats phase queue remove event');
-
+  logger.info('Successfully queued phase for removal');
   res.status(200).json({
     errors: false,
-    message: lang.upForDeletion.replace('%name%', phase.name),
-    phase,
+    message: lang.upForDeletion,
+    phase: phaseToRemove,
   });
 };
 

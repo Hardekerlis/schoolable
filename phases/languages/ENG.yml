@@ -1,10 +1,16 @@
-noParentCourse: "Couldn't find parent course"
+noCourseFound: "Coulnd't find course"
+noModuleFound: "Coulnd't find module"
+noPhaseFound: "Coulnd't find phase"
+noPhasesFound: "Couldn't find any phases"
 createdPhase: 'Successfully created phase'
-noPhaseFound: "Couln't find phase"
-noPhaseId: 'No phase id found in body'
-noParentCourseId: 'No parent course id found in body'
-upForDeletion: 'Queued phase %name% for deletion'
-noPhasesFound: "Couldn't find any phases for course"
-foundPhases: 'Found phases'
-badIds: 'Ids must be valid object ids'
-foundPhase: 'Found phase'
+needModuleId: 'Need a module id'
+needPhaseId: 'Need a phase id'
+upForDeletion: 'Successfully queued phase for deletion'
+fetchedPhases: 'Successfully fetched phases'
+fetchedPhase: 'Successfully fetched phase'
+updatedPhase: 'Successfully updated phase'
+
+needString: 'Field must be a string'
+needBoolean: 'Field must be a boolean'
+needDate: 'Field must be a date'
+needHandInTypes: 'Needs to be a valid hand in type. file, text, or googleDrive'

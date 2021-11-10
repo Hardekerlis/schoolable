@@ -1,6 +1,6 @@
-/** @format */
-
 export * from './phaseCreatedEvent';
-export * from './phaseQueueRemoveEvent';
-export * from './phaseUpdatedEvent';
+export * from './phaseHiddenEvent';
+export * from './phaseLockedEvent';
 export * from './phaseRemovedEvent';
+export * from './phaseUpdatedEvent';
+export * from './phaseQueueRemoveEvent';

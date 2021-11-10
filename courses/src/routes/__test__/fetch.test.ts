@@ -4,13 +4,13 @@ import { app } from '../../app';
 
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
-const path = '/api/course/fetch';
+const path = '/api/courses/fetch';
 
 const createCourse = async () => {
   const [cookie] = await global.getAuthCookie();
 
   const res = await request(app)
-    .post('/api/course/create')
+    .post('/api/courses/create')
     .set('Cookie', cookie)
     .send({ name: faker.company.companyName() });
 

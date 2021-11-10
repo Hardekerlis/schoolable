@@ -1,0 +1,10 @@
+noParentCourse: "Couldn't find parent course"
+createdModule: 'Successfully created module'
+noModuleFound: "Couln't find module"
+noModuleId: 'No module id found in body'
+noParentCourseId: 'No parent course id found in body'
+upForDeletion: 'Queued module %name% for deletion'
+noModulesFound: "Couldn't find any modules for course"
+foundModules: 'Found modules'
+badIds: 'Ids must be valid object ids'
+foundModule: 'Found module'

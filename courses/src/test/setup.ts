@@ -125,7 +125,7 @@ global.createCourse = async () => {
   const [cookie] = await global.getAuthCookie();
 
   const res = await request(app)
-    .post('/api/course/create')
+    .post('/api/courses/create')
     .set('Cookie', cookie)
     .send({ name: faker.company.companyName() });
 
