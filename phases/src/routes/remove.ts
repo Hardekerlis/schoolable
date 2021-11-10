@@ -55,7 +55,7 @@ const remove = async (req: Request, res: Response) => {
   logger.debug('Found module');
 
   logger.debug('Checking if user is an application admin');
-  if (currentUser.userType !== UserTypes.Admin) {
+  if (currentUser?.userType !== UserTypes.Admin) {
     logger.debug('User is not application admin');
     logger.debug('Checking if user is allowed to create resources for module');
     if (

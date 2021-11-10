@@ -24,7 +24,7 @@ interface Extension {
 
 interface PhasePageAttributes {
   paragraphs?: Paragraph[];
-  handInButton?: HandInTypes[];
+  handInTypes?: HandInTypes[];
   due?: Date;
   extentions?: Extension[];
   openedBy?: string[];
@@ -37,7 +37,7 @@ interface PhasePageModel extends mongoose.Model<PhasePageDoc> {
 
 export interface PhasePageDoc extends mongoose.Document {
   paragraphs?: Paragraph[];
-  handInButton?: HandInTypes[];
+  handInTypes?: HandInTypes[];
   due?: Date;
   extentions?: Extension[];
   openedBy?: string[];
@@ -78,7 +78,7 @@ const phasePageSchema = new mongoose.Schema(
         },
       },
     ],
-    handInButton: [
+    handInTypes: [
       {
         type: String,
         enum: Object.values(HandInTypes),

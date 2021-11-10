@@ -115,3 +115,14 @@ build:
             dest: .
           - src: "**/*.yml"
             dest: .
+    - image: eu.gcr.io/schoolable-platform/phases
+      context: phases
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.yml"
+            dest: .

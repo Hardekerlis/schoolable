@@ -7,3 +7,5 @@ export * from './courseAddedAdmin';
 export * from './courseAddedStudent';
 export * from './courseRemovedAdmin';
 export * from './courseRemovedStudent';
+export * from './phaseCreated';
+export * from './phaseRemoved';

@@ -108,7 +108,7 @@ router.put(
         return LANG[`${req.lang}`].needString;
       }),
 
-    body('page.handInButton')
+    body('page.handInTypes')
       .optional()
       .custom((value, { req }) => {
         if (!Object.values(HandInTypes).includes(value)) {

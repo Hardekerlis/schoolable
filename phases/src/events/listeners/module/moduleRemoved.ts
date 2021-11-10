@@ -1,7 +1,7 @@
 import {
   Listener,
   Subjects,
-  PhaseRemovedEvent,
+  ModuleRemovedEvent,
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
@@ -10,11 +10,11 @@ import Module from '../../../models/module';
 import Phase from '../../../models/phase';
 import logger from '../../../utils/logger';
 
-export class PhaseRemovedListener extends Listener<PhaseRemovedEvent> {
-  subject: Subjects.PhaseRemoved = Subjects.PhaseRemoved;
+export class ModuleRemovedListener extends Listener<ModuleRemovedEvent> {
+  subject: Subjects.ModuleRemoved = Subjects.ModuleRemoved;
   queueGroupName = queueGroupName;
 
-  async onMessage(data: PhaseRemovedEvent['data'], msg: Message) {
+  async onMessage(data: ModuleRemovedEvent['data'], msg: Message) {
     const { moduleId, parentCourseId } = data;
 
     logger.info(
