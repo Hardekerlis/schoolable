@@ -44,7 +44,7 @@ export const getServerSideProps = async ctx => {
   //Get course data. Not modules first.
 
   let { data, meta } = await Request().server
-    .course.add(`fetch/${ctx.query.id}`)
+    .courses.add(`fetch/${ctx.query.id}`)
     .get
     .json
     .c(ctx)
@@ -68,9 +68,8 @@ export const getServerSideProps = async ctx => {
   if(!serverErrors) {
     if(data.course) course = data.course;
 
-    //Get phases - change to module
     let result = await Request().server
-      .phase.add('fetch')
+      .modules.add('fetch')
       .body({
         parentCourseId: ctx.query.id
       })
@@ -82,7 +81,7 @@ export const getServerSideProps = async ctx => {
     serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
-      modules = result.data.phases; //change to modules
+      modules = result.data.modules;
     }
   }
 
@@ -129,6 +128,8 @@ const CoursePage = ({ serverErrors, course, _modules, sub }) => {
     router.push(`/courses/page/edit?id=${router.query.id}&sub=${sub}`);
   };
 
+
+  console.log(userData.userId, course.owner)
 
   //TODO: implement permissions check as well
   const canUserEditPage = (userData.userId === course.owner.id) ? true : false;

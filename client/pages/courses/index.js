@@ -45,13 +45,17 @@ export const getServerSideProps = async ctx => {
   if(!(await authCheck(ctx))) return redirectToLogin;
 
 
-  const { data, meta } = await Request().server.course.add('fetch').post.json.c(ctx).result;
+  const { data, meta } = await Request().server.courses.add('fetch').post.json.c(ctx).result;
 
   let courses = [];
 
   const serverErrors = handleErrors(200, [404], data, meta);
 
-  if(serverErrors === false) {
+  // console.log(serverErrors)
+
+  if(meta.status === 404) {
+    courses = [];
+  }else if(serverErrors === false) {
     courses = data.courses;
     console.log(courses, "no error")
   }
@@ -158,7 +162,7 @@ const Courses = ({ courses, serverErrors }) => {
           <SampleCreationSystem
             firstWrapperClassName={styles.firstWrapperCourseCreation}
             requestCallback={onCourseCreation}
-            itemApiPath={`/api/course/create`}
+            itemApiPath={`/api/courses/create`}
             currentItems={currentCourses}
             itemName={lang.courses.courseItemName}
             noCurrentItemText={lang.courses.noCoursesOwned}

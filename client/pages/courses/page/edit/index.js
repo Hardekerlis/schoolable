@@ -47,7 +47,7 @@ export const getServerSideProps = async ctx => {
   const userData = getUserDataServer(ctx);
 
   let { data, meta } = await Request().server
-    .course.add(`fetch/${ctx.query.id}`)
+    .courses.add(`fetch/${ctx.query.id}`)
     .get
     .json
     .c(ctx)
@@ -66,7 +66,7 @@ export const getServerSideProps = async ctx => {
   let serverErrors = handleErrors(200, [404], data, meta);
 
   let course = null;
-  let phases = [];
+  let modules = [];
 
   if(!serverErrors) {
     course = data.course;
@@ -84,7 +84,7 @@ export const getServerSideProps = async ctx => {
     //Get phases
 
     let result = await Request().server
-      .phase.add('fetch')
+      .modules.add('fetch')
       .post
       .json
       .c(ctx)
@@ -96,7 +96,7 @@ export const getServerSideProps = async ctx => {
     serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
-      phases = result.data.phases;
+      modules = result.data.modules;
     }
   }
 
@@ -133,7 +133,7 @@ const EditCourse = ({ serverErrors, _modules, course, sub }) => {
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
-  
+
 
   const saveClick = () => {
     console.log("save all changes");

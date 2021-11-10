@@ -190,7 +190,7 @@ const Login = () => {
 
     console.log('creating course')
     result = await Request().client
-      .course.add('create')
+      .courses.add('create')
       .post
       .json
       .body({
@@ -201,9 +201,9 @@ const Login = () => {
     console.log(result.data)
 
 
-    console.log('creating phase')
+    console.log('creating module')
     result = await Request().client
-      .phase.add('create')
+      .modules.add('create')
       .post
       .json
       .body({
