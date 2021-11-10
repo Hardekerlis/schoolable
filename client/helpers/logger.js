@@ -18,7 +18,7 @@ class Logger {
   }
 
   err() {
-    console.log(`[${this.red}ERR${this.reset}]`, ...arguments)
+    console.log(`[${this.red}ERROR${this.reset}]`, ...arguments)
   }
 
 }

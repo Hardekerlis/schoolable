@@ -16,7 +16,6 @@
     width: calc(100% - 400px)
 
 $phaseHeaderHeight: 56px
-$phaseFooterHeight: 80px
 
 .phase
   width: 0%
@@ -51,6 +50,64 @@ $phaseFooterHeight: 80px
       // margin-left: 30px
     // margin-top: 40px
 
+$footerHeight: 100px
+
+@mixin setFooterHeight($height)
+  $footerHeight: $height !global
+
+@function getFooterHeight()
+  @return $footerHeight
+
+
+// @mixin contentMaxHeight()
+//   max-height: calc(100% - #{$phaseHeaderHeight} - #{$footerHeight} - 30px)
+
+
+.footer.open
+  background-color: #000
+
+  @include setFooterHeight(300px)
+
+  height: getFooterHeight()
+
+  // height: setFooterHeight(300px)
+
+
+.footer
+
+  @include setFooterHeight(100px)
+  height: getFooterHeight()
+
+  // height: setFooterHeight(100px)
+  // height: $footerHeight
+  margin-left: 30px
+  border-top: 2px solid $lightGrey
+  display: flex
+  flex-direction: row
+  align-items: center
+
+  .viewComments
+    font-size: 1.6rem
+    font-weight: 500
+    color: $white
+    margin: 0px
+    user-select: none
+    cursor: pointer
+    border: 2px solid $purple
+    width: auto
+    display: inline-block
+    padding: 16px
+    border-radius: 5px
+    @include transitionProp(0.2s, ease-out, background-color)
+
+  .viewComments:hover
+    background-color: rgba($purple, 0.6)
+    text-decoration: underline
+
+
+.content.noFooter
+  max-height: calc(100% - #{$phaseHeaderHeight} - 30px)
+
 .content
   margin-left: 40px
   // margin-bottom: 30px
@@ -61,8 +118,13 @@ $phaseFooterHeight: 80px
 
   height: auto
 
+  // @include contentMaxHeight()
+  // max-height: calc(100% - #{$phaseHeaderHeight} - #{$footerHeight} - 30px)
+
+  height: getFooterHeight()
+
   //30px = margin-top & 30px = margin-bottom
-  max-height: calc(100% - #{$phaseHeaderHeight} - #{$phaseFooterHeight} - 30px)
+  // max-height: calc(100% - #{$phaseHeaderHeight} - #{$footerHeight} - 30px)
 
   overflow-y: scroll
 
@@ -74,12 +136,54 @@ $phaseFooterHeight: 80px
 
     p
       margin: 0px
-      font-size: 1.15rem
+      font-size: 1.3rem
 
-.footer
-  height: $phaseFooterHeight
-  margin-left: 30px
-  border-top: 2px solid $lightGrey
+//not in footer anymore
+.upload
+  height: 100%
+  // background-color: #000
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 300px
+
+
+  label
+    display: flex
+    justify-content: center
+    align-items: center
+    color: $white
+    width: 100%
+    height: 80%
+    font-size: 1.2rem
+    border: 3px dashed $purple
+
+    span
+      font-weight: 600
+      margin-right: 5px
+      border-bottom: 1px solid transparent
+      margin-bottom: -1px
+      cursor: pointer
+
+    span:hover
+      border-bottom: 1px solid $white
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //WRAPPER vvv
@@ -113,3 +217,23 @@ $phaseFooterHeight: 80px
   font-weight: 600
   margin: 0px
   margin-bottom: 10px
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //

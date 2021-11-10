@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { DateTime } from 'luxon';
+
 import language from 'helpers/lang';
 const lang = language.coursePage.modules;
 
@@ -21,12 +23,55 @@ const usePrevious = (value) => {
   return ref.current;
 }
 
-const Phase = ({ data }) => {
+const PhaseComments = ({ comments }) => {
 
-  // const paragraphs = data.page?.paragraphs;
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+
+    setPosts(comments.map((obj, index) => {
+
+      console.log(obj);
+
+      return (
+        <div key={index} className={styles.post}>
+          hej
+        </div>
+      )
+
+    }))
+
+
+  }, [comments])
+
+  return posts;
+
+}
+
+const Phase = ({ data }) => {
 
   const [paragraphs, setParagraphs] = useState([]);
   const [paragraphsRender, setParagraphsRender] = useState([]);
+
+  //Footer might only contain comments, always.
+  const defaultFooter = {
+    comments: null,
+    commentsOpen: false
+  }
+
+  const [footer, setFooter] = useState(Object.create(defaultFooter))
+  const [renderFooter, setRenderFooter] = useState(false);
+
+  useEffect(() => {
+    setRenderFooter(footer.comments)
+  }, [footer])
+
+  const toggleComments = () => {
+    setFooter({
+      comments: true,
+      commentsOpen: !footer.commentsOpen
+    })
+  }
 
 
   useEffect(() => {
@@ -35,7 +80,31 @@ const Phase = ({ data }) => {
 
     console.log("updating")
 
-    console.log(data.page)
+    console.log(data)
+
+    if(!Object.prototype.hasOwnProperty.call(data, 'page')) {
+      console.log("no page")
+      //TODO: maybe remove all page data.
+      return;
+    }
+
+    const { page } = data;
+
+
+    if(page.comments.enabled) {
+      //render comments
+
+      setFooter({
+        comments: true,
+        commentsOpen: false
+      })
+
+    }else {
+      setFooter({
+        comments: false,
+        commentsOpen: false
+      })
+    }
 
     if(!data.page || !data.page.paragraphs) {
       setParagraphs([]);
@@ -65,6 +134,13 @@ const Phase = ({ data }) => {
 
   }, [paragraphs]);
 
+  // {footer.handIn === 'file' &&
+  //   <div className={styles.upload}>
+  //     <input type="file" id="actual-upload-input" hidden />
+  //     <label for="actual-upload-input"><span>Choose a file</span>or drag it here.</label>
+  //   </div>
+  // }
+
   return(
     <div className={styles.phase}>
       <div className={styles.container}>
@@ -72,13 +148,20 @@ const Phase = ({ data }) => {
           <p className={styles.title}>{firstLetterToUpperCase("" + data?.name)}</p>
         </div>
 
-        <div className={styles.content}>
+        <div className={(renderFooter) ? styles.content : `${styles.content} ${styles.noFooter}`}>
           {paragraphsRender}
         </div>
 
-        <div className={styles.footer}>
-
-        </div>
+        {renderFooter &&
+          <div className={(footer.commentsOpen) ? `${styles.footer} ${styles.open}` : styles.footer}>
+            <div onClick={toggleComments} className={styles.viewComments}>{(footer.commentsOpen) ? "Hide comments" : "View comments"}</div>
+            {footer.commentsOpen &&
+              <>
+                <PhaseComments comments={data.page.comments.posts} />
+              </>
+            }
+          </div>
+        }
       </div>
     </div>
   )
