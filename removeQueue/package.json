@@ -15,7 +15,7 @@
     "devK8s": "nodemon ./src/index.ts"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-common": "^2.1.0",
+    "@gustafdahl/schoolable-common": "^2.4.3",
     "bull": "^3.29.2",
     "node-nats-streaming": "^0.3.2"
   },

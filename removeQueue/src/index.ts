@@ -14,7 +14,7 @@ ConfigHandler.loadConfig(configPath);
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import { CourseQueueRemoveListener } from './events/listeners/courseQueueRemove';
-// import { PhaseQueueRemoveListener } from './events/listeners/phaseQueueRemove';
+import { PhaseQueueRemoveListener } from './events/listeners/phaseQueueRemove';
 import { UserQueueRemoveListener } from './events/listeners/userQueueRemove';
 
 const start = async () => {
