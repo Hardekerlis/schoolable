@@ -20,6 +20,8 @@ import styles from './modules.module.sass';
 
 const Modules = ({ _modules, course, setLoaderActive }) => {
 
+  console.log(_modules)
+
   if(!_modules) _modules = [];
 
   const [modules, setModules] = useState(_modules);
@@ -29,6 +31,9 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
   useEffect(() => {
     setModulesRender(
       modules.map((obj, index) => {
+
+        console.log(obj)
+
         return (
           <EditableModule fullWidth={!phaseOpen} key={index} id={obj.id} name={obj.name} phases={obj.phases} />
         );
@@ -42,7 +47,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
     if(response.errors === false) {
       let arr = modules.slice();
 
-      arr.push(response.phase);
+      arr.push(response.module);
 
       setModules(arr);
 
@@ -55,6 +60,8 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
     //return false for error.
   };
+
+  console.log(course.id)
 
   return(
     <div className={styles.wrapper}>
@@ -76,7 +83,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
         }}
         createItemButtonClassName={styles.createModuleButton}
         requestCallback={onModuleCreation}
-        itemApiPath={`/api/phase/create`}
+        itemApiPath={`/api/modules/create`}
         currentItems={modules}
         itemName={lang.moduleItemName}
         noCurrentItemText={lang.courseMissingModules}

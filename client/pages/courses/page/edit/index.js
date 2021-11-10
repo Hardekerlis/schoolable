@@ -96,6 +96,7 @@ export const getServerSideProps = async ctx => {
     serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
+      console.log(result.data)
       modules = result.data.modules;
     }
   }
@@ -107,7 +108,7 @@ export const getServerSideProps = async ctx => {
   return {
     props: {
       course,
-      _modules: phases,
+      _modules: modules,
       sub: ctx.query.sub,
       serverErrors,
     },
