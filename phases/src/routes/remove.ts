@@ -20,6 +20,8 @@ import { natsWrapper } from '../utils/natsWrapper';
 
 import { PhaseQueueRemovePublisher } from '../events';
 
+// TODO: Remove the need for parent module id
+
 const remove = async (req: Request, res: Response) => {
   const { currentUser } = req;
   const lang = LANG[`${req.lang}`];
@@ -53,8 +55,7 @@ const remove = async (req: Request, res: Response) => {
   logger.debug('Found module');
 
   logger.debug('Checking if user is an application admin');
-  // @ts-ignore
-  if (currentUser !== UserTypes.Admin) {
+  if (currentUser.userType !== UserTypes.Admin) {
     logger.debug('User is not application admin');
     logger.debug('Checking if user is allowed to create resources for module');
     if (

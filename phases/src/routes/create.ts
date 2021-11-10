@@ -76,6 +76,7 @@ const create = async (req: Request, res: Response) => {
   await new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
     parentModuleId: _module.id,
     parentCourseId: (_module.parentCourse as CourseDoc).id,
+    phaseId: phase.id,
     name: phase.name,
   });
   logger.verbose('Sent Nats phase created event');

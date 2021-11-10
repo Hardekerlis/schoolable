@@ -6,6 +6,7 @@ import {
   validateResult,
   LANG,
   UserTypes,
+  HandInTypes,
 } from '@gustafdahl/schoolable-common';
 import { body, query, param } from 'express-validator';
 
@@ -79,6 +80,46 @@ router.get(
   getLanguage,
   requireAuth('all'),
   fetch.one,
+);
+
+import update from './update';
+router.put(
+  '/update',
+  currentUser,
+  getLanguage,
+  requireAuth([UserTypes.Admin, UserTypes.Teacher, UserTypes.TempTeacher]),
+  [
+    body('phaseId')
+      .exists()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needPhaseId;
+      }),
+
+    body('name')
+      .optional()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needString;
+      }),
+    body('description')
+      .optional()
+      .isString()
+      .withMessage((value, { req }) => {
+        return LANG[`${req.lang}`].needString;
+      }),
+
+    body('page.handInButton')
+      .optional()
+      .custom((value, { req }) => {
+        if (!Object.values(HandInTypes).includes(value)) {
+          throw new Error(LANG[`${req.lang}`].needHandInTypes);
+        }
+
+        return value;
+      }),
+  ],
+  validateResult,
+  update,
 );
 
 export default router;

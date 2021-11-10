@@ -160,6 +160,13 @@ const fetch = {
     // @ts-ignore
     phase.parentModule = undefined;
 
+    // REVIEW: Should this be a user doc instead?
+    logger.debug('Adding user to list with users whom have opened phase');
+    phase.page.openedBy?.push(currentUser.id);
+
+    logger.debug('Saving phase page');
+    await phase.page.save();
+
     logger.info('Successfully fetched phase');
     res.status(200).json({
       errors: false,

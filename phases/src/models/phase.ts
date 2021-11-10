@@ -7,14 +7,17 @@ import { ModuleDoc } from './module';
 interface PhaseAttributes {
   name: string;
   description?: string;
+
   page: PhasePageDoc;
+
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
+  lockOn?: Date; // When should the phase be locked
+
   hidden?: boolean; // Is the phase visible to students
   visibleOn?: Date; // What date shoukd the phase be visible
-  lockOn?: Date; // When should the phase be locked
-  // parentCourse?: CourseDoc | string;
   parentModule: ModuleDoc;
+
   deletion?: {
     isUpForDeletion: boolean;
     removeAt: Date;
@@ -28,14 +31,17 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 export interface PhaseDoc extends mongoose.Document {
   name: string;
   description?: string;
+
   page: PhasePageDoc;
+
   locked?: boolean; // Is the phase locked but visible to students
   unlockOn?: Date; // What date should the phase be unlocked
+  lockOn?: Date; // When should the phase be locked
+
   hidden?: boolean; // Is the phase visible to students
   visibleOn?: Date; // What date shoukd the phase be visible
-  lockOn?: Date; // When should the phase be locked
-  // parentCourse?: CourseDoc | string;
   parentModule: ModuleDoc;
+
   deletion?: {
     isUpForDeletion: boolean;
     removeAt: Date;

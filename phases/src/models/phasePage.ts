@@ -1,11 +1,5 @@
 import mongoose from 'mongoose';
-
-enum ParagrapTypes {
-  Text = 'text',
-  YoutubeVideo = 'youtubeVideo',
-  Image = 'image',
-  Pdf = 'pdf',
-}
+import { ParagraphTypes, HandInTypes } from '@gustafdahl/schoolable-common';
 
 enum DisplayType {
   Inline = 'inline',
@@ -15,22 +9,24 @@ enum DisplayType {
 
 interface Paragraph {
   text?: string;
-  type: ParagrapTypes;
+  type: ParagraphTypes;
   url?: string;
   height: string;
   width: string;
   display: DisplayType;
 }
 
-enum HandInTypes {
-  File = 'file',
-  Text = 'text',
-  GoogleDrive = 'googleDrive',
+interface Extension {
+  userId: string;
+  due: Date;
+  note: string;
 }
 
 interface PhasePageAttributes {
   paragraphs?: Paragraph[];
   handInButton?: HandInTypes[];
+  due?: Date;
+  extentions?: Extension[];
   openedBy?: string[];
   finsihedBy?: string[];
 }
@@ -40,10 +36,12 @@ interface PhasePageModel extends mongoose.Model<PhasePageDoc> {
 }
 
 export interface PhasePageDoc extends mongoose.Document {
-  paragraphs: Paragraph[];
+  paragraphs?: Paragraph[];
   handInButton?: HandInTypes[];
-  openedBy: string[];
-  finsihedBy: string[];
+  due?: Date;
+  extentions?: Extension[];
+  openedBy?: string[];
+  finsihedBy?: string[];
 }
 
 const phasePageSchema = new mongoose.Schema(
@@ -56,30 +54,56 @@ const phasePageSchema = new mongoose.Schema(
         },
         type: {
           type: String,
-          enum: Object.values(ParagrapTypes),
-          default: ParagrapTypes.Text,
+          enum: Object.values(ParagraphTypes),
+          default: ParagraphTypes.Text,
+        },
+        url: {
+          type: String,
+          default: '',
+        },
+        height: {
+          // This is in pixels
+          type: String,
+          default: '200',
+        },
+        width: {
+          // This is in pixels
+          type: String,
+          default: '200',
+        },
+        display: {
+          type: String,
+          enum: Object.values(DisplayType),
+          default: DisplayType.Block,
         },
       },
     ],
-    url: {
-      type: String,
-      default: '',
-    },
-    height: {
-      // This is in pixels
-      type: String,
-      default: '200',
-    },
-    width: {
-      // This is in pixels
-      type: String,
-      default: '200',
-    },
-    display: {
-      type: String,
-      enum: Object.values(DisplayType),
-      default: DisplayType.Block,
-    },
+    handInButton: [
+      {
+        type: String,
+        enum: Object.values(HandInTypes),
+      },
+    ],
+    due: Date,
+    extentions: [
+      {
+        userId: String,
+        due: Date,
+        note: String,
+      },
+    ],
+    openedBy: [
+      {
+        type: String,
+        default: '',
+      },
+    ],
+    finishedBy: [
+      {
+        type: String,
+        default: '',
+      },
+    ],
   },
   {
     toObject: {
