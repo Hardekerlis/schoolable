@@ -50,38 +50,48 @@ const create = async (req: Request, res: Response) => {
         ],
         removeable: false,
       },
-      // Every menu item below is just for example
-      // TODO: Remove example menu items
       {
-        title: 'Example 1',
-        value: 'example_1',
-        access: ['all'],
-        actions: [
-          {
-            actionType: ActionTypes.RightClick,
-            goTo: 'this.example_1',
-          },
-        ],
-      },
-      {
-        title: 'Example 2',
-        value: 'example_2',
+        title: 'Modules',
+        value: 'modules',
         access: ['all'],
         actions: [
           {
             actionType: ActionTypes.LeftClick,
-            goTo: 'this.example_2',
+            goTo: 'this.modules',
           },
         ],
+        removeable: false,
       },
       {
-        title: 'Example 3',
-        value: 'example_3',
+        title: 'Attendees',
+        value: 'attendees',
         access: ['all'],
         actions: [
           {
             actionType: ActionTypes.LeftClick,
-            goTo: 'this.example_3',
+            goTo: 'this.attendees',
+          },
+        ],
+      },
+      {
+        title: 'Assignments',
+        value: 'assignments',
+        access: ['all'],
+        actions: [
+          {
+            actionType: ActionTypes.LeftClick,
+            goTo: 'this.assignments',
+          },
+        ],
+      },
+      {
+        title: 'Schedule',
+        value: 'schedule',
+        access: ['all'],
+        actions: [
+          {
+            actionType: ActionTypes.LeftClick,
+            goTo: 'this.schedule',
           },
         ],
       },
@@ -105,9 +115,6 @@ const create = async (req: Request, res: Response) => {
 
     logger.debug('Successfully saved course');
 
-    // Couldnt get nats mock to work
-    // Code is only ran if its not test environment
-    // if (process.env.NODE_ENV !== 'test') {
     // Publishes event to nats service
     await new CourseCreatedPublisher(natsWrapper.client, logger).publish({
       courseId: course.id as string,
@@ -116,7 +123,6 @@ const create = async (req: Request, res: Response) => {
     });
 
     logger.verbose('Sent Nats course created event');
-    // }
 
     logger.info('Course successfully created. Responding user');
     res.status(201).json({

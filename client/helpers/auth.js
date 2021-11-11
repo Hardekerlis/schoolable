@@ -1,7 +1,9 @@
 import cookies from 'next-cookies';
 
 // import Request from 'helpers/request.js';
-import { Request } from 'helpers';
+import { Request, Logger } from 'helpers';
+
+const logger = new Logger('auth.js');
 
 const authCheck = async (ctx) => {
 
@@ -14,9 +16,9 @@ const authCheck = async (ctx) => {
 
   }catch(err) {
 
-    console.log(err);
-    console.log("please check the above error.");
-    console.log('check failed, assuming that the "sessions" service crashed or is offline.');
+    logger.err(err);
+    logger.err("please check the above error.");
+    logger.warn('check failed, assuming that the "sessions" service crashed or is offline.')
 
     return true;
 

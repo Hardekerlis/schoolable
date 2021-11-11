@@ -4,6 +4,6 @@ import {
   Subjects,
 } from '@gustafdahl/schoolable-common';
 
-export default class PhaseQueueRemovePublisher extends Publisher<PhaseQueueRemoveEvent> {
+export class PhaseQueueRemovePublisher extends Publisher<PhaseQueueRemoveEvent> {
   subject: Subjects.PhaseQueueRemove = Subjects.PhaseQueueRemove;
 }

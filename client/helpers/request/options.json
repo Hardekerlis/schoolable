@@ -7,11 +7,14 @@
     "patch"
   ],
   "services": [
-    "course",
-    "phase",
-    "phaseitem",
+    "courses",
+    "phases",
     "sessions",
-    "users"
+    "users",
+    "modules",
+    "calendar",
+    "submissions",
+    "files"
   ],
   "contentTypes": {
     "html": "text/html",

@@ -12,7 +12,12 @@ import {
 
 import Layout from 'layouts/default';
 
-import { WarpBack, PlusClipboard } from 'helpers/systemIcons';
+import {
+  WarpBack,
+  PlusClipboard,
+  Checkmark,
+  Crossmark
+} from 'helpers/systemIcons';
 
 import {
   Sidebar,
@@ -20,9 +25,13 @@ import {
   CourseMenuItems,
   CourseNavigation,
   SampleCreationSystem,
-  Phase,
-  PhaseEditMenu
+  EditableModule,
 } from 'components';
+
+import {
+  Overview,
+  Modules,
+} from 'components/editCoursePage';
 
 import { authCheck, redirectToLogin } from 'helpers/auth.js';
 
@@ -38,7 +47,7 @@ export const getServerSideProps = async ctx => {
   const userData = getUserDataServer(ctx);
 
   let { data, meta } = await Request().server
-    .course.add(`fetch/${ctx.query.id}`)
+    .courses.add(`fetch/${ctx.query.id}`)
     .get
     .json
     .c(ctx)
@@ -57,7 +66,7 @@ export const getServerSideProps = async ctx => {
   let serverErrors = handleErrors(200, [404], data, meta);
 
   let course = null;
-  let phases = [];
+  let modules = [];
 
   if(!serverErrors) {
     course = data.course;
@@ -75,7 +84,7 @@ export const getServerSideProps = async ctx => {
     //Get phases
 
     let result = await Request().server
-      .phase.add('fetch')
+      .modules.add('fetch')
       .post
       .json
       .c(ctx)
@@ -87,7 +96,8 @@ export const getServerSideProps = async ctx => {
     serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
-      phases = result.data.phases;
+      console.log(result.data)
+      modules = result.data.modules;
     }
   }
 
@@ -98,14 +108,14 @@ export const getServerSideProps = async ctx => {
   return {
     props: {
       course,
-      _phases: phases,
+      _modules: modules,
       sub: ctx.query.sub,
       serverErrors,
     },
   };
 };
 
-const EditCourse = ({ serverErrors, _phases, course, sub }) => {
+const EditCourse = ({ serverErrors, _modules, course, sub }) => {
   if(serverErrors !== false) {
     Prompt.error(serverErrors);
     //maybe add another render (return) if serverErrors
@@ -120,104 +130,20 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
 
   const { coursePage } = course;
 
-  if(!_phases) _phases = [];
-
-  let [phases, setPhases] = useState(_phases);
-  let [phasesRender, setPhasesRender] = useState();
-
-  let [phaseEditMenuOpen, setPhaseEditMenuOpen] = useState(false);
-  let [phaseEditMenuInfo, setPhaseEditMenuInfo] = useState({});
-
-
   let [loaderActive, setLoaderActive] = useState(false);
 
   const parsedCourseName = firstLetterToUpperCase(course.name);
 
-  const editCourseClick = () => {
-    setLoaderActive(true)
-    router.push(`/courses/page/edit?id=${router.query.id}`);
-  };
 
-  const goToCourseWhileEditing = () => {
-    setLoaderActive(true);
-    router.push(`/courses/page?id=${router.query.id}`);
+
+  const saveClick = () => {
+    console.log("save all changes");
   }
 
-  const setPhaseEditMenuOpenInPhase = (index, name, id) => {
-    // console.log("setPhaseEditMenuOpenInPhase")
-
-    setPhaseEditMenuOpen(true);
-    setPhaseEditMenuInfo({
-      name,
-      id,
-      index,
-    });
-  };
-
-  const closePhaseEditMenu = () => {
-    setPhaseEditMenuOpen(false);
-  };
-
-  const onPhaseCreation = async response => {
-    // console.log(response);
-
-    if(response.errors === false) {
-      let arr = phases.slice();
-
-      arr.push(response.phase);
-
-      setPhases(arr);
-
-      Prompt.success(lang.phaseCreated);
-      return true;
-    }else {
-      Prompt.error(response.errors);
-      return false;
-    }
-
-    //return false for error.
-  };
-
-  let [phaseTitles, setPhaseTitles] = useState([]);
-
-  const phaseNameChanged = (name, index) => {
-    let arr = phaseTitles.slice();
-    arr[index] = name;
-    setPhaseTitles(arr);
-  };
-
-  useEffect(() => {
-    if(phaseTitles.length === 0) return;
-
-    //set "phasesRender" here so the phaseTitles have values.
-
-    setPhasesRender(
-      phases.map((obj, index) => {
-        return (
-          <Phase
-            index={index}
-            setPhaseEditMenuOpen={setPhaseEditMenuOpenInPhase}
-            editing={true}
-            key={index}
-            id={obj.id}
-            name={phaseTitles[index]}
-            setLoaderActive={setLoaderActive}
-          />
-        );
-      }),
-    );
-  }, [phaseTitles]);
-
-
-  useEffect(() => {
-    let titles = [];
-
-    for (let obj of phases) {
-      titles.push(obj.name);
-    }
-
-    setPhaseTitles(titles);
-  }, [phases]);
+  const cancelClick = () => {
+    setLoaderActive(true);
+    router.push(`/courses/page?id=${router.query.id}&sub=${sub}`);
+  }
 
   return (
     <Layout title={`${lang.layoutTitle} ${course.name}`}>
@@ -226,16 +152,6 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
         <Sidebar />
 
         <div className={styles.container}>
-          {phaseEditMenuOpen && (
-            <PhaseEditMenu
-              closeMenu={closePhaseEditMenu}
-              nameChanged={phaseNameChanged}
-              courseId={course.id}
-              info={phaseEditMenuInfo}
-              setLoaderActive={setLoaderActive}
-            />
-          )}
-
           <div className={styles.header}>
             <div className={styles.headline}>
               <p className={styles.editing}>
@@ -273,36 +189,24 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
             <div className={styles.content}>
               <CourseNavigation options={[
                 {
-                  text: lang.goBack,
-                  onClick: goToCourseWhileEditing,
-                  icon: WarpBack
+                  text: lang.cancel,
+                  onClick: cancelClick,
+                  icon: Crossmark,
+                  className: styles.cancel
+                },
+                {
+                  text: lang.save,
+                  onClick: saveClick,
+                  icon: Checkmark,
+                  className: styles.save
                 },
               ]} />
-              {sub === 'overview' && (
-                <>
-                  <p className={styles.phasesText}>{lang.phases}</p>
-
-                  <div className={styles.phasesContainer}>
-                    <>
-                      <SampleCreationSystem
-                        creationContainerClassName={styles.creationContainer}
-                        body={{
-                          parentCourseId: course.id,
-                        }}
-                        createItemButtonClassName={styles.createPhaseButton}
-                        requestCallback={onPhaseCreation}
-                        itemApiPath={`/api/phase/create`}
-                        currentItems={phases}
-                        itemName={lang.phaseItemName}
-                        noCurrentItemText={lang.courseMissingPhases}
-                        createAdditionalItemIcon={PlusClipboard}
-                      />
-                    </>
-
-                    {phasesRender}
-                  </div>
-                </>
-              )}
+              {sub === 'overview' &&
+                <Overview />
+              }
+              {sub === 'modules' &&
+                <Modules course={course} _modules={_modules} />
+              }
             </div>
           </div>
         </div>
@@ -311,32 +215,28 @@ const EditCourse = ({ serverErrors, _phases, course, sub }) => {
   );
 };
 
-// {phasesRender?.length === 0 ? (
-//   <p className={styles.noPhasesText}>{lang.noPhasesText}</p>
-// ) : (
-//   <>
-//     <p className={styles.phasesText}>{lang.phases}</p>
+// <>
+//   <p className={styles.modulesText}>{lang.modules}</p>
 //
-//     <div className={styles.phasesContainer}>
-//       <>
-//         <SampleCreationSystem
-//           creationContainerClassName={styles.creationContainer}
-//           body={{
-//             parentCourseId: course.id,
-//           }}
-//           createItemButtonClassName={styles.createPhaseButton}
-//           requestCallback={onPhaseCreation}
-//           itemApiPath={`/api/phase/create`}
-//           currentItems={phases}
-//           itemName={lang.phaseItemName}
-//           noCurrentItemText={lang.courseMissingPhases}
-//           createAdditionalItemIcon={PlusClipboard}
-//         />
-//       </>
+//   <div className={styles.modulesContainer}>
+//     <>
+//       <SampleCreationSystem
+//         creationContainerClassName={styles.creationContainer}
+//         body={{
+//           parentCourseId: course.id,
+//         }}
+//         createItemButtonClassName={styles.createPhaseButton}
+//         requestCallback={onPhaseCreation}
+//         itemApiPath={`/api/phase/create`}
+//         currentItems={modules}
+//         itemName={lang.phaseItemName}
+//         noCurrentItemText={lang.courseMissingPhases}
+//         createAdditionalItemIcon={PlusClipboard}
+//       />
+//     </>
 //
-//       {phasesRender}
-//     </div>
-//   </>
-// )}
+//     {modulesRender}
+//   </div>
+// </>
 
 export default EditCourse;

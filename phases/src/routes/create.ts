@@ -1,64 +1,87 @@
 import { Request, Response } from 'express';
 import {
-  BadRequestError,
-  NotAuthorizedError,
   LANG,
+  InvalidObjectIdError,
+  DocumentNotFoundError,
+  UserTypes,
+  NotAuthorizedError,
 } from '@gustafdahl/schoolable-common';
+import { isValidObjectId } from 'mongoose';
 
+import { CourseDoc } from '../models/course';
+import Module from '../models/module';
 import Phase from '../models/phase';
-import Course from '../models/course';
+import PhasePage from '../models/phasePage';
 
-import PhaseCreatedPublisher from '../events/publishers/createdPhase';
-import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
+import { natsWrapper } from '../utils/natsWrapper';
+
+import { PhaseCreatedPublisher } from '../events';
 
 const create = async (req: Request, res: Response) => {
-  const { name, parentCourseId } = req.body;
   const { currentUser } = req;
-  const _lang = req.lang;
-  const lang = LANG[_lang];
+  const lang = LANG[`${req.lang}`];
+  const { parentModuleId, name } = req.body;
 
-  logger.info('Starting creation of phase');
-  logger.debug('Looking up course');
-  // Find course to make sure the phase has a course to exist in
-  const course = await Course.findById(parentCourseId);
+  logger.info('Attempting create a phase');
 
-  // Logger check if course exists
-  if (!course) {
-    logger.debug('No course found');
-    throw new BadRequestError(lang.noParentCourse);
+  logger.debug('Checking if parent module id is a valid object id');
+  if (!isValidObjectId(parentModuleId)) {
+    logger.debug('Parent module id is not a valid object id');
+    throw new InvalidObjectIdError(lang.noModuleFound);
   }
+  logger.debug('Parent module id is a valid object id');
 
-  logger.debug('Checking if user is allowed to create course phase');
-  if (
-    // Check if user is allowed to create phases for course
-    course.owner !== currentUser?.id &&
-    !course.admins?.includes(currentUser?.id as string)
-  ) {
-    logger.debug('User is not allowed to create course phase');
-    throw new NotAuthorizedError();
+  logger.debug('Looking up module and populating parent course');
+  const _module = await Module.findById(parentModuleId).populate(
+    'parentCourse',
+  );
+
+  if (!_module) {
+    logger.debug('No module found');
+    throw new DocumentNotFoundError(lang.noModuleFound);
   }
+  logger.debug('Found module');
+
+  logger.debug('Checking if user is an application admin');
+  // @ts-ignore
+  if (currentUser !== UserTypes.Admin) {
+    logger.debug('User is not application admin');
+    logger.debug('Checking if user is allowed to create resources for module');
+    if (
+      (_module.parentCourse as CourseDoc).owner.toString() !== currentUser?.id
+    ) {
+      logger.debug('User is not allowed to create resources for module');
+      throw new NotAuthorizedError();
+    }
+    logger.debug('User is allowed to create resources for module');
+  } else logger.debug('User is an application admin');
+
+  logger.debug('Building phase page');
+  const phasePage = PhasePage.build({});
+
+  logger.debug('Saving phase page');
+  await phasePage.save();
 
   logger.debug('Building phase');
   const phase = Phase.build({
     name,
-    parentCourseId,
+    parentModule: _module,
+    page: phasePage,
   });
 
-  logger.debug('Trying to save phase');
+  logger.debug('Saving phase');
   await phase.save();
-  logger.debug('Saved phase');
 
-  // Publishes event to nats service
-  new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
-    phaseId: phase.id as string,
-    parentCourseId: parentCourseId,
-    name,
+  await new PhaseCreatedPublisher(natsWrapper.client, logger).publish({
+    parentModuleId: _module.id,
+    parentCourseId: (_module.parentCourse as CourseDoc).id,
+    phaseId: phase.id,
+    name: phase.name,
   });
-
   logger.verbose('Sent Nats phase created event');
 
-  logger.info('Created phase');
+  logger.info('Successfully created phase');
 
   res.status(201).json({
     errors: false,

@@ -7,5 +7,6 @@ export interface PhaseRemovedEvent {
   data: {
     phaseId: string;
     parentCourseId: string;
+    parentModuleId: string;
   };
 }

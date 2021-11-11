@@ -51,6 +51,15 @@ const login = async (req: Request, res: Response) => {
       throw new BadRequestError(lang.funnyBusiness);
     }
 
+    // TODO: Fix this excellent code
+    if (!geo?.city) {
+      geo.city = 'undefined';
+    }
+
+    if (!geo?.region) {
+      geo.region = 'undefined';
+    }
+
     logger.debug('Building session');
     const session = Session.build({
       user: user,

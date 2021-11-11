@@ -6,7 +6,7 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 import { natsWrapper } from '../../utils/natsWrapper';
 
-const path = '/api/course/create';
+const path = '/api/courses/create';
 
 it(`Has a route handler listening on ${path} for post requests`, async () => {
   const res = await request(app).post(path).send({});

@@ -1,5 +1,3 @@
-/** @format */
-
 import fs from 'fs';
 import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';

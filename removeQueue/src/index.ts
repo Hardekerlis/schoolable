@@ -15,7 +15,6 @@ import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 import { CourseQueueRemoveListener } from './events/listeners/courseQueueRemove';
 import { PhaseQueueRemoveListener } from './events/listeners/phaseQueueRemove';
-import { PhaseItemQueueRemoveListener } from './events/listeners/phaseItemQueueRemove';
 import { UserQueueRemoveListener } from './events/listeners/userQueueRemove';
 
 const start = async () => {
@@ -52,9 +51,6 @@ const start = async () => {
 
     logger.debug('Registered PhaseQueueRemoveListener for nats');
     new PhaseQueueRemoveListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered PhaseItemQueueRemoveListener for nats');
-    new PhaseItemQueueRemoveListener(natsWrapper.client, logger).listen();
 
     logger.debug('Registered UserQueueRemoveListener for nats');
     new UserQueueRemoveListener(natsWrapper.client, logger).listen();

@@ -1,5 +1,3 @@
-/** @format */
-
 export * from './yaml';
 export * from './config';
 export * from './logger';

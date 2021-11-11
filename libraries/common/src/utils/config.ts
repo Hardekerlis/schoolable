@@ -1,5 +1,3 @@
-/** @format */
-
 import { Yaml } from './yaml';
 
 // Tried to make this a global but the code turned out hideous so did it this way instead

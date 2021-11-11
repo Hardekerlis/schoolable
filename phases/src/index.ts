@@ -5,18 +5,6 @@ import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 
-import {
-  CoruseCreatedListener,
-  RemovePhaseListener,
-  CourseUpdatedListener,
-  CourseRemovedListener,
-  UserRemovedListener,
-  CourseAddedAdminListener,
-  CourseAddedStudentListener,
-  CourseRemovedStudentListener,
-  CourseRemovedAdminListener,
-} from './events/listeners/';
-
 import mongoose from 'mongoose';
 
 const startServer = async () => {
@@ -25,8 +13,6 @@ const startServer = async () => {
   if (!env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
   }
-
-  console.clear();
 
   logger.info('Starting server...');
 
@@ -50,32 +36,7 @@ const startServer = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    logger.debug('Registered CoruseCreatedListener for nats');
-    new CoruseCreatedListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered RemovePhaseListener for nats');
-    new RemovePhaseListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseUpdatedListener for nats');
-    new CourseUpdatedListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseRemovedListener for nats');
-    new CourseRemovedListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered UserRemovedListener for nats');
-    new UserRemovedListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseAddedAdminListener for nats');
-    new CourseAddedAdminListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseAddedStudentListener for nats');
-    new CourseAddedStudentListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseRemovedStudentListener for nats');
-    new CourseRemovedStudentListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseRemovedStudentListener for nats');
-    new CourseRemovedAdminListener(natsWrapper.client, logger).listen();
+    // Add nats listeners below this line
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(

@@ -6,9 +6,6 @@ export enum Subjects {
   UserRemoved = 'user:removed',
   UserQueueRemove = 'user:queueRemove',
 
-  AuthLogin = 'auth:login',
-  AuthLogout = 'auth:logout',
-
   CourseCreated = 'course:created',
   CourseUpdated = 'course:updated',
   CourseRemoved = 'course:removed',
@@ -18,22 +15,24 @@ export enum Subjects {
   CourseAddedStudent = 'course:addedStudent',
   CourseRemovedStudent = 'course:removedStudent',
 
+  ModuleCreated = 'module:created',
+  ModuleUpdated = 'module:updated',
+  ModuleRemoved = 'module:removed',
+  ModuleQueueRemove = 'module:queueRemove',
+
   PhaseCreated = 'phase:created',
   PhaseUpdated = 'phase:updated',
   PhaseRemoved = 'phase:removed',
   PhaseQueueRemove = 'phase:queueRemove',
-
-  PhaseItemCreated = 'phaseItem:created',
-  PhaseItemUpdated = 'phaseItem:updated',
-  PhaseItemRemoved = 'phaseItem:removed',
-  PhaseItemQueueRemove = 'phaseItem:queueRemove',
+  PhaseLocked = 'phase:locked',
+  PhaseHidden = 'phase:hidden',
 
   SubmissionGraded = 'submission:graded',
 
   RemoveCourse = 'remove:course',
   RemoveUser = 'remove:user',
+  RemoveModule = 'remove:module',
   RemovePhase = 'remove:phase',
-  RemovePhaseItem = 'remove:phaseItem',
 
   // ##### Below this line should all subjects be which shouldn't exist in Remove #####
 

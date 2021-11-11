@@ -1,5 +1,3 @@
-/** @format */
-
 import { Subjects } from '../';
 
 export interface PhaseQueueRemoveEvent {
@@ -7,6 +5,7 @@ export interface PhaseQueueRemoveEvent {
   data: {
     phaseId: string;
     parentCourseId: string;
+    parentModuleId: string;
     removeAt: Date;
   };
 }
