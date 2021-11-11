@@ -5,9 +5,9 @@ import {
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
-import { queueGroupName } from './queueGroupName';
-import Course from '../../models/course';
-import logger from '../../utils/logger';
+import { queueGroupName } from '../queueGroupName';
+import Course from '../../../models/course';
+import logger from '../../../utils/logger';
 
 export class CourseAddedAdminListener extends Listener<CourseAddedAdminEvent> {
   subject: Subjects.CourseAddedAdmin = Subjects.CourseAddedAdmin;

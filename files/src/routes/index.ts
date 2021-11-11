@@ -51,13 +51,7 @@ router.post(
     });
   },
   [
-    body('accessType')
-      .optional()
-      .isString()
-      .withMessage((value, { req }) => {
-        return LANG[`${req.lang}`].needString;
-      }),
-    body('accessIds')
+    body('access')
       .optional()
       .isString()
       .withMessage((value, { req }) => {

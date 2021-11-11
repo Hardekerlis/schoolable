@@ -18,6 +18,7 @@ const b2 = {
     .fn()
     .mockImplementation((bucketName: string): Promise<StandardApiResponse> => {
       return {
+        // @ts-ignore
         status: '200',
         statusText: 'OK',
         headers: {},
@@ -32,6 +33,7 @@ const b2 = {
     .fn()
     .mockImplementation(({ bucketId }): Promise<StandardApiResponse> => {
       return {
+        // @ts-ignore
         status: '200',
         statusText: 'OK',
         headers: {},

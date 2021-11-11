@@ -4,6 +4,9 @@ invalidJson: 'Field is invalid json'
 needArray: 'Field needs to be array'
 noAcceptedFile: 'No accepted file found'
 needFile: 'Need a file to upload'
+onlyOneValueAllowed: 'Only one value is allowed in array'
+uploadedFile: 'Successfully uploaded file'
+nameToShort: 'File name is too short'
 
 # CUSTOM MULTER ERRORS
 LIMIT_PART_COUNT: 'Too many parts'

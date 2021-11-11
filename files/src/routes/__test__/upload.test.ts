@@ -3,6 +3,7 @@ import faker from 'faker';
 import { app } from '../../app';
 import mongoose from 'mongoose';
 import fs from 'fs';
+import { URL } from 'url';
 
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
@@ -10,6 +11,16 @@ import Course from '../../models/course';
 import File from '../../models/file';
 
 import b2 from '../../utils/b2';
+import logger from '../../utils/logger';
+
+const stringIsAValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
 
 const createCourse = async (ownerId?: string) => {
   const courseId = new mongoose.Types.ObjectId().toHexString();
@@ -52,8 +63,7 @@ it('Returns a 401 if a user tries to upload a file to a course without permissio
     .post(path)
     .set('cookie', cookie)
     .set('Content-Type', 'multipart/form-data')
-    .field('accessType', 'course')
-    .field('accessIds', JSON.stringify([courseId]))
+    .field('access', JSON.stringify({ courses: [courseId] }))
     .attach('file', fs.readFileSync(filePath), filePath)
     .expect(401);
 });
@@ -96,7 +106,20 @@ it('Returns a 201 if file is successfully uploaded', async () => {
     .expect(201);
 });
 
-it('Access is set to course if access type is set to course in file document', async () => {
+it('Returns the file url in response body as a valid url', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
+
+  const res = await request(app)
+    .post(path)
+    .set('cookie', cookie)
+    .set('Content-Type', 'multipart/form-data')
+    .attach('file', fs.readFileSync(filePath), filePath)
+    .expect(201);
+
+  expect(stringIsAValidUrl(res.body.url)).toBeTruthy();
+});
+
+it('Courses is defined in access.courses in file document', async () => {
   const { courseId, ownerId } = await createCourse();
   const [cookie] = await global.getAuthCookie(
     UserTypes.Teacher,
@@ -108,60 +131,53 @@ it('Access is set to course if access type is set to course in file document', a
     .post(path)
     .set('cookie', cookie)
     .set('Content-Type', 'multipart/form-data')
-    .field('accessType', 'course')
-    .field('accessIds', JSON.stringify([courseId]))
+    .field('access', JSON.stringify({ courses: [courseId] }))
     .attach('file', fs.readFileSync(filePath), filePath)
     .expect(201);
 
   // @ts-ignore
-  const file = await File.findOne({ access: { ids: courseId } });
+  const file = await File.findOne();
 
   // @ts-ignore
-  expect(file.access.type).toEqual('course');
-  // @ts-ignore
-  expect(file.access.ids).toEqual([courseId]);
+  expect(file.access.courses).toEqual([new mongoose.Types.ObjectId(courseId)]);
 });
 
-it('Access is set to users if access type is set to users', async () => {
+it('Users is defined in access.users in file document', async () => {
   const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
 
   const userIds = [
-    new mongoose.Types.ObjectId().toHexString(),
-    new mongoose.Types.ObjectId().toHexString(),
+    new mongoose.Types.ObjectId((await global.createUser()).id),
+    new mongoose.Types.ObjectId((await global.createUser()).id),
   ];
 
   await request(app)
     .post(path)
     .set('Content-Type', 'multipart/form-data')
     .set('cookie', cookie)
-    .field('accessType', 'user')
-    .field('accessIds', JSON.stringify(userIds))
+    .field('access', JSON.stringify({ users: userIds }))
     .attach('file', fs.readFileSync(filePath), filePath)
     .expect(201);
 
   // @ts-ignore
-  const file = await File.findOne({ access: { ids: userIds } });
+  const file = await File.findOne();
 
   // @ts-ignore
-  expect(file.access.type).toEqual('user');
-  // @ts-ignore
-  expect(file.access.ids).toEqual(userIds);
+  expect(file.access.users).toEqual(userIds);
 });
 
 it('Calls all the necessary functions to upload a file to Backblaze', async () => {
   const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
 
   const userIds = [
-    new mongoose.Types.ObjectId().toHexString(),
-    new mongoose.Types.ObjectId().toHexString(),
+    (await global.createUser()).id,
+    (await global.createUser()).id,
   ];
 
   await request(app)
     .post(path)
     .set('cookie', cookie)
     .set('Content-Type', 'multipart/form-data')
-    .field('accessType', 'user')
-    .field('accessIds', JSON.stringify(userIds))
+    .field('access', JSON.stringify({ users: userIds }))
     .attach('file', fs.readFileSync(filePath), filePath)
     .expect(201);
 
@@ -169,4 +185,24 @@ it('Calls all the necessary functions to upload a file to Backblaze', async () =
   expect(b2.getBucket).toHaveBeenCalled();
   expect(b2.getUploadUrl).toHaveBeenCalled();
   expect(b2.uploadFile).toHaveBeenCalled();
+});
+
+it('Logger is implemented', async () => {
+  const [cookie] = await global.getAuthCookie(UserTypes.Teacher);
+
+  const userIds = [
+    (await global.createUser()).id,
+    (await global.createUser()).id,
+  ];
+
+  await request(app)
+    .post(path)
+    .set('cookie', cookie)
+    .set('Content-Type', 'multipart/form-data')
+    .field('access', JSON.stringify({ users: userIds }))
+    .attach('file', fs.readFileSync(filePath), filePath)
+    .expect(201);
+
+  expect(logger.info).toHaveBeenCalled();
+  expect(logger.debug).toHaveBeenCalled();
 });
