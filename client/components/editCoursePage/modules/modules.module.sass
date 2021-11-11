@@ -1,6 +1,26 @@
 @import "styles/variables"
 
+.page
+  width: 100%
+  height: 100%
+  display: flex
+  flex-direction: row
+  @include transition(0.2s, ease-out)
+
+
+.page.minified
+  .wrapper
+    width: 416px
+  .phase
+    width: calc(100% - 400px)
+
+
+
 .wrapper
+  width: 100%
+  //because of .modulesContainer padding-bottom
+  height: calc(100% - 50px)
+  @include transition(0.2s, ease-out)
 
 .noModulesText
   color: $white
@@ -9,6 +29,7 @@
 .modulesContainer
   height: 100%
   width: 100%
+  padding-left: 16px
   overflow-y: scroll
   padding-bottom: 60px
   display: flex
@@ -16,6 +37,7 @@
   flex-wrap: wrap
   align-content: flex-start
   padding-top: 20px
+
 
 
 .modulesText

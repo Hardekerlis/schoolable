@@ -74,6 +74,10 @@ const BuildRequest = () => {
         Cookie: this.cookies
       }
 
+      if(this.contentType === 'null') {
+        delete this.headers['Content-Type'];
+      }
+
       if(this.sender === 'server') this.headers.Host = 'dev.schoolable.se';
 
       if(this.serverContext && this.sender === 'server') {

@@ -1,0 +1,288 @@
+@import "styles/variables"
+
+
+.handInMenu
+  @include transition(0.2s, ease-out)
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 0%
+  overflow: hidden
+  display: inline-block
+  position: absolute
+  top: 0px
+  height: calc(100% - 50px)
+  margin-top: 50px
+
+
+  .menuWrapper
+    //set width with js
+
+    margin-left: 10px
+    display: flex
+    flex-direction: column
+    justify-content: center
+    // align-items: center
+    overflow: hidden
+    align-items: flex-start
+
+    .title
+      font-size: 2.4rem
+      font-weight: 600
+      color: $white
+      display: inline-block
+      width: auto
+      border-bottom: 2px solid $purple
+      padding-bottom: 6px
+      padding-left: 4px
+      padding-right: 4px
+      margin: 0px
+
+  .board
+    margin-top: 40px
+    width: 100%
+    height: auto
+    background-color: $blacker
+    color: $white
+    border-radius: 0px
+    padding: 20px
+    //because last rows margin-bottom
+    padding-bottom: 0px
+    display: flex
+    flex-direction: row
+    justify-content: space-evenly
+    flex-wrap: wrap
+
+    .togglerParent:hover
+      background-color: rgba($black, 0.4)
+
+    .togglerParent.selected:hover
+      background-color: $black
+
+    .togglerParent
+      display: inline-block
+      width: auto
+      margin-bottom: 20px
+      background-color: $black
+      padding: 5px
+      padding-right: 10px
+      border-radius: 5px
+      cursor: pointer
+      @include transitionProp(0.2s, ease-out, background-color)
+
+
+    .toggler
+      display: flex
+      flex-direction: row
+      align-items: center
+      justify-content: center
+      height: auto
+      width: auto
+      user-select: none
+
+
+      .box
+        width: 45px
+        height: 45px
+        border-radius: 200px
+        margin-right: 8px
+
+      .text
+        margin: 0px
+        font-size: 1.5rem
+        font-weight: 500
+
+
+
+.container
+  background-color: $blacker
+  width: 100%
+  padding: 20px
+  margin-top: 10px
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+
+.submit:hover
+  background-color: rgba($purple, 0.6)
+
+.submit
+  width: 100%
+  max-width: 180px
+  min-width: 120px
+  border: 2px solid $purple
+  border-radius: 10px
+  padding: 12px
+  cursor: pointer
+  font-weight: 500
+  @include transitionProp(0.2s, ease-out, background-color)
+
+  p
+    color: $white
+    font-size: 1.7rem
+    text-align: center
+    margin: 0px
+    user-select: none
+
+
+
+
+
+.maxFiles
+  color: $white
+  margin: 0px
+  width: 100%
+  text-align: right
+  font-weight: 300
+  font-size: 1.1rem
+  margin-top: 2px
+  user-select: none
+
+
+
+.fileInput.hasFiles
+  label
+    // margin-top: 12px
+    top: 8px
+    height: calc(100% - 8px)
+    align-items: flex-start
+
+
+  label:hover
+    span
+      border-bottom: 1px solid $white
+
+.fileInput.noFiles
+  label
+    // height: 100%
+
+  .uploadedFiles
+    height: 0%
+    padding: 0px
+
+.fileInput:hover
+  label
+    span
+      // border-bottom: 1px solid $white
+
+.fileInput
+  height: 200px
+  // background-color: #000
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  justify-content: flex-start
+  width: 100%
+  border: 3px dashed $purple
+  position: relative
+  // cursor: pointer
+
+  .uploadedFiles
+    width: 100%
+    height: 100%
+    padding: 10px
+    display: flex
+    flex-direction: row
+    align-items: flex-start
+    flex-wrap: wrap
+    padding-top: 42px
+
+    .file:hover
+      // cursor: pointer
+      .delete
+        opacity: 1
+        pointer-events: all
+
+    .delete
+      position: absolute
+      top: 0px
+      left: 0px
+      right: 0px
+      bottom: 0px
+      background-color: rgba($blacker, 0.95)
+      opacity: 0
+      pointer-events: none
+      cursor: pointer
+      display: flex
+      justify-content: center
+      border-radius: 0px
+      align-items: center
+      @include transitionProp(0.2s, ease-out, opacity)
+
+      .trash
+        width: 50%
+        height: 50%
+
+    .file
+      position: relative
+      color: $white
+      font-size: 1rem
+      font-weight: 300
+      width: calc(30% - 10px)
+      min-width: 55px
+      max-width: 100px
+      overflow: hidden
+      display: flex
+      flex-direction: column
+      align-items: center
+      background-color: rgba($white, 0.2)
+      padding: 4px
+      border-radius: 6px
+      margin-right: 10px
+      margin-bottom: 10px
+
+      .icon
+        width: 35px
+        height: 35px
+        // margin-left: -8px
+
+      .name
+        width: 100%
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis
+        height: auto
+        margin: 0px
+        text-align: center
+        user-select: none
+
+  label
+    display: flex
+    justify-content: center
+    align-items: center
+    color: $white
+    width: 100%
+    font-size: 1.2rem
+    cursor: pointer
+    position: absolute
+    height: 100%
+
+    p
+      margin: 0px
+
+    span
+      font-weight: 600
+      margin-right: 5px
+      border-bottom: 1px solid transparent
+      margin-bottom: -1px
+      cursor: pointer
+
+    span:hover
+      border-bottom: 1px solid $white
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //

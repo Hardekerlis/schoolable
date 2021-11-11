@@ -21,7 +21,8 @@
     "json": {
       "type": "application/json",
       "isJSON": true
-    }
+    },
+    "noContentType": "null"
   },
   "senders": [
     "client",

@@ -15,10 +15,8 @@ import styles from './module.module.sass';
 
 const Module = ({
   name,
-  id,
   className,
   clickable,
-  phases,
   onPhaseClick,
   removeSelected
 }) => {
@@ -67,7 +65,7 @@ const Module = ({
           }
         ],
         comments: {
-          enabled: false,
+          enabled: true,
           posts: [
             {
               name: 'Swagger sund',

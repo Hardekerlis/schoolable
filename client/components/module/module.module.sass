@@ -1,8 +1,5 @@
 @import "styles/variables"
 
-.wrapper:nth-of-type(odd)
-  margin-right: 20px
-
 $nonEditableModuleBgColor: rgba(0,0,0, 0.4)
 
 .nonClickable
@@ -14,13 +11,9 @@ $nonEditableModuleBgColor: rgba(0,0,0, 0.4)
 .wrapper
   display: inline-block
   user-select: none
-
   width: 90%
-  // width: 360px
-
   font-size: 1.7rem
   font-weight: 500
-  // width: auto
   height: 80px
 
   position: relative
@@ -116,9 +109,7 @@ $treeColor: $blacker
   height: calc(100% - 39px)
   background-color: $treeColor
   position: absolute
-  // left: 16px
   left: 3%
-
 
 .child.selected
   background-color: $darkPurple2 !important
@@ -136,7 +127,6 @@ $treeColor: $blacker
   margin-top: 16px
   width: calc(100% - 10%)
   margin-left: 10%
-  // float: right
 
   @include transitionProp(0.2s, ease-out, background-color)
 
@@ -155,7 +145,6 @@ $treeColor: $blacker
   .treeLinker
     position: absolute
     left: 3%
-    // width: 24px
     width: 7%
     height: 2px
     background-color: $treeColor

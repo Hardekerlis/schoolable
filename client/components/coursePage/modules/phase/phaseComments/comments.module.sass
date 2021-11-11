@@ -1,0 +1,35 @@
+@import "styles/variables"
+
+
+.posts
+  width: 100%
+  //50px viewCOmments button height. 20px viewComments margins.
+  //10px + 50px = 60px. other 10px is in padding.
+  height: calc(100% - 60px)
+  padding: 10px
+  overflow-y: hidden
+
+  .post:first-of-type
+    margin-top: 0px
+
+  .post
+    position: relative
+    width: 100%
+    border-bottom: 2px solid rgba($white, 0.8)
+    padding: 10px
+
+    margin-top: 36px
+
+    color: $white
+
+    .text
+      margin: 0px
+      font-size: 1.3rem
+
+    .author
+      position: absolute
+      bottom: -24px
+      left: 6px
+      margin: 0px
+      font-weight: 300
+      font-size: 1rem

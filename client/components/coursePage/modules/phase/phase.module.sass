@@ -1,0 +1,181 @@
+@import "styles/variables"
+
+
+
+$phaseHeaderHeight: 56px
+
+
+.phase.handInMenuOpen
+  .container
+    width: 58% !important
+  .handInMenu
+    width: 42%
+
+.phase
+  width: 0%
+  height: 100%
+  overflow: hidden
+  position: relative
+  // display: flex
+  // flex-direction: row
+
+  @include transition(0.2s, ease-out)
+
+
+
+  .container
+    margin-top: 50px
+    height: calc(100% - 50px)
+    width: 100%
+    position: relative
+    display: inline-block
+    // background-color: $purple
+    @include transition(0.2s, ease-out)
+
+  .header
+    width: 100%
+    // background-color: $purple
+    margin-left: 30px
+    height: $phaseHeaderHeight
+
+    .title
+      font-size: 2.4rem
+      font-weight: 600
+      color: $white
+      display: inline-block
+      width: auto
+      border-bottom: 2px solid $purple
+      padding-bottom: 6px
+      padding-left: 4px
+      padding-right: 4px
+      margin: 0px
+      // margin-left: 30px
+    // margin-top: 40px
+
+$footerHeight: 70px
+$footerOpenHeight: 70%
+
+.content.footerOpen
+  max-height: calc(100% - #{$phaseHeaderHeight} - #{$footerOpenHeight} - 30px)
+
+.footer.open
+  height: $footerOpenHeight
+
+  .viewComments
+    .footerArrow
+      background-color: rgba($purple, 0.6) !important
+      @include rotate(270)
+
+.footer
+  height: $footerHeight
+  margin-left: 30px
+  border-top: 2px solid $lightGrey
+  display: flex
+  flex-direction: column
+  align-items: flex-start
+  position: relative
+
+  //height of viewComments and top
+  // padding-top: calc(68px + 16px)
+
+  @include transition(0.2s, ease-out)
+
+  .viewComments
+    font-size: 1.4rem
+    font-weight: 500
+    color: $white
+    margin: 0px
+    user-select: none
+    cursor: pointer
+    // border: 2px solid $purple
+    width: auto
+    min-height: 50px
+    max-height: 50px
+
+
+    display: flex
+    flex-direction: row
+    align-items: center
+    // padding: 8px
+
+    position: absolute
+    bottom: calc((#{$footerHeight} - 50px)/2)
+    right: 23px
+
+    border-radius: 5px
+    @include transition(0.2s, ease-out)
+
+    .text
+      margin-right: 6px
+
+    .footerArrow
+      width: 40px
+      height: 40px
+      border-radius: 100px
+      pointer-events: none
+
+      @include rotate(90)
+      @include transition(0.2s, ease-out)
+
+  .viewComments:hover
+    // background-color: rgba($purple, 0.6)
+    text-decoration: underline
+
+    .footerArrow
+      background-color: rgba($white, 0.2)
+      @include rotate(270)
+
+
+
+.content.noFooter
+  max-height: calc(100% - #{$phaseHeaderHeight} - 30px) !important
+
+.content
+  margin-left: 40px
+  // margin-bottom: 30px
+  margin-top: 30px
+  padding-right: 20px
+  padding-top: 10px
+  padding-bottom: 10px
+
+  height: auto
+
+  //30px = margin-top & 30px = margin-bottom
+  max-height: calc(100% - #{$phaseHeaderHeight} - #{$footerHeight} - 30px)
+
+  overflow-y: scroll
+
+  @include transition(0.2s, ease-out)
+
+  .paragraph
+    background-color: $blacker
+    color: $white
+    padding: 20px
+    margin-bottom: 16px
+
+    p
+      margin: 0px
+      font-size: 1.3rem
+
+
+
+.handIn
+  background-color: rgba($purple, 0.4)
+  border: 2px solid $purple
+  padding: 12px
+  position: absolute
+  width: 106px
+  right: 10px
+  top: 0px
+  border-radius: 4px
+  cursor: pointer
+  @include transition(0.2s, ease-out)
+
+  .text
+    margin: 0px
+    color: $white
+    font-size: 1.4rem
+    text-align: center
+
+.handIn:hover
+  background-color: $purple

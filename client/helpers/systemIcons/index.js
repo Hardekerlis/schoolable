@@ -19,7 +19,8 @@ import {
   Checkbox,
   CheckboxChecked,
   Checkmark,
-  Crossmark
+  Crossmark,
+  Trash
 } from './icons.js';
 import IconRenderer from './renderer.js';
 
@@ -45,5 +46,6 @@ export {
   Checkbox,
   CheckboxChecked,
   Checkmark,
-  Crossmark
+  Crossmark,
+  Trash
 }
