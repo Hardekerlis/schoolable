@@ -1,5 +1,3 @@
-/** @format */
-
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { createLogger, format, transports, Logger } from 'winston';
 const { combine, timestamp, label, printf, colorize } = format;
@@ -29,7 +27,7 @@ let logger: Logger;
 // Quiet Winston when running tests
 export const winstonTestSetup = () => {
   // @ts-ignore
-  logger.transports.forEach(transport => (transport.silent = true));
+  logger.transports.forEach((transport) => (transport.silent = true));
 };
 
 const Logger = (

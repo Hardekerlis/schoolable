@@ -1,5 +1,3 @@
-/** @format */
-
 import YML from 'js-yaml';
 import fs from 'fs';
 

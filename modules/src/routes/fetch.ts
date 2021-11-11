@@ -34,7 +34,7 @@ export const fetchMany = async (req: Request, res: Response) => {
     logger.debug('User is not an admin');
     query = {
       $and: [
-        { id: parentCourseId },
+        { _id: parentCourseId },
         {
           $or: [
             { owner: currentUser.id },
@@ -109,7 +109,7 @@ export const fetchOne = async (req: Request, res: Response) => {
     logger.debug('User is not an admin');
     query = {
       $and: [
-        { id: parentCourseId },
+        { _id: parentCourseId },
         {
           $or: [
             { owner: currentUser.id },

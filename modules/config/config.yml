@@ -1,4 +1,4 @@
-debug: true
+debug: false
 dev: true
 port: 3000
 logs:

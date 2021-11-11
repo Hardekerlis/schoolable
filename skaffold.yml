@@ -26,6 +26,8 @@ build:
             dest: .
           - src: "**/*.module.sass"
             dest: .
+          - src: "**/helpers/*.json"
+            dest: .
     - image: eu.gcr.io/schoolable-platform/courses
       context: courses
       kaniko:
