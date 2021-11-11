@@ -22,7 +22,7 @@ export class UserRemovedListener extends Listener<UserRemovedEvent> {
     logger.info(`Removing user with id ${userId}`);
 
     logger.debug('Looking up user to remove');
-    const userToRemove = await User.findById(userId);
+    const userToRemove = await User.findByIdAndDelete(userId);
 
     if (!userToRemove) {
       logger.error('No user to remove found. This should never happen');
