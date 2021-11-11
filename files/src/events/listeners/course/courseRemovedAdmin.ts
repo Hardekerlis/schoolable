@@ -5,9 +5,11 @@ import {
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
-import { queueGroupName } from './queueGroupName';
-import Course from '../../models/course';
-import logger from '../../utils/logger';
+import { queueGroupName } from '../queueGroupName';
+import logger from '../../../utils/logger';
+
+import Course from '../../../models/course';
+import File from '../../../models/file';
 
 export class CourseRemovedAdminListener extends Listener<CourseRemovedAdminEvent> {
   subject: Subjects.CourseRemovedAdmin = Subjects.CourseRemovedAdmin;
@@ -36,7 +38,27 @@ export class CourseRemovedAdminListener extends Listener<CourseRemovedAdminEvent
     logger.debug('Saving course');
     await course.save();
 
-    logger.info('Successfully removed admin from course');
+    logger.debug('Looking up files');
+    // @ts-ignore
+    const files = await File.find({ access: { users: adminId } });
+
+    logger.debug('Checking if any files are are associated with user');
+    if (files[0]) {
+      logger.debug(`${files.length} files are associated with user`);
+      logger.debug('Looping through them');
+      for (const file of files) {
+        // @ts-ignore
+        const index = file.access?.users.indexOf(adminId);
+
+        logger.debug('Removing user from file');
+        file.access?.users.splice(index, 1);
+
+        logger.debug('Saving file');
+        await file.save();
+      }
+    } else logger.debug('No files are associated with user');
+
+    logger.info('Successfully removed user from course');
 
     msg.ack();
   }

@@ -5,9 +5,9 @@ import {
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
-import { queueGroupName } from './queueGroupName';
-import Course from '../../models/course';
-import logger from '../../utils/logger';
+import { queueGroupName } from '../queueGroupName';
+import Course from '../../../models/course';
+import logger from '../../../utils/logger';
 
 export class CourseRemovedStudentListener extends Listener<CourseRemovedStudentEvent> {
   subject: Subjects.CourseRemovedStudent = Subjects.CourseRemovedStudent;
@@ -35,6 +35,26 @@ export class CourseRemovedStudentListener extends Listener<CourseRemovedStudentE
 
     logger.debug('Saving course');
     await course.save();
+
+    logger.debug('Looking up files');
+    // @ts-ignore
+    const files = await File.find({ access: { users: studentId } });
+
+    logger.debug('Checking if any files are are associated with user');
+    if (files[0]) {
+      logger.debug(`${files.length} files are associated with user`);
+      logger.debug('Looping through them');
+      for (const file of files) {
+        // @ts-ignore
+        const index = file.access?.users.indexOf(studentId);
+
+        logger.debug('Removing user from file');
+        file.access?.users.splice(index, 1);
+
+        logger.debug('Saving file');
+        await file.save();
+      }
+    } else logger.debug('No files are associated with user');
 
     logger.info('Successfully removed student from course');
 
