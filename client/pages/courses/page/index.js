@@ -8,8 +8,10 @@ import {
   getUserData,
   Prompt,
   firstLetterToUpperCase,
-  ErrorHandler
+  ErrorHandler,
+  Logger
 } from 'helpers';
+const logger = new Logger('courses/page');
 
 import Layout from 'layouts/default/';
 
@@ -42,6 +44,8 @@ export const getServerSideProps = async ctx => {
   if(!(await authCheck(ctx))) return redirectToLogin;
 
   //Get course data. Not modules first.
+
+  logger.log(ctx.query.id, "GEJIAGJHEIAGHJ?PIEAH")
 
   let { data, meta } = await Request().server
     .courses.add(`fetch/${ctx.query.id}`)
@@ -128,8 +132,9 @@ const CoursePage = ({ serverErrors, course, _modules, sub }) => {
     router.push(`/courses/page/edit?id=${router.query.id}&sub=${sub}`);
   };
 
+  //1O2LEZ2gSPbyKJGyP9g2g
 
-  console.log(userData.userId, course.owner)
+  // console.log(userData.userId, course.owner)
 
   //TODO: implement permissions check as well
   const canUserEditPage = (userData.userId === course.owner.id) ? true : false;

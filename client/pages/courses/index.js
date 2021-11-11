@@ -57,7 +57,7 @@ export const getServerSideProps = async ctx => {
     courses = [];
   }else if(serverErrors === false) {
     courses = data.courses;
-    console.log(courses, "no error")
+    // console.log(courses, "no error")
   }
 
   return {

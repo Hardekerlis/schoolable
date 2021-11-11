@@ -6,11 +6,18 @@ import language from 'helpers/lang';
 const lang = language.coursePage.modules;
 
 import {
+  RightArrow,
+  Checkbox,
+  CheckboxChecked
+} from 'helpers/systemIcons';
+
+import {
   Module
 } from 'components';
 
 import {
-  firstLetterToUpperCase
+  firstLetterToUpperCase,
+  IconRenderer
 } from 'helpers';
 
 import styles from './modules.module.sass';
@@ -31,20 +38,89 @@ const PhaseComments = ({ comments }) => {
 
     setPosts(comments.map((obj, index) => {
 
-      console.log(obj);
+      let date = DateTime.fromSeconds(obj.createdAt.getTime());
+
+      //TODO: Handle times from other months
+      let time = `${date.toFormat('HH:mm')} on ${date.toFormat('cccc')}`
 
       return (
         <div key={index} className={styles.post}>
-          hej
+          <p className={styles.text}>{obj.text}</p>
+          <p className={styles.author}>At {time} by {obj.name}</p>
         </div>
       )
 
     }))
 
-
   }, [comments])
 
-  return posts;
+  return (
+    <div className={styles.posts}>
+      {posts}
+    </div>
+  )
+
+}
+
+const HandInMenu = ({ types }) => {
+
+  // console.log(types)
+
+  // const renders = types.map((obj, index) => {
+  //   return (
+  //     <div className={styles.toggler}>
+  //       <p className={styles.text}>{obj}</p>
+  //     </div>
+  //   )
+  // })
+
+  const [typeRenders, setTypeRenders] = useState([]);
+  const [selected, setSelected] = useState(0);
+
+  const selectType = (index) => {
+    if(index === selected) return;
+
+    setSelected(index);
+
+  }
+
+  useEffect(() => {
+
+    if(!types) return;
+
+    let list = [];
+    setTypeRenders(types.forEach(name => {
+      const len = list.length;
+      if(name === 'googleDrive') name = 'Google Drive'
+      list.push(
+        <div className={(selected === len) ? `${styles.togglerParent} ${styles.selected}` : styles.togglerParent}>
+          <div onClick={() => selectType(len)} className={styles.toggler}>
+            {selected === len ?
+                <IconRenderer icon={CheckboxChecked} className={styles.box} />
+              :
+                <IconRenderer icon={Checkbox} className={styles.box} />
+            }
+            <p className={styles.text}>{firstLetterToUpperCase(name)}</p>
+          </div>
+        </div>
+      )
+    }))
+    setTypeRenders(list);
+
+  }, [types, selected])
+
+
+  return (
+    <div className={styles.handInMenu}>
+      <div className={styles.boardWrapper}>
+        <div className={styles.board}>
+          <div className={styles.boardContainer}>
+            {typeRenders}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 
 }
 
@@ -61,6 +137,8 @@ const Phase = ({ data }) => {
 
   const [footer, setFooter] = useState(Object.create(defaultFooter))
   const [renderFooter, setRenderFooter] = useState(false);
+  const [canHandIn, setCanHandIn] = useState(false);
+  const [handInMenuOpen, setHandInMenuOpen] = useState(false);
 
   useEffect(() => {
     setRenderFooter(footer.comments)
@@ -82,14 +160,30 @@ const Phase = ({ data }) => {
 
     console.log(data)
 
+    setHandInMenuOpen(false);
+
     if(!Object.prototype.hasOwnProperty.call(data, 'page')) {
       console.log("no page")
       //TODO: maybe remove all page data.
+
+      setFooter({
+        comments: false,
+        commentsOpen: false
+      })
+
+      setParagraphs([]);
+
+      setCanHandIn(false);
+
       return;
     }
 
     const { page } = data;
 
+
+    if(page.handInTypes) {
+      setCanHandIn(true);
+    }
 
     if(page.comments.enabled) {
       //render comments
@@ -106,7 +200,7 @@ const Phase = ({ data }) => {
       })
     }
 
-    if(!data.page || !data.page.paragraphs) {
+    if(!data.page.paragraphs) {
       setParagraphs([]);
     }else {
       setParagraphs(data.page?.paragraphs)
@@ -141,28 +235,48 @@ const Phase = ({ data }) => {
   //   </div>
   // }
 
+  const openHandInMenu = () => {
+    // if(!handInMenuOpen) return setHandInMenuOpen(true);
+    setHandInMenuOpen(!handInMenuOpen)
+  }
+
+  //very ugly+
+  let contentClassName = styles.content;
+  if(footer.commentsOpen) {
+    contentClassName += ` ${styles.footerOpen}`
+  }
+
   return(
-    <div className={styles.phase}>
+    <div className={(handInMenuOpen) ? `${styles.phase} ${styles.handInMenuOpen}` : styles.phase}>
       <div className={styles.container}>
         <div className={styles.header}>
           <p className={styles.title}>{firstLetterToUpperCase("" + data?.name)}</p>
+          {canHandIn &&
+            <div onClick={openHandInMenu} className={styles.handIn}>
+              <p className={styles.text}>Hand in</p>
+            </div>
+          }
         </div>
 
-        <div className={(renderFooter) ? styles.content : `${styles.content} ${styles.noFooter}`}>
+        <div className={(renderFooter) ? contentClassName : `${contentClassName} ${styles.noFooter}`}>
           {paragraphsRender}
         </div>
 
         {renderFooter &&
           <div className={(footer.commentsOpen) ? `${styles.footer} ${styles.open}` : styles.footer}>
-            <div onClick={toggleComments} className={styles.viewComments}>{(footer.commentsOpen) ? "Hide comments" : "View comments"}</div>
+            <div onClick={toggleComments} className={styles.viewComments}>
+              <div className={styles.text}>{(footer.commentsOpen) ? "Hide comments" : "View comments"}</div>
+              <IconRenderer icon={RightArrow} className={styles.footerArrow} />
+            </div>
             {footer.commentsOpen &&
               <>
-                <PhaseComments comments={data.page.comments.posts} />
+                <PhaseComments comments={data.page?.comments.posts} />
               </>
             }
           </div>
         }
       </div>
+      <HandInMenu types={data.page?.handInTypes} />
     </div>
   )
 }
@@ -184,6 +298,12 @@ const Modules = ({ _modules, setLoaderActive }) => {
   const [moduleContainSelectedPhase, setModuleContainSelectedPhase] = useState(-1);
 
   const phaseClick = (phase, moduleIndex) => {
+
+    if(phase === -1) {
+      //close phasePage
+      setPhaseOpen(false)
+      return;
+    }
 
     setModuleContainSelectedPhase(moduleIndex);
 
