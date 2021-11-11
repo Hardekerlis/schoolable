@@ -35,7 +35,7 @@ const Module = ({
     {
       name: 'hej',
       page: {
-        handInTypes: ['file'],
+        handInTypes: ['file', 'text', 'googleDrive'],
         paragraphs: [
           {
             type: 'text',
@@ -67,11 +67,16 @@ const Module = ({
           }
         ],
         comments: {
-          enabled: true,
+          enabled: false,
           posts: [
             {
               name: 'Swagger sund',
               text: 'my comment',
+              createdAt: new Date()
+            },
+            {
+              name: 'Swagger sund v2',
+              text: ' my comment my comment my comment my comment my comment my comment my comment my comment my comment',
               createdAt: new Date()
             }
           ]
@@ -92,6 +97,13 @@ const Module = ({
   const [renders, setRenders] = useState([]);
 
   const phaseClicked = (obj, index) => {
+
+    if(index === selected) {
+      //unselected
+      setSelected(-1);
+      onPhaseClick(-1);
+      return
+    }
 
     setSelected(index);
 
