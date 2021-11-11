@@ -272,34 +272,29 @@ $handInMenuHeight: 250px
   margin-top: 50px
 
 
-  .boardWrapper
-    width: calc(100% - 10px)
+  .menuWrapper
+    //set width with js
+
     margin-left: 10px
     display: flex
     justify-content: center
     align-items: center
+    overflow: hidden
 
   .board
-    width: auto
+    width: 100%
     height: auto
     background-color: $blacker
     color: $white
-    display: inline-block
     border-radius: 5px
-
-
-    .boardContainer
-      width: auto
-      // background-color: $black
-      height: auto
-      margin-top: 0px
-      padding: 20px
-      //because last rows margin-bottom
-      padding-bottom: 0px
-      padding-right: 0px
-      // display: flex
-      // flex-direction: row
-      // align-items: center
+    padding: 20px
+    //because last rows margin-bottom
+    padding-bottom: 0px
+    padding-right: 0px
+    display: flex
+    flex-direction: row
+    justify-content: center
+    flex-wrap: wrap
 
     .togglerParent:hover
       background-color: rgba($black, 0.4)

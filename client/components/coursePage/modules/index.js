@@ -17,8 +17,11 @@ import {
 
 import {
   firstLetterToUpperCase,
-  IconRenderer
+  IconRenderer,
+  Logger
 } from 'helpers';
+
+const logger = new Logger('/coursePage/modules/index.js');
 
 import styles from './modules.module.sass';
 
@@ -62,7 +65,7 @@ const PhaseComments = ({ comments }) => {
 
 }
 
-const HandInMenu = ({ types }) => {
+const HandInMenu = ({ types, phaseRef }) => {
 
   // console.log(types)
 
@@ -76,6 +79,8 @@ const HandInMenu = ({ types }) => {
 
   const [typeRenders, setTypeRenders] = useState([]);
   const [selected, setSelected] = useState(0);
+
+  const [menuWrapperWidth, setMenuWrapperWidth] = useState(0);
 
   const selectType = (index) => {
     if(index === selected) return;
@@ -93,7 +98,7 @@ const HandInMenu = ({ types }) => {
       const len = list.length;
       if(name === 'googleDrive') name = 'Google Drive'
       list.push(
-        <div className={(selected === len) ? `${styles.togglerParent} ${styles.selected}` : styles.togglerParent}>
+        <div key={len} className={(selected === len) ? `${styles.togglerParent} ${styles.selected}` : styles.togglerParent}>
           <div onClick={() => selectType(len)} className={styles.toggler}>
             {selected === len ?
                 <IconRenderer icon={CheckboxChecked} className={styles.box} />
@@ -109,14 +114,60 @@ const HandInMenu = ({ types }) => {
 
   }, [types, selected])
 
+  const waitFor = async(ms) => {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, ms)
+    })
+  }
+
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    if(typeof window === 'undefined') return;
+
+    logger.log("adding resize listener");
+    window.addEventListener('resize', () => {
+
+      let width = window.innerWidth || window.outerWidth;
+
+      setWindowWidth(width);
+
+      // console.log("resize")
+
+    })
+  }, [])
+
+  useEffect(async() => {
+    //calculate menuWrapper width.
+
+    if(!phaseRef.current) return;
+
+
+    const getPhaseWidth = () => {
+      return phaseRef.current.getBoundingClientRect().width;
+    }
+
+    if(getPhaseWidth() === 0) {
+      //has to wait for animation
+      await waitFor(210)
+    }
+
+    //0.42 = 42%
+    let width = Math.floor(getPhaseWidth()) * 0.42;
+
+    //-10 = margin-left 10
+    setMenuWrapperWidth(width - 10);
+
+  }, [phaseRef.current, types, windowWidth])
+
 
   return (
     <div className={styles.handInMenu}>
-      <div className={styles.boardWrapper}>
+      <div style={{width: `${menuWrapperWidth}px`}} className={styles.menuWrapper}>
         <div className={styles.board}>
-          <div className={styles.boardContainer}>
-            {typeRenders}
-          </div>
+          {typeRenders}
         </div>
       </div>
     </div>
@@ -246,8 +297,10 @@ const Phase = ({ data }) => {
     contentClassName += ` ${styles.footerOpen}`
   }
 
+  const phaseRef = React.useRef();
+
   return(
-    <div className={(handInMenuOpen) ? `${styles.phase} ${styles.handInMenuOpen}` : styles.phase}>
+    <div ref={phaseRef} className={(handInMenuOpen) ? `${styles.phase} ${styles.handInMenuOpen}` : styles.phase}>
       <div className={styles.container}>
         <div className={styles.header}>
           <p className={styles.title}>{firstLetterToUpperCase("" + data?.name)}</p>
@@ -276,7 +329,7 @@ const Phase = ({ data }) => {
           </div>
         }
       </div>
-      <HandInMenu types={data.page?.handInTypes} />
+      <HandInMenu phaseRef={phaseRef} types={data.page?.handInTypes} />
     </div>
   )
 }
