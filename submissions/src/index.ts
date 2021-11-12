@@ -1,23 +1,7 @@
-/** @format */
-
 import { app } from './app';
 import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
-
-import {
-  CourseUpdatedListener,
-  PhaseItemCreatedListener,
-  PhaseCreatedListener,
-  PhaseItemRemovedListener,
-  PhaseRemovedListener,
-  CourseCreatedListener,
-  CourseRemovedListener,
-  CourseAddedAdminListener,
-  CourseAddedStudentListener,
-  CourseRemovedAdminListener,
-  CourseRemovedStudentListener,
-} from './events/listeners/';
 
 import mongoose from 'mongoose';
 
@@ -60,31 +44,7 @@ const startServer = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    logger.debug('Registered PhaseItemCreatedListener for nats');
-    new PhaseItemCreatedListener(natsWrapper.client, logger).listen();
-    logger.debug('Registered PhaseItemRemovedListener for nats');
-    new PhaseItemRemovedListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered PhaseCreatedListener for nats');
-    new PhaseCreatedListener(natsWrapper.client, logger).listen();
-    logger.debug('Registered PhaseRemovedListener for nats');
-    new PhaseRemovedListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseCreatedListener for nats');
-    new CourseCreatedListener(natsWrapper.client, logger).listen();
-    logger.debug('Registered CourseRemovedListener for nats');
-    new CourseRemovedListener(natsWrapper.client, logger).listen();
-    logger.debug('Registered CourseUpdatedListener for nats');
-    new CourseUpdatedListener(natsWrapper.client, logger).listen();
-
-    logger.debug('Registered CourseAddedAdminListener for nats');
-    new CourseAddedAdminListener(natsWrapper.client, logger).listen();
-    logger.debug('Registered CourseAddedStudentListener for nats');
-    new CourseAddedStudentListener(natsWrapper.client, logger).listen();
-    logger.debug('Registered CourseRemovedAdminListener for nats');
-    new CourseRemovedAdminListener(natsWrapper.client, logger).listen();
-    logger.debug('Registered CourseRemovedStudentListener for nats');
-    new CourseRemovedStudentListener(natsWrapper.client, logger).listen();
+    // Put nats event listeners below this line
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(
@@ -101,12 +61,5 @@ const startServer = async () => {
     logger.info(`Listening on port *:${CONFIG.port}`);
   });
 };
-
-// if (!CONFIG.setupComplete) {
-//   logger.info('Starting setup...');
-// } else if (CONFIG.setupComplete) {
-//   logger.debug('Setup has been completed');
-// logger.info('Starting the server...');
-// }
 
 startServer();
