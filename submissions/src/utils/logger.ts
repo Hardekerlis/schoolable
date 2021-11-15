@@ -1,5 +1,3 @@
-/** @format */
-
 import { Logger, CONFIG, ConfigHandler } from '@gustafdahl/schoolable-common';
 
 const logsFolder =

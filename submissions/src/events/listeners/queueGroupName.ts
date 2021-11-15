@@ -1,1 +1,1 @@
-export const queueGroupName = 'submissions-srv';
+export const queueGroupName = 'submissions-service';

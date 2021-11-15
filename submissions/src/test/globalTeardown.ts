@@ -1,5 +1,3 @@
-/** @format */
-
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
 import { CONFIG } from '@gustafdahl/schoolable-common';

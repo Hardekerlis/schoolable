@@ -1,20 +1,17 @@
 /** @format */
 
 import mongoose from 'mongoose';
-import request from 'supertest';
 import faker from 'faker';
-import path from 'path';
-import {
-  CONFIG,
-  ConfigHandler,
-  winstonTestSetup,
-  UserTypes,
-  UserPayload,
-} from '@gustafdahl/schoolable-common';
+import { CONFIG, UserTypes, UserPayload } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { sign } from 'cookie-signature';
+
+import User, { UserDoc } from '../models/user';
+
 jest.mock('../utils/b2');
+jest.mock('../utils/logger');
+jest.mock('../utils/natsWrapper');
 
 const b2Keys = JSON.parse(
   fs.readFileSync(
@@ -40,16 +37,10 @@ declare global {
         email?: string,
         id?: string,
       ): Promise<string[]>;
+      createUser(): Promise<UserDoc>;
     }
   }
 }
-
-import logger from '../utils/logger';
-
-logger.debug('Setting up tests...');
-winstonTestSetup();
-
-jest.mock('../utils/natsWrapper');
 
 jest.setTimeout(600000);
 
@@ -103,4 +94,20 @@ global.getAuthCookie = async (
   const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
   return [`token=${signedCookie}; path=/`];
+};
+
+global.createUser = async () => {
+  const user = User.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    email: faker.internet.email(),
+    userType: UserTypes.Teacher,
+    name: {
+      first: faker.name.firstName(),
+      last: faker.name.lastName(),
+    },
+  });
+
+  await user.save();
+
+  return user;
 };

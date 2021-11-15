@@ -1,10 +1,13 @@
 import mongoose from 'mongoose';
-import { Grades } from '@gustafdahl/schoolable-common';
+
+import { PhaseDoc } from './phase';
 
 export interface Comment {
   text: string;
-  startIndex: string;
-  endIndex: string;
+  indexes: {
+    start: string;
+    end: string;
+  };
 }
 
 interface FileAttributes {
@@ -13,10 +16,8 @@ interface FileAttributes {
   b2BucketId: string; // The id of the bucket file is stored in
   contentType: string;
   uploadTimestamp: string;
-  phaseItemId: string;
-  grader: string; // Grader will be the course owner
+  phase: PhaseDoc;
   uploader: string;
-  grade?: Grades;
   comments?: Comment[];
 }
 
@@ -30,10 +31,8 @@ export interface FileDoc extends mongoose.Document {
   b2BucketId: string; // The id of the bucket file is stored in
   contentType: string;
   uploadTimestamp: string;
-  phaseItemId: string;
-  grader: string; // Grader will be the course owner
+  phase: PhaseDoc;
   uploader: string;
-  grade?: Grades;
   comments?: Comment[];
 }
 
@@ -51,32 +50,32 @@ const fileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    contentType: { type: String, required: true },
+    contentType: {
+      type: String,
+      required: true,
+    },
     uploadTimestamp: {
       type: String,
       required: true,
     },
-    phaseItemId: {
-      type: String,
-      required: true,
-    },
-    grader: {
-      type: String,
+    phase: {
+      type: mongoose.Types.ObjectId,
+      ref: 'phases',
       required: true,
     },
     uploader: {
       type: String,
       required: true,
     },
-    grade: {
-      type: String,
-      enum: Object.values(Grades),
-    },
-    comments: {
-      text: String,
-      startIndex: Number,
-      endIndex: Number,
-    },
+    comments: [
+      {
+        text: String,
+        indexes: {
+          start: String,
+          end: String,
+        },
+      },
+    ],
   },
   {
     toObject: {
@@ -99,6 +98,11 @@ const fileSchema = new mongoose.Schema(
 );
 
 fileSchema.statics.build = (attributes: FileAttributes) => {
+  // @ts-ignore
+  attributes._id = attributes.id;
+  // @ts-ignore
+  delete attributes.id;
+
   return new File(attributes);
 };
 

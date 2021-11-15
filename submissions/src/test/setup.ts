@@ -1,9 +1,7 @@
-/** @format */
-
 import mongoose from 'mongoose';
 import request from 'supertest';
 import faker from 'faker';
-import path from 'path';
+import fs from 'fs';
 import {
   CONFIG,
   ConfigHandler,
@@ -12,9 +10,11 @@ import {
   UserPayload,
 } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
-import fs from 'fs';
 import { sign } from 'cookie-signature';
+
 jest.mock('../utils/b2');
+jest.mock('../utils/logger');
+jest.mock('../utils/natsWrapper');
 
 const b2Keys = JSON.parse(
   fs.readFileSync(
@@ -24,6 +24,10 @@ const b2Keys = JSON.parse(
   ),
 );
 
+import Course, { CourseDoc } from '../models/course';
+import Module, { ModuleDoc } from '../models/module';
+import Phase, { PhaseDoc } from '../models/phase';
+
 process.env.JWT_KEY = 'jasdkjlsadkljgdsfakljsfakjlsaf';
 
 process.env.B2_API_TOKEN_ID = b2Keys.B2_API_TOKEN_ID;
@@ -32,6 +36,31 @@ process.env.B2_API_TOKEN = b2Keys.B2_API_TOKEN;
 import { app } from '../app';
 app; // Load env variables in app
 
+interface AuthReturnData {
+  cookie: string;
+  userId: string;
+}
+
+interface CreateCourseReturnData extends AuthReturnData {
+  course: CourseDoc;
+}
+
+interface CreateModuleReturnData extends AuthReturnData {
+  _module: ModuleDoc;
+}
+
+interface CreatePhaseReturnData extends AuthReturnData {
+  phase: PhaseDoc;
+}
+
+interface Files {
+  valid: {
+    file(): Buffer;
+    path: string;
+  };
+  invalid: { file(): Buffer; path: string };
+}
+
 declare global {
   namespace NodeJS {
     interface Global {
@@ -39,17 +68,33 @@ declare global {
         userType?: UserTypes,
         email?: string,
         id?: string,
-      ): Promise<string[]>;
+      ): Promise<AuthReturnData>;
+      files: Files;
+      createCourse(): Promise<CreateCourseReturnData>;
+      createModule(): Promise<CreateModuleReturnData>;
+      createPhase(): Promise<CreatePhaseReturnData>;
+      addStudent(phase: PhaseDoc): Promise<AuthReturnData>;
     }
   }
 }
 
-import logger from '../utils/logger';
+// global.badFile = fs.readFileSync(__dirname + '/testFiles/badFileType.js');
+// global.file = fs.readFileSync(__dirname + '/testFiles/testpdf.pdf');
+global.files = {
+  valid: {
+    path: __dirname + '/testFiles/test pdf.pdf',
+    file: function (): Buffer {
+      return fs.readFileSync(this.path);
+    },
+  },
+  invalid: {
+    path: __dirname + '/testFiles/badFileType.js',
 
-logger.debug('Setting up tests...');
-winstonTestSetup();
-
-jest.mock('../utils/natsWrapper');
+    file: function (): Buffer {
+      return fs.readFileSync(this.path);
+    },
+  },
+};
 
 jest.setTimeout(600000);
 
@@ -82,7 +127,7 @@ global.getAuthCookie = async (
   userType?: UserTypes,
   email?: string,
   id?: string,
-): Promise<string[]> => {
+): Promise<AuthReturnData> => {
   if (!userType) userType = UserTypes.Teacher;
   if (!email) email = faker.internet.email();
   if (!id) id = new mongoose.Types.ObjectId().toHexString();
@@ -102,5 +147,54 @@ global.getAuthCookie = async (
   const token = jwt.sign(payload, process.env.JWT_KEY as string);
   const signedCookie = `s:${sign(token, process.env.JWT_KEY as string)}`;
 
-  return [`token=${signedCookie}; path=/`];
+  return { cookie: `token=${signedCookie}; path=/`, userId: id };
+};
+
+global.createCourse = async (): Promise<CreateCourseReturnData> => {
+  const { cookie, userId } = await global.getAuthCookie(UserTypes.Teacher);
+
+  const course = Course.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    owner: userId,
+  });
+
+  await course.save();
+
+  return { course, cookie, userId };
+};
+
+global.createModule = async (): Promise<CreateModuleReturnData> => {
+  const { course, cookie, userId } = await global.createCourse();
+
+  const _module = Module.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    name: faker.company.companyName(),
+    parentCourse: course,
+  });
+
+  await _module.save();
+
+  return { _module, cookie, userId };
+};
+
+global.createPhase = async (): Promise<CreatePhaseReturnData> => {
+  const { _module, cookie, userId } = await global.createModule();
+
+  const phase = Phase.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    parentModule: _module,
+  });
+
+  await phase.save();
+
+  return { phase, cookie, userId };
+};
+
+global.addStudent = async (phase: PhaseDoc): Promise<AuthReturnData> => {
+  const { cookie, userId } = await global.getAuthCookie(UserTypes.Student);
+
+  phase.parentModule!.parentCourse!.students!.push(userId);
+  await phase.parentModule.parentCourse.save();
+
+  return { cookie, userId };
 };

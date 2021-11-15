@@ -1,15 +1,18 @@
 noParentCourse: "Couldn't find parent course"
-needParentPhase: 'Need a parent phase'
 needParentCourse: 'Need a parent course'
+
+needParentModule: 'Need a parent module'
+noModule: "Couldn't find module"
+
+noPhases: "Couldn't find any phase"
 noPhase: "Couldn't find phase"
-noPhaseItems: "Couldn't find any phase items"
-noPhaseItem: "Couldn't find phase item"
-needPhaseItemId: 'Need a phase item id'
-updatedPhaseItem: 'Successfully updated phase item'
-upForDeletion: 'Queued phase item %name% for deletion'
-needFile: 'Need file(s)'
-uploaded: 'Upload was successful'
-notSupportedFileType: 'Not supported file type'
+needPhaseId: 'Need a phase id'
+updatedPhase: 'Successfully updated phase'
+upForDeletion: 'Queued phase %name% for deletion'
+
+needFiles: 'Need file(s)'
+uploaded: 'Upload(s) successful'
+notSupportedFileType: 'Not supported file type(s).'
 noFilesFound: 'No files found'
 foundFiles: 'Found files'
 noFileFound: 'No file found'

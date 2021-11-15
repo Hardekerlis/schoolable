@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 interface CourseAttributes {
   id: string;
   owner: string;
-  name: string;
   admins?: string[];
   students?: string[];
 }
@@ -15,7 +14,6 @@ interface CourseModel extends mongoose.Model<CourseDoc> {
 export interface CourseDoc extends mongoose.Document {
   id: string;
   owner: string;
-  name: string;
   admins?: string[];
   students?: string[];
 }
@@ -26,10 +24,7 @@ const courseSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
+
     owner: {
       type: String,
       required: true,
