@@ -156,7 +156,6 @@ global.createCourse = async (): Promise<CourseDoc> => {
   const course = Course.build({
     id: new mongoose.Types.ObjectId().toHexString(),
     owner: userId,
-    name: faker.company.companyName(),
   });
 
   await course.save();
