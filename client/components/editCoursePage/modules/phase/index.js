@@ -46,9 +46,9 @@ const Phase = ({ data, className }) => {
     //data will only change when switching phases.
     //so load all data here.
 
-    console.log("updating")
-
-    console.log(data)
+    // console.log("updating")
+    //
+    // console.log(data)
 
     setHandInMenuOpen(false);
 

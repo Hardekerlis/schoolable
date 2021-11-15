@@ -88,6 +88,10 @@ const Trash = (
   <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" transform="translate(3 2)"><path d="m2.5 2.5h10v12c0 1.1045695-.8954305 2-2 2h-6c-1.1045695 0-2-.8954305-2-2zm5-2c1.0543618 0 1.91816512.81587779 1.99451426 1.85073766l.00548574.14926234h-4c0-1.1045695.8954305-2 2-2z"/><path d="m.5 2.5h14"/><path d="m5.5 5.5v8"/><path d="m9.5 5.5v8"/></g></svg>
 )
 
+const Drag = (
+  <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="m4.5 7.5h12"/><path d="m4.498 10.5h11.997"/><path d="m4.5 13.5h11.995"/></g></svg>
+)
+
 export {
   RightArrow,
   Calendar,
@@ -110,5 +114,6 @@ export {
   CheckboxChecked,
   Checkmark,
   Crossmark,
-  Trash
+  Trash,
+  Drag
 }

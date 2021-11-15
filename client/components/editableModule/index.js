@@ -11,7 +11,8 @@ import {
   IconRenderer,
   LightEdit,
   Document,
-  RightArrow
+  RightArrow,
+  Drag
 } from 'helpers/systemIcons';
 
 import {
@@ -26,7 +27,9 @@ const EditableModule = ({
   name,
   className,
   onPhaseClick,
-  removeSelected
+  removeSelected,
+  chosen,
+  sortableHasOneChosen
 }) => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +37,7 @@ const EditableModule = ({
   const [dropdownId, setDropdownId] = useState('module_dropdown_' + nanoid(6));
   const [wrapperId, setWrapperId] = useState('module_wrapper_' + nanoid(6));
   const [selected, setSelected] = useState(-1);
+
 
   const [children, setChildren] = useState([
     {
@@ -155,6 +159,7 @@ const EditableModule = ({
   }, [children, selected])
 
   const onModuleClick = () => {
+    // return;
     setIsOpen(!isOpen);
   };
 
@@ -164,30 +169,37 @@ const EditableModule = ({
 
   if(isOpen) containerClassName += ` ${styles.open}`;
 
-  const editableClick = () => {
-    //open edit menu
 
-    console.log("clicked an editable module")
-  };
+  if(chosen) containerClassName += ` ${styles.chosen}`;
+
+  if(sortableHasOneChosen) containerClassName += ` ${styles.parentHasOneChosen}`
+
+
+  const dragIconClick = () => {
+    if(isOpen) setIsOpen(false);
+  }
 
   return (
-    <>
-      <div id={wrapperId} className={containerClassName}>
-        <div onClick={onModuleClick} className={styles.textContainer}>
-          <div className={styles.iconContainer}>
-            <IconRenderer
-              icon={RightArrow}
-              className={styles.icon}
-            />
-          </div>
-          <p className={styles.name}>{name}</p>
+    <div id={wrapperId} className={containerClassName}>
+      <div onClick={onModuleClick} className={styles.textContainer}>
+        <div onMouseDown={dragIconClick} className={`${styles.dragIcon} sortable_draggable`}>
+          <IconRenderer
+            icon={Drag}
+            className={styles.icon}
+          />
         </div>
-        <div id={dropdownId} className={(isOpen) ? `${styles.dropdown} ${styles.open}` : styles.dropdown}>
-          <div className={styles.tree}></div>
-          {renders}
+        <div className={styles.iconContainer}>
+          <IconRenderer
+            icon={RightArrow}
+            className={styles.icon}
+          />
         </div>
+        <p style={{pointerEvents: 'none'}} className={styles.name}>{name}</p>
       </div>
-
+      <div id={dropdownId} className={(isOpen) ? `${styles.dropdown} ${styles.open}` : styles.dropdown}>
+        <div className={styles.tree}></div>
+        {renders}
+      </div>
       <style>
       {`
         #${dropdownId}.${styles.open} {
@@ -200,25 +212,6 @@ const EditableModule = ({
 
       `}
       </style>
-    </>
-  );
-
-  return (
-    <div className={styles.moduleEditWrapper}>
-
-      <div onClick={editableClick} className={styles.moduleEdit}>
-        <div className={styles.iconContainer}>
-          <IconRenderer
-            icon={LightEdit}
-            className={styles.icon}
-          />
-        </div>
-        <p className={styles.name}>{name}</p>
-        <div className={styles.editBtn}>
-          <p>Edit</p>
-        </div>
-      </div>
-
     </div>
   );
 

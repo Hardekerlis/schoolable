@@ -20,7 +20,8 @@ import {
   CheckboxChecked,
   Checkmark,
   Crossmark,
-  Trash
+  Trash,
+  Drag
 } from './icons.js';
 import IconRenderer from './renderer.js';
 
@@ -47,5 +48,6 @@ export {
   CheckboxChecked,
   Checkmark,
   Crossmark,
-  Trash
+  Trash,
+  Drag
 }
