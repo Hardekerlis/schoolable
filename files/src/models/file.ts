@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 
-export enum AccessTypes {
-  User = 'user',
-  Course = 'course',
-}
+import { CourseDoc } from './course';
+import { UserDoc } from './user';
+import { GroupDoc } from './group';
 
 interface Access {
-  type: AccessTypes;
-  ids: string[];
+  courses: CourseDoc[];
+  users: UserDoc[];
+  groups: GroupDoc[];
+  public: boolean;
 }
 
 interface FileAttributes {
@@ -47,12 +48,31 @@ const fileSchema = new mongoose.Schema(
       required: true,
     },
     access: {
-      type: {
-        type: String,
-        enum: Object.values(AccessTypes),
-        default: '',
+      courses: [
+        {
+          type: mongoose.Types.ObjectId,
+          ref: 'courses',
+          default: '',
+        },
+      ],
+      users: [
+        {
+          type: mongoose.Types.ObjectId,
+          ref: 'users',
+          default: '',
+        },
+      ],
+      groups: [
+        {
+          type: mongoose.Types.ObjectId,
+          ref: 'groups',
+          default: '',
+        },
+      ],
+      public: {
+        type: Boolean,
+        default: false,
       },
-      ids: [{ type: String, default: '' }],
     },
     b2FileId: {
       type: String,

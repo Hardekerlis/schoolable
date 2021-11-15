@@ -1,6 +1,5 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import faker from 'faker';
 import { app } from '../../app';
 
 import { UserTypes } from '@gustafdahl/schoolable-common';
