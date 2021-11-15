@@ -38,7 +38,7 @@ app; // Load env variables in app
 
 interface AuthReturnData {
   cookie: string;
-  userId: String;
+  userId: string;
 }
 
 interface CreateCourseReturnData extends AuthReturnData {
@@ -127,7 +127,7 @@ global.getAuthCookie = async (
   userType?: UserTypes,
   email?: string,
   id?: string,
-): Promise<string[]> => {
+): Promise<AuthReturnData> => {
   if (!userType) userType = UserTypes.Teacher;
   if (!email) email = faker.internet.email();
   if (!id) id = new mongoose.Types.ObjectId().toHexString();
@@ -150,7 +150,7 @@ global.getAuthCookie = async (
   return { cookie: `token=${signedCookie}; path=/`, userId: id };
 };
 
-global.createCourse = async (): Promise<CourseDoc> => {
+global.createCourse = async (): Promise<CreateCourseReturnData> => {
   const { cookie, userId } = await global.getAuthCookie(UserTypes.Teacher);
 
   const course = Course.build({
@@ -163,7 +163,7 @@ global.createCourse = async (): Promise<CourseDoc> => {
   return { course, cookie, userId };
 };
 
-global.createModule = async (): Promise<ModuleDoc> => {
+global.createModule = async (): Promise<CreateModuleReturnData> => {
   const { course, cookie, userId } = await global.createCourse();
 
   const _module = Module.build({
@@ -177,12 +177,11 @@ global.createModule = async (): Promise<ModuleDoc> => {
   return { _module, cookie, userId };
 };
 
-global.createPhase = async (): Promise<PhaseDoc> => {
+global.createPhase = async (): Promise<CreatePhaseReturnData> => {
   const { _module, cookie, userId } = await global.createModule();
 
   const phase = Phase.build({
     id: new mongoose.Types.ObjectId().toHexString(),
-    name: faker.company.companyName(),
     parentModule: _module,
   });
 
@@ -194,7 +193,7 @@ global.createPhase = async (): Promise<PhaseDoc> => {
 global.addStudent = async (phase: PhaseDoc): Promise<AuthReturnData> => {
   const { cookie, userId } = await global.getAuthCookie(UserTypes.Student);
 
-  phase.parentModule.parentCourse.students.push(userId);
+  phase.parentModule!.parentCourse!.students!.push(userId);
   await phase.parentModule.parentCourse.save();
 
   return { cookie, userId };

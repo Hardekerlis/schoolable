@@ -2,7 +2,6 @@ import {
   Listener,
   Subjects,
   UserRemovedEvent,
-  UserTypes,
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
