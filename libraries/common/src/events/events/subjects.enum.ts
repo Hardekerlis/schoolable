@@ -27,7 +27,7 @@ export enum Subjects {
   PhaseLocked = 'phase:locked',
   PhaseHidden = 'phase:hidden',
 
-  SubmissionGraded = 'submission:graded',
+  SubmissionUploaded = 'submission:uploaded',
 
   RemoveCourse = 'remove:course',
   RemoveUser = 'remove:user',

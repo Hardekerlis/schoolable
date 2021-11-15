@@ -3,10 +3,11 @@
 import { Subjects } from '../subjects.enum';
 import { Grades } from '../../../';
 
-export interface SubmissionGradedEvent {
-  subject: Subjects.SubmissionGraded;
+export interface SubmissionUploadedEvent {
+  subject: Subjects.SubmissionUploaded;
   data: {
     userId: string;
-    grade: Grades;
+    fileName: string;
+    fileId: string;
   };
 }
