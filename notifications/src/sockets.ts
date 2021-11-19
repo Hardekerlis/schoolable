@@ -5,6 +5,8 @@ import { createServer } from 'http';
 import { app } from './app';
 import { CONFIG } from '@gustafdahl/schoolable-common';
 
+import logger from './utils/logger';
+
 const pubClient = createClient({
   host: CONFIG.redis.host,
   port: CONFIG.redis.port,
@@ -23,6 +25,10 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket) => {
   socket.emit('hostname', 'os.hostname()');
+});
+
+io.on('error', (err) => {
+  logger.error(err);
 });
 
 export { io, httpServer };
