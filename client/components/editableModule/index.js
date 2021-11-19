@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import { ReactSortable, Sortable, MultiDrag, Swap } from "react-sortablejs";
+
+
 import { nanoid } from 'nanoid';
 
 import {
@@ -29,103 +32,39 @@ const EditableModule = ({
   onPhaseClick,
   removeSelected,
   chosen,
-  sortableHasOneChosen
+  sortableHasOneChosen,
+  _phases
 }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownHeight, setDropdownHeight] = useState(0);
   const [dropdownId, setDropdownId] = useState('module_dropdown_' + nanoid(6));
   const [wrapperId, setWrapperId] = useState('module_wrapper_' + nanoid(6));
+
+  //should be id based instead.
   const [selected, setSelected] = useState(-1);
 
 
-  const [children, setChildren] = useState([
-    {
-      name: 'hej',
-      page: {
-        handInTypes: ['file', 'text', 'googleDrive'],
-        paragraphs: [
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          }
-        ],
-        comments: {
-          enabled: true,
-          posts: [
-            {
-              name: 'Swagger sund',
-              text: 'my comment',
-              createdAt: new Date()
-            },
-            {
-              name: 'Swagger sund v2',
-              text: ' my comment my comment my comment my comment my comment my comment my comment my comment my comment',
-              createdAt: new Date()
-            }
-          ]
-        }
-      }
-    },
-    {
-      name: 'wazzz',
-      page: {
-        handInTypes: ['file', 'text', 'googleDrive'],
-        paragraphs: [
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-        ],
-        comments: {
-          enabled: false,
-        }
-      }
-    },
-    {
-      name: 'wzzup1'
-    },
-    {
-      name: 'wzzup2'
-    }
-  ])
+  const [phases, setPhases] = useState(_phases);
+
+  const [children, setChildren] = useState([]);
+
+
 
   const [renders, setRenders] = useState([]);
 
   const phaseClicked = (obj, index) => {
 
-    if(index === selected) {
+    if(obj.id === selected) {
       //unselected
       setSelected(-1);
       onPhaseClick(-1);
       return
     }
 
-    setSelected(index);
+    console.log("selecting")
+
+    setSelected(obj.id);
 
     onPhaseClick(obj)
 
@@ -138,25 +77,6 @@ const EditableModule = ({
     }
 
   }, [removeSelected]);
-
-  useEffect(() => {
-
-    setRenders(children.map((obj, index) => {
-      return (
-        <div onClick={() => phaseClicked(obj, index)} className={(index === selected) ? `${styles.child} ${styles.selected}` : styles.child} key={index}>
-          <div className={styles.treeLinker}></div>
-          <p>{firstLetterToUpperCase(obj?.name)}</p>
-        </div>
-      )
-    }))
-
-    //height of dropdown child = 60
-    //height: 80
-    //margin: 16
-    //=96
-    setDropdownHeight((children.length * 96))
-
-  }, [children, selected])
 
   const onModuleClick = () => {
     // return;
@@ -179,6 +99,73 @@ const EditableModule = ({
     if(isOpen) setIsOpen(false);
   }
 
+  useEffect(() => {
+
+    if(!children) return;
+
+    if(children.length === 0) {
+      //will render a child with 96px if no children was found
+      setDropdownHeight(96)
+    }else {
+      setDropdownHeight((children.length * 96))
+    }
+
+    let missing = {
+      name: 'Missing children',
+      id: 'noChildren',
+      filter: true
+    }
+
+
+    if(children.length === 0) {
+      //add no children child
+
+      setChildren([
+        missing
+      ])
+
+      console.log("set missing")
+
+    }else {
+      //remove no children child
+
+      //DOESNT WORK
+
+      if(children[0].id === 'noChildren') {
+
+        if(children.length === 1) return;
+
+        let arr = children.slice();
+        arr.shift();
+        setChildren(arr);
+      }
+
+    }
+
+
+  }, [children])
+
+
+
+  useEffect(() => {
+
+    setChildren(phases.map((obj) => {
+
+      //MIGHT RE-WRITE
+
+      return {
+        id: obj.id,
+        name: obj.name,
+        page: obj.page
+      }
+
+    }))
+
+  }, [phases, selected])
+
+  // onClick={() => phaseClicked(obj, index)}
+  //className={(index === selected) ? `${styles.child} ${styles.selected}` : styles.child}
+
   return (
     <div id={wrapperId} className={containerClassName}>
       <div onClick={onModuleClick} className={styles.textContainer}>
@@ -198,7 +185,41 @@ const EditableModule = ({
       </div>
       <div id={dropdownId} className={(isOpen) ? `${styles.dropdown} ${styles.open}` : styles.dropdown}>
         <div className={styles.tree}></div>
-        {renders}
+
+        <ReactSortable
+          group={{
+            name: 'nested',
+            pull: ['nested'],
+            put: ['nested'],
+          }}
+          animation={200}
+          swapThreshold={0.65}
+          fallbackOnBody
+          filter={'.filtered'}
+          list={children}
+          setList={setChildren}
+        >
+
+
+          {children.map(item => {
+
+            let className = styles.child;
+            if(item.id === selected) className += ` ${styles.selected}`
+
+            return(
+              <div
+                className={(item.filter) ? `filtered ${className}` : className}
+                key={item.id}
+                onClick={() => phaseClicked(item)}
+              >
+                <div className={styles.treeLinker}></div>
+                <p>{firstLetterToUpperCase(item?.name)}</p>
+              </div>
+            )
+          })}
+
+        </ReactSortable>
+
       </div>
       <style>
       {`
