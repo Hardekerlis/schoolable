@@ -25,7 +25,7 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket) => {
   logger.info('CONNECTED');
-  socket.emit('hostname', 'os.hostname()');
+  socket.emit('ping', 'pong');
 });
 
 io.on('error', (err) => {
