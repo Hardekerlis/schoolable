@@ -14,10 +14,15 @@ const subClient = pubClient.duplicate();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   adapter: createAdapter(pubClient, subClient),
+  path: '/api/notifications/sockets/',
+  cors: {
+    origin: 'http://dev.schoolable.se',
+    methods: ['GET', 'POST'],
+  },
 });
 
 io.on('connection', (socket) => {
-  console.log('Connected');
+  socket.emit('hostname', os.hostname());
 });
 
 export { io, httpServer };
