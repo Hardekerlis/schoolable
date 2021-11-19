@@ -26,6 +26,7 @@
     "luxon": "^2.1.1",
     "mongoose": "^6.0.13",
     "node-nats-streaming": "^0.3.2",
+    "redis": "^3.1.2",
     "socket.io": "^4.4.0"
   },
   "devDependencies": {
@@ -35,6 +36,7 @@
     "@types/jest": "^27.0.3",
     "@types/luxon": "^2.0.7",
     "@types/node": "^15.12.5",
+    "@types/redis": "^2.8.32",
     "@types/supertest": "^2.0.11",
     "del-cli": "^4.0.1",
     "faker": "^5.5.3",

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications
+  template:
+    metadata:
+      labels:
+        app: notifications
+    spec:
+      containers:
+        - name: notifications
+          image: eu.gcr.io/schoolable-platform/notifications
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # this is refering to the pods name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-srv
+spec:
+  selector:
+    app: notifications
+  ports:
+    - name: notifications
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

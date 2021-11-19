@@ -128,3 +128,14 @@ build:
             dest: .
           - src: "**/*.yml"
             dest: .
+    - image: eu.gcr.io/schoolable-platform/notifications
+      context: notifications
+      kaniko:
+        dockerfile: Dockerfile.dev
+        cache: {}
+      sync:
+        manual:
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.yml"
+            dest: .

@@ -1,6 +1,6 @@
 /** @format */
 
-import { app } from './app';
+import { httpServer } from './sockets';
 import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
@@ -47,7 +47,7 @@ const startServer = async () => {
 
   env.NODE_ENV = !env.NODE_ENV ? 'dev' : env.NODE_ENV;
 
-  app.listen(CONFIG.port, () => {
+  httpServer.listen(CONFIG.port, () => {
     logger.info(`Listening on port *:${CONFIG.port}`);
   });
 };

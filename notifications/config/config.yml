@@ -19,5 +19,5 @@ nats:
   url: http://nats-srv:4222
   clusterId: schoolable
 redis:
-  host: session-redis-srv
+  host: notifications-redis-srv
   port: 6379
