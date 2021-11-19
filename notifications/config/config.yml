@@ -1,0 +1,23 @@
+debug: true
+dev: true
+port: 3000
+logs:
+  newLogFileFrequency: 24h
+  maxFileSize: 50m
+cookies:
+  signed: true
+  secure: false
+  httpOnly: true
+  # maxAge: 9999999999
+database:
+  uri: notifications-mongo-srv
+  localIp: 127.0.0.1
+  useMemoryLocal: true
+  port: 27017
+  name: notifications
+nats:
+  url: http://nats-srv:4222
+  clusterId: schoolable
+redis:
+  host: session-redis-srv
+  port: 6379

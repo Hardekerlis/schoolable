@@ -56,7 +56,7 @@ const moduleSchema = new mongoose.Schema(
     phases: [
       {
         name: String,
-        _id: mongoose.Types.ObjectId,
+        id: mongoose.Types.ObjectId,
         hidden: Boolean,
         locked: Boolean,
       },
