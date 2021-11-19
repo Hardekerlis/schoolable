@@ -16,7 +16,7 @@
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-common": "^2.4.3",
+    "@gustafdahl/schoolable-common": "^2.4.8",
     "backblaze-b2": "^1.7.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",

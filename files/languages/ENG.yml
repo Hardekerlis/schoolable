@@ -7,6 +7,7 @@ needFile: 'Need a file to upload'
 onlyOneValueAllowed: 'Only one value is allowed in array'
 uploadedFile: 'Successfully uploaded file'
 nameToShort: 'File name is too short'
+notSupportedFileType: 'Not supported file type(s).'
 
 # CUSTOM MULTER ERRORS
 LIMIT_PART_COUNT: 'Too many parts'

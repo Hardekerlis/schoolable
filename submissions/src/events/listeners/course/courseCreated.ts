@@ -5,7 +5,7 @@ import {
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
-import { queueGroupName } from './queueGroupName';
+import { queueGroupName } from '../queueGroupName';
 import logger from '../../../utils/logger';
 
 import Course from '../../../models/course';

@@ -7,3 +7,4 @@ export * from './unexpectedError';
 export * from './customError';
 export * from './invalidObjectIdError';
 export * from './documentNotFoundError';
+export * from './badMimeTypeError';

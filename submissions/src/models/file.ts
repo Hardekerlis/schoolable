@@ -18,6 +18,7 @@ interface FileAttributes {
   uploadTimestamp: string;
   phase: PhaseDoc;
   uploader: string;
+  encryptionPassword?: string;
   comments?: Comment[];
 }
 
@@ -33,6 +34,7 @@ export interface FileDoc extends mongoose.Document {
   uploadTimestamp: string;
   phase: PhaseDoc;
   uploader: string;
+  encryptionPassword?: string;
   comments?: Comment[];
 }
 
@@ -66,6 +68,10 @@ const fileSchema = new mongoose.Schema(
     uploader: {
       type: String,
       required: true,
+    },
+    encryptionPassword: {
+      type: String,
+      default: '',
     },
     comments: [
       {
