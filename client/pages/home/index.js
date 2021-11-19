@@ -38,6 +38,12 @@ const Home = ({ doFirstTimeSetup }) => {
       socket.emit('ping', 'pong');
     })
 
+    socket.on("notifications", (arg) => {
+      console.log("notification:")
+      console.log(arg)
+      console.log("notification end")
+    })
+
 
 
     return () => {
