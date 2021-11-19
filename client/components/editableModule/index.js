@@ -49,8 +49,6 @@ const EditableModule = ({
 
   const [children, setChildren] = useState([]);
 
-
-
   const [renders, setRenders] = useState([]);
 
   const phaseClicked = (obj, index) => {
@@ -61,8 +59,6 @@ const EditableModule = ({
       onPhaseClick(-1);
       return
     }
-
-    console.log("selecting")
 
     setSelected(obj.id);
 
@@ -99,6 +95,16 @@ const EditableModule = ({
     if(isOpen) setIsOpen(false);
   }
 
+  const dragIconPhaseClick = () => {
+
+  }
+
+  const [isMissingChildrenRendered, setIsMissingChildrenRendered] = useState(false);
+
+
+  //remove the whole useEffect
+  //save setDropdownHeight though
+  //it will become unnessesary when add phase is implemented
   useEffect(() => {
 
     if(!children) return;
@@ -124,20 +130,39 @@ const EditableModule = ({
         missing
       ])
 
-      console.log("set missing")
+      setIsMissingChildrenRendered(true);
 
     }else {
       //remove no children child
 
-      //DOESNT WORK
+      if(isMissingChildrenRendered) {
 
-      if(children[0].id === 'noChildren') {
-
+        //if children gets updated but only one exists
+        //no not remove missing children
         if(children.length === 1) return;
 
+        //remove missing children
+
+        let i = -1;
+
+        children.forEach((child, index) => {
+          if(child.id === 'noChildren') i = index;
+        });
+
+        if(i === -1) {
+          //TODO: fix this maybe
+          setIsMissingChildrenRendered(false);
+          return;
+        }
+
         let arr = children.slice();
-        arr.shift();
+
+        arr.splice(i, 1);
+
+        setIsMissingChildrenRendered(false)
+
         setChildren(arr);
+
       }
 
     }
@@ -153,10 +178,14 @@ const EditableModule = ({
 
       //MIGHT RE-WRITE
 
+      console.log(obj)
+
       return {
-        id: obj.id,
+        //this should be .id not ._id
+        //not the clients fault though
+        id: obj._id,
         name: obj.name,
-        page: obj.page
+        page: (obj.page) ? obj.page : null
       }
 
     }))
@@ -196,6 +225,7 @@ const EditableModule = ({
           swapThreshold={0.65}
           fallbackOnBody
           filter={'.filtered'}
+          handle={'.sortable_draggable_phase'}
           list={children}
           setList={setChildren}
         >
@@ -206,6 +236,8 @@ const EditableModule = ({
             let className = styles.child;
             if(item.id === selected) className += ` ${styles.selected}`
 
+            // console.log(item.id)
+
             return(
               <div
                 className={(item.filter) ? `filtered ${className}` : className}
@@ -213,6 +245,12 @@ const EditableModule = ({
                 onClick={() => phaseClicked(item)}
               >
                 <div className={styles.treeLinker}></div>
+                <div onMouseDown={dragIconPhaseClick} className={`${styles.dragIconPhase} sortable_draggable_phase`}>
+                  <IconRenderer
+                    icon={Drag}
+                    className={styles.icon}
+                  />
+                </div>
                 <p>{firstLetterToUpperCase(item?.name)}</p>
               </div>
             )

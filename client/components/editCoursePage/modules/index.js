@@ -45,6 +45,8 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
   if(!_modules) _modules = [];
 
+  console.log(_modules)
+
 
   const [modules, setModules] = useState([]);
   const [modulesRender, setModulesRender] = useState([]);
@@ -67,31 +69,28 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
   }, [])
 
 
-  useEffect(async() => {
+  // useEffect(async() => {
+  //
+  //   console.log(_modules[0])
+  //
+  //   if(!_modules[0]) return
+  //
+  //   let result = await Request().client
+  //     .phases.add('create')
+  //     .post
+  //     .json
+  //     .body({
+  //       name: 'a phase',
+  //       parentModuleId: _modules[0].id
+  //     })
+  //     .result
+  //
+  //
+  //   console.log(result)
+  //
+  //
+  // }, [_modules])
 
-    console.log(_modules[0])
-
-    if(!_modules[0]) return
-
-    let result = await Request().client
-      .phases.add('create')
-      .post
-      .json
-      .body({
-        name: 'a phase',
-        parentModuleId: _modules[0].id
-      })
-      .result
-
-
-    console.log(result)
-
-
-  }, [_modules])
-
-  // const [currentlyDragging, setCurrentlyDragging] = useState(null);
-
-  let currentlyDragging = null;
 
   //basically if no phase in a module is the one selected. remove any selected phases from that module
   //sounds a bit weird. But each module keeps track of which phase is selected locally
@@ -152,84 +151,6 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
         name: obj.name,
         id: obj.id,
         phases: obj.phases,
-        // phases: [
-        //   {
-        //     name: 'hej',
-        //     id: nanoid(6) + 'index_' + index,
-        //     page: {
-        //       handInTypes: ['file', 'text', 'googleDrive'],
-        //       paragraphs: [
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         },
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         },
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         },
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         },
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         },
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         },
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         }
-        //       ],
-        //       comments: {
-        //         enabled: true,
-        //         posts: [
-        //           {
-        //             name: 'Swagger sund',
-        //             text: 'my comment',
-        //             createdAt: new Date()
-        //           },
-        //           {
-        //             name: 'Swagger sund v2',
-        //             text: ' my comment my comment my comment my comment my comment my comment my comment my comment my comment',
-        //             createdAt: new Date()
-        //           }
-        //         ]
-        //       }
-        //     }
-        //   },
-        //   {
-        //     name: 'wazzz',
-        //     id: nanoid(6),
-        //     page: {
-        //       handInTypes: ['file', 'text', 'googleDrive'],
-        //       paragraphs: [
-        //         {
-        //           type: 'text',
-        //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        //         },
-        //       ],
-        //       comments: {
-        //         enabled: false,
-        //       }
-        //     }
-        //   },
-        //   {
-        //     name: 'wzzup1',
-        //     id: nanoid(6)
-        //   },
-        //   {
-        //     name: 'wzzup2',
-        //     id: nanoid(6)
-        //   }
-        // ],
         order: obj.order
       }
 

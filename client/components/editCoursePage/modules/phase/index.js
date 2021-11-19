@@ -52,7 +52,7 @@ const Phase = ({ data, className }) => {
 
     setHandInMenuOpen(false);
 
-    if(!Object.prototype.hasOwnProperty.call(data, 'page')) {
+    if(!Object.prototype.hasOwnProperty.call(data, 'page') || !data?.page) {
       console.log("no page")
       //TODO: maybe remove all page data.
 
