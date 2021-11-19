@@ -7,6 +7,19 @@ import { natsWrapper } from './utils/natsWrapper';
 
 import mongoose from 'mongoose';
 
+import {
+  CourseCreatedListener,
+  CourseRemovedListener,
+  CourseUpdatedListener,
+  CourseAddedAdminListener,
+  CourseAddedStudentListener,
+  CourseRemovedAdminListener,
+  CourseRemovedStudentListener,
+  ModuleCreatedListener,
+  ModuleRemovedListener,
+  UserRemovedListener,
+} from './events/index';
+
 const startServer = async () => {
   const { env } = process;
 
@@ -37,6 +50,35 @@ const startServer = async () => {
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     // Add nats listeners below this line
+    logger.debug('Registered CourseCreatedListener for nats');
+    new CourseCreatedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedListener for nats');
+    new CourseRemovedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseUpdatedListener for nats');
+    new CourseUpdatedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseAddedAdminListener for nats');
+    new CourseAddedAdminListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseAddedStudentListener for nats');
+    new CourseAddedStudentListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedAdminListener for nats');
+    new CourseRemovedAdminListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered CourseRemovedStudentListener for nats');
+    new CourseRemovedStudentListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered ModuleCreatedListener for nats');
+    new ModuleCreatedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered ModuleRemovedListener for nats');
+    new ModuleRemovedListener(natsWrapper.client, logger).listen();
+
+    logger.debug('Registered UserRemovedListener for nats');
+    new UserRemovedListener(natsWrapper.client, logger).listen();
 
     logger.info('Connecting to MongoDB');
     await mongoose.connect(
