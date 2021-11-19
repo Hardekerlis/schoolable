@@ -22,7 +22,7 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-  socket.emit('hostname', os.hostname());
+  socket.emit('hostname', 'os.hostname()');
 });
 
 export { io, httpServer };
