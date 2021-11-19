@@ -29,7 +29,6 @@ io.on('connection', (socket) => {
 
   socket.on('ping', (msg) => {
     logger.info(msg);
-    socket.emit('ping', 'pong');
   });
 });
 
