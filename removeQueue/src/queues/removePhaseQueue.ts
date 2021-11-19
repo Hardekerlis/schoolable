@@ -6,7 +6,8 @@ import { natsWrapper } from '../utils/natsWrapper';
 import logger from '../utils/logger';
 
 interface Payload {
-  parentCourse: string;
+  parentCourseId: string;
+  parentModuleId: string;
   phaseId: string;
 }
 
@@ -18,7 +19,8 @@ const removePhaseQueue = new Queue<Payload>('remove:phase', {
 
 removePhaseQueue.process(async (job) => {
   new RemovePhasePublisher(natsWrapper.client, logger).publish({
-    parentCourse: job.data.parentCourse,
+    parentCourseId: job.data.parentCourseId,
+    parentModuleId: job.data.parentModuleId,
     phaseId: job.data.phaseId,
   });
 });

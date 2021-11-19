@@ -15,7 +15,7 @@ export class PhaseQueueRemoveListener extends Listener<PhaseQueueRemoveEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: PhaseQueueRemoveEvent['data'], msg: Message) {
-    const { removeAt, parentCourseId, phaseId } = data;
+    const { removeAt, parentCourseId, parentModuleId, phaseId } = data;
 
     const delay = new Date(removeAt).getTime() - new Date().getTime();
 
@@ -25,6 +25,7 @@ export class PhaseQueueRemoveListener extends Listener<PhaseQueueRemoveEvent> {
       await removePhaseQueue.add(
         {
           parentCourseId,
+          parentModuleId,
           phaseId,
         },
         {

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import {
   CONFIG,
@@ -21,6 +21,10 @@ const uploadHandler = multer({
   limits: { fileSize: CONFIG.maxFileSize, fields: 1, files: 5 },
   fileFilter,
 }).array('files', 5);
+
+router.get('/health', (req: Request, res: Response) => {
+  res.json({ healthy: true });
+});
 
 import upload from './upload';
 router.post(
