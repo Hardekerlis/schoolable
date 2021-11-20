@@ -14,8 +14,10 @@
   overflow: hidden !important
   @include transitionProp(0.2s, ease-out, background-color)
 
+  .textContainer
+    background-color: $green !important
   .textContainer:hover
-    background-color: $blacker !important
+    background-color: $green !important
 
   .dropdown
     display: none !important
@@ -136,6 +138,24 @@ $treeColor: $blacker
 .filtered
   background-color: $red
 
+
+.childDragging
+  background-color: $green !important
+  font-size: 1.7rem !important
+
+  .treeLinker
+    display: none
+
+.child.chosen
+  background-color: $green
+
+  .dragIconPhase:hover
+    background-color: transparent !important
+
+.child.chosen:hover
+  background-color: $green !important
+
+
 .child
   color: $white
   border: 2px solid $blacker
@@ -218,6 +238,20 @@ $treeColor: $blacker
     width: 50px
     height: 50px
     pointer-events: none
+
+
+//item in module used for creating phases
+.createPhase
+
+
+
+
+
+
+
+
+
+
 
 
 

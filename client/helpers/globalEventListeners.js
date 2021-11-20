@@ -70,6 +70,7 @@ const GlobalEventHandler = GlobalEventHandlerInternal();
 
 if(typeof window !== 'undefined') {
   GlobalEventHandler.create('windowClick', '*', 'click');
+  GlobalEventHandler.create('windowMouseMove', '*', 'mousemove')
 }
 
 export default GlobalEventHandler;

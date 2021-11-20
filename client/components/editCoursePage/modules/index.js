@@ -25,7 +25,8 @@ import {
 import {
   Prompt,
   IconRenderer,
-  Request
+  Request,
+  GlobalEventHandler
 } from 'helpers';
 
 import Phase from './phase';
@@ -45,11 +46,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
   if(!_modules) _modules = [];
 
-  console.log(_modules)
-
-
   const [modules, setModules] = useState([]);
-  const [modulesRender, setModulesRender] = useState([]);
   const [phaseOpen, setPhaseOpen] = useState(false);
   const [phaseData, setPhaseData] = useState({});
 
@@ -61,6 +58,14 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
     _modules.forEach((obj, index) => {
       // console.log(obj, index)
       obj.order = index;
+
+      obj.phases.forEach((phase, i) => {
+
+        phase.order = i;
+
+      })
+
+
     })
     //!
 
@@ -73,15 +78,15 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
   //
   //   console.log(_modules[0])
   //
-  //   if(!_modules[0]) return
+  //   if(!_modules[1]) return
   //
   //   let result = await Request().client
   //     .phases.add('create')
   //     .post
   //     .json
   //     .body({
-  //       name: 'a phase',
-  //       parentModuleId: _modules[0].id
+  //       name: 'COOLE',
+  //       parentModuleId: _modules[1].id
   //     })
   //     .result
   //
@@ -179,7 +184,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
   }, [sortableList])
 
 
-  const movedModule = async(evt) => {
+  const movedModule = (evt) => {
 
     //state has been updated for sortableList
 
@@ -187,7 +192,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
     const newModulesArray = modules.slice();
 
-    await sortableList.forEach((item, index) => {
+    sortableList.forEach((item, index) => {
 
       //item.order is the index for the item in modules
 
@@ -204,6 +209,128 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
     setModules(newModulesArray);
 
   }
+
+  //only used for list positioning
+  //the equal to the phase page or anything else.
+  const [currentlyChosenPhase, setCurrentlyChosenPhase] = useState(null);
+
+  const onPhaseChosen = (phaseData) => {
+    setCurrentlyChosenPhase(phaseData);
+  }
+
+  const fetchChosenPhase = () => {
+    return currentlyChosenPhase;
+  }
+
+  const [draggingPhase, setDraggingPhase] = useState(false);
+  const draggingPhaseRef = React.useRef(false);
+
+  const setDraggingPhaseState = (bool) => {
+    draggingPhaseRef.current = bool;
+    setDraggingPhase(bool)
+  }
+
+  const onPhaseMove = evt => {
+    return true;
+  }
+
+
+  useEffect(() => {
+
+    const maxDepth = 5;
+
+    let hoveringOverClosed = {
+      elem: null,
+      index: null
+    }
+
+    let timeout;
+
+    const resetHoveringOverClosed = () => {
+      hoveringOverClosed = {
+        elem: null,
+        index: null
+      }
+      clearTimeout(timeout)
+    }
+
+    const openHoveringModule = () => {
+
+      //children[0] = textContainer
+      hoveringOverClosed.elem.children[0].click()
+
+      resetHoveringOverClosed();
+
+    }
+
+    const currentModuleHover = (moduleIndex, elem) => {
+
+      if(elem.classList.contains('_this_module_open')) {
+        resetHoveringOverClosed();
+        return
+      }else {
+        //module is closed. open in about 1500ms
+
+        if(hoveringOverClosed.elem) {
+          if(hoveringOverClosed.elem !== elem) {
+            resetHoveringOverClosed();
+          }
+          return;
+        }
+
+        hoveringOverClosed = {
+          elem,
+          index: moduleIndex
+        }
+
+        timeout = setTimeout(() => {
+
+          openHoveringModule();
+
+        }, 600)
+
+
+      }
+    }
+
+    let subscription = GlobalEventHandler.subscribe('windowMouseMove', (evt) => {
+      if(draggingPhaseRef.current === true) {
+        //is dragging phase
+        //check if hovering over closed module.
+
+        let index = 0;
+        //TODO: cross browser evt.path
+        for(let elem of evt.path) {
+
+          if(index >= maxDepth) break;
+          index++;
+
+          let dataIndex = null;
+
+          try {
+            dataIndex = elem?.getAttribute('data-index');
+          }catch(err) {
+            continue;
+          }
+
+          if(!dataIndex) continue;
+
+          //dataIndex = index of current modules hovering over.
+
+          currentModuleHover(dataIndex, elem)
+
+
+
+        }
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe();
+    }
+
+
+  }, [])
 
 
   return(
@@ -226,10 +353,12 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
                 swapThreshold={0.65}
                 group={{ name: 'root', put: ['nested'], pull: 'root' }}
                 onEnd={movedModule}
+                forceFallback={true}
               >
 
               {sortableList.map((obj, index) =>
                 <EditableModule
+                  dataIndex={index}
                   sortableHasOneChosen={isAModuleChosen}
                   chosen={obj.chosen}
                   onPhaseClick={(phase) => phaseClick(phase, obj.id)}
@@ -237,6 +366,10 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
                   key={obj.id}
                   name={obj.name}
                   _phases={obj.phases}
+                  onPhaseChosen={onPhaseChosen}
+                  fetchChosenPhase={fetchChosenPhase}
+                  onPhaseMove={onPhaseMove}
+                  setDraggingPhase={setDraggingPhaseState}
                 />
               )}
 

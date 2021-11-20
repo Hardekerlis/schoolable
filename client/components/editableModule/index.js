@@ -19,7 +19,8 @@ import {
 } from 'helpers/systemIcons';
 
 import {
-  firstLetterToUpperCase
+  firstLetterToUpperCase,
+  Request
 } from 'helpers';
 
 
@@ -33,7 +34,12 @@ const EditableModule = ({
   removeSelected,
   chosen,
   sortableHasOneChosen,
-  _phases
+  _phases,
+  onPhaseChosen,
+  fetchChosenPhase,
+  onPhaseMove,
+  setDraggingPhase,
+  dataIndex
 }) => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -76,6 +82,7 @@ const EditableModule = ({
 
   const onModuleClick = () => {
     // return;
+    console.log("module clicked")
     setIsOpen(!isOpen);
   };
 
@@ -83,7 +90,7 @@ const EditableModule = ({
     ? `${styles.wrapper} ${className}`
     : styles.wrapper;
 
-  if(isOpen) containerClassName += ` ${styles.open}`;
+  if(isOpen) containerClassName += ` ${styles.open} _this_module_open`;
 
 
   if(chosen) containerClassName += ` ${styles.chosen}`;
@@ -95,108 +102,165 @@ const EditableModule = ({
     if(isOpen) setIsOpen(false);
   }
 
-  const dragIconPhaseClick = () => {
+  const dragIconPhaseClick = (phaseId) => {
+
+    if(phaseId === selected) {
+      console.log("gpieajg")
+      setSelected(-1);
+      onPhaseClick(-1);
+    }
 
   }
 
-  const [isMissingChildrenRendered, setIsMissingChildrenRendered] = useState(false);
+  const createPhaseClicked = () => {
+    console.log("create")
+  }
 
 
-  //remove the whole useEffect
-  //save setDropdownHeight though
-  //it will become unnessesary when add phase is implemented
   useEffect(() => {
 
     if(!children) return;
 
-    if(children.length === 0) {
-      //will render a child with 96px if no children was found
-      setDropdownHeight(96)
-    }else {
-      setDropdownHeight((children.length * 96))
-    }
-
-    let missing = {
-      name: 'Missing children',
-      id: 'noChildren',
-      filter: true
-    }
-
-
-    if(children.length === 0) {
-      //add no children child
-
-      setChildren([
-        missing
-      ])
-
-      setIsMissingChildrenRendered(true);
-
-    }else {
-      //remove no children child
-
-      if(isMissingChildrenRendered) {
-
-        //if children gets updated but only one exists
-        //no not remove missing children
-        if(children.length === 1) return;
-
-        //remove missing children
-
-        let i = -1;
-
-        children.forEach((child, index) => {
-          if(child.id === 'noChildren') i = index;
-        });
-
-        if(i === -1) {
-          //TODO: fix this maybe
-          setIsMissingChildrenRendered(false);
-          return;
-        }
-
-        let arr = children.slice();
-
-        arr.splice(i, 1);
-
-        setIsMissingChildrenRendered(false)
-
-        setChildren(arr);
-
-      }
-
-    }
-
+    //+96 for the static create phase child
+    setDropdownHeight((children.length * 96) + 96)
 
   }, [children])
 
-
-
   useEffect(() => {
 
-    setChildren(phases.map((obj) => {
+    let arr = [];
 
-      //MIGHT RE-WRITE
+    for(let phase of phases) {
 
-      console.log(obj)
+      //this should be .id not ._id
+      //not the client's fault though
+      arr.push({
+        id: phase._id,
+        name: phase.name,
+        order: phase.order,
+        page: (phase.page) ? phase.page : null
+      })
 
-      return {
-        //this should be .id not ._id
-        //not the clients fault though
-        id: obj._id,
-        name: obj.name,
-        page: (obj.page) ? obj.page : null
-      }
+    }
 
-    }))
+    setChildren(arr);
 
   }, [phases, selected])
 
-  // onClick={() => phaseClicked(obj, index)}
-  //className={(index === selected) ? `${styles.child} ${styles.selected}` : styles.child}
+  const onLocalPhaseUpdate = (evt) => {
+
+    //this will not run if the phase has switched module
+    //the phase has been re-ordered within the module
+
+    //it will run on the list which the phase was removed from.
+
+    //update order on phases
+
+    const newPhasesArray = phases.slice();
+
+    children.forEach((item, index) => {
+
+      newPhasesArray[item.order].order = index;
+      item.order = index;
+
+    })
+
+    //call sort because phases will be updated
+    newPhasesArray.sort((obj1, obj2) => {
+      return obj1.order - obj2.order;
+    })
+
+    setPhases(newPhasesArray)
+
+  }
+
+  const [addedPhase, setAddedPhase] = useState(null);
+
+  useEffect(() => {
+
+    if(addedPhase === null) return;
+
+    const newPhasesArray = phases.slice();
+
+    //children has been updated with the new phase
+    //children only includes data for render
+    //so there's no way of knowing the added phase's full data.
+    //save the data to modules
+    //call a function the fetch that data from here.
+    //sounds like a good time.
+
+    let newAddedPhase = fetchChosenPhase();
+    newAddedPhase.order = addedPhase;
+
+    newPhasesArray.push(newAddedPhase);
+    children[addedPhase].order = addedPhase;
+
+    children.forEach((item, index) => {
+
+      newPhasesArray[item.order].order = index;
+      item.order = index;
+
+    })
+
+    //call sort because phases will be updated
+    newPhasesArray.sort((obj1, obj2) => {
+      return obj1.order - obj2.order;
+    })
+
+    setPhases(newPhasesArray);
+
+    setAddedPhase(null)
+
+  }, [children])
+
+  const phaseChosen = (evt) => {
+
+    //dispatch the chosen phase to modules
+    //to be gathered by another module if the phase switches modules.
+    onPhaseChosen(phases[evt.oldIndex])
+    setDraggingPhase(true);
+
+  }
+
+  const phaseUnChosen = () => {
+    setDraggingPhase(false);
+  }
+
+  const onAddPhaseToModule = (evt) => {
+    //a new phase has been added
+    //this runs before children state has been updated
+    //which means that a useEffect has to listen to children updates
+    //and check the addedPhase state.
+    //and then handle the new added phase.
+
+    setAddedPhase(evt.newIndex);
+  }
+
+  const removedPhaseFromModule = (evt) => {
+
+    let newPhasesArray = phases.slice();
+
+    newPhasesArray.splice(evt.oldIndex, 1);
+
+    newPhasesArray.forEach((item, i) => {
+      item.order = i;
+    });
+
+    //TODO: might be unnecessary
+    //call sort because phases will be updated
+    newPhasesArray.sort((obj1, obj2) => {
+      return obj1.order - obj2.order;
+    })
+
+    setPhases(newPhasesArray);
+
+    //WILL CALL ONLOCALPHASEUPDATE AS WELL
+    //a whole lot of this code might be unnecessary
+
+  }
 
   return (
-    <div id={wrapperId} className={containerClassName}>
+    <div data-index={dataIndex} id={wrapperId} className={containerClassName}>
       <div onClick={onModuleClick} className={styles.textContainer}>
         <div onMouseDown={dragIconClick} className={`${styles.dragIcon} sortable_draggable`}>
           <IconRenderer
@@ -228,35 +292,53 @@ const EditableModule = ({
           handle={'.sortable_draggable_phase'}
           list={children}
           setList={setChildren}
+          onEnd={onLocalPhaseUpdate}
+          onRemove={removedPhaseFromModule}
+          onAdd={onAddPhaseToModule}
+          onChoose={phaseChosen}
+          onUnchoose={phaseUnChosen}
+          forceFallback={true}
+          onMove={onPhaseMove}
+          fallbackClass={styles.childDragging}
         >
 
 
-          {children.map(item => {
+          {children.map(phase => {
 
             let className = styles.child;
-            if(item.id === selected) className += ` ${styles.selected}`
-
-            // console.log(item.id)
+            if(phase.id === selected) className += ` ${styles.selected}`;
+            if(phase.chosen) className += ` ${styles.chosen}`
 
             return(
               <div
-                className={(item.filter) ? `filtered ${className}` : className}
-                key={item.id}
-                onClick={() => phaseClicked(item)}
+                className={(phase.filter) ? `filtered ${className}` : className}
+                key={phase.id}
+                onClick={() => phaseClicked(phase)}
               >
                 <div className={styles.treeLinker}></div>
-                <div onMouseDown={dragIconPhaseClick} className={`${styles.dragIconPhase} sortable_draggable_phase`}>
-                  <IconRenderer
-                    icon={Drag}
-                    className={styles.icon}
-                  />
-                </div>
-                <p>{firstLetterToUpperCase(item?.name)}</p>
+                { !phase.filter &&
+                  <div onMouseDown={() => dragIconPhaseClick(phase.id)} className={`${styles.dragIconPhase} sortable_draggable_phase`}>
+                    <IconRenderer
+                      icon={Drag}
+                      className={styles.icon}
+                    />
+                  </div>
+                }
+                <p>{firstLetterToUpperCase(phase?.name)}</p>
               </div>
             )
           })}
 
         </ReactSortable>
+
+        <div
+          className={`${styles.child} ${styles.createPhase}`}
+          key={'createPhase'}
+          onClick={() => createPhaseClicked()}
+        >
+          <div className={styles.treeLinker}></div>
+          <p>Create phase</p>
+        </div>
 
       </div>
       <style>
