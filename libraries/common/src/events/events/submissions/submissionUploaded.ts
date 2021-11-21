@@ -1,13 +1,14 @@
 /** @format */
 
 import { Subjects } from '../subjects.enum';
-import { Grades } from '../../../';
 
 export interface SubmissionUploadedEvent {
   subject: Subjects.SubmissionUploaded;
   data: {
+    courseName: string;
+    moduleName: string;
+    phaseName: string;
+    fileNames: string[];
     userId: string;
-    fileName: string;
-    fileId: string;
   };
 }

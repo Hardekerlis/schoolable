@@ -3,6 +3,7 @@ import { UserTypes } from '@gustafdahl/schoolable-common';
 
 interface UserAttributes {
   id: string;
+  sockets?: string[];
   email: string;
   userType: UserTypes;
   name: {
@@ -17,6 +18,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
 
 export interface UserDoc extends mongoose.Document {
   id: string;
+  sockets?: string[];
   email: string;
   userType: UserTypes;
   name: {
@@ -26,7 +28,37 @@ export interface UserDoc extends mongoose.Document {
 }
 
 const userSchema = new mongoose.Schema(
-  {},
+  {
+    _id: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+    },
+    sockets: [
+      {
+        type: String,
+        default: '',
+      },
+    ],
+    email: {
+      type: String,
+      required: true,
+    },
+    userType: {
+      type: String,
+      enum: Object.values(UserTypes),
+      required: true,
+    },
+    name: {
+      first: {
+        type: String,
+        required: true,
+      },
+      last: {
+        type: String,
+        required: true,
+      },
+    },
+  },
   {
     toObject: {
       transform: (doc, ret) => {
@@ -50,6 +82,11 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.statics.build = (attributes: UserAttributes) => {
+  // @ts-ignore
+  attributes._id = attributes.id;
+  // @ts-ignore
+  delete attributes.id;
+
   return new User(attributes);
 };
 

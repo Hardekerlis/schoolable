@@ -16,7 +16,7 @@
     "test:ci": "npm clean && npm ci && jest --no-cache"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-common": "^2.4.8",
+    "@gustafdahl/schoolable-common": "^2.5.0",
     "@socket.io/redis-adapter": "^7.0.1",
     "bull": "^4.1.1",
     "cors": "^2.8.5",
