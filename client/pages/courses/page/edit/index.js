@@ -93,6 +93,8 @@ export const getServerSideProps = async ctx => {
       })
       .result;
 
+    console.log(result)
+
     serverErrors = handleErrors(200, [404], result.data, result.meta);
 
     if(!serverErrors) {
@@ -189,16 +191,10 @@ const EditCourse = ({ serverErrors, _modules, course, sub }) => {
             <div className={styles.content}>
               <CourseNavigation options={[
                 {
-                  text: lang.cancel,
+                  text: lang.goBack,
                   onClick: cancelClick,
-                  icon: Crossmark,
+                  icon: WarpBack,
                   className: styles.cancel
-                },
-                {
-                  text: lang.save,
-                  onClick: saveClick,
-                  icon: Checkmark,
-                  className: styles.save
                 },
               ]} />
               {sub === 'overview' &&
@@ -215,28 +211,21 @@ const EditCourse = ({ serverErrors, _modules, course, sub }) => {
   );
 };
 
-// <>
-//   <p className={styles.modulesText}>{lang.modules}</p>
-//
-//   <div className={styles.modulesContainer}>
-//     <>
-//       <SampleCreationSystem
-//         creationContainerClassName={styles.creationContainer}
-//         body={{
-//           parentCourseId: course.id,
-//         }}
-//         createItemButtonClassName={styles.createPhaseButton}
-//         requestCallback={onPhaseCreation}
-//         itemApiPath={`/api/phase/create`}
-//         currentItems={modules}
-//         itemName={lang.phaseItemName}
-//         noCurrentItemText={lang.courseMissingPhases}
-//         createAdditionalItemIcon={PlusClipboard}
-//       />
-//     </>
-//
-//     {modulesRender}
-//   </div>
-// </>
+
+// {[
+//   {
+//     text: lang.cancel,
+//     onClick: cancelClick,
+//     icon: Crossmark,
+//     className: styles.cancel
+//   },
+//   {
+//     text: lang.save,
+//     onClick: saveClick,
+//     icon: Checkmark,
+//     className: styles.save
+//   },
+// ]}
+
 
 export default EditCourse;

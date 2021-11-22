@@ -138,7 +138,7 @@ const CourseMenuItems = ({ course, sub, isEditing }) => {
       //redirect to a subpage in this course
       path = path.replace('this.', '');
 
-      router.push(`${router.pathname}?id=${router.query.id}&sub=${path}`);
+      router.replace(`${router.pathname}?id=${router.query.id}&sub=${path}`);
     }else {
       console.warn('unhandled path (goTo menu action)');
     }

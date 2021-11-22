@@ -18,7 +18,10 @@ const Module = ({
   className,
   clickable,
   onPhaseClick,
-  removeSelected
+  removeSelected,
+  phases,
+  queryPhase,
+  phaseQueryHandledInModules
 }) => {
 
   if(clickable !== false) clickable = true;
@@ -29,82 +32,28 @@ const Module = ({
   const [wrapperId, setWrapperId] = useState('module_wrapper_' + nanoid(6));
   const [selected, setSelected] = useState(-1);
 
-  const [children, setChildren] = useState([
-    {
-      name: 'hej',
-      page: {
-        handInTypes: ['file', 'text', 'googleDrive'],
-        paragraphs: [
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          }
-        ],
-        comments: {
-          enabled: true,
-          posts: [
-            {
-              name: 'Swagger sund',
-              text: 'my comment',
-              createdAt: new Date()
-            },
-            {
-              name: 'Swagger sund v2',
-              text: ' my comment my comment my comment my comment my comment my comment my comment my comment my comment',
-              createdAt: new Date()
-            }
-          ]
-        }
-      }
-    },
-    {
-      name: 'wazzz',
-      page: {
-        handInTypes: ['file', 'text', 'googleDrive'],
-        paragraphs: [
-          {
-            type: 'text',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-        ],
-        comments: {
-          enabled: false,
-        }
-      }
-    },
-    {
-      name: 'wzzup1'
-    },
-    {
-      name: 'wzzup2'
-    }
-  ])
+  //TODO: actually fetch the phase
+  const [children, setChildren] = useState(phases);
 
   const [renders, setRenders] = useState([]);
+
+  const [queryPhaseHandled, setQueryPhaseHandled] = useState(false);
+
+  useEffect(() => {
+
+    if(!phaseQueryHandledInModules) return;
+
+    if(queryPhaseHandled) return;
+    setQueryPhaseHandled(true);
+
+    if(queryPhase === false) return;
+
+    setIsOpen(true);
+
+    phaseClicked(children[queryPhase], queryPhase)
+
+  }, [queryPhase])
+
 
   const phaseClicked = (obj, index) => {
 

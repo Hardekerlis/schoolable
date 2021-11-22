@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/router';
+
 import { nanoid } from 'nanoid';
 
 import language from 'helpers/lang';
@@ -46,6 +48,8 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
   if(!_modules) _modules = [];
 
+  const router = useRouter();
+
   const [modules, setModules] = useState([]);
   const [phaseOpen, setPhaseOpen] = useState(false);
   const [phaseData, setPhaseData] = useState({});
@@ -74,29 +78,6 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
   }, [])
 
 
-  // useEffect(async() => {
-  //
-  //   console.log(_modules[0])
-  //
-  //   if(!_modules[1]) return
-  //
-  //   let result = await Request().client
-  //     .phases.add('create')
-  //     .post
-  //     .json
-  //     .body({
-  //       name: 'COOLE',
-  //       parentModuleId: _modules[1].id
-  //     })
-  //     .result
-  //
-  //
-  //   console.log(result)
-  //
-  //
-  // }, [_modules])
-
-
   //basically if no phase in a module is the one selected. remove any selected phases from that module
   //sounds a bit weird. But each module keeps track of which phase is selected locally
   //so if a modules locally selected phase doesn't match the actual selected phase, remove it
@@ -118,7 +99,9 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
     setPhaseData(phase);
 
-    setPhaseOpen(true)
+    setPhaseOpen(true);
+
+    updateQueryWithPhase(phase)
 
   }
 
@@ -317,9 +300,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
           //dataIndex = index of current modules hovering over.
 
-          currentModuleHover(dataIndex, elem)
-
-
+          currentModuleHover(dataIndex, elem);
 
         }
       }
@@ -329,8 +310,50 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
       subscription.unsubscribe();
     }
 
-
   }, [])
+
+
+  //query handling
+
+  const updateQueryWithPhase = phase => {
+    router.replace(`${router.pathname}?id=${router.query.id}&sub=${router.query.sub}&phase=${phase.id}`);
+  }
+
+  //check query if a phase is requested.
+
+  const [phaseQueryHandled, setPhaseQueryHandled] = useState(false);
+  //it's fine to use index here. because it will only run before
+  //user interaction. meaning it will not be disturbed by any ordering.
+  //!!make sure that the modules array is in equal to sortableList index-wise
+  const [queryPhaseModuleIndex, setQueryPhaseModuleIndex] = useState(-1);
+  const [queryPhaseIndex, setQueryPhaseIndex] = useState(-1)
+
+  useEffect(() => {
+
+    if(phaseQueryHandled) return;
+    if(modules.length === 0) return;
+
+    if(!router.query.phase) return;
+
+    setPhaseQueryHandled(true);
+
+    let foundPhase = false;
+    for(let _module of modules) {
+      if(foundPhase) break;
+      for(let phase of _module.phases) {
+
+        if(phase.id === router.query.phase) {
+          setQueryPhaseModuleIndex(_module.order);
+          setQueryPhaseIndex(phase.order);
+          foundPhase = true;
+          break;
+        }
+
+      }
+    }
+
+  }, [modules])
+
 
 
   return(
@@ -365,11 +388,13 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
                   removeSelected={(moduleContainSelectedPhase === obj.id) ? false : true}
                   key={obj.id}
                   name={obj.name}
+                  moduleId={obj.id}
                   _phases={obj.phases}
                   onPhaseChosen={onPhaseChosen}
                   fetchChosenPhase={fetchChosenPhase}
                   onPhaseMove={onPhaseMove}
                   setDraggingPhase={setDraggingPhaseState}
+                  queryPhase={(index === queryPhaseModuleIndex) ? queryPhaseIndex : false}
                 />
               )}
 

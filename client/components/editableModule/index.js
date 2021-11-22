@@ -20,15 +20,29 @@ import {
 
 import {
   firstLetterToUpperCase,
-  Request
+  Request,
+  Prompt,
 } from 'helpers';
+
+import {
+  Loader
+} from 'components'
 
 
 import styles from './editableModule.module.sass';
 
+const usePrevious = (value) => {
+  const ref = React.useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 const EditableModule = ({
   index,
   name,
+  moduleId,
   className,
   onPhaseClick,
   removeSelected,
@@ -39,7 +53,8 @@ const EditableModule = ({
   fetchChosenPhase,
   onPhaseMove,
   setDraggingPhase,
-  dataIndex
+  dataIndex,
+  queryPhase
 }) => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -56,6 +71,21 @@ const EditableModule = ({
   const [children, setChildren] = useState([]);
 
   const [renders, setRenders] = useState([]);
+
+  const [queryPhaseHandled, setQueryPhaseHandled] = useState(false);
+
+  useEffect(() => {
+
+    if(queryPhaseHandled) return;
+    setQueryPhaseHandled(true);
+
+    if(queryPhase === false) return;
+
+    setIsOpen(true);
+
+    phaseClicked(phases[queryPhase], queryPhase)
+
+  }, [queryPhase])
 
   const phaseClicked = (obj, index) => {
 
@@ -81,8 +111,6 @@ const EditableModule = ({
   }, [removeSelected]);
 
   const onModuleClick = () => {
-    // return;
-    console.log("module clicked")
     setIsOpen(!isOpen);
   };
 
@@ -95,8 +123,7 @@ const EditableModule = ({
 
   if(chosen) containerClassName += ` ${styles.chosen}`;
 
-  if(sortableHasOneChosen) containerClassName += ` ${styles.parentHasOneChosen}`
-
+  if(sortableHasOneChosen) containerClassName += ` ${styles.parentHasOneChosen}`;
 
   const dragIconClick = () => {
     if(isOpen) setIsOpen(false);
@@ -105,37 +132,98 @@ const EditableModule = ({
   const dragIconPhaseClick = (phaseId) => {
 
     if(phaseId === selected) {
-      console.log("gpieajg")
       setSelected(-1);
       onPhaseClick(-1);
     }
 
   }
 
+
+  const [createPhaseOpen, setCreatePhaseOpen] = useState(false);
+  const [createMenuLoaderActive, setCreateMenuLoaderActive] = useState(false);
+
+  if(createPhaseOpen) containerClassName += ` ${styles.creatingPhase}`
+
   const createPhaseClicked = () => {
-    console.log("create")
+    //display create menu
+    setCreatePhaseOpen(!createPhaseOpen)
   }
 
+  const [newPhaseName, setNewPhaseName] = useState('');
+
+  const createPhaseSubmit = async(evt) => {
+    evt.preventDefault();
+
+    //TODO: proper name validation
+    if(newPhaseName.length === 0) {
+      Prompt.error("Please enter a valid phase name.")
+      return;
+    }
+
+    setCreateMenuLoaderActive(true);
+
+    let result = await Request().client
+      .phases.add('create')
+      .post
+      .json
+      .body({
+        name: newPhaseName,
+        parentModuleId: moduleId
+      })
+      .result
+
+    setCreateMenuLoaderActive(false);
+
+    if(result.data.errors === false) {
+      //phase created.
+      Prompt.success('Phase created!');
+
+      //add phase.
+      let newPhase = result.data.phase;
+      newPhase.order = phases.length;
+
+      let newPhases = phases.slice();
+      newPhases.push(newPhase);
+
+      setPhases(newPhases);
+
+      setNewPhaseName('');
+
+    }else {
+      Prompt.error(result.data.errors);
+    }
+
+  }
+
+  const [treeMaxHeight, setTreeMaxHeight] = useState(0);
 
   useEffect(() => {
 
     if(!children) return;
 
     //+96 for the static create phase child
-    setDropdownHeight((children.length * 96) + 96)
 
-  }, [children])
+    let newHeight = (children.length * 96) + 96;
+
+    let newTreeMaxHeight = newHeight - 39;
+
+    //120 = createMenu height
+    if(createPhaseOpen) newHeight += 160;
+
+    setTreeMaxHeight(newTreeMaxHeight);
+    setDropdownHeight(newHeight)
+
+  }, [children, createPhaseOpen])
 
   useEffect(() => {
 
     let arr = [];
 
     for(let phase of phases) {
-
       //this should be .id not ._id
       //not the client's fault though
       arr.push({
-        id: phase._id,
+        id: phase.id,
         name: phase.name,
         order: phase.order,
         page: (phase.page) ? phase.page : null
@@ -277,7 +365,7 @@ const EditableModule = ({
         <p style={{pointerEvents: 'none'}} className={styles.name}>{name}</p>
       </div>
       <div id={dropdownId} className={(isOpen) ? `${styles.dropdown} ${styles.open}` : styles.dropdown}>
-        <div className={styles.tree}></div>
+        <div style={{maxHeight: `${treeMaxHeight}px`}} className={styles.tree}></div>
 
         <ReactSortable
           group={{
@@ -334,10 +422,20 @@ const EditableModule = ({
         <div
           className={`${styles.child} ${styles.createPhase}`}
           key={'createPhase'}
-          onClick={() => createPhaseClicked()}
         >
           <div className={styles.treeLinker}></div>
-          <p>Create phase</p>
+          <div onClick={() => createPhaseClicked()} className={styles.inner}>
+            <p>{(createPhaseOpen) ? 'Cancel phase creation' : 'Create a new phase'}</p>
+          </div>
+          <div className={(createPhaseOpen) ? `${styles.createMenu} ${styles.createMenuOpen}` : styles.createMenu}>
+            <Loader active={createMenuLoaderActive} />
+            <div className={styles.menuLinker}></div>
+            <p className={styles.title}>New phase creation</p>
+            <form onSubmit={createPhaseSubmit}>
+              <input placeholder="Phase name" value={newPhaseName} onChange={(evt) => setNewPhaseName(evt.target.value)} />
+              <button type="submit">Submit</button>
+            </form>
+          </div>
         </div>
 
       </div>

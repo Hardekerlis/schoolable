@@ -1,6 +1,7 @@
 @import "styles/variables"
 
-
+//including "margin-top", excluding phase border
+$phaseCreateMenuTotalHeight: 160px
 
 
 .wrapper.parentHasOneChosen
@@ -105,6 +106,13 @@
   .textContainer:hover
     background-color: rgba($blacker, 0.2)
 
+  .createMenu
+    width: 100%
+
+    form
+      padding-left: 6px
+      padding-right: 6px
+
 
 .dropdown
   position: absolute
@@ -127,6 +135,11 @@ $treeColor: $blacker
   background-color: $treeColor
   position: absolute
   left: 3%
+
+.creatingPhase
+  .tree
+    // height: calc(100% - 39px - #{$phaseCreateMenuHeight})
+
 
 .child.selected
   background-color: $darkPurple2 !important
@@ -242,6 +255,179 @@ $treeColor: $blacker
 
 //item in module used for creating phases
 .createPhase
+  flex-direction: column
+  position: relative
+  cursor: default
+
+  .treeLinker
+    left: -8%
+    width: 8%
+
+  .inner
+    width: 100%
+    //76 = phase height - 4px. 4px = phase border
+    height: 76px
+    display: flex
+    justify-content: center
+    align-items: center
+    cursor: pointer
+    @include transitionProp(0.2s, ease-out, background-color)
+
+    p
+      margin: 0px
+
+  .inner:hover
+    background-color: rgba($green, 0.4)
+
+    p
+      text-decoration: underline
+
+.createPhase:hover
+  background-color: unset
+
+  p
+    text-decoration: none
+
+.createMenuOpen
+  display: block !important
+
+.createMenu
+  display: none
+  //20px = "margin-top"
+  height: calc(#{$phaseCreateMenuTotalHeight} - 20px)
+  background-color: rgba($blacker, 0.4)
+  width: 80%
+  position: absolute
+  //2 = phase border
+  bottom: calc(-#{$phaseCreateMenuTotalHeight} - 2px)
+  border: 2px solid $blacker
+
+  .title
+    font-size: 1.5rem
+    margin: 0px
+    margin-top: 12px
+    font-weight: 500
+
+
+  .menuLinker
+    background-color: $treeColor
+    width: 2px
+    //20px = "margin-top"
+    height: 20px
+    top: -22px
+    position: absolute
+    left: 50%
+    margin-left: -1px
+
+  form
+    display: flex
+    justify-content: center
+    align-items: center
+    padding-top: 20px
+
+  input::placeholder
+    color: rgba($white, 0.8)
+
+  input
+    width: 100%
+    background: none
+    border: none
+    outline: none
+    color: $white
+    background-color: rgba($blacker, 0.4)
+    padding: 10px
+    font-size: 1.4rem
+    border-radius: 6px
+    border: 2px solid $purple
+
+    @include transitionProp(0.2s, ease-out, background-color)
+
+  input:hover
+    background-color: rgba($white, 0.1)
+
+  input:focus
+    background-color: rgba($white, 0.2)
+
+  button
+    border: none
+    outline: none
+    background: none
+    background-color: rgba($green, 0.4)
+    color: $white
+    padding: 10px
+    border-radius: 6px
+    font-size: 1.4rem
+    margin-left: 16px
+    cursor: pointer
+    @include transitionProp(0.2s, ease-out, background-color)
+
+  button:hover
+    background-color: rgba($green, 0.6)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
