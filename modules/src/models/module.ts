@@ -59,6 +59,7 @@ const moduleSchema = new mongoose.Schema(
         id: mongoose.Types.ObjectId,
         hidden: Boolean,
         locked: Boolean,
+        _id: undefined,
       },
     ],
     description: {
