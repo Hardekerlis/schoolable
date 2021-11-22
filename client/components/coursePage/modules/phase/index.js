@@ -119,7 +119,7 @@ const Phase = ({ data, className }) => {
 
   }, [paragraphs]);
 
-  
+
 
   const openHandInMenu = () => {
     // if(!handInMenuOpen) return setHandInMenuOpen(true);
@@ -170,7 +170,7 @@ const Phase = ({ data, className }) => {
           </div>
         }
       </div>
-      <HandInMenu className={styles.handInMenu} phaseRef={phaseRef} types={data.page?.handInTypes} />
+      <HandInMenu className={styles.handInMenu} phaseRef={phaseRef} types={data?.page?.handInTypes} />
     </div>
   )
 }

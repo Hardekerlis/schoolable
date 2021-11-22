@@ -13,6 +13,7 @@ import styles from './phase.module.sass'
 
 
 import PhaseComments from './phaseComments';
+import ParagraphCreator from './paragraphCreator';
 
 const Phase = ({ data, className }) => {
 
@@ -52,49 +53,14 @@ const Phase = ({ data, className }) => {
 
     setHandInMenuOpen(false);
 
-    if(!Object.prototype.hasOwnProperty.call(data, 'page') || !data?.page) {
-      console.log("no page")
-      //TODO: maybe remove all page data.
+    setParagraphs([
+      {
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        type: 'text'
+      }
+    ])
 
-      setFooter({
-        comments: false,
-        commentsOpen: false
-      })
-
-      setParagraphs([]);
-
-      setCanHandIn(false);
-
-      return;
-    }
-
-    const { page } = data;
-
-
-    if(page.handInTypes) {
-      setCanHandIn(true);
-    }
-
-    if(page.comments.enabled) {
-      //render comments
-
-      setFooter({
-        comments: true,
-        commentsOpen: false
-      })
-
-    }else {
-      setFooter({
-        comments: false,
-        commentsOpen: false
-      })
-    }
-
-    if(!data.page.paragraphs) {
-      setParagraphs([]);
-    }else {
-      setParagraphs(data.page?.paragraphs)
-    }
+    // setParagraphs(data.page?.paragraphs)
 
   }, [data])
 
@@ -137,10 +103,8 @@ const Phase = ({ data, className }) => {
     phaseClassName += ' ' + className;
   }
 
-  const phaseRef = React.useRef();
-
   return(
-    <div ref={phaseRef} className={phaseClassName}>
+    <div className={phaseClassName}>
       <div className={styles.container}>
         <div className={styles.header}>
           <p className={styles.title}>{firstLetterToUpperCase("" + data?.name)}</p>
@@ -148,6 +112,7 @@ const Phase = ({ data, className }) => {
 
         <div className={(renderFooter) ? contentClassName : `${contentClassName} ${styles.noFooter}`}>
           {paragraphsRender}
+          <ParagraphCreator />
         </div>
 
         {renderFooter &&

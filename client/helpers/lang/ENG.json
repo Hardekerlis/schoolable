@@ -37,7 +37,8 @@
     "save": "Save changes",
     "editPhaseText": "Edit this phase",
     "phaseNameEdit": "Edit phase name:",
-    "layoutTitle": "Editing:"
+    "layoutTitle": "Editing:",
+    "goBack": "Go back"
   },
   "phasesEdit": {
     "layoutTitle": "Editing:",
