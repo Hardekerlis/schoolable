@@ -41,7 +41,6 @@ interface AuthReturnData {
 //   phase: PhaseDoc;
 // }
 
-
 declare global {
   namespace NodeJS {
     interface Global {

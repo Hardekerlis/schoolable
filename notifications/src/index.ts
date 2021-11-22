@@ -5,6 +5,8 @@ import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';
 import { natsWrapper } from './utils/natsWrapper';
 
+import Notification from './utils/notification';
+
 import { UserCreatedListener, UserRemovedListener } from './events';
 
 import mongoose from 'mongoose';
