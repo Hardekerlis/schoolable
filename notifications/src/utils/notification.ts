@@ -22,6 +22,7 @@ export default class Notification {
   private _title: object;
   private _body: object;
   private lang = '';
+  private _timestamp = +new Date();
 
   constructor(data: InitializationData) {
     this._category = data.category;
@@ -38,9 +39,35 @@ export default class Notification {
     return this._title[`${this.lang}`];
   }
 
+  replaceBodyPlaceholders(replacements: object) {
+    // @ts-ignore
+    this._body[`${this.lang}`] = this._body[`${this.lang}`].replace(
+      /{(\w+)}/g,
+      // @ts-ignore
+      (placeholderWithDelimiters, placeholderWithoutDelimiters) =>
+        (replacements as any)[placeholderWithoutDelimiters] ||
+        placeholderWithDelimiters,
+    );
+  }
+
+  replaceTitlePlaceholders(replacements: object) {
+    // @ts-ignore
+    this._title[`${this.lang}`] = this._title[`${this.lang}`].replace(
+      /{(\w+)}/g,
+      // @ts-ignore
+      (placeholderWithDelimiters, placeholderWithoutDelimiters) =>
+        (replacements as any)[placeholderWithoutDelimiters] ||
+        placeholderWithDelimiters,
+    );
+  }
+
   get body() {
     // @ts-ignore
     return this._body[`${this.lang}`];
+  }
+
+  get timestamp() {
+    return this._timestamp;
   }
 
   setLanguage(lang: string) {

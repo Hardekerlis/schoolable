@@ -36,6 +36,7 @@ const loadNotifications = async () => {
       const newNotification = Notification.build({
         index: docIndex,
         muteable: notification.muteable,
+        types: notification.types,
         category: {
           main: notification.category.main,
           secondary: notification.category.secondary,

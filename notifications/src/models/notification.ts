@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 interface NotificationAttributes {
   index: number;
   muteable: boolean;
+  types: string[];
   category: {
     main: string;
     secondary: string;
@@ -19,6 +20,7 @@ interface NotificationModel extends mongoose.Model<NotificationDoc> {
 export interface NotificationDoc extends mongoose.Document {
   index: number;
   muteable: boolean;
+  types: string[];
   category: {
     main: string;
     secondary: string;
@@ -38,6 +40,12 @@ const notificationSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    types: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     category: {
       main: {
         type: String,

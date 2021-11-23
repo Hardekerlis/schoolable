@@ -1,5 +1,8 @@
 0:
   muteable: true
+  types:
+    - 'email'
+    - 'app'
   category:
     main: 'course'
     secondary: 'submission'
@@ -7,29 +10,24 @@
   title:
     ENG: 'File(s) uploaded'
   body:
-    ENG: 'Your files @{files} have been uploaded to course @{courseName} in module @{moduleName} in phase @{phaseName}. Files: @{files}'
-1:
-  muteable: false
-  category:
-    main: 'account'
-    secondary: 'created'
-    sub: 'password'
-  title:
-    ENG: 'Schoolable account created'
-  body:
-    ENG: 'An account has been created for you in the Schoolable platform. Your temporary password is: @{tempPassword}'
-2:
-  muteable: true
-  category:
-    main: 'course'
-    secondary: submission
-    sub: 'grade'
-  title:
-    ENG: 'Your submission has been graded'
-  body:
-    ENG: 'Your @{fileName} submission has been graded'
-# 3:
+    ENG: 'Your files {files} have been uploaded to course {courseName} in module {moduleName} in phase {phaseName}.'
+# 1:
+#   muteable: false
+#   types:
+#     - 'email'
+#   category:
+#     main: 'account'
+#     secondary: 'created'
+#     sub: 'password'
+#   title:
+#     ENG: 'Schoolable account created'
+#   body:
+#     ENG: 'An account has been created for you in the Schoolable platform. Your temporary password is: {tempPassword}'
+# 2:
 #   muteable: true
+#   types:
+#     - 'email'
+#     - 'app'
 #   category:
 #     main: 'course'
 #     secondary: submission
@@ -37,4 +35,17 @@
 #   title:
 #     ENG: 'Your submission has been graded'
 #   body:
-#     ENG: 'Your @{fileName} submission has been graded'
+#     ENG: 'Your {fileName} submission has been graded'
+# 3:
+#   muteable: true
+#   types:
+#     - 'email'
+#     - 'app'
+#   category:
+#     main: 'course'
+#     secondary: submission
+#     sub: 'grade'
+#   title:
+#     ENG: 'Your submission has been graded'
+#   body:
+#     ENG: 'Your {fileName} submission has been graded'

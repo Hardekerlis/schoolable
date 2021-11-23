@@ -1,11 +1,37 @@
 import mongoose from 'mongoose';
 import { UserTypes } from '@gustafdahl/schoolable-common';
 
+import { NotificationDoc } from './notification';
+
 interface UserAttributes {
   id: string;
   sockets?: string[];
   email: string;
+  lang: string;
   userType: UserTypes;
+  unsubscribedFrom?: [
+    {
+      notification: { type: NotificationDoc; default: '' };
+      types: [
+        {
+          type: String;
+          default: '';
+        },
+      ];
+    },
+  ];
+  notifications?: [
+    {
+      notification: {
+        type: mongoose.Types.ObjectId;
+        ref: 'notifications';
+      };
+      read: {
+        type: Boolean;
+        default: false;
+      };
+    },
+  ];
   name: {
     first: string;
     last: string;
@@ -20,7 +46,20 @@ export interface UserDoc extends mongoose.Document {
   id: string;
   sockets?: string[];
   email: string;
+  lang: string;
   userType: UserTypes;
+  unsubscribedFrom?: [
+    {
+      notification: { type: NotificationDoc; default: '' };
+      types: [
+        {
+          type: String;
+          default: '';
+        },
+      ];
+    },
+  ];
+
   name: {
     first: string;
     last: string;
@@ -43,11 +82,29 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    lang: {
+      type: String,
+      required: true,
+    },
     userType: {
       type: String,
       enum: Object.values(UserTypes),
       required: true,
     },
+    /*
+    unsubscribedFrom?: [
+      {
+        notification: { type: NotificationDoc; default: '' };
+        types: [
+          {
+            type: String;
+            default: '';
+          },
+        ];
+      },
+    ];
+
+    */
     name: {
       first: {
         type: String,

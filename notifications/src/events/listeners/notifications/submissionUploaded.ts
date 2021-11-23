@@ -2,16 +2,19 @@ import {
   Listener,
   Subjects,
   SubmissionUploadedEvent,
-  LANG,
 } from '@gustafdahl/schoolable-common';
 import { Message } from 'node-nats-streaming';
 
 import { queueGroupName } from '../queueGroupName';
-import User from '../../../models/user';
 
-import { io } from '../../../sockets';
+import User from '../../../models/user';
+import Notification from '../../../models/notification';
+
+import eventEmitter from '../../../notifications/notificationEvent';
 
 import logger from '../../../utils/logger';
+
+import NotificationCompiler from '../../../utils/notification';
 
 export class SubmissionUploadedListener extends Listener<SubmissionUploadedEvent> {
   subject: Subjects.SubmissionUploaded = Subjects.SubmissionUploaded;
@@ -26,21 +29,30 @@ export class SubmissionUploadedListener extends Listener<SubmissionUploadedEvent
       return msg.ack();
     }
 
-    // TODO: Add check to make sure user wants this kind of notification
+    const notification = await Notification.findOne({
+      main: 'course',
+      secondary: 'secondary',
+      sub: 'upload',
+    });
 
-    if ((userToNotify.sockets as string[])[0]) {
-      for (const socketId of userToNotify.sockets) {
-        const socket = await io.sockets.sockets.get(socketId);
-
-        const lang = LANG[`${socket.request.currentUser.lang}`];
-
-        // socket.emit('notification', {
-        //   header: lang.submissionUploaded.header,
-        //   body: lang.submissionUploaded.body,
-        //   files:
-        // });
-      }
+    if (!notification) {
+      logger.error('No notification found. This is an error');
     }
+
+    const compiledNotification = new NotificationCompiler({
+      title: notification!.title,
+      body: notification!.body,
+      category: notification!.category,
+    }).setLanguage(userToNotify.lang);
+
+    compiledNotification.replaceBodyPlaceholders({
+      files: fileNames.join(' '),
+      courseName,
+      moduleName,
+      phaseName,
+    });
+
+    eventEmitter.emit('notify', userToNotify, compiledNotification);
 
     msg.ack();
   }
