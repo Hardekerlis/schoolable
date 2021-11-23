@@ -1,6 +1,7 @@
 @import "styles/variables"
 
 
+
 .wrapper
   width: 100%
   display: flex
@@ -31,16 +32,39 @@
   background-color: rgba($purple, 0.4)
 
 
-.create
-  background-color: $blacker
-  width: 80%
+.create.open
+  opacity: 1
 
-  .types
-    
+.create
+  position: fixed
+  top: 0px
+  bottom: 0px
+  left: 0px
+  right: 0px
+  background-color: $blacker
+  padding: 10px
+  z-index: 501
+  opacity: 0
+  @include transitionProp(0.2s, ease-out, opacity)
+
+  .close
+    position: absolute
+    top: 20px
+    right: 20px
+    color: $white
+    width: 50px
+    height: 50px
+    cursor: pointer
+    border-radius: 10px
+    @include transitionProp(0.2s, ease-out, background-color)
+
+  .close:hover
+    background-color: $darkPurple2 !important
 
   .title
     padding: 10px
-    font-size: 1.6rem
+    font-size: 2rem
+    font-weight: 600
     border-bottom: 1px solid $purple
     display: inline-block
 
@@ -52,6 +76,258 @@
 
 
 
+
+.inner
+  display: flex
+  flex-direction: row
+  width: 100%
+  height: 100%
+
+//current paragraphs open = cpsOpen
+.inner.cpsOpen
+  .newParagraph
+    width: 55%
+    min-width: 55%
+
+  .paragraphs
+    width: 45%
+    min-width: 45%
+
+  .showCps
+    box-shadow: none
+    background-color: rgba($purple, 0.6)
+    @include rotate(0)
+
+.showCps
+  position: absolute
+  right: 20px
+  color: $white
+
+  background-color: $black
+  border-radius: 50px
+  cursor: pointer
+
+  @include transition(0.2s, ease-out)
+  @include rotate(180)
+
+.showCps:hover
+  box-shadow: 0px 0px 0px 5px rgba($white, 0.6)
+
+
+.headline
+  font-size: 1.8rem
+  padding: 10px
+  border-bottom: 1px solid $purple
+  display: inline-block
+  user-select: none
+
+.newParagraph
+  width: 100%
+  min-width: 100%
+  height: 100%
+  padding: 10px
+  padding-left: 20px
+  padding-top: 30px
+  @include transition(0.2s, ease-out)
+
+  .content
+    padding-left: 10px
+    width: 100%
+    height: 100%
+
+  .buttons
+    margin-top: 20px
+
+    div
+      font-size: 1.5rem
+      font-weight: 500
+      color: $white
+      padding: 10px
+      width: auto
+      display: inline-block
+      border-radius: 6px
+      cursor: pointer
+      @include transitionProp(0.2s, ease-out, background-color)
+
+    .add:hover
+      background-color: $green
+
+    .add
+      background-color: rgba($green, 0.6)
+
+.types
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  justify-content: flex-start
+  padding-top: 10px
+
+  .selector.selected:hover
+    background-color: $black
+
+  .selector:hover
+    background-color: rgba($black, 0.6)
+
+  .selector:first-of-type
+    margin-left: 0px
+
+  .selector
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: center
+    background-color: $black
+    margin: 10px
+    font-size: 1.4rem
+    border-radius: 6px
+    user-select: none
+    cursor: pointer
+    padding: 6px 10px
+    @include transitionProp(0.2s, ease-out, background-color)
+
+  .checkbox
+    color: $white
+    margin-right: 10px
+
+.textContainer
+  display: flex
+  justify-content: flex-start
+  align-items: center
+  height: 50%
+  width: 100%
+  padding-top: 20px
+
+  textarea::placeholder
+    color: rgba($white, 0.8)
+
+  textarea
+    resize: none
+    height: 100%
+    width: 95%
+    background: none
+    border: none
+    outline: none
+    border: 1px solid $purple
+    color: $white
+    font-size: 1.4rem
+    padding: 10px
+    @include transitionProp(0.2s, ease-out, background-color)
+
+  textarea:hover
+    background-color: rgba($black, 0.2)
+
+  textarea:focus
+    background-color: rgba($black, 0.4)
+
+
+//maybe remove border-left when closed
+.paragraphs
+  margin-top: 30px
+  height: calc(100% - 30px)
+  width: 0%
+  min-width: 0%
+  overflow: hidden
+  border-left: 1px solid $purple
+  @include transition(0.2s, ease-out)
+
+
+  .content
+    height: 100%
+
+    .ps
+      display: flex
+      flex-direction: column
+      justify-content: flex-start
+      align-items: center
+      height: 100%
+      overflow-y: scroll
+
+  .paragraph
+    width: 96%
+    height: auto
+    margin-top: 10px
+
+    .innerContainer
+      font-size: 1.2rem
+      padding: 10px
+      background-color: $black
+      height: auto
+
+    .toolbar
+      border: 2px solid $black
+      border-top: none
+      border-bottom-left-radius: 6px
+      border-bottom-right-radius: 6px
+      height: 60px
+      display: flex
+      flex-direction: row
+      align-items: center
+      position: relative
+
+    .icons
+      border: 1px solid $black
+      width: 46px
+      height: 46px
+      display: flex
+      justify-content: center
+      align-items: center
+      border-radius: 10px
+      margin-left: 10px
+      cursor: pointer
+      @include transitionProp(0.2s, ease-out, background-color)
+
+    .icons:hover
+      background-color: rgba($white, 0.3)
+
+    .editIcon
+
+      .icon
+        width: 35px
+        height: 35px
+        color: $white
+
+
+    .dragIcon:active
+      cursor: grabbing
+      cursor: -moz-grabbing
+      cursor: -webkit-grabbing
+
+    .dragIcon
+      cursor: move
+      cursor: grab
+      cursor: -moz-grab
+      cursor: -webkit-grab
+
+      .icon
+        width: 50px
+        height: 50px
+        color: $white
+
+
+    $trashIconColor: $red
+
+    .trashIcon:hover
+      background-color: $trashIconColor
+
+    .trashIcon
+      position: absolute
+      right: 10px
+      padding: 3px
+      border-radius: 10px
+      cursor: pointer
+      @include transitionProp(0.2s, ease-out, background-color)
+
+      .select
+        background-color: $trashIconColor
+        height: 40px
+
+        svg
+          color: $trashIconColor !important
+
+      .icon
+        width: 35px
+        height: 35px
+        color: $white
 
 
 

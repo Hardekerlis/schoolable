@@ -395,6 +395,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
                   onPhaseMove={onPhaseMove}
                   setDraggingPhase={setDraggingPhaseState}
                   queryPhase={(index === queryPhaseModuleIndex) ? queryPhaseIndex : false}
+                  phasePageOpen={phaseOpen}
                 />
               )}
 

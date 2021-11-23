@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { ReactSortable, Sortable, MultiDrag, Swap } from "react-sortablejs";
+import { ReactSortable, Sortable } from "react-sortablejs";
 
 
 import { nanoid } from 'nanoid';
@@ -54,7 +54,8 @@ const EditableModule = ({
   onPhaseMove,
   setDraggingPhase,
   dataIndex,
-  queryPhase
+  queryPhase,
+  phasePageOpen
 }) => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -346,6 +347,8 @@ const EditableModule = ({
     //a whole lot of this code might be unnecessary
 
   }
+
+  if(phasePageOpen) containerClassName += ` ${styles.phasePageOpen}`
 
   return (
     <div data-index={dataIndex} id={wrapperId} className={containerClassName}>

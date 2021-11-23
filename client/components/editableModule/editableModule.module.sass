@@ -106,12 +106,19 @@ $phaseCreateMenuTotalHeight: 160px
   .textContainer:hover
     background-color: rgba($blacker, 0.2)
 
+
+.wrapper.phasePageOpen
   .createMenu
     width: 100%
 
     form
       padding-left: 6px
       padding-right: 6px
+
+    input
+      width: 100%
+
+
 
 
 .dropdown
@@ -301,6 +308,7 @@ $treeColor: $blacker
   //2 = phase border
   bottom: calc(-#{$phaseCreateMenuTotalHeight} - 2px)
   border: 2px solid $blacker
+  @include transition(0.2s, ease-out)
 
   .title
     font-size: 1.5rem
@@ -329,7 +337,7 @@ $treeColor: $blacker
     color: rgba($white, 0.8)
 
   input
-    width: 100%
+    width: 60%
     background: none
     border: none
     outline: none
@@ -340,7 +348,7 @@ $treeColor: $blacker
     border-radius: 6px
     border: 2px solid $purple
 
-    @include transitionProp(0.2s, ease-out, background-color)
+    @include transition(0.2s, ease-out)
 
   input:hover
     background-color: rgba($white, 0.1)

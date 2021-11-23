@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './renderer.module.sass'
 
-const IconRenderer = ({ onHover, className, icon }) => {
+const IconRenderer = ({ onHover, className, icon, onClick, selectClass }) => {
 
   const [hoverEnabled, setHoverEnabled] = useState(false);
   const [hoverElementWidth, setHoverElementWidth] = useState(0);
@@ -64,11 +64,11 @@ const IconRenderer = ({ onHover, className, icon }) => {
   const _className = (className) ? `${styles.icon} ${className}` : styles.icon;
 
   return (
-    <div className={_className}>
+    <div onClick={onClick} className={_className}>
       {icon}
       { hoverEnabled &&
         <>
-          <div id={hoverId} className={hoverClass}>
+          <div id={hoverId} className={`${hoverClass} ${selectClass}`}>
             <FontAwesomeIcon className={styles.arrow} icon={faCaretLeft} />
             <p>{onHover.text}</p>
           </div>
