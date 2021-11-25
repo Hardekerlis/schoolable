@@ -58,7 +58,7 @@ const IconRenderer = ({ onHover, className, icon, onClick, selectClass }) => {
     }
 
 
-  }, [])
+  }, [onHover])
 
 
   const _className = (className) ? `${styles.icon} ${className}` : styles.icon;

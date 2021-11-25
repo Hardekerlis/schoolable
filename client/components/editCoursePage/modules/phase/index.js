@@ -17,7 +17,15 @@ import styles from './phase.module.sass'
 import PhaseComments from './phaseComments';
 import ParagraphCreator from './paragraphCreator';
 
-const Phase = ({ data, className }) => {
+import BuildContent from './buildParagraphContent.js';
+
+
+const Phase = ({
+  data,
+  className,
+  queryPhaseOpenedOnReload,
+  phaseQueryHandled
+}) => {
 
   const [paragraphs, setParagraphs] = useState([]);
   const [paragraphsRender, setParagraphsRender] = useState([]);
@@ -57,7 +65,7 @@ const Phase = ({ data, className }) => {
 
     setParagraphs([
       {
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         type: 'text',
         id: nanoid(6)
       }
@@ -73,15 +81,15 @@ const Phase = ({ data, className }) => {
 
     setParagraphsRender(paragraphs.map((obj, index) => {
 
-      if(obj.type === 'text') {
-        return (
-          <div key={index} className={styles.paragraph}>
-            <p className={styles.text}>{obj.text}</p>
-          </div>
-        )
-      }
+      const content = BuildContent(obj.content, obj.type)
 
-      console.log("unsupported paragraph type")
+      return (
+        <div key={index} className={styles.paragraph}>
+          <p className={styles.text}>{content}</p>
+        </div>
+      )
+
+      // console.log("unsupported paragraph type")
 
     }))
 
@@ -115,7 +123,7 @@ const Phase = ({ data, className }) => {
 
         <div className={(renderFooter) ? contentClassName : `${contentClassName} ${styles.noFooter}`}>
           {paragraphsRender}
-          <ParagraphCreator currentParagraphs={paragraphs} />
+          <ParagraphCreator phaseQueryHandled={phaseQueryHandled} queryPhaseOpenedOnReload={queryPhaseOpenedOnReload} currentParagraphs={paragraphs} />
         </div>
 
         {renderFooter &&

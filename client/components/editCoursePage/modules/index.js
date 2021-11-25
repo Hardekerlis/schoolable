@@ -89,6 +89,8 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
   const phaseClick = (phase, moduleId) => {
 
+    updateQueryWithPhase(phase);
+
     if(phase === -1) {
       //close phasePage
       setPhaseOpen(false)
@@ -101,8 +103,6 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
 
     setPhaseOpen(true);
 
-    updateQueryWithPhase(phase)
-
   }
 
 
@@ -112,7 +112,10 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
     if(response.errors === false) {
       let arr = modules.slice();
 
-      arr.push(response.module);
+      const newModule = response.module;
+      newModule.order = arr.length;
+
+      arr.push(newModule);
 
       setModules(arr);
 
@@ -316,6 +319,12 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
   //query handling
 
   const updateQueryWithPhase = phase => {
+
+    if(phase === -1) {
+      router.replace(`${router.pathname}?id=${router.query.id}&sub=${router.query.sub}`);
+      return;
+    }
+
     router.replace(`${router.pathname}?id=${router.query.id}&sub=${router.query.sub}&phase=${phase.id}`);
   }
 
@@ -327,6 +336,11 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
   //!!make sure that the modules array is in equal to sortableList index-wise
   const [queryPhaseModuleIndex, setQueryPhaseModuleIndex] = useState(-1);
   const [queryPhaseIndex, setQueryPhaseIndex] = useState(-1)
+
+  //just to tell paragraphEditor that a phase was open on reload
+  //so if the paragraphEditorOpen cookie is true. open the editor as well.
+  const [queryPhaseOpenedOnReload, setQueryPhaseOpenedOnReload] = useState(false);
+
 
   useEffect(() => {
 
@@ -343,6 +357,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
       for(let phase of _module.phases) {
 
         if(phase.id === router.query.phase) {
+          setQueryPhaseOpenedOnReload(true);
           setQueryPhaseModuleIndex(_module.order);
           setQueryPhaseIndex(phase.order);
           foundPhase = true;
@@ -418,7 +433,7 @@ const Modules = ({ _modules, course, setLoaderActive }) => {
           createAdditionalItemIcon={PlusClipboard}
         />
       </div>
-      <Phase className={styles.phase} data={phaseData} />
+      <Phase phaseQueryHandled={phaseQueryHandled} queryPhaseOpenedOnReload={queryPhaseOpenedOnReload} className={styles.phase} data={phaseData} />
     </div>
   )
 

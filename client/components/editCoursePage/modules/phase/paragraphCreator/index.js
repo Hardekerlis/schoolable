@@ -4,6 +4,8 @@ import { nanoid } from 'nanoid';
 
 import { ReactSortable, Sortable } from "react-sortablejs";
 
+import Cookies from 'js-cookie';
+
 import {
   Checkbox,
   CheckboxChecked,
@@ -22,6 +24,7 @@ import {
 
 import styles from './creator.module.sass';
 
+import BuildContent from '../buildParagraphContent.js';
 
 
 
@@ -33,7 +36,7 @@ const usePrevious = (value) => {
   return ref.current;
 }
 
-const ParagraphCreator = ({ currentParagraphs }) => {
+const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQueryHandled }) => {
 
   const [selectedType, setSelectedType] = useState('text');
   const [types, setTypes] = useState([
@@ -79,54 +82,12 @@ const ParagraphCreator = ({ currentParagraphs }) => {
   }, [types, selectedType])
 
   const [paragraphs, setParagraphs] = useState([]);
-  const [paragraphsRender, setParagraphsRender] = useState([]);
 
   useEffect(() => {
 
     setParagraphs(currentParagraphs)
 
   }, [currentParagraphs])
-
-  useEffect(() => {
-
-    if(!paragraphs) return;
-
-    setParagraphsRender(paragraphs.map((obj, index) => {
-
-      if(obj.type === 'text') {
-        return (
-          <div key={index} className={styles.paragraph}>
-            <div className={styles.innerContainer}>
-              <p className={styles.text}>{obj.text}</p>
-            </div>
-            <div className={styles.toolbar}>
-              <div className={styles.dragIcon}>
-                <IconRenderer
-                  icon={Drag}
-                  className={styles.icon}
-                />
-              </div>
-              <div className={styles.trashIcon}>
-                <IconRenderer
-                  icon={Trash}
-                  className={styles.icon}
-                  selectClass={styles.select}
-                  onHover={{
-                    direction: 'left',
-                    text: 'Delete'
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      console.log("unsupported paragraph type")
-
-    }))
-
-  }, [paragraphs]);
 
 
   const deleteParagraph = paragraph => {
@@ -156,6 +117,14 @@ const ParagraphCreator = ({ currentParagraphs }) => {
 
   }
 
+  const resetFields = () => {
+    //reset all fields.
+
+    setParagraphText('');
+    setSelectedType('text');
+
+  }
+
 
   const [isEditing, setIsEditing] = useState(false);
   const prevIsEditing = usePrevious(isEditing);
@@ -163,8 +132,45 @@ const ParagraphCreator = ({ currentParagraphs }) => {
   const [createClassName, setCreateClassName] = useState(styles.create);
 
 
+  const setEditingCookie = (bool) => {
+    console.log("setting paragraphEditorOpen cookie:", bool)
+    Cookies.set('paragraphEditorOpen', bool);
+  }
+
+  useEffect(() => {
+    console.log("checking paragraphEditorOpen cookie. (should only run on page refresh)");
+    console.log("cookie value:", paragraphEditorOpen)
+
+    if(!phaseQueryHandled) return;
+
+    //TODO: might have to run additional code to ensure
+    //that the paragraphEditorOpen cookie is set to false
+    //if the cookie is true and a phase isn't opened on reload
+    //DONE. using queryPhaseHandled from modules for this.
+
+    let paragraphEditorOpen = Cookies.get('paragraphEditorOpen');
+
+    if(!queryPhaseOpenedOnReload) {
+      //no phase was opened on reload
+      //so ensuring that the paragraphEditorOpen cookie
+      //is false if the user manually changes the url to include a
+      //phaseId. (it would open, without the user requesting it, otherwise)
+      setEditingCookie(false);
+      return;
+    }
+
+    if(paragraphEditorOpen === 'true') {
+      setIsEditing(true);
+    }else {
+      //basically the same principle as the above comment.
+      setEditingCookie(false);
+    }
+  }, [queryPhaseOpenedOnReload])
+
+
   const closeEditor = () => {
     setCreateClassName(styles.create);
+    setEditingCookie(false);
     //wait for animation
     setTimeout(() => {
       setIsEditing(false)
@@ -172,6 +178,7 @@ const ParagraphCreator = ({ currentParagraphs }) => {
   }
 
   const beginEditing = () => {
+    setEditingCookie(true);
     setIsEditing(true);
   }
 
@@ -185,6 +192,65 @@ const ParagraphCreator = ({ currentParagraphs }) => {
 
   const showCurrentParagraphs = () => {
     setCurrentParagraphsOpen(!currentParagraphsOpen)
+  }
+
+
+  //is the user editing an existing paragraph
+  const [editingParagraph, setEditingParagraph] = useState(false);
+  //the original paragraph the user is editing.
+  const [paragraphForEditing, setParagraphForEditing] = useState({})
+
+  const editParagraph = p => {
+
+    setEditingParagraph(true);
+    setParagraphForEditing(p);
+    setSelectedType(p.type);
+
+    //TODO: handle all paragraph types
+    setParagraphText(p.content)
+
+  }
+
+  const saveEdits = () => {
+    //save the edits made on the currently selected paragraph
+    console.log("saving changes...");
+    // console.log(paragraphForEditing)
+
+    let paragraphIndex = -1;
+
+    //have to loop through paragraphs if the chosen paragraph have
+    //changed index.
+    let i = 0;
+    for(let p of paragraphs) {
+      if(p.id === paragraphForEditing.id) {
+        paragraphIndex = i;
+      }
+      i++;
+    }
+
+    if(paragraphIndex === -1) {
+      //TODO: maybe handle this better
+      return Prompt.error("An unexpected error occurred.")
+    }
+
+    let arr = paragraphs.slice();
+
+    //TODO: handle all paragraph types
+    arr[paragraphIndex].content = paragraphText;
+
+    setParagraphs(arr);
+
+    setParagraphForEditing({});
+    setEditingParagraph(false);
+    resetFields();
+  }
+
+  const cancelEdits = () => {
+    //cancel all edits made on paragraph
+    console.log("reverting changes...")
+    setParagraphForEditing({});
+    setEditingParagraph(false);
+    resetFields();
   }
 
 
@@ -206,7 +272,7 @@ const ParagraphCreator = ({ currentParagraphs }) => {
 
           <div className={(currentParagraphsOpen) ? `${styles.inner} ${styles.cpsOpen}` : styles.inner}>
             <div className={styles.newParagraph}>
-              <p className={styles.headline}>New paragraph</p>
+              <p className={styles.headline}>{(editingParagraph) ? "Editing paragraph" : "New paragraph"}</p>
               <div className={styles.content}>
                 <div className={styles.types}>
                   {selectors}
@@ -219,9 +285,19 @@ const ParagraphCreator = ({ currentParagraphs }) => {
                 }
 
                 <div className={styles.buttons}>
-                  <div onClick={addParagraph} className={styles.add}>Add paragraph</div>
-                </div>
+                  {editingParagraph ?
+                      <>
+                        <div onClick={saveEdits} className={styles.add}>Save</div>
+                        <div onClick={cancelEdits} className={styles.reset}>Cancel</div>
+                      </>
+                    :
+                      <>
+                        <div onClick={addParagraph} className={styles.add}>Add paragraph</div>
+                        <div onClick={resetFields} className={styles.reset}>Reset</div>
+                      </>
+                  }
 
+                </div>
               </div>
             </div>
 
@@ -229,6 +305,7 @@ const ParagraphCreator = ({ currentParagraphs }) => {
               onClick={showCurrentParagraphs}
               className={styles.showCps}
             >
+              <p className={styles.text}>{(currentParagraphsOpen) ? 'Hide paragraphs' : 'Show paragraphs'}</p>
               <IconRenderer
                 icon={RightArrow}
                 className={styles.icon}
@@ -253,10 +330,13 @@ const ParagraphCreator = ({ currentParagraphs }) => {
                 >
 
                   {paragraphs.map(item => {
+
+                    let content = BuildContent(item.content, item.type);
+
                     return (
                       <div key={item.id} className={styles.paragraph}>
                         <div className={styles.innerContainer}>
-                          <p className={styles.text}>{item.text}</p>
+                          <p className={styles.text}>{content}</p>
                         </div>
                         <div className={styles.toolbar}>
                           <div className={`${styles.icons} ${styles.dragIcon} ps_draggable`}>
@@ -265,7 +345,7 @@ const ParagraphCreator = ({ currentParagraphs }) => {
                               className={styles.icon}
                             />
                           </div>
-                          <div className={`${styles.editIcon} ${styles.icons}`}>
+                          <div onClick={() => editParagraph(item)} className={`${styles.editIcon} ${styles.icons}`}>
                             <IconRenderer
                               icon={LightEdit}
                               className={styles.icon}
