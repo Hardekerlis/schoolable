@@ -11,8 +11,11 @@ import {
   UnexpectedError,
 } from '@gustafdahl/schoolable-common';
 import { isValidObjectId } from 'mongoose';
+import EventEmitter from 'events';
 
-import Phase from '../models/phase';
+const eventEmitter = new EventEmitter();
+
+import Phase, { PhaseDoc } from '../models/phase';
 import File from '../models/file';
 
 import logger from '../utils/logger';
@@ -21,12 +24,79 @@ import { natsWrapper } from '../utils/natsWrapper';
 
 import { SubmissionUploadedPublisher } from '../events';
 
-interface ReturnData {
-  fileName?: string;
-  contentType?: string;
-  phaseId?: string;
-  uploadTimestamp?: string;
-}
+eventEmitter.on('upload', async (files, currentUser, phase: PhaseDoc) => {
+  logger.debug('Authenticating for backblaze');
+  await backblaze.authorize();
+
+  logger.debug('Fetching buckets from backblaze');
+  const {
+    data: { buckets },
+  } = await backblaze.getBucket({ bucketName: CONFIG.bucket.name });
+
+  logger.debug('Checking if bucket was found');
+  if (buckets[0]) {
+    logger.debug('Bucket found');
+
+    let index = 1;
+    const uploadStartTs = +new Date();
+    const fileNames: string[] = [];
+
+    logger.debug('Looping through files');
+    for (const file of files as any) {
+      logger.debug(`Uploading file ${index} out of ${files!.length}`);
+      index++;
+
+      const { originalname } = file;
+
+      logger.debug('Getting upload url and authorization token');
+      const {
+        data: { uploadUrl, authorizationToken },
+      } = await backblaze.getUploadUrl({ bucketId: buckets[0].bucketId });
+
+      const fileName = `${phase.parentModule.parentCourse.id}/${phase.parentModule.id}/${phase.id}/${currentUser.id}/${originalname}`;
+
+      logger.debug('Uploading file to backbalze');
+      const { data } = await backblaze.uploadFile({
+        uploadUrl: uploadUrl,
+        uploadAuthToken: authorizationToken,
+        fileName: fileName,
+        data: file.buffer,
+        mime: file.mimetype,
+      });
+
+      logger.debug('Building file refrence in database');
+      const newFile = File.build({
+        fileName: originalname,
+        b2FileId: data.fileId,
+        b2BucketId: data.bucketId,
+        contentType: data.contentType,
+        uploadTimestamp: data.uploadTimestamp,
+        phase: phase,
+        uploader: currentUser.id,
+      });
+
+      logger.debug('Saving file reference');
+      await newFile.save();
+
+      fileNames.push(originalname);
+    }
+
+    logger.info(
+      `Upload(s) finished. It took ${+new Date() - uploadStartTs} ms`,
+    );
+
+    await new SubmissionUploadedPublisher(natsWrapper.client, logger).publish({
+      courseName: phase.parentModule.parentCourse.name as string,
+      moduleName: phase.parentModule.name as string,
+      phaseName: phase.name as string,
+      userId: currentUser.id,
+      fileNames,
+    });
+  } else {
+    logger.error('No bucket found. This should never happen!');
+    throw new UnexpectedError();
+  }
+});
 
 const upload = async (req: Request, res: Response) => {
   const lang = LANG[`${req.lang}`];
@@ -74,89 +144,15 @@ const upload = async (req: Request, res: Response) => {
     logger.debug('User is student of course');
   } else logger.debug('User is application admin');
 
-  let returnData: ReturnData[] = [];
+  logger.debug('Emitting upload event to start upload');
+  eventEmitter.emit('upload', req.files, currentUser, phase);
 
-  logger.debug('Authenticating for backblaze');
-  await backblaze.authorize();
+  logger.info('Successfully started upload');
 
-  logger.debug('Fetching buckets from backblaze');
-  const {
-    data: { buckets },
-  } = await backblaze.getBucket({ bucketName: CONFIG.bucket.name });
-
-  logger.debug('Checking if bucket was found');
-  if (buckets[0]) {
-    logger.debug('Bucket found');
-
-    let index = 1;
-    const uploadStartTs = +new Date();
-
-    logger.debug('Looping through files');
-    for (const file of req.files as any) {
-      logger.debug(`Uploading file ${index} out of ${req.files!.length}`);
-      index++;
-
-      const { originalname } = file;
-
-      logger.debug('Getting upload url and authorization token');
-      const {
-        data: { uploadUrl, authorizationToken },
-      } = await backblaze.getUploadUrl({ bucketId: buckets[0].bucketId });
-
-      const fileName = `${phase.parentModule.parentCourse.id}/${phase.parentModule.id}/${phase.id}/${currentUser.id}/${originalname}`;
-
-      logger.debug('Uploading file to backbalze');
-      const { data } = await backblaze.uploadFile({
-        uploadUrl: uploadUrl,
-        uploadAuthToken: authorizationToken,
-        fileName: fileName,
-        data: file.buffer,
-        mime: file.mimetype,
-      });
-
-      logger.debug('Building file refrence in database');
-      const newFile = File.build({
-        fileName: originalname,
-        b2FileId: data.fileId,
-        b2BucketId: data.bucketId,
-        contentType: data.contentType,
-        uploadTimestamp: data.uploadTimestamp,
-        phase: phase,
-        uploader: currentUser.id,
-      });
-
-      logger.debug('Saving file reference');
-      await newFile.save();
-
-      await new SubmissionUploadedPublisher(natsWrapper.client, logger).publish(
-        {
-          userId: currentUser.id,
-          fileName: originalname,
-          fileId: newFile.id,
-        },
-      );
-
-      returnData.push({
-        fileName: originalname,
-        contentType: data.contentType,
-        phaseId: phase.id,
-        uploadTimestamp: data.uploadTimestamp,
-      });
-    }
-
-    logger.info(
-      `Upload(s) finished. It took ${+new Date() - uploadStartTs} ms`,
-    );
-
-    res.status(201).json({
-      errors: false,
-      message: lang.uploaded,
-      data: returnData,
-    });
-  } else {
-    logger.error('No bucket found. This should never happen!');
-    throw new UnexpectedError();
-  }
+  res.status(201).json({
+    errors: false,
+    message: lang.uploading,
+  });
 };
 
 export default upload;

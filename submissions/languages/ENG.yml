@@ -11,7 +11,7 @@ updatedPhase: 'Successfully updated phase'
 upForDeletion: 'Queued phase %name% for deletion'
 
 needFiles: 'Need file(s)'
-uploaded: 'Upload(s) successful'
+uploaded: 'Started upload(s)'
 notSupportedFileType: 'Not supported file type(s).'
 noFilesFound: 'No files found'
 foundFiles: 'Found files'

@@ -86,8 +86,6 @@ it('Returns a 400 if file mime type is not allowed', async () => {
     .field('phaseId', phase.id)
     .attach('files', global.files.invalid.file(), global.files.invalid.path)
     .expect(400);
-
-  console.log(res.body.errors[0].supportedMimeTypes);
 });
 
 it('Returns a 404 if phase id is not a valid ObjectId', async () => {
