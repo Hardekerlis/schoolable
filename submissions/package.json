@@ -13,10 +13,10 @@
     "clean": "del ./build/*",
     "dev": "nodemon ./src/index.ts",
     "test": "npm run clean && npm ci && jest --watchAll --no-cache --runInBand",
-    "test:ci": "npm clean && npm ci && jest --no-cache"
+    "test:ci": "npm run clean && npm ci && jest --no-cache"
   },
   "dependencies": {
-    "@gustafdahl/schoolable-common": "^2.4.8",
+    "@gustafdahl/schoolable-common": "^2.5.0",
     "backblaze-b2": "^1.7.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",

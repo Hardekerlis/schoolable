@@ -33,6 +33,9 @@ const languagePath =
 
 loadLanguages(languagePath);
 
+import loadNotifications from './notifications/loadNotifications';
+loadNotifications();
+
 const app = express();
 
 // const whitelist = ["http://localhost:3500"]

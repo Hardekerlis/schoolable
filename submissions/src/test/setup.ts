@@ -183,6 +183,7 @@ global.createPhase = async (): Promise<CreatePhaseReturnData> => {
   const phase = Phase.build({
     id: new mongoose.Types.ObjectId().toHexString(),
     parentModule: _module,
+    name: faker.name.firstName(),
   });
 
   await phase.save();

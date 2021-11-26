@@ -1,5 +1,3 @@
-/** @format */
-
 import { httpServer } from './sockets';
 import { CONFIG } from '@gustafdahl/schoolable-common';
 import logger from './utils/logger';

@@ -5,6 +5,7 @@ import { ModuleDoc } from './module';
 interface PhaseAttributes {
   id: string;
   parentModule: ModuleDoc;
+  name: string;
 }
 
 interface PhaseModel extends mongoose.Model<PhaseDoc> {
@@ -14,6 +15,7 @@ interface PhaseModel extends mongoose.Model<PhaseDoc> {
 export interface PhaseDoc extends mongoose.Document {
   id: string;
   parentModule: ModuleDoc;
+  name: string;
 }
 
 const phaseSchema = new mongoose.Schema(
@@ -25,6 +27,10 @@ const phaseSchema = new mongoose.Schema(
     parentModule: {
       type: mongoose.Types.ObjectId,
       ref: 'modules',
+      required: true,
+    },
+    name: {
+      type: String,
       required: true,
     },
   },

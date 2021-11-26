@@ -15,7 +15,7 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: UserCreatedEvent['data'], msg: Message) {
-    const { userId, email, userType, name } = data;
+    const { userId, email, userType, name, lang } = data;
 
     logger.info('Creating user reference');
 
@@ -23,6 +23,7 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
     const user = User.build({
       id: userId,
       email,
+      lang,
       userType,
       name,
     });

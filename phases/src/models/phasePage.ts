@@ -7,13 +7,19 @@ enum DisplayType {
   InlineBlock = 'inlineBlock',
 }
 
+// interface Paragraph {
+//   text?: string;
+//   type: ParagraphTypes;
+//   url?: string;
+//   height: string;
+//   width: string;
+//   display: DisplayType;
+// }
+
 interface Paragraph {
-  text?: string;
+  content: string;
   type: ParagraphTypes;
-  url?: string;
-  height: string;
-  width: string;
-  display: DisplayType;
+  order: number;
 }
 
 interface Extension {
@@ -48,7 +54,7 @@ const phasePageSchema = new mongoose.Schema(
   {
     paragraps: [
       {
-        text: {
+        content: {
           type: String,
           default: '',
         },
@@ -57,24 +63,9 @@ const phasePageSchema = new mongoose.Schema(
           enum: Object.values(ParagraphTypes),
           default: ParagraphTypes.Text,
         },
-        url: {
-          type: String,
-          default: '',
-        },
-        height: {
-          // This is in pixels
-          type: String,
-          default: '200',
-        },
-        width: {
-          // This is in pixels
-          type: String,
-          default: '200',
-        },
-        display: {
-          type: String,
-          enum: Object.values(DisplayType),
-          default: DisplayType.Block,
+        order: {
+          type: Number,
+          default: 0,
         },
       },
     ],
