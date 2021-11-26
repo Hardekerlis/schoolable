@@ -71,6 +71,7 @@ const GlobalEventHandler = GlobalEventHandlerInternal();
 if(typeof window !== 'undefined') {
   GlobalEventHandler.create('windowClick', '*', 'click');
   GlobalEventHandler.create('windowMouseMove', '*', 'mousemove')
+  GlobalEventHandler.create('windowBeforeUnload', '*', 'beforeunload')
 }
 
 export default GlobalEventHandler;

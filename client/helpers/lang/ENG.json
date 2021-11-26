@@ -24,6 +24,31 @@
     "editCourse": "Edit course",
     "goBack": "Go back"
   },
+  "paragraphEditor" : {
+    "reloadMessage": "Your changes will be lost, if you leave this site. Continue?",
+    "addParagraphNoContent": "Please add some content to your paragraph first.",
+    "unexpectedError": "An unexpected error occurred.",
+    "title": "Paragraph editor",
+    "closeText": "Close",
+    "editingParagraphText": "Editing paragraph",
+    "newParagraphText": "New paragraph",
+    "enterParagraphText": "Enter paragraph text",
+    "saveText": "Save",
+    "cancelText": "Cancel",
+    "addParagraphText": "Add paragraph",
+    "resetText": "Reset",
+    "hideParagraphsText": "Hide paragraphs",
+    "showParagraphsText": "Show paragraphs",
+    "currentParagraphsText": "Current paragraphs",
+    "deleteParagraphText": "Delete",
+    "openEditorText": "Open paragraph editor",
+    "types": {
+      "text": "Text",
+      "image": "Image",
+      "file": "File",
+      "video": "Video"
+    }
+  },
   "coursePageEdit": {
     "modules": {
       "noModulesText": "No modules found",

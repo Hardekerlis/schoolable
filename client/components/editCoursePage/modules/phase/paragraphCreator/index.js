@@ -18,7 +18,8 @@ import {
 
 import {
   IconRenderer,
-  Prompt
+  Prompt,
+  GlobalEventHandler
 } from 'helpers';
 
 
@@ -26,6 +27,8 @@ import styles from './creator.module.sass';
 
 import BuildContent from '../buildParagraphContent.js';
 
+import language from 'helpers/lang';
+const lang = language.paragraphEditor;
 
 
 const usePrevious = (value) => {
@@ -42,19 +45,19 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
   const [types, setTypes] = useState([
     {
       name: 'Text',
-      value: 'text'
+      value: lang.types.text
     },
     {
       name: 'Image',
-      value: 'image'
+      value: lang.types.image
     },
     {
       name: 'File',
-      value: 'file'
+      value: lang.types.file
     },
     {
       name: 'Video',
-      value: 'video'
+      value: lang.types.video
     }
   ])
 
@@ -102,12 +105,12 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
 
     let pData = {
       type: 'text', //shouldn't be hardcoded
-      text: paragraphText,
+      content: paragraphText,
       id: nanoid(6)
     }
 
-    if(pData.text.length === 0) {
-      return Prompt.error("Please write some text before adding paragraph.");
+    if(pData.content.length === 0) {
+      return Prompt.error(lang.addParagraphNoContent);
     }
 
     let arr = paragraphs.slice();
@@ -127,10 +130,23 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
 
 
   const [isEditing, setIsEditing] = useState(false);
+  const isEditingRef = React.useRef(isEditing);
+
   const prevIsEditing = usePrevious(isEditing);
 
   const [createClassName, setCreateClassName] = useState(styles.create);
 
+  useEffect(() => {
+    isEditingRef.current = isEditing;
+  }, [isEditing])
+
+  useEffect(() => {
+    window.onbeforeunload = () => {
+      if(isEditingRef.current === true) {
+        return `${lang.reloadMessage}`;
+      }
+    }
+  }, [])
 
   const setEditingCookie = (bool) => {
     console.log("setting paragraphEditorOpen cookie:", bool)
@@ -230,7 +246,7 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
 
     if(paragraphIndex === -1) {
       //TODO: maybe handle this better
-      return Prompt.error("An unexpected error occurred.")
+      return Prompt.error(lang.unexpectedError)
     }
 
     let arr = paragraphs.slice();
@@ -258,21 +274,21 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
     <div className={styles.wrapper}>
       { isEditing &&
         <div className={createClassName}>
-          <p className={styles.title}>Paragraph editor</p>
+          <p className={styles.title}>{lang.title}</p>
 
           <IconRenderer
             onClick={closeEditor}
             icon={Crossmark}
             className={styles.close}
             onHover={{
-              text: 'Close',
+              text: lang.closeText,
               direction: 'left'
             }}
           />
 
           <div className={(currentParagraphsOpen) ? `${styles.inner} ${styles.cpsOpen}` : styles.inner}>
             <div className={styles.newParagraph}>
-              <p className={styles.headline}>{(editingParagraph) ? "Editing paragraph" : "New paragraph"}</p>
+              <p className={styles.headline}>{(editingParagraph) ? lang.editingParagraphText : lang.newParagraphText}</p>
               <div className={styles.content}>
                 <div className={styles.types}>
                   {selectors}
@@ -280,20 +296,20 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
 
                 {selectedType === 'text' &&
                   <div className={styles.textContainer}>
-                    <textarea value={paragraphText} onChange={(evt) => setParagraphText(evt.target.value)} placeholder="Enter paragraph text"></textarea>
+                    <textarea value={paragraphText} onChange={(evt) => setParagraphText(evt.target.value)} placeholder={lang.enterParagraphText} ></textarea>
                   </div>
                 }
 
                 <div className={styles.buttons}>
                   {editingParagraph ?
                       <>
-                        <div onClick={saveEdits} className={styles.add}>Save</div>
-                        <div onClick={cancelEdits} className={styles.reset}>Cancel</div>
+                        <div onClick={saveEdits} className={styles.add}>{lang.saveText}</div>
+                        <div onClick={cancelEdits} className={styles.reset}>{lang.cancelText}</div>
                       </>
                     :
                       <>
-                        <div onClick={addParagraph} className={styles.add}>Add paragraph</div>
-                        <div onClick={resetFields} className={styles.reset}>Reset</div>
+                        <div onClick={addParagraph} className={styles.add}>{lang.addParagraphText}</div>
+                        <div onClick={resetFields} className={styles.reset}>{lang.resetText}</div>
                       </>
                   }
 
@@ -305,7 +321,7 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
               onClick={showCurrentParagraphs}
               className={styles.showCps}
             >
-              <p className={styles.text}>{(currentParagraphsOpen) ? 'Hide paragraphs' : 'Show paragraphs'}</p>
+              <p className={styles.text}>{(currentParagraphsOpen) ? lang.hideParagraphsText : lang.showParagraphsText}</p>
               <IconRenderer
                 icon={RightArrow}
                 className={styles.icon}
@@ -313,7 +329,7 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
             </div>
 
             <div className={styles.paragraphs}>
-              <p className={styles.headline}>Current paragraphs</p>
+              <p className={styles.headline}>{lang.currentParagraphsText}</p>
 
               <div className={styles.content}>
 
@@ -358,7 +374,7 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
                               selectClass={styles.select}
                               onHover={{
                                 direction: 'left',
-                                text: 'Delete'
+                                text: lang.deleteParagraphText
                               }}
                             />
                           </div>
@@ -370,16 +386,12 @@ const ParagraphCreator = ({ currentParagraphs, queryPhaseOpenedOnReload, phaseQu
                 </ReactSortable>
 
               </div>
-
             </div>
-
-
           </div>
-
         </div>
       }
       <div onClick={beginEditing} className={styles.begin}>
-        <p className={styles.title}>Open paragraph editor</p>
+        <p className={styles.title}>{lang.openEditorText}</p>
       </div>
     </div>
   )

@@ -27,6 +27,8 @@ const Phase = ({
   phaseQueryHandled
 }) => {
 
+  console.log(data)
+
   const [paragraphs, setParagraphs] = useState([]);
   const [paragraphsRender, setParagraphsRender] = useState([]);
 
