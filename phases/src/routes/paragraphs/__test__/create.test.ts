@@ -26,15 +26,144 @@ it('Returns a 401 if user is not teacher or admin', async () => {
 });
 
 it('Returns a 401 if user is not course owner', async () => {
-  const { phase } = await global.createPhase();
+  const { phase, paragraphData } = await global.getParagraphData();
   const { cookie } = await global.getAuthCookie();
 
   await request(app)
     .post(path)
     .set('Cookie', cookie)
     .send({
-      phasePageId: phase.page.id,
-      name: faker.company.companyName(),
+      phaseId: phase.id,
+      content: paragraphData.content,
+      type: paragraphData.type,
     })
     .expect(401);
+});
+
+it('Returns a 400 if phaseId is not in request body', async () => {
+  const { paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      content: paragraphData.content,
+      type: paragraphData.type,
+    })
+    .expect(400);
+});
+
+it('Returns a 400 if content is undefined in request body', async () => {
+  const { phase, paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: phase.id,
+      type: paragraphData.type,
+    })
+    .expect(400);
+});
+
+it('Returns a 400 if type is undefined in request body', async () => {
+  const { phase, paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: phase.id,
+      content: paragraphData.content,
+    })
+    .expect(400);
+});
+
+it('Returns a 400 if type is not a valid paragraph type', async () => {
+  const { phase, paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: phase.id,
+      content: paragraphData.content,
+      type: 'Invalid type',
+    })
+    .expect(400);
+});
+
+it('Returns a 404 if phaseId is not a valid ObjectId', async () => {
+  const { paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: 'Invalid phase id',
+      content: paragraphData.content,
+      type: paragraphData.type,
+    })
+    .expect(404);
+});
+
+it('Returns a 404 if no phase is found', async () => {
+  const { paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: new mongoose.Types.ObjectId().toHexString(),
+      content: paragraphData.content,
+      type: paragraphData.type,
+    })
+    .expect(404);
+});
+
+it('Returns a 201 if a paragraph is created', async () => {
+  const { phase, paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: phase.id,
+      content: paragraphData.content,
+      type: paragraphData.type,
+    })
+    .expect(201);
+});
+
+it('Returns the created paragraph in response body', async () => {
+  const { phase, paragraphData, cookie } = await global.getParagraphData();
+
+  const res = await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: phase.id,
+      content: paragraphData.content,
+      type: paragraphData.type,
+    })
+    .expect(201);
+
+  expect(res.body.paragraph).toEqual(paragraphData);
+});
+
+it('Logger is implemented', async () => {
+  const { phase, paragraphData, cookie } = await global.getParagraphData();
+
+  await request(app)
+    .post(path)
+    .set('Cookie', cookie)
+    .send({
+      phaseId: phase.id,
+      content: paragraphData.content,
+      type: paragraphData.type,
+    })
+    .expect(201);
+
+  expect(logger.info).toHaveBeenCalled();
+  expect(logger.debug).toHaveBeenCalled();
 });

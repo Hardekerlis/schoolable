@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose';
 import faker from 'faker';
-import { CONFIG, winstonTestSetup } from '@gustafdahl/schoolable-common';
+import { CONFIG, ParagraphTypes } from '@gustafdahl/schoolable-common';
 import { UserTypes, UserPayload } from '@gustafdahl/schoolable-common';
 import jwt from 'jsonwebtoken';
 import { sign } from 'cookie-signature';
@@ -37,6 +37,16 @@ interface CreatePhaseReturnData extends CreateModuleReturnData {
   phase: PhaseDoc;
 }
 
+let order = 0;
+
+interface ParagraphData extends CreatePhaseReturnData {
+  paragraphData: {
+    content: string;
+    type: ParagraphTypes;
+    order: number;
+  };
+}
+
 declare global {
   namespace NodeJS {
     interface Global {
@@ -48,6 +58,7 @@ declare global {
       createCourse(): Promise<CreateCourseReturnData>;
       createModule(): Promise<CreateModuleReturnData>;
       createPhase(): Promise<CreatePhaseReturnData>;
+      getParagraphData(): Promise<ParagraphData>;
     }
   }
 }
@@ -72,6 +83,8 @@ beforeEach(async () => {
   } catch (err) {
     console.error(err);
   }
+
+  order = 0;
 });
 
 afterAll(async () => {
@@ -149,4 +162,18 @@ global.createPhase = async (): Promise<CreatePhaseReturnData> => {
   await phase.save();
 
   return { cookie, course, userId, _module, phase };
+};
+
+global.getParagraphData = async (): Promise<ParagraphData> => {
+  const { cookie, course, userId, _module, phase } = await global.createPhase();
+
+  const paragraphData = {
+    content: faker.lorem.paragraph(),
+    type: ParagraphTypes.Text,
+    order: order,
+  };
+
+  order++;
+
+  return { cookie, course, userId, _module, phase, paragraphData };
 };

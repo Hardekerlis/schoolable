@@ -105,7 +105,7 @@ it('Returns the updated phase in response body', async () => {
   expect(res.body.phase.name).not.toEqual(phase.name);
 });
 
-it('Returns the updated phase page if it to be updated', async () => {
+it('Returns the updated phase page if it is to be updated', async () => {
   const { cookie, phase } = await global.createPhase();
 
   const res = await request(app)
@@ -115,12 +115,12 @@ it('Returns the updated phase page if it to be updated', async () => {
       phaseId: phase.id,
       name: 'New name',
       page: {
-        handInButton: HandInTypes.File,
+        handInTypes: HandInTypes.File,
       },
     })
     .expect(200);
 
-  expect(res.body.phase.page.handInButton[0]).toEqual(HandInTypes.File);
+  expect(res.body.phase.page.handInTypes[0]).toEqual(HandInTypes.File);
 });
 
 it('Parent module is not defined in phase in response body', async () => {
